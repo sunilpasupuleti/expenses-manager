@@ -1,0 +1,180 @@
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+import React, {useContext, useEffect, useState} from 'react';
+import {Button} from 'react-native-paper';
+import {useTheme} from 'styled-components/native';
+import {Spacer} from '../../../components/spacer/spacer.component';
+import {
+  ButtonText,
+  FlexRow,
+  MainWrapper,
+  ToggleSwitch,
+  TouchableHighlightWithColor,
+} from '../../../components/styles';
+import {Text} from '../../../components/typography/text.component';
+import {SafeArea} from '../../../components/utility/safe-area.component';
+import {SheetsContext} from '../../../services/sheets/sheets.context';
+import {AddSheetInput} from '../components/add-sheet-input.component';
+import {
+  AdvancedSettings,
+  AdvancedSettingsContainer,
+} from '../components/add-sheet.styles';
+import {GetCurrencySymbol} from '../../../components/symbol.currency';
+
+export const AddSheetScreen = ({navigation, route}) => {
+  const theme = useTheme();
+  const [disabled, setDisabled] = useState(true);
+  const [sheetName, setSheetName] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editSheet, setEditSheet] = useState(null);
+  const [selectedCurrency, setSelectedCurrency] = useState('INR');
+  const [showTotalBalance, setShowTotalBalance] = useState(true);
+
+  const {onSaveSheet, onEditSheet} = useContext(SheetsContext);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: editMode ? 'Edit Sheet' : 'New Sheet',
+      headerLeft: () => (
+        <Button uppercase={false} onPress={onCancel}>
+          <ButtonText>Cancel</ButtonText>
+        </Button>
+      ),
+      headerRight: () => {
+        return (
+          <Button
+            disabled={disabled}
+            uppercase={false}
+            onPress={editMode ? onEdit : onSave}>
+            <ButtonText disabled={disabled}>Done</ButtonText>
+          </Button>
+        );
+      },
+    });
+  }, [sheetName, showTotalBalance, disabled, editMode, selectedCurrency]);
+
+  useEffect(() => {
+    if (route.params && route.params.edit) {
+      let sheet = route.params.sheet;
+      setEditSheet(sheet);
+      setSheetName(sheet.name);
+      setEditMode(true);
+      setDisabled(false);
+      setShowTotalBalance(sheet.showTotalBalance);
+      setSelectedCurrency(sheet.currency);
+    }
+    if (route.params && route.params.selectedCurrency) {
+      setSelectedCurrency(route.params.selectedCurrency);
+    }
+  }, [route.params]);
+
+  const onSetSheetName = name => {
+    setSheetName(name);
+  };
+
+  const onSetButtonDisabled = condition => {
+    setDisabled(condition);
+  };
+
+  const onCancel = () => {
+    navigation.goBack();
+  };
+
+  const onSave = () => {
+    const sheet = {
+      id: Date.now().toString(36) + Math.random().toString(36).substring(2),
+      name: sheetName.charAt(0).toUpperCase() + sheetName.slice(1),
+      showTotalBalance: showTotalBalance,
+      totalBalance: 0,
+      updatedAt: Date.now(),
+      details: [],
+      currency: selectedCurrency,
+    };
+    onSaveSheet(sheet, navigation);
+  };
+
+  const onEdit = () => {
+    const sheet = {
+      id: editSheet.id,
+      name: sheetName.charAt(0).toUpperCase() + sheetName.slice(1),
+      showTotalBalance: showTotalBalance,
+      totalBalance: editSheet.totalBalance,
+      updatedAt: Date.now(),
+    };
+    onEditSheet(sheet, route.params.callback);
+  };
+
+  return (
+    <SafeArea>
+      <MainWrapper>
+        <Spacer size="xlarge">
+          <AddSheetInput
+            setButtonDisabled={onSetButtonDisabled}
+            onSetSheetName={onSetSheetName}
+            sheetName={sheetName}
+          />
+        </Spacer>
+
+        <AdvancedSettingsContainer>
+          <Text variant="caption" color="#aaa" fontsize="14px">
+            ADVANCED SETTINGS
+          </Text>
+          <AdvancedSettings theme={{roundness: 10}}>
+            <AdvancedSettings.Content>
+              <FlexRow justifyContent="space-between">
+                <Text>Show Total Balance</Text>
+                <ToggleSwitch
+                  value={showTotalBalance}
+                  onValueChange={() => setShowTotalBalance(!showTotalBalance)}
+                />
+              </FlexRow>
+            </AdvancedSettings.Content>
+            <Spacer size={'xlarge'} />
+            <TouchableHighlightWithColor
+              onPress={() =>
+                !editMode
+                  ? navigation.navigate('SelectCurrency', {
+                      selectedCurrency: selectedCurrency,
+                    })
+                  : null
+              }
+              padding="15px">
+              <FlexRow justifyContent="space-between">
+                <FlexRow>
+                  <FontAwesome
+                    name="money"
+                    size={20}
+                    color={editMode ? '#ccc' : '#aaa'}
+                  />
+                  <Spacer position={'left'} size={'large'}>
+                    <Text style={editMode && {color: '#bbb'}}>
+                      Select{editMode && 'ed'} Currency
+                    </Text>
+                  </Spacer>
+                </FlexRow>
+                <FlexRow>
+                  <Text
+                    fontfamily="bodySemiBold"
+                    style={editMode && {color: '#bbb'}}>
+                    {selectedCurrency +
+                      `  (${GetCurrencySymbol(selectedCurrency)})`}
+                  </Text>
+                  <Spacer position={'left'} size={'medium'}>
+                    <Ionicons
+                      name="chevron-forward-outline"
+                      color="#aaa"
+                      size={24}
+                    />
+                  </Spacer>
+                </FlexRow>
+              </FlexRow>
+            </TouchableHighlightWithColor>
+          </AdvancedSettings>
+        </AdvancedSettingsContainer>
+
+        <Spacer size={'xlarge'} />
+      </MainWrapper>
+    </SafeArea>
+  );
+};

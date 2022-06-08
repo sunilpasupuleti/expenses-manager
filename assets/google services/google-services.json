@@ -1,0 +1,99 @@
+{
+  "project_info": {
+    "project_number": "209649691146",
+    "firebase_url": "https://expenses-manager-9b9e2-default-rtdb.firebaseio.com",
+    "project_id": "expenses-manager-9b9e2",
+    "storage_bucket": "expenses-manager-9b9e2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:209649691146:android:840eae69c03659e8fb0df3",
+        "android_client_info": {
+          "package_name": "com.expensesmanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "209649691146-l8opclsfqahj5e0a9k4rop7rsnt79tc8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.expensesmanager",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "209649691146-ui8qcgo5biv5f3e3r3vp6jqabh0db50i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCa3h5mUdSMtsf6IxZG_nKhSpzcRaSROGs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "209649691146-ui8qcgo5biv5f3e3r3vp6jqabh0db50i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "209649691146-3kjkk1crg2v9uhh8bgpo9nqln2hs4ni7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.expensesmanager"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:209649691146:android:b4d1abc54726e066fb0df3",
+        "android_client_info": {
+          "package_name": "com.sunil99599.expensesmanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "209649691146-1grie3q9nr7q6cht6ao1vjhvg3mtkoha.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.sunil99599.expensesmanager",
+            "certificate_hash": "18a0d868a6d8ea1f4b9e86a6b65fcc11728bec0b"
+          }
+        },
+        {
+          "client_id": "209649691146-ui8qcgo5biv5f3e3r3vp6jqabh0db50i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCa3h5mUdSMtsf6IxZG_nKhSpzcRaSROGs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "209649691146-ui8qcgo5biv5f3e3r3vp6jqabh0db50i.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "209649691146-3kjkk1crg2v9uhh8bgpo9nqln2hs4ni7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.expensesmanager"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

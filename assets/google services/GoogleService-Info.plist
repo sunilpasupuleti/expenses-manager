@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>209649691146-3kjkk1crg2v9uhh8bgpo9nqln2hs4ni7.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.209649691146-3kjkk1crg2v9uhh8bgpo9nqln2hs4ni7</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>209649691146-1grie3q9nr7q6cht6ao1vjhvg3mtkoha.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAJrzLbHNTZ5yxHCgfilMIho7_eNn5plQE</string>
+	<key>GCM_SENDER_ID</key>
+	<string>209649691146</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.expensesmanager</string>
+	<key>PROJECT_ID</key>
+	<string>expenses-manager-9b9e2</string>
+	<key>STORAGE_BUCKET</key>
+	<string>expenses-manager-9b9e2.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:209649691146:ios:93919c4ebed8b6c0fb0df3</string>
+	<key>DATABASE_URL</key>
+	<string>https://expenses-manager-9b9e2-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
