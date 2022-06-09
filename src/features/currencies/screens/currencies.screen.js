@@ -133,7 +133,7 @@ export const CurrenciesScreen = ({navigation, route}) => {
                     <Card.Content>
                       {!displayMode && (
                         <FlexRow justifyContent="space-between">
-                          <Text variant="label">{key}</Text>
+                          <Text fontfamily="heading">{key}</Text>
                           <Text fontfamily="headingSemiBold">{currency}</Text>
                         </FlexRow>
                       )}
@@ -141,7 +141,7 @@ export const CurrenciesScreen = ({navigation, route}) => {
                       {displayMode && (
                         <FlexRow justifyContent="space-between">
                           <View style={{flexBasis: '30%'}}>
-                            <Text variant="label">
+                            <Text fontfamily="heading">
                               {c} {' ( '}
                               <Text fontfamily="headingSemiBold">
                                 {currency}
@@ -154,7 +154,7 @@ export const CurrenciesScreen = ({navigation, route}) => {
                             </Text>
                           </View>
                           <Text> =</Text>
-                          <Text variant="label">
+                          <Text fontfamily="heading">
                             1 {selectedCurrency}
                             {' ( '}
                             {GetCurrencySymbol(selectedCurrency)} {')'}
@@ -177,7 +177,7 @@ export const CurrenciesScreen = ({navigation, route}) => {
               alignContent: 'center',
               justifyContent: 'center',
             }}>
-            <Text style={{textAlign: 'center'}} variant="label">
+            <Text style={{textAlign: 'center'}} fontfamily="heading">
               No Currency Selection available for now! Try again later or
               contact admin
             </Text>

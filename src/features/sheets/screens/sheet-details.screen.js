@@ -132,7 +132,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 navigation.navigate('SheetStats', {sheet});
               }}>
               <FlexRow justifyContent="space-between">
-                <Text color="#2f2f2f" variant="label">
+                <Text color="#2f2f2f" fontfamily="heading">
                   Stats
                 </Text>
                 <Ionicons name="pie-chart-outline" size={22} />
@@ -145,7 +145,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 navigation.navigate('SheetTrends', {sheet});
               }}>
               <FlexRow justifyContent="space-between">
-                <Text color="#2f2f2f" variant="label">
+                <Text color="#2f2f2f" fontfamily="heading">
                   Trends
                 </Text>
                 <Ionicons name="trending-up-outline" size={22} />
@@ -169,7 +169,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 });
               }}>
               <FlexRow justifyContent="space-between">
-                <Text color="#2f2f2f" variant="label">
+                <Text color="#2f2f2f" fontfamily="heading">
                   Curreny Rate
                 </Text>
                 <FontAwesome name="money" size={20} />
@@ -188,7 +188,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 });
               }}>
               <FlexRow justifyContent="space-between">
-                <Text color="#2f2f2f" variant="label">
+                <Text color="#2f2f2f" fontfamily="heading">
                   Edit Sheet
                 </Text>
                 <Ionicons name="pencil-outline" size={22} />

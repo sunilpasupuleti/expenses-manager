@@ -27,7 +27,7 @@ export const StatsInfoCard = ({
             <SheetDetailCategory>{category.name} </SheetDetailCategory>
           </Spacer>
           <FlexRow>
-            <Text variant="caption" color="#8a8a8d" fontfamily="bodyBold">
+            <Text color="#8a8a8d" fontfamily="bodyBold">
               {Math.round(percentage * 100).toString() + '%'}{' '}
             </Text>
             <Ionicons

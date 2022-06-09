@@ -1,18 +1,23 @@
 export const fonts = {
-  body: 'Montserrat_400Regular',
-  bodyMedium: 'Montserrat_500Medium',
-  bodySemiBold: 'Montserrat_600SemiBold',
-  bodyBold: 'Montserrat_700Bold',
-  heading: 'Lato_400Regular',
-  headingSemiBold: 'Lato_700Bold',
-  headingBold: 'Lato_900Black',
-  monospace: 'Oswald_400Regular',
+  body: 'Montserrat-Regular',
+  bodyMedium: 'Montserrat-Medium',
+  bodySemiBold: 'Montserrat-SemiBold',
+  bodyBold: 'Montserrat-Bold',
+  heading: 'Lato-Regular',
+  headingSemiBold: 'Lato-Bold',
+  headingBold: 'Lato-Black',
+  monospace: 'Oswald-Regular',
 };
 
 export const fontWeights = {
-  regular: 400,
-  medium: 500,
-  bold: 700,
+  body: 400,
+  bodyMedium: 500,
+  bodySemiBold: 600,
+  bodyBold: 700,
+  heading: 400,
+  headingSemiBold: 700,
+  headingBold: 900,
+  monospace: 400,
 };
 
 export const fontSizes = {

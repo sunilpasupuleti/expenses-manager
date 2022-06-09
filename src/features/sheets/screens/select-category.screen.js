@@ -121,7 +121,7 @@ export const SelectCategoryScreen = ({navigation, route}) => {
                       <CategoryItem>
                         <CategoryColor color={c.color} />
                         <Spacer position={'left'} size={'medium'} />
-                        <Text variant="label">{c.name}</Text>
+                        <Text fontfamily="heading">{c.name}</Text>
                       </CategoryItem>
                       {selectedCategory.id === c.id && (
                         <Ionicons
@@ -156,7 +156,7 @@ export const SelectCategoryScreen = ({navigation, route}) => {
             size={25}
             color={theme.colors.brand.primary}
           />
-          <Text variant="label" color={theme.colors.brand.primary}>
+          <Text fontfamily="heading" color={theme.colors.brand.primary}>
             New Category
           </Text>
         </NewCategory>

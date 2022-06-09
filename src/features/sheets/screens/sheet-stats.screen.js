@@ -94,7 +94,7 @@ export const SheetStatsScreen = ({navigation, route}) => {
                   setReport(o);
                 }}>
                 <FlexRow justifyContent="space-between">
-                  <Text color="#2f2f2f" variant="label">
+                  <Text color="#2f2f2f" fontfamily="heading">
                     {o.value}
                   </Text>
                   {report.key === o.key && (

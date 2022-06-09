@@ -11,7 +11,7 @@ export const MainWrapper = styled.View`
 `;
 
 export const ButtonText = styled(Text).attrs({
-  variant: 'label',
+  fontfamily: 'heading',
 })`
   color: ${props =>
     props.disabled
@@ -77,7 +77,7 @@ export const TabView = styled(Animated.View)`
 `;
 
 export const TabText = styled(Text).attrs({
-  variant: 'label',
+  fontfamily: 'heading',
 })`
   color: #fff;
   text-align: center;

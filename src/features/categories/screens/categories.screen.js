@@ -117,7 +117,7 @@ export const CategoriesScreen = ({navigation}) => {
             size={25}
             color={theme.colors.brand.primary}
           />
-          <Text variant="label" color={theme.colors.brand.primary}>
+          <Text fontfamily="heading" color={theme.colors.brand.primary}>
             New Category
           </Text>
         </NewCategory>

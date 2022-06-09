@@ -170,7 +170,7 @@ export const SheetDetailsInfo = ({
                         onChangeSheetType(sheet, sd, navigation);
                       }}>
                       <FlexRow justifyContent="space-between">
-                        <Text color="#2f2f2f" variant="label">
+                        <Text color="#2f2f2f" fontfamily="heading">
                           Change type to{' '}
                           {sd.type === 'expense' ? 'income' : 'expense'}
                         </Text>
@@ -188,7 +188,7 @@ export const SheetDetailsInfo = ({
                         });
                       }}>
                       <FlexRow justifyContent="space-between">
-                        <Text color="#2f2f2f" variant="label">
+                        <Text color="#2f2f2f" fontfamily="heading">
                           Move {sd.type}
                         </Text>
                         <Ionicons name="folder-outline" size={20} />
@@ -202,7 +202,7 @@ export const SheetDetailsInfo = ({
                         onDuplicateButton(sd);
                       }}>
                       <FlexRow justifyContent="space-between">
-                        <Text color="#2f2f2f" variant="label">
+                        <Text color="#2f2f2f" fontfamily="heading">
                           Duplicate {sd.type}
                         </Text>
                         <Ionicons name="duplicate-outline" size={20} />
@@ -216,7 +216,7 @@ export const SheetDetailsInfo = ({
                         onPressDeleteButton(sd);
                       }}>
                       <FlexRow justifyContent="space-between">
-                        <Text color="red" variant="label">
+                        <Text color="red" fontfamily="heading">
                           Delete {sd.type}
                         </Text>
                         <Ionicons name="trash-outline" size={20} color="red" />

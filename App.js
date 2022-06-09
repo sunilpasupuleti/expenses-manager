@@ -32,6 +32,7 @@ const App = () => {
   const themeType = useColorScheme();
   const appTheme = useSelector(state => state.service.theme);
   const dispatch = useDispatch();
+
   useEffect(() => {
     SplashScreen.hide();
     //  call all slices

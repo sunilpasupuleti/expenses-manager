@@ -247,7 +247,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                 color={selectedCategory ? selectedCategory.color : '#fff'}
               />
               <Spacer position={'left'} size={'medium'} />
-              <Text variant="label">{selectedCategory?.name}</Text>
+              <Text fontfamily="heading">{selectedCategory?.name}</Text>
             </CategoryItem>
             <Spacer size={'small'} />
           </Card.Content>
@@ -265,7 +265,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                   color={theme.colors.brand.primary}>
                   <Spacer position={'left'} />
                 </Ionicons>
-                <Text variant="label">Date</Text>
+                <Text fontfamily="heading">Date</Text>
               </FlexRow>
 
               {Platform.OS === 'android' && (
@@ -283,10 +283,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                       date: true,
                     }))
                   }>
-                  <Text
-                    variant="caption"
-                    fontfamily="bodySemiBold"
-                    fontsize="14px">
+                  <Text fontfamily="bodySemiBold" fontsize="14px">
                     {moment(date).format('DD MMM YYYY')}
                   </Text>
                 </TouchableOpacity>
@@ -349,7 +346,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                       color={theme.colors.brand.primary}>
                       <Spacer position={'left'} />
                     </Ionicons>
-                    <Text variant="label">Time</Text>
+                    <Text fontfamily="heading">Time</Text>
                   </FlexRow>
 
                   {Platform.OS === 'android' && (
@@ -367,10 +364,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                           time: true,
                         }))
                       }>
-                      <Text
-                        variant="caption"
-                        fontfamily="bodySemiBold"
-                        fontsize="14px">
+                      <Text fontfamily="bodySemiBold" fontsize="14px">
                         {moment(time).format('hh:mm A')}
                       </Text>
                     </TouchableOpacity>

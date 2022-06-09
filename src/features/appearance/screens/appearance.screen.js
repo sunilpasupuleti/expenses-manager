@@ -51,7 +51,7 @@ export const AppearanceScreen = ({navigation}) => {
                 }}>
                 <Card.Content>
                   <FlexRow justifyContent="space-between">
-                    <Text variant="label">{m.value}</Text>
+                    <Text fontfamily="heading">{m.value}</Text>
                     {appTheme === m.key && (
                       <Ionicons
                         name="checkmark-outline"

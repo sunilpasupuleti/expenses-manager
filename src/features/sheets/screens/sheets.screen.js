@@ -43,7 +43,9 @@ export const SheetsScreen = ({navigation}) => {
             />
           </TouchableOpacity>
         </IconsContainer>
-        <Title>Sheets</Title>
+        <Text fontfamily="bodyBold" fontsize="30px">
+          Sheets
+        </Text>
 
         <Spacer size={'large'} />
         {sheets && sheets.length > 0 && (
@@ -74,7 +76,7 @@ export const SheetsScreen = ({navigation}) => {
             size={25}
             color={theme.colors.brand.primary}
           />
-          <Text variant="label" color={theme.colors.brand.primary}>
+          <Text fontfamily="heading" color={theme.colors.brand.primary}>
             New Sheet
           </Text>
         </NewSheet>

@@ -19,7 +19,7 @@ export const Navigation = ({theme}) => {
       <NotLoggedInContainer>
         <View style={{padding: 10}}>
           <Text
-            variant="label"
+            fontfamily="heading"
             style={{textAlign: 'center', letterSpacing: 1, lineHeight: 30}}>
             You have not signed in! Please re-open the app to sign in or click
             below to signin

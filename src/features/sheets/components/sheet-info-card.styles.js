@@ -11,16 +11,16 @@ export const BorderLine = styled.View`
 `;
 
 export const TotalBalance = styled(Text).attrs({
-  variant: 'label',
+  fontfamily: 'headingBold',
+  // font-family: ${props => props.theme.fonts.bodyBold};
 })`
   ${props => (props.archived ? `color : #aaa` : ` color: #7a8a8d`)}
   letter-spacing: 1px;
   font-size: 13px;
-  font-family: ${props => props.theme.fonts.bodyBold};
 `;
 
 export const UpdatedTime = styled(Text).attrs({
-  variant: 'label',
+  fontfamily: 'heading',
   fontsize: '13px',
 })`
   ${props => props.showTotalBalance && `margin-left : 20px`};

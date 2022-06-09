@@ -43,7 +43,8 @@ export const CategoriesDetails = ({deleteMode, details, onDeleteCategory}) => {
 
                     <CategoryColor color={c.color} />
                     <Spacer position={'left'} size={'medium'} />
-                    <Text variant="label">{c.name}</Text>
+
+                    <Text fontfamily="heading">{c.name}</Text>
                   </CategoryItem>
                   <Spacer size={'small'} />
                   <Divider />

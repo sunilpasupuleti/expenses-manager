@@ -47,7 +47,7 @@ export const SheetDetailDateAmount = styled.View`
 `;
 
 export const SheetDetailCategory = styled(Text).attrs({
-  variant: 'label',
+  fontfamily: 'heading',
 })`
   font-size: 17px;
 `;
@@ -70,7 +70,7 @@ export const SheetDetailCategoryColor = styled.View`
 `;
 
 export const SheetDetailNotes = styled(Text).attrs({
-  variant: 'label',
+  fontfamily: 'heading',
   fontsize: '13px',
 })`
   color: #8a8a8d;

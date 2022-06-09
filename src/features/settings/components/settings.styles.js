@@ -49,7 +49,7 @@ export const ProfileText = styled(Text)`
 `;
 
 export const SettingHint = styled(Text).attrs({
-  variant: 'label',
+  fontfamily: 'heading',
 })`
   font-size: 12px;
   margin-left: 12px;

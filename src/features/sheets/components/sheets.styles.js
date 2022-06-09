@@ -3,10 +3,6 @@ import React from 'react';
 import styled from 'styled-components/native';
 import {Text} from '../../../components/typography/text.component';
 import {SafeArea} from '../../../components/utility/safe-area.component';
-export const Title = styled(Text)`
-  font-size: 30px;
-  font-family: ${props => props.theme.fonts.bodyBold};
-`;
 
 export const IconsContainer = styled.View`
   flex-direction: row;
