@@ -261,8 +261,7 @@ android {
 
 dependencies {
 
-     // for facebook sign in 
-    implementation 'com.facebook.android:facebook-android-sdk:latest.release'
+   
 
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:29.0.3')

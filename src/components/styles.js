@@ -82,3 +82,17 @@ export const TabText = styled(Text).attrs({
   color: #fff;
   text-align: center;
 `;
+
+export const ErrorMessage = styled(Text)`
+  color: red;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+`;
+
+export const SuccessMessage = styled(Text)`
+  color: ${colors.brand.primary};
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+`;

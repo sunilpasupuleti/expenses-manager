@@ -71,14 +71,15 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
         destructiveButtonIndex: 4,
         message: 'Select an action to perform',
         icons: [
-          <Ionicons name="close-outline" size={25} />,
-          <Ionicons name="create-outline" size={25} />,
+          <Ionicons name="close-outline" size={25} color="#aaa" />,
+          <Ionicons name="create-outline" size={25} color="#aaa" />,
           <MaterialCommunityIcons
+            color="#aaa"
             name={sheet.pinned ? 'pin-off-outline' : 'pin-outline'}
             size={25}
           />,
-          <EvilIcons name="archive" size={30} />,
-          <Ionicons name="trash-outline" size={25} />,
+          <EvilIcons name="archive" color="#aaa" size={30} />,
+          <Ionicons name="trash-outline" color="#aaa" size={25} />,
         ],
       },
       buttonIndex => {

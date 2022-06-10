@@ -1,5 +1,5 @@
 import React from 'react';
-import {Button} from 'react-native-paper';
+import {Button, TextInput} from 'react-native-paper';
 import styled from 'styled-components/native';
 import {Text} from '../../../components/typography/text.component';
 import {colors} from '../../../infrastructure/theme/colors';
@@ -12,21 +12,13 @@ export const AccountBackground = styled.ImageBackground.attrs({
   justify-content: center;
 `;
 
-export const AccountCover = styled.View`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(255, 255, 255, 0.4);
-`;
-
 export const Title = styled(Text)`
   font-size: 30px;
 `;
 
-export const AccountContainer = styled.View`
+export const AccountContainer = styled.ScrollView`
   padding: ${props => props.theme.space[4]};
-  margin-top: ${props => props.theme.space[2]};
-  background-color: rgba(0, 0, 0, 0.03);
+  flex: 1;
 `;
 
 export const AuthButton = styled(Button).attrs({})`
@@ -60,4 +52,23 @@ export const GoogleButtonText = styled(Text)`
   font-size: 13px;
   letter-spacing: 1.3px;
   margin-left: 15px;
+`;
+
+export const LoginInput = styled(TextInput).attrs({
+  activeOutlineColor: 'transparent',
+  outlineColor: 'transparent',
+  selectionColor: colors.brand.primary,
+})`
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+`;
+
+export const OtherLoginButtonsContainer = styled.View`
+  margin-top: 100px;
+`;
+
+export const Hyperlink = styled(Text).attrs({
+  fontfamily: 'heading',
+})`
+  color: #3a62b6;
+  text-align: center;
 `;

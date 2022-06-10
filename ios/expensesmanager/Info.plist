@@ -35,7 +35,6 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb1383516078741351</string>
 				<string>com.googleusercontent.apps.209649691146-3kjkk1crg2v9uhh8bgpo9nqln2hs4ni7</string>
 			</array>
 		</dict>
@@ -50,10 +49,6 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>1</string>
-	<key>FacebookAppID</key>
-	<string>1383516078741351</string>
-	<key>FacebookClientToken</key>
-	<string>aa248406da1c6405a188ef2dbe7a0191</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -110,5 +105,8 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Allow $(PRODUCT_NAME) to use FaceID</string>
+
 </dict>
 </plist>

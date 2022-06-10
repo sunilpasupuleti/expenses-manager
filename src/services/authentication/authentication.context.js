@@ -1,14 +1,12 @@
 import React from 'react';
-import {createContext, useContext, useEffect, useRef, useState} from 'react';
+import {createContext, useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-// import * as LocalAuthentication from 'expo-local-authentication';
 import {useDispatch} from 'react-redux';
 import {setChangesMade} from '../../store/service-slice';
 // import {Alert} from 'react-native';
-
+import TouchID from 'react-native-touch-id';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import {AccessToken, LoginManager} from 'react-native-fbsdk';
 import {notificationActions} from '../../store/notification-slice';
 
 import {loaderActions} from '../../store/loader-slice';
@@ -23,11 +21,25 @@ GoogleSignin.configure({
     '209649691146-ui8qcgo5biv5f3e3r3vp6jqabh0db50i.apps.googleusercontent.com',
 });
 
+const optionalConfigObject = {
+  title: 'Authentication Required', // Android
+  imageColor: '#5756d5', // Android
+  imageErrorColor: '#5756d5', // Android
+  sensorDescription: 'Touch sensor', // Android
+  sensorErrorDescription: 'Failed', // Android
+  cancelText: 'Cancel', // Android
+  fallbackLabel: 'Show Passcode', // iOS (if empty, then label is hidden)
+  unifiedErrors: false, // use unified error messages (default false)
+  passcodeFallback: false, // iOS - allows the device to fall back to using the passcode, if faceid/touch is not available. this does not mean that if touchid/faceid fails the first few times it will revert to passcode, rather that if the former are not enrolled, then it will use the passcode.
+};
+
 export const AuthenticationContext = createContext({
   isLocalAuthenticated: false,
   onLocalAuthenticate: () => null,
-  onFacebookAuthentication: () => null,
   onGoogleAuthentication: () => null,
+  onSignInWithEmail: () => null,
+  onSignUpWithEmail: () => null,
+  onResetPassword: () => null,
   isAuthenticated: false,
   userData: null,
   onLogout: () => null,
@@ -37,7 +49,6 @@ export const AuthenticationContextProvider = ({children}) => {
   const [isLocalAuthenticated, setIsLocalAuthenticated] = useState('pending');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userData, setUserData] = useState(null);
-  const [isBiometricSupported, setIsBiometricSupported] = useState(false);
   const dispatch = useDispatch();
 
   // for push notifications
@@ -56,7 +67,6 @@ export const AuthenticationContextProvider = ({children}) => {
       } else {
         setIsLocalAuthenticated('success');
       }
-      // checkLoggedIn();s
     })();
 
     const unsubcribe = auth().onAuthStateChanged(user => {
@@ -74,18 +84,19 @@ export const AuthenticationContextProvider = ({children}) => {
   }, []);
 
   const onLocalAuthenticate = () => {
-    // setIsLocalAuthenticated('pending');
-    // (async () => {
-    //   const compatible = await LocalAuthentication.hasHardwareAsync();
-    //   setIsBiometricSupported(compatible);
-    //   const auth = LocalAuthentication.authenticateAsync({
-    //     promptMessage: 'Authenticate',
-    //     fallbackLabel: 'Enter Password',
-    //   });
-    //   auth.then(result => {
-    //     setIsLocalAuthenticated(result.success ? 'success' : 'failed');
-    //   });
-    // })();
+    TouchID.authenticate(
+      'Authenticate to continue to the app.',
+      optionalConfigObject,
+    )
+      .then(success => {
+        console.log('success');
+        // Success code
+        setIsLocalAuthenticated('success');
+      })
+      .catch(error => {
+        console.log(error, 'error in biometric');
+        // Failure code
+      });
   };
   const onGoogleAuthentication = async () => {
     dispatch(loaderActions.showLoader({backdrop: true}));
@@ -135,50 +146,84 @@ export const AuthenticationContextProvider = ({children}) => {
     }
   };
 
-  const onFacebookAuthentication = async () => {
-    dispatch(loaderActions.showLoader({backdrop: true}));
-
+  const onSignInWithEmail = async (email, password) => {
     try {
-      const result = await LoginManager.logInWithPermissions([
-        'public_profile',
-        'email',
-      ]);
-      if (result.isCancelled) {
-        dispatch(loaderActions.hideLoader());
-        throw 'Login process cancelled';
+      let result = await auth().signInWithEmailAndPassword(email, password);
+      return {status: true};
+    } catch (e) {
+      console.log(e, 'error with sign in with email and password');
+      let error = '';
+      switch (e.code) {
+        case 'auth/invalid-email':
+          error = 'Invalid email address';
+          break;
+        case 'auth/user-disabled':
+          error = 'The requested user was disabled by admin!';
+          break;
+        case 'auth/user-not-found':
+          error = 'No user found with the provided details!';
+          break;
+        case 'auth/wrong-password':
+          error = 'Password is incorrect';
+          break;
       }
-      const data = await AccessToken.getCurrentAccessToken();
-      if (!data) {
-        dispatch(loaderActions.hideLoader());
-        throw 'Something went wrong obtaining access token';
-      }
-      const facebookCredential = auth.FacebookAuthProvider.credential(
-        data.accessToken,
-      );
-      auth()
-        .signInWithCredential(facebookCredential)
-        .then(res => {
-          let user = res.user;
-          let email = res.additionalUserInfo.profile.email;
-          onSetUserData(
-            user.displayName,
-            email,
-            user.uid,
-            user.photoURL,
-            'facebook',
-          );
-        })
-        .catch(err => {
-          dispatch(loaderActions.hideLoader());
-          console.warn('error in facebook sign in ', err);
-          dispatch(
-            notificationActions.showToast({status: 'error', message: err}),
-          );
-        });
-    } catch (error) {
-      console.log(error, ' facebook process error ');
+      return {status: false, message: error};
     }
   };
+
+  const onSignUpWithEmail = async (email, password) => {
+    try {
+      let result = await auth().createUserWithEmailAndPassword(email, password);
+      let user = result.user;
+      onSetUserData(
+        user.displayName,
+        user.email,
+        user.uid,
+        user.photoURL,
+        'email',
+      );
+
+      return {status: true};
+    } catch (e) {
+      console.log(e, 'error with sign in with email and password');
+      let error = '';
+      switch (e.code) {
+        case 'auth/invalid-email':
+          error = 'Invalid email address';
+        case 'auth/email-already-in-use':
+          error = 'Email-address is already in use! Try another email.';
+          break;
+        case 'auth/weak-password':
+          error = 'Password is not strong enough';
+          break;
+      }
+      return {status: false, message: error};
+    }
+  };
+  const onResetPassword = async email => {
+    try {
+      let result = await auth().sendPasswordResetEmail(email);
+      console.log(result);
+      return {
+        status: true,
+        message:
+          'Password reset link has been sent to your email. If not received ,please check your spam folder also',
+      };
+    } catch (e) {
+      console.log(e, 'error in sending password reset link');
+      let error = '';
+      switch (e.code) {
+        case 'auth/invalid-email':
+          error = 'Invalid email address';
+          break;
+        case 'auth/user-not-found':
+          error = 'There is no user with the email-address you have provided.';
+          break;
+      }
+      return {status: false, message: error};
+    }
+  };
+
   const onSetUserData = async (name, email, uid, photoURL, loginType) => {
     let transformedData = {
       name,
@@ -236,11 +281,13 @@ export const AuthenticationContextProvider = ({children}) => {
       value={{
         isLocalAuthenticated,
         onLocalAuthenticate,
-        onFacebookAuthentication,
         onGoogleAuthentication,
         isAuthenticated,
         userData,
         onLogout,
+        onSignInWithEmail,
+        onSignUpWithEmail,
+        onResetPassword,
       }}>
       {children}
     </AuthenticationContext.Provider>

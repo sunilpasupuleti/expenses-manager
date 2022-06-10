@@ -22,9 +22,10 @@ import {useTheme} from 'styled-components/native';
 import {SettingsCardContent} from '../components/settings.styles';
 import {Text} from '../../../components/typography/text.component';
 import {useDispatch, useSelector} from 'react-redux';
-import {ScrollView} from 'react-native';
+import {Alert, ScrollView, View} from 'react-native';
 import {SheetsContext} from '../../../services/sheets/sheets.context';
 import {fetchExchangeRates} from '../../../store/service-slice';
+import TouchID from 'react-native-touch-id';
 
 export const SettingsScreen = ({navigation}) => {
   const [isScreenLockEnabled, setIsScreenLockEnabled] = useState(false);
@@ -33,6 +34,7 @@ export const SettingsScreen = ({navigation}) => {
   const changesMade = useSelector(state => state.service.changesMade.status);
   const dispatch = useDispatch();
   const theme = useTheme();
+
   useEffect(() => {
     navigation.setOptions({
       headerTitle: 'Settings',
@@ -64,14 +66,44 @@ export const SettingsScreen = ({navigation}) => {
   }, []);
 
   const onSetScreenLock = async () => {
-    try {
-      await AsyncStorage.setItem(
-        `@expenses-manager-screenlock`,
-        JSON.stringify(!isScreenLockEnabled),
+    TouchID.authenticate('Authenticate to enable / disable app lock.', {})
+      .then(async success => {
+        await AsyncStorage.setItem(
+          `@expenses-manager-screenlock`,
+          JSON.stringify(!isScreenLockEnabled),
+        );
+        setIsScreenLockEnabled(!isScreenLockEnabled);
+        // Success code
+      })
+      .catch(error => {
+        Alert.alert('Sorry, error in enabling app lock');
+        console.log(error, 'error in biometric settings screen');
+        // Failure code
+      });
+  };
+
+  const onRevealSecretKey = async () => {
+    let result = await TouchID.isSupported();
+    if (result) {
+      TouchID.authenticate(
+        'Authenticate to reveal your account secret key.',
+        {},
+      )
+        .then(async success => {
+          Alert.alert(
+            userData.uid,
+            `This is the secrey key of your account in order to contact with admin in case of any issues with your account. Please, do Not share this ID with anyone.`,
+          );
+        })
+        .catch(error => {
+          console.log(error, 'from settings screen reveal secret key');
+          // Failure code
+        });
+    } else {
+      Alert.alert(
+        userData.uid,
+        `This is the secrey key of your account in order to contact with admin in case of any issues with your account. Please, do Not share this ID with anyone.`,
       );
-      setIsScreenLockEnabled(!isScreenLockEnabled);
-    } catch (e) {
-      console.log('error in setting screen lock - ', e);
     }
   };
 
@@ -85,7 +117,10 @@ export const SettingsScreen = ({navigation}) => {
           <Spacer size={'medium'} />
           {/* display profile and email */}
           <ProfileWrapper>
-            <ProfilePicture source={{uri: userData?.photoURL}} />
+            {userData && userData.photoURL && (
+              <ProfilePicture source={{uri: userData?.photoURL}} />
+            )}
+
             <ProfileText fontfamily="heading">{userData?.email}</ProfileText>
           </ProfileWrapper>
 
@@ -189,19 +224,31 @@ export const SettingsScreen = ({navigation}) => {
                   <FlexRow>
                     <SettingIconWrapper color="#167ef5">
                       <Ionicons
-                        name="ios-lock-closed-outline"
+                        name="md-finger-print-outline"
                         size={20}
                         color="#fff"
                       />
                     </SettingIconWrapper>
 
-                    <SettingTitle>Enable screen lock</SettingTitle>
+                    <SettingTitle>Enable app lock</SettingTitle>
                   </FlexRow>
 
                   <ToggleSwitch
                     value={isScreenLockEnabled}
                     onValueChange={() => onSetScreenLock()}
                   />
+                </Setting>
+              </SettingsCardContent>
+
+              <SettingsCardContent onPress={onRevealSecretKey}>
+                <Setting justifyContent="space-between">
+                  <FlexRow>
+                    <SettingIconWrapper color="#F47C7C">
+                      <Ionicons name="ios-key-outline" size={20} color="#fff" />
+                    </SettingIconWrapper>
+
+                    <SettingTitle>Reveal you account key</SettingTitle>
+                  </FlexRow>
                 </Setting>
               </SettingsCardContent>
 
@@ -230,16 +277,6 @@ export const SettingsScreen = ({navigation}) => {
 
           <Spacer size={'large'}>
             <SettingsCard>
-              <SettingsCardContent>
-                <SettingHint>
-                  <Text fontsize="12px" color="red">
-                    SECRET KEY
-                  </Text>{' '}
-                  : {userData?.uid} this is the reference id of your account in
-                  order to contact with admin in case of any issues in your
-                  account. Please, do Not share this ID with anyone.
-                </SettingHint>
-              </SettingsCardContent>
               <SettingsCardContent>
                 <SettingHint>
                   <Text fontsize="12px" color="red">

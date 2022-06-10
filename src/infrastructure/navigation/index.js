@@ -10,8 +10,10 @@ import {AuthenticationContext} from '../../services/authentication/authenticatio
 import {AccountNavigator} from './account.navigator';
 import {AppNavigator} from './app.navigator';
 import {Loader} from '../../components/utility/Loader';
+import {useTheme} from 'styled-components/native';
 
-export const Navigation = ({theme}) => {
+export const Navigation = () => {
+  const theme = useTheme();
   const {isLocalAuthenticated, onLocalAuthenticate, isAuthenticated} =
     useContext(AuthenticationContext);
   const NotLoggedIn = () => {
@@ -22,7 +24,8 @@ export const Navigation = ({theme}) => {
             fontfamily="heading"
             style={{textAlign: 'center', letterSpacing: 1, lineHeight: 30}}>
             You have not signed in! Please re-open the app to sign in or click
-            below to signin
+            below to signin. Note : If biometric is disabled try to unlock your
+            phone biometric senso
           </Text>
 
           <Spacer size={'xlarge'}>
@@ -37,6 +40,7 @@ export const Navigation = ({theme}) => {
       </NotLoggedInContainer>
     );
   };
+
   return (
     <>
       <NavigationContainer>

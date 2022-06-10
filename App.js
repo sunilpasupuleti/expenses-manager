@@ -18,6 +18,10 @@ import moment from 'moment';
 import SplashScreen from 'react-native-splash-screen';
 
 moment.suppressDeprecationWarnings = true;
+if (Platform.OS === 'android') {
+  require('intl');
+  require('intl/locale-data/jsonp/en-IN');
+}
 
 const App = () => {
   LogBox.ignoreLogs([
@@ -25,20 +29,16 @@ const App = () => {
     'Non-serializable values were found in the navigation state',
   ]);
 
-  if (Platform.OS === 'android') {
-    require('intl');
-    require('intl/locale-data/jsonp/en-IN');
-  }
   const themeType = useColorScheme();
   const appTheme = useSelector(state => state.service.theme);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    SplashScreen.hide();
     //  call all slices
     dispatch(fetchTheme());
     dispatch(fetchChangesMade());
     dispatch(fetchExchangeRates({}));
+    SplashScreen.hide();
   }, []);
 
   return (
