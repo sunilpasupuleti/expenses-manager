@@ -20,7 +20,7 @@ import {SafeArea} from '../../../components/utility/safe-area.component';
 import {ErrorMessage, SuccessMessage} from '../../../components/styles';
 import {useTheme} from 'styled-components/native';
 
-export const AccountScreen = () => {
+export const AccountScreen = ({navigation}) => {
   const [email, setEmail] = useState({value: null, error: false});
   const [password, setPassword] = useState({value: null, error: false});
   const [confirmPassword, setConfirmPassword] = useState({
@@ -157,7 +157,7 @@ export const AccountScreen = () => {
       <AccountContainer showsVerticalScrollIndicator={false}>
         {error && <ErrorMessage fontsize="13px">{error.message}</ErrorMessage>}
         {success && success.message && (
-          <SuccessMessage fontsize="15px">hey {success.message}</SuccessMessage>
+          <SuccessMessage fontsize="15px">{success.message}</SuccessMessage>
         )}
 
         <LoginInput
@@ -303,6 +303,17 @@ export const AccountScreen = () => {
               <GoogleButtonText>Sign In With Google</GoogleButtonText>
             </GoogleButton>
             <Spacer size={'large'} />
+            <Button
+              theme={{roundness: 10}}
+              mode="contained"
+              style={{height: 40}}
+              color="#e6eaf5"
+              icon="phone"
+              onPress={() => navigation.navigate('PhoneLogin')}>
+              Sign in using phone
+            </Button>
+
+            <Spacer size={'xlarge'} />
             {mode === 'signin' && (
               <TouchableOpacity onPress={() => onChangeMode('signup')}>
                 <Hyperlink>Don't have an account? Create here</Hyperlink>

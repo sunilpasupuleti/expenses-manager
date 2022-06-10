@@ -39,6 +39,7 @@ export const AuthenticationContext = createContext({
   onGoogleAuthentication: () => null,
   onSignInWithEmail: () => null,
   onSignUpWithEmail: () => null,
+  onSignInWithMobile: () => null,
   onResetPassword: () => null,
   isAuthenticated: false,
   userData: null,
@@ -200,6 +201,7 @@ export const AuthenticationContextProvider = ({children}) => {
       return {status: false, message: error};
     }
   };
+
   const onResetPassword = async email => {
     try {
       let result = await auth().sendPasswordResetEmail(email);
@@ -218,6 +220,46 @@ export const AuthenticationContextProvider = ({children}) => {
           break;
         case 'auth/user-not-found':
           error = 'There is no user with the email-address you have provided.';
+          break;
+      }
+      return {status: false, message: error};
+    }
+  };
+
+  const onSignInWithMobile = async phone => {
+    try {
+      let result = await auth().signInWithPhoneNumber(phone);
+      // result
+      //   .confirm('123456')
+      //   .then(r => {
+      //     console.log(r);
+      //   })
+      //   .catch(err => {
+      //     // auth/invalid-verification-code
+
+      //     console.log(err);
+      //   });
+      return {
+        status: true,
+        message:
+          'Enter the one time password (OTP) sent to your mobile number.',
+      };
+    } catch (e) {
+      console.log(e, 'error in initializing the phone base auhentication');
+      let error = '';
+      switch (e.code) {
+        case 'auth/captcha-check-failed':
+          error = 'Verification failed reCaptcha';
+          break;
+        case 'auth/invalid-phone-number':
+          error = 'Invalid mobile number';
+          break;
+        case 'auth/quota-exceeded':
+          error = 'Sms quota exceeded';
+          break;
+        case 'auth/user-disabled':
+          error =
+            'Unable to send because the user with this number is disabled!';
           break;
       }
       return {status: false, message: error};
@@ -288,6 +330,7 @@ export const AuthenticationContextProvider = ({children}) => {
         onSignInWithEmail,
         onSignUpWithEmail,
         onResetPassword,
+        onSignInWithMobile,
       }}>
       {children}
     </AuthenticationContext.Provider>

@@ -120,8 +120,9 @@ export const SettingsScreen = ({navigation}) => {
             {userData && userData.photoURL && (
               <ProfilePicture source={{uri: userData?.photoURL}} />
             )}
-
-            <ProfileText fontfamily="heading">{userData?.email}</ProfileText>
+            {userData && userData.email && (
+              <ProfileText fontfamily="heading">{userData?.email}</ProfileText>
+            )}
           </ProfileWrapper>
 
           {/* for sync card */}
