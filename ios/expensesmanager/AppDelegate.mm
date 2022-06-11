@@ -12,6 +12,10 @@
 // #import "RNSplashScreen.h"
 
 
+
+
+
+
 #if RCT_NEW_ARCH_ENABLED
 #import <React/CoreModulesPlugins.h>
 #import <React/RCTCxxBridgeDelegate.h>
@@ -33,12 +37,15 @@
 
 @implementation AppDelegate
 
+
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // added new line
   [FIRApp configure];
   // added new line for react native splash screen to automatically show
   // [RNSplashScreen show];
+
 
 
   RCTAppSetupPrepareApp(application);
@@ -71,6 +78,9 @@
 
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
+
+
+
 #if DEBUG
   return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index"];
 #else

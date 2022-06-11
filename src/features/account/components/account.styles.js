@@ -63,12 +63,44 @@ export const LoginInput = styled(TextInput).attrs({
 `;
 
 export const OtherLoginButtonsContainer = styled.View`
-  margin-top: 100px;
+  margin-top: 30px;
 `;
 
 export const Hyperlink = styled(Text).attrs({
   fontfamily: 'heading',
 })`
   color: #3a62b6;
+  text-align: center;
+`;
+
+export const OtpStrips = styled.View`
+  margin-top: 20px;
+  flex-direction: row;
+  justify-content: center;
+  flex-wrap: wrap;
+`;
+
+export const OtpStripInput = styled(TextInput).attrs({
+  mode: 'outlined',
+  returnKeyType: 'done',
+  placeholder: '-',
+  keyboardType: 'phone-pad',
+  maxLength: 1,
+  placeholderTextColor: colors.brand.primary,
+  outlineColor: colors.brand.primary,
+  activeOutlineColor: colors.brand.primary,
+  theme: {
+    roundness: 10,
+    colors: {
+      text: colors.brand.primary,
+    },
+  },
+})`
+  font-size: 20px;
+  height: 60px;
+  width: 45px;
+  background-color: ${colors.brand.secondary};
+  margin-left: 10px;
+  margin-top: 20px;
   text-align: center;
 `;

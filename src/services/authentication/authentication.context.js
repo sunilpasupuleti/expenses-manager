@@ -40,6 +40,7 @@ export const AuthenticationContext = createContext({
   onSignInWithEmail: () => null,
   onSignUpWithEmail: () => null,
   onSignInWithMobile: () => null,
+  onSetUserData: () => null,
   onResetPassword: () => null,
   isAuthenticated: false,
   userData: null,
@@ -90,7 +91,6 @@ export const AuthenticationContextProvider = ({children}) => {
       optionalConfigObject,
     )
       .then(success => {
-        console.log('success');
         // Success code
         setIsLocalAuthenticated('success');
       })
@@ -112,15 +112,7 @@ export const AuthenticationContextProvider = ({children}) => {
       auth()
         .signInWithCredential(googleCredentials)
         .then(res => {
-          let user = res.user;
-          let email = res.additionalUserInfo.profile.email;
-          onSetUserData(
-            user.displayName,
-            email,
-            user.uid,
-            user.photoURL,
-            'google',
-          );
+          onSetUserData(res);
         })
         .catch(err => {
           dispatch(loaderActions.hideLoader());
@@ -175,14 +167,8 @@ export const AuthenticationContextProvider = ({children}) => {
   const onSignUpWithEmail = async (email, password) => {
     try {
       let result = await auth().createUserWithEmailAndPassword(email, password);
-      let user = result.user;
-      onSetUserData(
-        user.displayName,
-        user.email,
-        user.uid,
-        user.photoURL,
-        'email',
-      );
+
+      onSetUserData(result);
 
       return {status: true};
     } catch (e) {
@@ -205,7 +191,6 @@ export const AuthenticationContextProvider = ({children}) => {
   const onResetPassword = async email => {
     try {
       let result = await auth().sendPasswordResetEmail(email);
-      console.log(result);
       return {
         status: true,
         message:
@@ -229,18 +214,9 @@ export const AuthenticationContextProvider = ({children}) => {
   const onSignInWithMobile = async phone => {
     try {
       let result = await auth().signInWithPhoneNumber(phone);
-      // result
-      //   .confirm('123456')
-      //   .then(r => {
-      //     console.log(r);
-      //   })
-      //   .catch(err => {
-      //     // auth/invalid-verification-code
-
-      //     console.log(err);
-      //   });
       return {
         status: true,
+        result: result,
         message:
           'Enter the one time password (OTP) sent to your mobile number.',
       };
@@ -261,19 +237,22 @@ export const AuthenticationContextProvider = ({children}) => {
           error =
             'Unable to send because the user with this number is disabled!';
           break;
+        case 'auth/network-request-failed':
+          error = 'No Internet Connection!';
+          break;
       }
       return {status: false, message: error};
     }
   };
 
-  const onSetUserData = async (name, email, uid, photoURL, loginType) => {
+  const onSetUserData = async data => {
+    let user = data.user;
     let transformedData = {
-      name,
-      email,
-      uid,
-      picture: photoURL,
-      loginType: loginType,
-      expoPushToken,
+      displayName: user.displayName,
+      email: user.email,
+      photoURL: user.photoURL,
+      providerId: user.providerId,
+      uid: user.uid,
     };
     onStoreUserDataToFirebase(transformedData)
       .then(async () => {
@@ -331,6 +310,7 @@ export const AuthenticationContextProvider = ({children}) => {
         onSignUpWithEmail,
         onResetPassword,
         onSignInWithMobile,
+        onSetUserData,
       }}>
       {children}
     </AuthenticationContext.Provider>
