@@ -5,7 +5,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {FlexRow, MainWrapper, ToggleSwitch} from '../../../components/styles';
 import {SafeArea} from '../../../components/utility/safe-area.component';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   ProfilePicture,
   ProfileText,
@@ -22,14 +22,32 @@ import {useTheme} from 'styled-components/native';
 import {SettingsCardContent} from '../components/settings.styles';
 import {Text} from '../../../components/typography/text.component';
 import {useDispatch, useSelector} from 'react-redux';
-import {Alert, ScrollView, View} from 'react-native';
+import {
+  Alert,
+  Platform,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {SheetsContext} from '../../../services/sheets/sheets.context';
 import {fetchExchangeRates} from '../../../store/service-slice';
 import TouchID from 'react-native-touch-id';
+import moment from 'moment';
+import {Button} from 'react-native-paper';
 
 export const SettingsScreen = ({navigation}) => {
-  const [isScreenLockEnabled, setIsScreenLockEnabled] = useState(false);
-  const {onLogout, userData} = useContext(AuthenticationContext);
+  const {onLogout, userData, userAdditionalDetails, onUpdateUserDetails} =
+    useContext(AuthenticationContext);
+
+  const [isScreenLockEnabled, setIsScreenLockEnabled] = useState(
+    userAdditionalDetails.applock,
+  );
+  const [isDailyReminderEnabled, setIsDailyReminderEnabled] = useState(
+    userAdditionalDetails.dailyReminder,
+  );
+  const [time, setTime] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(false);
+
   const {onExportData, onImportData} = useContext(SheetsContext);
   const changesMade = useSelector(state => state.service.changesMade.status);
   const dispatch = useDispatch();
@@ -49,37 +67,38 @@ export const SettingsScreen = ({navigation}) => {
       ),
       headerLeft: () => null,
     });
-    (async () => {
-      try {
-        const result = await AsyncStorage.getItem(
-          `@expenses-manager-screenlock`,
-        ).then(d => {
-          return JSON.parse(d);
-        });
-        if (result) {
-          setIsScreenLockEnabled(result);
-        }
-      } catch (e) {
-        console.log('error in fetching screen lock - ', e);
-      }
-    })();
   }, []);
+
+  useEffect(() => {
+    if (isDailyReminderEnabled && Platform.OS === 'ios') {
+      setShowPicker(true);
+    }
+    if (isDailyReminderEnabled === false) {
+      onClickSetButton();
+    }
+  }, [isDailyReminderEnabled]);
 
   const onSetScreenLock = async () => {
     TouchID.authenticate('Authenticate to enable / disable app lock.', {})
       .then(async success => {
-        await AsyncStorage.setItem(
-          `@expenses-manager-screenlock`,
-          JSON.stringify(!isScreenLockEnabled),
-        );
-        setIsScreenLockEnabled(!isScreenLockEnabled);
         // Success code
+        onUpdateUserDetails({
+          applock: !isScreenLockEnabled ? true : null,
+        });
+        setIsScreenLockEnabled(!isScreenLockEnabled);
       })
       .catch(error => {
         Alert.alert('Sorry, error in enabling app lock');
         console.log(error, 'error in biometric settings screen');
         // Failure code
       });
+  };
+
+  const onClickSetButton = async () => {
+    onUpdateUserDetails({
+      dailyReminder: isDailyReminderEnabled ? true : null,
+      time: time,
+    });
   };
 
   const onRevealSecretKey = async () => {
@@ -96,7 +115,11 @@ export const SettingsScreen = ({navigation}) => {
           );
         })
         .catch(error => {
-          console.log(error, 'from settings screen reveal secret key');
+          console.log(
+            error,
+            'from settings screen reveal secret key - ',
+            userData.uid,
+          );
           // Failure code
         });
     } else {
@@ -110,6 +133,7 @@ export const SettingsScreen = ({navigation}) => {
   const onFetchExchangeRates = () => {
     dispatch(fetchExchangeRates({showAlert: true, dispatch: dispatch}));
   };
+
   return (
     <SafeArea>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -138,6 +162,88 @@ export const SettingsScreen = ({navigation}) => {
                   <SettingTitle>Sync</SettingTitle>
                 </FlexRow>
               </Setting>
+            </SettingsCardContent>
+
+            <SettingsCardContent>
+              <>
+                <Setting justifyContent="space-between">
+                  <FlexRow>
+                    <SettingIconWrapper color="#F47C7C">
+                      <Ionicons name="alarm-outline" size={20} color="#fff" />
+                    </SettingIconWrapper>
+
+                    <SettingTitle>Daily Reminder</SettingTitle>
+                  </FlexRow>
+
+                  <ToggleSwitch
+                    value={isDailyReminderEnabled}
+                    onValueChange={() =>
+                      setIsDailyReminderEnabled(!isDailyReminderEnabled)
+                    }
+                  />
+
+                  {/* <>
+                  {isDailyReminderEnabled && (
+                
+                  )}
+                </> */}
+                </Setting>
+
+                {isDailyReminderEnabled && (
+                  <Spacer size={'large'}>
+                    <FlexRow justifyContent="space-between">
+                      {showPicker && (
+                        <DateTimePicker
+                          style={{
+                            width: '100%',
+                            position: 'absolute',
+                            right: 0,
+                          }}
+                          mode="time"
+                          value={time}
+                          onChange={(e, t) => {
+                            if (e.type === 'dismissed') {
+                              setShowPicker(false);
+                            }
+                            if (t) {
+                              if (Platform.OS === 'android') {
+                                setShowPicker(false);
+                              }
+                              setTime(t);
+                            }
+                          }}
+                        />
+                      )}
+
+                      {Platform.OS === 'android' && (
+                        <TouchableOpacity
+                          style={{
+                            backgroundColor: '#EFEFF0',
+                            padding: 15,
+                            paddingTop: 10,
+                            paddingBottom: 10,
+                            borderRadius: 10,
+                          }}
+                          onPress={() => setShowPicker(true)}>
+                          <Text fontfamily="bodySemiBold" fontsize="14px">
+                            {moment(time).format('hh:mm A')}
+                          </Text>
+                        </TouchableOpacity>
+                      )}
+
+                      <Button onPress={onClickSetButton}>SET REMAINDER</Button>
+                    </FlexRow>
+                    <Spacer position={'bottom'} />
+                  </Spacer>
+                )}
+
+                <Spacer size={'large'}>
+                  <SettingHint marginLeft="0px">
+                    You will get the scheduled notification to remind you to
+                    record your daily transactions.
+                  </SettingHint>
+                </Spacer>
+              </>
             </SettingsCardContent>
           </SettingsCard>
 

@@ -134,13 +134,24 @@ export const SheetsContextProvider = ({children}) => {
   };
 
   const onSaveExpensesData = async passedExpensesData => {
+    if (passedExpensesData.sheets) {
+      let sortedSheets = passedExpensesData.sheets.sort(
+        (a, b) => b.updatedAt - a.updatedAt,
+      );
+      setSheets(sortedSheets);
+    }
+
+    if (passedExpensesData.categories) {
+      setCategories(passedExpensesData.categories);
+    }
     try {
       const jsonValue = JSON.stringify(passedExpensesData);
       await AsyncStorage.setItem(
         `@expenses-manager-data-${userData.uid}`,
         jsonValue,
       );
-      retrieveExpensesData();
+
+      // retrieveExpensesData();
     } catch (e) {
       console.log('error saving expenses data to local storage - ', e);
       dispatch(loaderActions.hideLoader());

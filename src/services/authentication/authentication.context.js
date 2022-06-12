@@ -8,7 +8,7 @@ import TouchID from 'react-native-touch-id';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {notificationActions} from '../../store/notification-slice';
-
+import messaging from '@react-native-firebase/messaging';
 import {loaderActions} from '../../store/loader-slice';
 
 import {
@@ -35,6 +35,7 @@ const optionalConfigObject = {
 
 export const AuthenticationContext = createContext({
   isLocalAuthenticated: false,
+  userAdditionalDetails: null,
   onLocalAuthenticate: () => null,
   onGoogleAuthentication: () => null,
   onSignInWithEmail: () => null,
@@ -45,12 +46,14 @@ export const AuthenticationContext = createContext({
   isAuthenticated: false,
   userData: null,
   onLogout: () => null,
+  onUpdateUserDetails: () => null,
 });
 
 export const AuthenticationContextProvider = ({children}) => {
   const [isLocalAuthenticated, setIsLocalAuthenticated] = useState('pending');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [userAdditionalDetails, setUserAdditionalDetails] = useState(null);
   const dispatch = useDispatch();
 
   // for push notifications
@@ -58,23 +61,18 @@ export const AuthenticationContextProvider = ({children}) => {
   const [expoPushToken, setExpoPushToken] = useState('');
 
   useEffect(() => {
-    (async () => {
-      const result = await AsyncStorage.getItem(
-        `@expenses-manager-screenlock`,
-      ).then(d => {
-        return JSON.parse(d);
-      });
-      if (result) {
-        onLocalAuthenticate();
-      } else {
-        setIsLocalAuthenticated('success');
-      }
-    })();
-
-    const unsubcribe = auth().onAuthStateChanged(user => {
+    const unsubcribe = auth().onAuthStateChanged(async user => {
       setUserData(user);
       if (user) {
         setIsAuthenticated(true);
+
+        onGetUserDetails(user.uid).then(details => {
+          if (details && details.applock) {
+            onLocalAuthenticate();
+          } else {
+            setIsLocalAuthenticated('success');
+          }
+        });
       } else {
         setIsAuthenticated(false);
       }
@@ -95,6 +93,7 @@ export const AuthenticationContextProvider = ({children}) => {
         setIsLocalAuthenticated('success');
       })
       .catch(error => {
+        setIsLocalAuthenticated('failed');
         console.log(error, 'error in biometric');
         // Failure code
       });
@@ -246,6 +245,8 @@ export const AuthenticationContextProvider = ({children}) => {
   };
 
   const onSetUserData = async data => {
+    const token = await messaging().getToken();
+
     let user = data.user;
     let transformedData = {
       displayName: user.displayName,
@@ -253,6 +254,7 @@ export const AuthenticationContextProvider = ({children}) => {
       photoURL: user.photoURL,
       providerId: user.providerId,
       uid: user.uid,
+      fcmtoken: token,
     };
     onStoreUserDataToFirebase(transformedData)
       .then(async () => {
@@ -265,7 +267,10 @@ export const AuthenticationContextProvider = ({children}) => {
   };
 
   const onStoreUserDataToFirebase = async userData => {
-    return firestore().collection(userData.uid).doc('user-data').set(userData);
+    return firestore()
+      .collection(userData.uid)
+      .doc('user-data')
+      .set(userData, {merge: true});
   };
 
   const onLogout = async () => {
@@ -273,9 +278,8 @@ export const AuthenticationContextProvider = ({children}) => {
     auth()
       .signOut()
       .then(async () => {
-        // await AsyncStorage.removeItem(`@expenses-manager-user-data`);
-        // setUserData(null);
-        // setIsAuthenticated(false);
+        setIsAuthenticated(false);
+        setIsLocalAuthenticated('pending');
         dispatch(setChangesMade({status: false, loaded: true}));
       })
       .catch(err => {
@@ -297,6 +301,54 @@ export const AuthenticationContextProvider = ({children}) => {
     //   });
   };
 
+  const onUpdateUserDetails = async details => {
+    dispatch(loaderActions.showLoader({backdrop: true}));
+    firestore()
+      .collection(userData.uid)
+      .doc('user-data')
+      .update({
+        ...details,
+      })
+      .then(() => {
+        onGetUserDetails(userData.uid)
+          .then(() => {
+            dispatch(loaderActions.hideLoader());
+            dispatch(
+              notificationActions.showToast({
+                status: 'success',
+                message: 'Updated successfully',
+              }),
+            );
+          })
+          .catch(err => {
+            dispatch(loaderActions.hideLoader());
+          });
+      })
+      .catch(err => {
+        dispatch(loaderActions.hideLoader());
+        dispatch(
+          notificationActions.showToast({
+            status: 'error',
+            message: 'Error in updating the details!',
+          }),
+        );
+        console.log(err, 'Error while updating the user details');
+      });
+  };
+
+  const onGetUserDetails = async uid => {
+    return firestore()
+      .collection(uid)
+      .doc('user-data')
+      .get()
+      .then(doc => {
+        if (doc.exists) {
+          setUserAdditionalDetails(doc.data());
+        }
+        return doc.data();
+      });
+  };
+
   return (
     <AuthenticationContext.Provider
       value={{
@@ -311,6 +363,8 @@ export const AuthenticationContextProvider = ({children}) => {
         onResetPassword,
         onSignInWithMobile,
         onSetUserData,
+        onUpdateUserDetails,
+        userAdditionalDetails,
       }}>
       {children}
     </AuthenticationContext.Provider>

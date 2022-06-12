@@ -26,6 +26,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {Platform, TouchableOpacity} from 'react-native';
 import moment from 'moment';
 import {GetCurrencySymbol} from '../../../components/symbol.currency';
+import Haptics from 'react-native-haptic-feedback';
 
 export const AddSheetDetailScreen = ({navigation, route}) => {
   const theme = useTheme();

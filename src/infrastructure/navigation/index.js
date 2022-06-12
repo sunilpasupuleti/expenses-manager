@@ -23,9 +23,9 @@ export const Navigation = () => {
           <Text
             fontfamily="heading"
             style={{textAlign: 'center', letterSpacing: 1, lineHeight: 30}}>
-            You have not signed in! Please re-open the app to sign in or click
-            below to signin. Note : If biometric is disabled try to unlock your
-            phone biometric senso
+            You need to authenticate to continue! Click on authenticate button
+            to continue. In case of biometric sesnor disabled, try to unlock
+            phone first.
           </Text>
 
           <Spacer size={'xlarge'}>
@@ -33,7 +33,7 @@ export const Navigation = () => {
               mode="contained"
               color={theme.colors.brand.primary}
               onPress={onLocalAuthenticate}>
-              Sign In
+              AUTHENTICATE
             </Button>
           </Spacer>
         </View>
@@ -46,7 +46,7 @@ export const Navigation = () => {
       <NavigationContainer>
         {isLocalAuthenticated === 'success' && isAuthenticated ? (
           <AppNavigator />
-        ) : isLocalAuthenticated === 'success' && !isAuthenticated ? (
+        ) : isLocalAuthenticated === 'pending' && !isAuthenticated ? (
           <AccountNavigator />
         ) : isLocalAuthenticated === 'failed' ? (
           <NotLoggedIn />

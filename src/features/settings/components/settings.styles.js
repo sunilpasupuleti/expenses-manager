@@ -52,7 +52,10 @@ export const SettingHint = styled(Text).attrs({
   fontfamily: 'heading',
 })`
   font-size: 12px;
-  margin-left: 12px;
+  ${props =>
+    props.marginLeft
+      ? `margin-left : ${props.marginLeft}`
+      : 'margin-left : 12px'}
   padding-bottom: 10px;
   color: #aaa;
 `;
