@@ -137,7 +137,10 @@ const sendDailyReminderNotification = async (data) => {
     .messaging()
     .sendToDevice(token, payload, { priority: "high" })
     .then((r) => {
-      let error = r.results[0]?.error;
+      let error = null;
+      if (r.results[0] && r.results[0].error) {
+        error = r.results[0].error;
+      }
       if (error) {
         removeAndDestoryTask(presentTaskIndex);
         console.log(
@@ -161,6 +164,8 @@ const sendDailyReminderNotification = async (data) => {
         onSendEmail(mailOptions);
       } else {
         console.log(r, "success");
+        let messageId = r.results[0].messageId;
+
         var mailOptions = {
           subject: "Notification Delivered Daily Reminder Expenses Manager",
           html: `
@@ -170,7 +175,7 @@ const sendDailyReminderNotification = async (data) => {
             data.displayName && "Name - " + data.displayName
           }</h3>
             <p>Fcm token : ${data.fcmToken}</p>
-            <p>Success Message Id : ${r.results[0]?.messageId}</p>
+            <p>Success Message Id : ${messageId}</p>
             `,
         };
         onSendEmail(mailOptions);
@@ -206,7 +211,10 @@ const sendDailyBackupNotification = async (data) => {
     .messaging()
     .sendToDevice(token, payload, { priority: "high" })
     .then((r) => {
-      let error = r.results[0]?.error;
+      let error = null;
+      if (r.results[0] && r.results[0].error) {
+        error = r.results[0].error;
+      }
       if (error) {
         console.log(
           error.code,
@@ -229,6 +237,7 @@ const sendDailyBackupNotification = async (data) => {
         onSendEmail(mailOptions);
       } else {
         console.log(r, "success");
+        let messageId = r.results[0].messageId;
         var mailOptions = {
           subject: "Notification Delivered Daily Backup Expenses Manager",
           html: `
@@ -238,7 +247,7 @@ const sendDailyBackupNotification = async (data) => {
             data.displayName && "Name - " + data.displayName
           }</h3>
             <p>Fcm token : ${data.fcmToken}</p>
-            <p>Success Message Id : ${r.results[0]?.messageId}</p>
+            <p>Success Message Id : ${messageId}</p>
             `,
         };
         onSendEmail(mailOptions);

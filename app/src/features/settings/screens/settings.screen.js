@@ -39,7 +39,7 @@ export const SettingsScreen = ({navigation}) => {
   const {onLogout, userData, userAdditionalDetails, onUpdateUserDetails} =
     useContext(AuthenticationContext);
 
-  const [isScreenLockEnabled, setIsScreenLockEnabled] = useState(
+  const [isAppLockEnabled, setIsAppLockEnabled] = useState(
     userAdditionalDetails?.applock,
   );
 
@@ -47,7 +47,7 @@ export const SettingsScreen = ({navigation}) => {
     userAdditionalDetails?.dailyBackup,
   );
   const [isDailyReminderEnabled, setIsDailyReminderEnabled] = useState(
-    userAdditionalDetails.dailyReminder?.enabled,
+    userAdditionalDetails?.dailyReminder?.enabled,
   );
   let at = userAdditionalDetails?.dailyReminder?.at;
   const presentDate = new Date(Date.now());
@@ -95,9 +95,9 @@ export const SettingsScreen = ({navigation}) => {
       .then(async success => {
         // Success code
         onUpdateUserDetails({
-          applock: !isScreenLockEnabled ? true : null,
+          applock: !isAppLockEnabled ? true : null,
         });
-        setIsScreenLockEnabled(!isScreenLockEnabled);
+        setIsAppLockEnabled(!isAppLockEnabled);
       })
       .catch(error => {
         Alert.alert('Sorry, error in enabling app lock');
@@ -124,7 +124,7 @@ export const SettingsScreen = ({navigation}) => {
 
   const onRevealSecretKey = async () => {
     let result = await TouchID.isSupported();
-    if (result) {
+    if (result && isAppLockEnabled) {
       TouchID.authenticate(
         'Authenticate to reveal your account secret key.',
         {},
@@ -239,7 +239,7 @@ export const SettingsScreen = ({navigation}) => {
                       {Platform.OS === 'android' && (
                         <TouchableOpacity
                           style={{
-                            backgroundColor: '#EFEFF0',
+                            backgroundColor: theme.colors.brand.secondary,
                             padding: 15,
                             paddingTop: 10,
                             paddingBottom: 10,
@@ -391,7 +391,7 @@ export const SettingsScreen = ({navigation}) => {
                   </FlexRow>
 
                   <ToggleSwitch
-                    value={isScreenLockEnabled}
+                    value={isAppLockEnabled}
                     onValueChange={() => onSetScreenLock()}
                   />
                 </Setting>

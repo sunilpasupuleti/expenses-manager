@@ -8,6 +8,7 @@ import {
   MainWrapper,
   TouchableHighlightWithColor,
 } from '../../../components/styles';
+import {Text} from '../../../components/typography/text.component';
 import {SafeArea} from '../../../components/utility/safe-area.component';
 import {SheetsContext} from '../../../services/sheets/sheets.context';
 import {SheetInfoCard} from '../components/sheet-info-card.component';
@@ -89,12 +90,20 @@ export const MoveSheetScreen = ({navigation, route}) => {
               />
             </FadeInView>
           )}
-
-          {!dupSheets && dupSheets.length === 0 && (
-            <Text> There are no sheets to move.</Text>
-          )}
         </Card>
       </MainWrapper>
+
+      {!dupSheets ||
+        (dupSheets.length === 0 && (
+          <Text
+            style={{
+              flex: 1,
+              textAlign: 'center',
+            }}>
+            {' '}
+            There are no sheets to move.
+          </Text>
+        ))}
     </SafeArea>
   );
 };

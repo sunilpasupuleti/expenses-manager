@@ -272,7 +272,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
               {Platform.OS === 'android' && (
                 <TouchableOpacity
                   style={{
-                    backgroundColor: '#EFEFF0',
+                    backgroundColor: theme.colors.brand.secondary,
                     padding: 15,
                     paddingTop: 10,
                     paddingBottom: 10,
@@ -353,7 +353,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                   {Platform.OS === 'android' && (
                     <TouchableOpacity
                       style={{
-                        backgroundColor: '#EFEFF0',
+                        backgroundColor: theme.colors.brand.secondary,
                         padding: 15,
                         paddingTop: 10,
                         paddingBottom: 10,
