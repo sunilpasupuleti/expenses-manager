@@ -516,12 +516,11 @@ export const SheetsContextProvider = ({children}) => {
         saveToFiles: true,
         type: 'application/json',
       }).catch(err => {
-        console.log(err, 'error while exporting the data - ios');
+        console.log(err.error.message, 'error while exporting the data - ios');
       });
     }
     if (Platform.OS === 'android') {
-      let path = await DocumentPicker.pickDirectory();
-      let uri = path.uri + 'transactions.json';
+      let uri = RNFS.DownloadDirectoryPath + '/transactions.json';
       RNFS.writeFile(uri, JSON.stringify(data))
         .then(res => {
           console.log('successfully exported the file ');
@@ -529,7 +528,7 @@ export const SheetsContextProvider = ({children}) => {
             notificationActions.showToast({
               status: 'success',
               message:
-                'Your file is exported successfully to desired folder with filename as "transactions.json" !',
+                'Your file is exported successfully. Please check the downloads folder for the file.',
             }),
           );
         })
@@ -546,56 +545,47 @@ export const SheetsContextProvider = ({children}) => {
   };
 
   const onImportData = async () => {
-    await DocumentPicker.pickSingle({type: 'application/json'})
+    await DocumentPicker.pickSingle({type: [DocumentPicker.types.allFiles]})
       .then(async r => {
-        console.log(r);
+        if (r.type === 'application/json') {
+          let fileuri = r.uri;
+          RNFS.readFile(fileuri)
+            .then(file => {
+              let data = JSON.parse(file);
+              if (data.sheets && data.categories) {
+                onSaveExpensesData(data).then(() => {
+                  onSetChangesMade(true); // set changes made to true so that backup occurs only if some changes are made
+                  dispatch(
+                    notificationActions.showToast({
+                      status: 'success',
+                      message: 'Data has been imported successfully.',
+                    }),
+                  );
+                });
+              } else {
+                dispatch(
+                  notificationActions.showToast({
+                    status: 'error',
+                    message: 'Empty file or corrupted data file.',
+                  }),
+                );
+              }
+            })
+            .catch(err => {
+              console.log('error in reading file');
+            });
+        } else {
+          dispatch(
+            notificationActions.showToast({
+              status: 'error',
+              message: 'Only JSON files are allowed',
+            }),
+          );
+        }
       })
       .catch(err => {
         console.log(err);
       });
-    // await DocumentPicker.getDocumentAsync({type: 'application/json'})
-    //   .then(async r => {
-    //     if (r.type === 'success') {
-    //       let fileUri = r.uri;
-    //       try {
-    //         let fileData = await FileSystem.readAsStringAsync(fileUri);
-    //         let data = JSON.parse(fileData);
-    //         if (data.sheets && data.categories) {
-    //           onSaveExpensesData(data).then(() => {
-    //             onSetChangesMade(true); // set changes made to true so that backup occurs only if some changes are made
-    //             dispatch(
-    //               notificationActions.showToast({
-    //                 status: 'success',
-    //                 message: 'Data has been imported successfully.',
-    //               }),
-    //             );
-    //           });
-    //         } else {
-    //           dispatch(
-    //             notificationActions.showToast({
-    //               status: 'error',
-    //               message: 'Invalid data file or corrupted data file.',
-    //             }),
-    //           );
-    //         }
-    //       } catch (e) {
-    //         dispatch(
-    //           notificationActions.showToast({
-    //             status: 'warning',
-    //             message: 'Error in importing the file.',
-    //           }),
-    //         );
-
-    //         console.log(
-    //           ' error in importing the data and reading the file - ',
-    //           e,
-    //         );
-    //       }
-    //     }
-    //   })
-    //   .catch(e => {
-    //     console.log(e);
-    //   });
   };
 
   const onArchiveSheet = async sheet => {

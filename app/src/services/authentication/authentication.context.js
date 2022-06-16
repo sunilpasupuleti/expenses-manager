@@ -244,8 +244,15 @@ export const AuthenticationContextProvider = ({children}) => {
   };
 
   const onSetUserData = async data => {
-    const token = await messaging().getToken();
-
+    let token = null;
+    await messaging()
+      .getToken()
+      .then(t => {
+        token = t;
+      })
+      .catch(err => {
+        console.log(err);
+      });
     let user = data.user;
     let transformedData = {
       displayName: user.displayName,
@@ -301,7 +308,13 @@ export const AuthenticationContextProvider = ({children}) => {
   };
 
   const onUpdateUserDetails = async details => {
-    const token = await messaging().getToken();
+    let token = null;
+    await messaging()
+      .getToken()
+      .then(t => {
+        token = t;
+      })
+      .catch(err => {});
     dispatch(loaderActions.showLoader({backdrop: true}));
     firestore()
       .collection(userData.uid)

@@ -71,6 +71,7 @@ export const AddCategoryScreen = ({navigation, route}) => {
   }, [categoryName]);
 
   const onSave = () => {
+    categoryName.trim();
     let category = {
       id: Date.now().toString(36) + Math.random().toString(36).substring(2),
       name: categoryName.charAt(0).toUpperCase() + categoryName.slice(1),
@@ -80,6 +81,7 @@ export const AddCategoryScreen = ({navigation, route}) => {
   };
 
   const onEdit = () => {
+    categoryName.trim();
     const editedCategory = {
       id: categoryId,
       name: categoryName.charAt(0).toUpperCase() + categoryName.slice(1),
@@ -138,7 +140,7 @@ export const AddCategoryScreen = ({navigation, route}) => {
           theme={{roundness: 10}}
           mode="outlined"
           value={categoryName}
-          onChangeText={n => setCategoryName(n.trim())}
+          onChangeText={n => setCategoryName(n)}
           placeholder="Enter the category name"
           left={<CategoryNameInput.Icon name="circle" color={categoryColor} />}
           right={

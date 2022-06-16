@@ -34,6 +34,7 @@ import {fetchExchangeRates} from '../../../store/service-slice';
 import TouchID from 'react-native-touch-id';
 import moment from 'moment';
 import {Button} from 'react-native-paper';
+import {notificationActions} from '../../../store/notification-slice';
 
 export const SettingsScreen = ({navigation}) => {
   const {onLogout, userData, userAdditionalDetails, onUpdateUserDetails} =
@@ -123,7 +124,12 @@ export const SettingsScreen = ({navigation}) => {
   };
 
   const onRevealSecretKey = async () => {
-    let result = await TouchID.isSupported();
+    let result = false;
+    await TouchID.isSupported()
+      .then(r => {
+        result = true;
+      })
+      .catch(err => {});
     if (result && isAppLockEnabled) {
       TouchID.authenticate(
         'Authenticate to reveal your account secret key.',
@@ -167,6 +173,11 @@ export const SettingsScreen = ({navigation}) => {
             )}
             {userData && userData.email && (
               <ProfileText fontfamily="heading">{userData?.email}</ProfileText>
+            )}
+            {userData && !userData.email && userData.displayName && (
+              <ProfileText fontfamily="heading">
+                {userData.displayName}
+              </ProfileText>
             )}
           </ProfileWrapper>
 

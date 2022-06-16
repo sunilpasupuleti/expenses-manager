@@ -28,7 +28,7 @@ export const AddSheetInput = ({
       theme={{roundness: 10}}
       mode="outlined"
       value={sheetName}
-      onChangeText={n => onChangeSheetName(n.trim())}
+      onChangeText={n => onChangeSheetName(n)}
       placeholder="Enter the sheet name"
       right={
         <SheetNameInput.Icon

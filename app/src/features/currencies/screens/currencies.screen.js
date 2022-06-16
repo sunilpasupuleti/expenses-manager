@@ -72,7 +72,7 @@ export const CurrenciesScreen = ({navigation, route}) => {
       let filtered = {};
       Object.keys(exchangeRates).filter(key => {
         let c = exchangeRates[key];
-        if (key.toLowerCase().includes(searchKeyword.toLowerCase())) {
+        if (key.toLowerCase().includes(searchKeyword.trim().toLowerCase())) {
           filtered[key] = c;
         }
       });
@@ -107,7 +107,7 @@ export const CurrenciesScreen = ({navigation, route}) => {
               />
             )
           }
-          onChangeText={k => setSearchKeyword(k.trim())}
+          onChangeText={k => setSearchKeyword(k)}
         />
         <Spacer size={'xlarge'}></Spacer>
 

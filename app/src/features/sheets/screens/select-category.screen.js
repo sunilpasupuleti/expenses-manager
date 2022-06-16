@@ -45,7 +45,9 @@ export const SelectCategoryScreen = ({navigation, route}) => {
     );
     if (searchKeyword !== '') {
       let filtered = categories.filter(c => {
-        return c.name.toLowerCase().includes(searchKeyword.toLowerCase());
+        return c.name
+          .toLowerCase()
+          .includes(searchKeyword.trim().toLowerCase());
       });
       setCategories(filtered);
     }
@@ -92,7 +94,7 @@ export const SelectCategoryScreen = ({navigation, route}) => {
               />
             )
           }
-          onChangeText={k => setSearchKeyword(k.trim())}
+          onChangeText={k => setSearchKeyword(k)}
         />
         <Spacer size={'xlarge'}></Spacer>
 

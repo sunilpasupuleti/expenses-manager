@@ -38,7 +38,9 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
     setDupSheets(sheets);
     if (searchKeyword !== '') {
       let filtered = sheets.filter(s => {
-        return s.name.toLowerCase().includes(searchKeyword.toLowerCase());
+        return s.name
+          .toLowerCase()
+          .includes(searchKeyword.trim().toLowerCase());
       });
       setDupSheets(filtered);
     }

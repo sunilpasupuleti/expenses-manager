@@ -9,7 +9,7 @@
 // added firebase
 #import <Firebase.h>
 //added react native splash screen
-// #import "RNSplashScreen.h"
+#import "RNSplashScreen.h"
 
 
 
@@ -43,8 +43,7 @@
 {
     // added new line
   [FIRApp configure];
-  // added new line for react native splash screen to automatically show
-  // [RNSplashScreen show];
+
 
 
 
@@ -73,6 +72,8 @@
   rootViewController.view = rootView;
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
+    // added new line for react native splash screen to automatically show
+  [RNSplashScreen show];
   return YES;
 }
 

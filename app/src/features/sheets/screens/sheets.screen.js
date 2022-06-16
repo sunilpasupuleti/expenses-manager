@@ -54,7 +54,7 @@ export const SheetsScreen = ({navigation}) => {
             theme={{roundness: 10}}
             style={{elevation: 2}}
             placeholder="Search"
-            onChangeText={k => setSearchKeyword(k.trim())}
+            onChangeText={k => setSearchKeyword(k)}
             clearIcon={() =>
               searchKeyword !== '' && (
                 <Ionicons

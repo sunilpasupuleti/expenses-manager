@@ -129,7 +129,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     let sheetDetail = {
       id: Date.now().toString(36) + Math.random().toString(36).substring(2),
       amount: amount,
-      notes: notes,
+      notes: notes.trim(),
       type: activeType,
       category: selectedCategory,
       date: date.toString(),
@@ -145,7 +145,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       return {
         ...route.params.sheetDetail,
         amount,
-        notes,
+        notes: notes.trim(),
         date: date.toString(),
         time: time.toString(),
         showTime,
@@ -158,7 +158,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     let sheetDetail = {
       id: route.params.sheetDetail.id,
       amount: amount,
-      notes: notes,
+      notes: notes.trim(),
       type: activeType,
       category: selectedCategory,
       date: date.toString(),
@@ -217,7 +217,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
           theme={{roundness: 10}}
           mode="outlined"
           value={notes}
-          onChangeText={n => setNotes(n.trim())}
+          onChangeText={n => setNotes(n)}
           placeholder="Notes"
           right={
             notes && (

@@ -224,18 +224,23 @@ async function onAppBootstrap() {
   if (!result) {
     await messaging()
       .registerDeviceForRemoteMessages()
-      .then(r => {})
+      .then(r => {
+        getToken();
+      })
       .catch(err => {
-        console.log(err, 'error in registering app token');
+        console.log(err, 'error in registering app token', err);
       });
+  } else {
+    getToken();
   }
+}
 
+const getToken = async () => {
   // Get the token
   const token = await messaging().getToken();
   console.log(token, 'fcm token');
-  // Save the token
-  // await postToApi('/users/1234/tokens', { token });
-}
+  return token;
+};
 
 onAppBootstrap();
 

@@ -208,9 +208,9 @@ export const SheetDetailsScreen = ({navigation, route}) => {
         return (
           sd.category.name
             .toLowerCase()
-            .includes(searchKeyword.toLowerCase()) ||
-          sd.amount.toString().includes(searchKeyword.toLowerCase()) ||
-          sd.type.toLowerCase().includes(searchKeyword.toLowerCase())
+            .includes(searchKeyword.trim().toLowerCase()) ||
+          sd.amount.toString().includes(searchKeyword.trim().toLowerCase()) ||
+          sd.type.toLowerCase().includes(searchKeyword.trim().toLowerCase())
         );
       });
       fsheet.details = filteredDetails;
@@ -232,7 +232,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
         theme={{roundness: 10}}
         style={{elevation: 2, margin: 10, marginBottom: 0}}
         placeholder="Search"
-        onChangeText={k => setSearchKeyword(k.trim())}
+        onChangeText={k => setSearchKeyword(k)}
         clearIcon={() =>
           searchKeyword !== '' && (
             <Ionicons

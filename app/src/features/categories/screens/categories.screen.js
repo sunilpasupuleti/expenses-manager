@@ -66,7 +66,9 @@ export const CategoriesScreen = ({navigation}) => {
     setAllCategories(categories[activeType]);
     if (searchKeyword !== '') {
       let filtered = allCategories.filter(c => {
-        return c.name.toLowerCase().includes(searchKeyword.toLowerCase());
+        return c.name
+          .toLowerCase()
+          .includes(searchKeyword.trim().toLowerCase());
       });
       setAllCategories(filtered);
     }
@@ -98,7 +100,7 @@ export const CategoriesScreen = ({navigation}) => {
               />
             )
           }
-          onChangeText={k => setSearchKeyword(k.trim())}
+          onChangeText={k => setSearchKeyword(k)}
         />
         <Spacer size={'large'}></Spacer>
         <CategoryTabs activeType={activeType} setActiveType={onSetActiveType} />

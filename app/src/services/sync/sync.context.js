@@ -117,7 +117,7 @@ export const SyncContextProvider = ({children}) => {
               }),
             );
             onSaveExpensesData(doc.data()).then(() => {
-              dispatch(setChangesMade({status: true}));
+              // dispatch(setChangesMade({status: true}));
             });
           } else {
             dispatch(
