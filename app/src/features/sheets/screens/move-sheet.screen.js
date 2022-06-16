@@ -31,13 +31,17 @@ export const MoveSheetScreen = ({navigation, route}) => {
         );
       },
       headerRight: () => {
-        return (
-          <Button
-            uppercase={false}
-            onPress={() => onMove(sheet, moveToSheet, sheetDetail)}>
-            <ButtonText>Done</ButtonText>
-          </Button>
-        );
+        if (!dupSheets || dupSheets.length === 0) {
+          return (
+            <Button
+              uppercase={false}
+              onPress={() => onMove(sheet, moveToSheet, sheetDetail)}>
+              <ButtonText>Done</ButtonText>
+            </Button>
+          );
+        } else {
+          return null;
+        }
       },
       headerTitle: 'Move Sheet',
     });

@@ -9,11 +9,11 @@ export const AddSheetInput = ({
   //   const [sheetName, setSheetName] = useState(null);
 
   const onChangeSheetName = name => {
+    onSetSheetName(name.trim());
     if (name === '') {
       setButtonDisabled(true);
       return;
     }
-    onSetSheetName(name);
     setButtonDisabled(false);
   };
 

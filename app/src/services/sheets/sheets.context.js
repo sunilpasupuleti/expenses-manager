@@ -521,6 +521,14 @@ export const SheetsContextProvider = ({children}) => {
     }
     if (Platform.OS === 'android') {
       let uri = RNFS.DownloadDirectoryPath + '/transactions.json';
+      let exists = await RNFS.exists(
+        RNFS.DownloadDirectoryPath + '/transactions.json',
+      );
+      if (exists) {
+        await RNFS.unlink(uri)
+          .then()
+          .catch(err => console.log('error in unlinkg previous file'));
+      }
       RNFS.writeFile(uri, JSON.stringify(data))
         .then(res => {
           console.log('successfully exported the file ');
