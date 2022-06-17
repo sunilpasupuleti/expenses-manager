@@ -50,10 +50,13 @@ export const SettingsScreen = ({navigation}) => {
   const [isDailyReminderEnabled, setIsDailyReminderEnabled] = useState(
     userAdditionalDetails?.dailyReminder?.enabled,
   );
-  let at = userAdditionalDetails?.dailyReminder?.at;
+
+  let dM = userAdditionalDetails?.dailyReminder;
   const presentDate = new Date(Date.now());
-  if (at) {
-    let split = at.split(':');
+  presentDate.setHours('21');
+  presentDate.setMinutes('0');
+  if (dM.enabled) {
+    let split = dM.at.split(':');
     presentDate.setHours(split[0]);
     presentDate.setMinutes(split[1]);
   }
@@ -87,7 +90,7 @@ export const SettingsScreen = ({navigation}) => {
       setShowPicker(true);
     }
     if (isDailyReminderEnabled === false) {
-      onClickSetButton();
+      onClickSetButton(null);
     }
   }, [isDailyReminderEnabled]);
 
@@ -107,10 +110,10 @@ export const SettingsScreen = ({navigation}) => {
       });
   };
 
-  const onClickSetButton = async () => {
+  const onClickSetButton = async status => {
     onUpdateUserDetails({
       dailyReminder: {
-        enabled: isDailyReminderEnabled ? true : null,
+        enabled: status,
         at: moment(time).format('HH:mm'),
       },
     });
@@ -209,16 +212,13 @@ export const SettingsScreen = ({navigation}) => {
 
                   <ToggleSwitch
                     value={isDailyReminderEnabled}
-                    onValueChange={() =>
-                      setIsDailyReminderEnabled(!isDailyReminderEnabled)
-                    }
+                    onValueChange={() => {
+                      if (!isDailyReminderEnabled) {
+                        onClickSetButton(true);
+                      }
+                      setIsDailyReminderEnabled(!isDailyReminderEnabled);
+                    }}
                   />
-
-                  {/* <>
-                  {isDailyReminderEnabled && (
-                
-                  )}
-                </> */}
                 </Setting>
 
                 {isDailyReminderEnabled && (
@@ -263,7 +263,9 @@ export const SettingsScreen = ({navigation}) => {
                         </TouchableOpacity>
                       )}
 
-                      <Button onPress={onClickSetButton}>SET REMAINDER</Button>
+                      <Button onPress={() => onClickSetButton(true)}>
+                        UPDATE REMINDER TIME
+                      </Button>
                     </FlexRow>
                     <Spacer position={'bottom'} />
                   </Spacer>

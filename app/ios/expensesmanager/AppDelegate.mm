@@ -73,7 +73,11 @@
   self.window.rootViewController = rootViewController;
   [self.window makeKeyAndVisible];
     // added new line for react native splash screen to automatically show
-  [RNSplashScreen show];
+   [RNSplashScreen show];
+//  UIStoryboard *sb = [UIStoryboard storyboardWithName:@"LaunchScreen" bundle:nil];
+//  UIViewController *vc = [sb instantiateInitialViewController];
+//  rootView.loadingView = vc.view;
+
   return YES;
 }
 

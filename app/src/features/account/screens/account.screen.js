@@ -85,13 +85,19 @@ export const AccountScreen = ({navigation}) => {
     setShowLoader(true);
     let result;
     if (mode === 'signin') {
-      result = await onSignInWithEmail(email.value, password.value);
+      result = await onSignInWithEmail(
+        email.value.toLowerCase(),
+        password.value,
+      );
     }
     if (mode === 'signup') {
-      result = await onSignUpWithEmail(email.value, password.value);
+      result = await onSignUpWithEmail(
+        email.value.toLowerCase(),
+        password.value,
+      );
     }
     if (mode === 'passwordreset') {
-      result = await onResetPassword(email.value);
+      result = await onResetPassword(email.value.toLowerCase());
     }
     setShowLoader(false);
     if (result.status) {
@@ -164,9 +170,7 @@ export const AccountScreen = ({navigation}) => {
           theme={{roundness: 10}}
           mode="outlined"
           returnKeyType="done"
-          onChangeText={n =>
-            setEmail(p => ({...p, value: n.toLowerCase().trim()}))
-          }
+          onChangeText={n => setEmail(p => ({...p, value: n.trim()}))}
           value={email.value}
           placeholder="Email"
           keyboardType="email-address"
