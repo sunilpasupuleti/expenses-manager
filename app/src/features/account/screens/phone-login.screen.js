@@ -15,7 +15,7 @@ import {
   OtpStrips,
 } from '../components/account.styles';
 export const PhoneLoginScreen = ({navigation, route}) => {
-  const [phone, setPhone] = useState({value: '919959907940', error: false});
+  const [phone, setPhone] = useState({value: '', error: false});
   const [otp, setOtp] = useState({value: '------', error: false});
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);

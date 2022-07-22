@@ -41,21 +41,25 @@ export const SettingsScreen = ({navigation}) => {
     useContext(AuthenticationContext);
 
   const [isAppLockEnabled, setIsAppLockEnabled] = useState(
-    userAdditionalDetails?.applock,
+    userAdditionalDetails?.applock ? userAdditionalDetails.applock : null,
   );
 
   const [isDailyBackUpEnabled, setIsDailyBackUpEnabled] = useState(
-    userAdditionalDetails?.dailyBackup,
+    userAdditionalDetails?.dailyBackup
+      ? userAdditionalDetails.dailyBackup
+      : null,
   );
   const [isDailyReminderEnabled, setIsDailyReminderEnabled] = useState(
-    userAdditionalDetails?.dailyReminder?.enabled,
+    userAdditionalDetails?.dailyReminder
+      ? userAdditionalDetails.dailyReminder.enabled
+      : null,
   );
 
-  let dM = userAdditionalDetails?.dailyReminder;
+  let dM = userAdditionalDetails.dailyReminder;
   const presentDate = new Date(Date.now());
   presentDate.setHours('21');
   presentDate.setMinutes('0');
-  if (dM.enabled) {
+  if (dM && dM.enabled) {
     let split = dM.at.split(':');
     presentDate.setHours(split[0]);
     presentDate.setMinutes(split[1]);

@@ -29,6 +29,7 @@ build/
 local.properties
 *.iml
 *.hprof
+*.env
 
 # node.js
 #
@@ -39,8 +40,7 @@ yarn-error.log
 # BUCK
 buck-out/
 \.buckd/
-*.keystore
-!debug.keystore
+
 
 # fastlane
 #
