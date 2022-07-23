@@ -31,8 +31,10 @@ local.properties
 *.hprof
 *.env
 # gnore expenses manager json file
-expenses-manager.json 
-config.js
+/expenses-manager.json 
+
+# ignor in ui
+/config.js
 
 # node.js
 #
