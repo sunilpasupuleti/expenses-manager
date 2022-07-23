@@ -33,8 +33,6 @@ import {SheetsContext} from '../../../services/sheets/sheets.context';
 import {fetchExchangeRates} from '../../../store/service-slice';
 import TouchID from 'react-native-touch-id';
 import moment from 'moment';
-import {Button} from 'react-native-paper';
-import {notificationActions} from '../../../store/notification-slice';
 
 export const SettingsScreen = ({navigation}) => {
   const {onLogout, userData, userAdditionalDetails, onUpdateUserDetails} =
@@ -51,22 +49,9 @@ export const SettingsScreen = ({navigation}) => {
   );
   const [isDailyReminderEnabled, setIsDailyReminderEnabled] = useState(
     userAdditionalDetails?.dailyReminder
-      ? userAdditionalDetails.dailyReminder.enabled
-      : null,
+      ? userAdditionalDetails.dailyReminder
+      : false,
   );
-
-  let dM = userAdditionalDetails.dailyReminder;
-  const presentDate = new Date(Date.now());
-  presentDate.setHours('21');
-  presentDate.setMinutes('0');
-  if (dM && dM.enabled) {
-    let split = dM.at.split(':');
-    presentDate.setHours(split[0]);
-    presentDate.setMinutes(split[1]);
-  }
-
-  const [time, setTime] = useState(presentDate);
-  const [showPicker, setShowPicker] = useState(false);
 
   const {onExportData, onImportData} = useContext(SheetsContext);
   const changesMade = useSelector(state => state.service.changesMade.status);
@@ -89,15 +74,6 @@ export const SettingsScreen = ({navigation}) => {
     });
   }, []);
 
-  useEffect(() => {
-    if (isDailyReminderEnabled && Platform.OS === 'ios') {
-      setShowPicker(true);
-    }
-    if (isDailyReminderEnabled === false) {
-      onClickSetButton(null);
-    }
-  }, [isDailyReminderEnabled]);
-
   const onSetScreenLock = async () => {
     TouchID.authenticate('Authenticate to enable / disable app lock.', {})
       .then(async success => {
@@ -114,12 +90,9 @@ export const SettingsScreen = ({navigation}) => {
       });
   };
 
-  const onClickSetButton = async status => {
+  const onUpdateDailyReminder = async status => {
     onUpdateUserDetails({
-      dailyReminder: {
-        enabled: status,
-        at: moment(time).format('HH:mm'),
-      },
+      dailyReminder: status,
     });
   };
 
@@ -217,68 +190,16 @@ export const SettingsScreen = ({navigation}) => {
                   <ToggleSwitch
                     value={isDailyReminderEnabled}
                     onValueChange={() => {
-                      if (!isDailyReminderEnabled) {
-                        onClickSetButton(true);
-                      }
+                      onUpdateDailyReminder(!isDailyReminderEnabled);
                       setIsDailyReminderEnabled(!isDailyReminderEnabled);
                     }}
                   />
                 </Setting>
 
-                {isDailyReminderEnabled && (
-                  <Spacer size={'large'}>
-                    <FlexRow justifyContent="space-between">
-                      {showPicker && (
-                        <DateTimePicker
-                          style={{
-                            width: '100%',
-                            position: 'absolute',
-                            right: 0,
-                          }}
-                          mode="time"
-                          value={time}
-                          onChange={(e, t) => {
-                            if (e.type === 'dismissed') {
-                              setShowPicker(false);
-                            }
-                            if (t) {
-                              if (Platform.OS === 'android') {
-                                setShowPicker(false);
-                              }
-                              setTime(t);
-                            }
-                          }}
-                        />
-                      )}
-
-                      {Platform.OS === 'android' && (
-                        <TouchableOpacity
-                          style={{
-                            backgroundColor: theme.colors.brand.secondary,
-                            padding: 15,
-                            paddingTop: 10,
-                            paddingBottom: 10,
-                            borderRadius: 10,
-                          }}
-                          onPress={() => setShowPicker(true)}>
-                          <Text fontfamily="bodySemiBold" fontsize="14px">
-                            {moment(time).format('hh:mm A')}
-                          </Text>
-                        </TouchableOpacity>
-                      )}
-
-                      <Button onPress={() => onClickSetButton(true)}>
-                        UPDATE REMINDER TIME
-                      </Button>
-                    </FlexRow>
-                    <Spacer position={'bottom'} />
-                  </Spacer>
-                )}
-
                 <Spacer size={'large'}>
                   <SettingHint marginLeft="0px">
-                    You will get the scheduled notification to remind you to
-                    record your daily transactions.
+                    You will get the daily notification at 21:00 to remind you
+                    to record your daily transactions.
                   </SettingHint>
                 </Spacer>
               </>

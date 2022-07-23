@@ -30,6 +30,9 @@ local.properties
 *.iml
 *.hprof
 *.env
+# gnore expenses manager json file
+expenses-manager.json 
+config.js
 
 # node.js
 #

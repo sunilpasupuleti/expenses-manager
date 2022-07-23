@@ -7,10 +7,10 @@ import {notificationActions} from '../../store/notification-slice';
 import {setChangesMade} from '../../store/service-slice';
 import {AuthenticationContext} from '../authentication/authentication.context';
 import {saveCategoryRequest, saveSheetRequest} from './sheets.service';
-import {Platform} from 'react-native';
-import RNFS from 'react-native-fs';
+import {Alert, PermissionsAndroid, Platform} from 'react-native';
 import Share from 'react-native-share';
 import DocumentPicker from 'react-native-document-picker';
+import RNFetchBlob from 'rn-fetch-blob';
 
 const defaultCategories = {
   expense: [
@@ -497,51 +497,34 @@ export const SheetsContextProvider = ({children}) => {
     };
 
     if (Platform.OS === 'ios') {
-      const path = RNFS.DocumentDirectoryPath + '/transactions.json';
-      RNFS.writeFile(path, JSON.stringify(data))
+      var toSaveData = JSON.stringify(data);
+      const dirs = RNFetchBlob.fs.dirs;
+      var path = dirs.DocumentDir + '/transactions.json';
+      RNFetchBlob.fs
+        .writeFile(path, toSaveData)
         .then(res => {
-          console.log('successfully exported the file ');
-        })
-        .catch(e => {
-          dispatch(
-            notificationActions.showToast({
-              status: 'error',
-              message: 'Something error occured while exporting the data',
-            }),
-          );
-        });
-      Share.open({
-        url: path,
-        filename: 'Transactions.json',
-        saveToFiles: true,
-        type: 'application/json',
-      }).catch(err => {
-        console.log(err.error.message, 'error while exporting the data - ios');
-      });
-    }
-    if (Platform.OS === 'android') {
-      let uri = RNFS.DownloadDirectoryPath + '/transactions.json';
-      let exists = await RNFS.exists(
-        RNFS.DownloadDirectoryPath + '/transactions.json',
-      );
-      if (exists) {
-        await RNFS.unlink(uri)
-          .then()
-          .catch(err => console.log('error in unlinkg previous file'));
-      }
-      RNFS.writeFile(uri, JSON.stringify(data))
-        .then(res => {
-          console.log('successfully exported the file ');
+          console.log('successfully exported file ios - ' + res);
+          Share.open({
+            url: path,
+            filename: 'transactions.json',
+            saveToFiles: true,
+            type: 'application/json',
+          }).catch(err => {
+            console.log(
+              err.error.message,
+              'error while exporting the data - ios',
+            );
+          });
+
           dispatch(
             notificationActions.showToast({
               status: 'success',
-              message:
-                'Your file is exported successfully. Please check the downloads folder for the file.',
+              message: 'Successfully exported file',
             }),
           );
         })
-        .catch(e => {
-          console.log(e, 'error while exporting the data - android');
+        .catch(err => {
+          console.log(err, 'err in exporting file in ios');
           dispatch(
             notificationActions.showToast({
               status: 'error',
@@ -549,6 +532,51 @@ export const SheetsContextProvider = ({children}) => {
             }),
           );
         });
+    }
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'Expenses Manager wants to save your transactions file',
+          message: 'Your app needs permission.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        var toSaveData = JSON.stringify(data);
+        const dirs = RNFetchBlob.fs.dirs;
+        var path = dirs.DownloadDir + '/transactions.json';
+        RNFetchBlob.fs
+          .writeFile(path, toSaveData)
+          .then(res => {
+            console.log('successfully exported file');
+            dispatch(
+              notificationActions.showToast({
+                status: 'success',
+                message:
+                  'Your file is exported successfully. Please check the downloads folder for the file.',
+              }),
+            );
+          })
+          .catch(err => {
+            console.log(err, 'err in exporting file');
+            dispatch(
+              notificationActions.showToast({
+                status: 'error',
+                message: 'Something error occured while exporting the data',
+              }),
+            );
+          });
+      } else {
+        Alert.alert('Permission denied');
+      }
+
+      // let exists = await RNFS.exists(
+      //   RNFS.DownloadDirectoryPath + '/transactions.json',
+      // );
     }
   };
 
@@ -557,7 +585,12 @@ export const SheetsContextProvider = ({children}) => {
       .then(async r => {
         if (r.type === 'application/json') {
           let fileuri = r.uri;
-          RNFS.readFile(fileuri)
+
+          if (Platform.OS === 'ios') {
+            fileuri = fileuri.replace('file:', '');
+          }
+          RNFetchBlob.fs
+            .readFile(fileuri)
             .then(file => {
               let data = JSON.parse(file);
               if (data.sheets && data.categories) {
@@ -580,7 +613,8 @@ export const SheetsContextProvider = ({children}) => {
               }
             })
             .catch(err => {
-              console.log('error in reading file');
+              console.log(err, 'error occured while reading file');
+              Alert.alert('Error occured while reading file');
             });
         } else {
           dispatch(
@@ -592,7 +626,7 @@ export const SheetsContextProvider = ({children}) => {
         }
       })
       .catch(err => {
-        console.log(err);
+        console.log(err, 'error in document picker');
       });
   };
 

@@ -14,10 +14,10 @@ import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
+import {WEB_CLIENT_ID} from '../../../config';
 
 GoogleSignin.configure({
-  webClientId:
-    '209649691146-ui8qcgo5biv5f3e3r3vp6jqabh0db50i.apps.googleusercontent.com',
+  webClientId: WEB_CLIENT_ID,
 });
 
 const optionalConfigObject = {

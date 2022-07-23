@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+
 dotenv.config();
 
 const app = express();
@@ -33,8 +34,8 @@ var serviceAccount = require("./expenses-manager.json");
 
 firebaseadmin.initializeApp({
   credential: firebaseadmin.credential.cert(serviceAccount),
-  databaseURL: "https://expenses-manager-9b9e2-default-rtdb.firebaseio.com/",
-  storageBucket: "expenses-manager-9b9e2.appspot.com",
+  databaseURL: process.env.FIREBASE_DATABASE_URL,
+  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
 });
 
 crons.cron();

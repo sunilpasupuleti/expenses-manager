@@ -4,24 +4,13 @@ import notifee, {
   TriggerType,
   EventType,
   RepeatFrequency,
+  TimeUnit,
 } from '@notifee/react-native';
 import {colors} from '../../infrastructure/theme/colors';
 import messaging from '@react-native-firebase/messaging';
 import firestore from '@react-native-firebase/firestore';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const date = new Date(Date.now());
-date.setHours(14);
-date.setMinutes(26);
-const trigger = {
-  type: TriggerType.TIMESTAMP,
-  timestamp: date.getTime(),
-  repeatFrequency: RepeatFrequency.DAILY,
-  alarmManager: {
-    allowWhileIdle: true,
-  },
-};
 
 notifee.onForegroundEvent(event => {
   //   console.log('Foreground event', event);
