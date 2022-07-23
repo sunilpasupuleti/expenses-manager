@@ -3,7 +3,6 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 
 dotenv.config();
-
 const app = express();
 
 app.use(cors());
@@ -12,7 +11,7 @@ app.use(express.urlencoded({ extended: true, limit: "100mb" }));
 app.use("/public", express.static(__dirname + "/public"));
 
 process.on("uncaughtException", (error, promise) => {
-  console.log("----- uncaught exception -----");
+  console.log("----- uncaught exception ------");
   console.log(error);
 });
 
