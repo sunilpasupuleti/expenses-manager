@@ -11,7 +11,7 @@ app.use(express.urlencoded({ extended: true, limit: "100mb" }));
 app.use("/public", express.static(__dirname + "/public"));
 
 process.on("uncaughtException", (error, promise) => {
-  console.log("----- uncaught exception ------");
+  console.log("----- uncaught exception -----");
   console.log(error);
 });
 
