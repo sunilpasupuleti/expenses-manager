@@ -24,7 +24,7 @@ import _ from 'lodash';
 import {SheetDetailsInfo} from '../components/sheet-details/sheet-details-info.component';
 import {Spacer} from '../../../components/spacer/spacer.component';
 import {SheetsContext} from '../../../services/sheets/sheets.context';
-import {Searchbar} from 'react-native-paper';
+import {Modal, Searchbar} from 'react-native-paper';
 import {
   Menu,
   MenuOptions,
@@ -33,13 +33,39 @@ import {
 } from 'react-native-popup-menu';
 import {GetCurrencySymbol} from '../../../components/symbol.currency';
 import {useDispatch} from 'react-redux';
-import {loaderActions} from '../../../store/loader-slice';
-import {fetchExchangeRates} from '../../../store/service-slice';
+import {Button, Paragraph, Dialog, Portal} from 'react-native-paper';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import {Platform} from 'react-native';
+
+const subtractMonths = numOfMonths => {
+  let date = new Date();
+  date.setMonth(date.getMonth() - numOfMonths);
+  return date;
+};
 
 export const SheetDetailsScreen = ({navigation, route}) => {
   const [sheet, setSheet] = useState(route.params.sheet);
   const [filteredSheet, setFilteredSheet] = useState(route.params.sheet);
+  const [customFilteredSheet, setCustomFilteredSheet] = useState(
+    route.params.sheet,
+  );
+
   const [groupedSheetDetails, setGroupedSheetDetails] = useState({});
+  let date = new Date();
+  // for custom date range
+  const [customFilter, setCustomFilter] = useState({
+    modalVisible: false,
+    filtered: false,
+    fromDate: {
+      value: subtractMonths(1),
+      showPicker: Platform.OS === 'ios' ? true : false,
+    },
+    toDate: {
+      value: new Date(),
+      showPicker: Platform.OS === 'ios' ? true : false,
+    },
+  });
+  // end of custom filter
   const theme = useTheme();
   const [searchKeyword, setSearchKeyword] = useState('');
 
@@ -202,15 +228,24 @@ export const SheetDetailsScreen = ({navigation, route}) => {
   }, [navigation, sheet]);
 
   useEffect(() => {
-    let fsheet = {...filteredSheet};
+    let fsheet;
+    if (customFilter.filtered) {
+      fsheet = {...customFilteredSheet};
+    } else {
+      fsheet = {...filteredSheet};
+    }
     if (searchKeyword !== '' && fsheet.details) {
       let filteredDetails = fsheet.details.filter(sd => {
+        let notesMatched = sd.notes
+          ? sd.notes.toLowerCase().includes(searchKeyword.trim().toLowerCase())
+          : false;
         return (
           sd.category.name
             .toLowerCase()
             .includes(searchKeyword.trim().toLowerCase()) ||
           sd.amount.toString().includes(searchKeyword.trim().toLowerCase()) ||
-          sd.type.toLowerCase().includes(searchKeyword.trim().toLowerCase())
+          sd.type.toLowerCase().includes(searchKeyword.trim().toLowerCase()) ||
+          notesMatched
         );
       });
       fsheet.details = filteredDetails;
@@ -219,14 +254,87 @@ export const SheetDetailsScreen = ({navigation, route}) => {
     onGroupSheetDetails(fsheet);
   }, [searchKeyword]);
 
+  const onCustomFilter = () => {
+    let fromDate = customFilter.fromDate.value;
+    let toDate = customFilter.toDate.value;
+    fromDate = moment(fromDate).format('YYYY-MM-DD');
+    toDate = moment(toDate).format('YYYY-MM-DD');
+    let fsheet = {...filteredSheet};
+    let filteredDetails = [];
+    fsheet.details.map(sd => {
+      let createdDate = moment(sd.date).format('YYYY-MM-DD');
+      let isBetweenFilteredDates = moment(createdDate).isBetween(
+        fromDate,
+        toDate,
+        null,
+        '[]',
+      );
+      if (isBetweenFilteredDates) {
+        filteredDetails.push(sd);
+      }
+    });
+    fsheet.details = filteredDetails;
+    setSheet(fsheet);
+    setCustomFilteredSheet(fsheet);
+    onGroupSheetDetails(fsheet);
+    setCustomFilter(p => ({
+      ...p,
+      filtered: true,
+      modalVisible: false,
+    }));
+  };
+
+  const onCloseCustomFilter = () => {
+    setCustomFilter(p => ({
+      ...p,
+      modalVisible: false,
+    }));
+  };
+
+  const onResetCustomFilter = () => {
+    setCustomFilter({
+      modalVisible: false,
+      filtered: false,
+      fromDate: {
+        value: subtractMonths(1),
+        showPicker: Platform.OS === 'ios' ? true : false,
+      },
+      toDate: {
+        value: new Date(),
+        showPicker: Platform.OS === 'ios' ? true : false,
+      },
+    });
+    let fsheet = {...filteredSheet};
+    setSheet(fsheet);
+    setCustomFilteredSheet(fsheet);
+    onGroupSheetDetails(fsheet);
+  };
+
   return (
     <SafeArea
       style={{
         backgroundColor: theme.colors.bg.primary,
       }}>
-      <Text fontsize={'30px'} fontfamily="headingBold" style={{padding: 10}}>
-        {sheet.name}
-      </Text>
+      <FlexRow justifyContent="space-between">
+        <Text fontsize={'30px'} fontfamily="headingBold" style={{padding: 10}}>
+          {sheet.name}
+        </Text>
+        <Spacer position={'right'} size="medium">
+          <MaterialCommunityIcons
+            onPress={() =>
+              setCustomFilter(p => ({
+                ...p,
+                modalVisible: true,
+              }))
+            }
+            name={
+              customFilter.filtered ? 'filter-remove-outline' : 'filter-outline'
+            }
+            size={30}
+            color={theme.colors.brand.primary}
+          />
+        </Spacer>
+      </FlexRow>
       <Searchbar
         value={searchKeyword}
         theme={{roundness: 10}}
@@ -310,6 +418,170 @@ export const SheetDetailsScreen = ({navigation, route}) => {
           <AntDesign name="plus" size={40} color={'#fff'} />
         </TouchableNativeFeedback>
       </SheetDetailsAddIcon>
+
+      {/* dialog for custom filter */}
+      <Portal>
+        <Dialog
+          visible={customFilter.modalVisible}
+          onDismiss={onCloseCustomFilter}>
+          <Dialog.Content>
+            <FlexRow justifyContent="space-between">
+              <Text>From Date : </Text>
+              {Platform.OS === 'android' && (
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: theme.colors.brand.secondary,
+                    padding: 15,
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    borderRadius: 10,
+                  }}
+                  onPress={() =>
+                    setCustomFilter(prevState => ({
+                      ...prevState,
+                      fromDate: {
+                        ...prevState.fromDate,
+                        showPicker: true,
+                      },
+                    }))
+                  }>
+                  <Text fontfamily="bodySemiBold" fontsize="14px">
+                    {moment(customFilter.fromDate.value).format('MMM DD, YYYY')}
+                  </Text>
+                </TouchableOpacity>
+              )}
+
+              {customFilter.fromDate.showPicker && (
+                <DateTimePicker
+                  style={{
+                    width: '100%',
+                    position: 'absolute',
+                    right: 10,
+                  }}
+                  mode="date"
+                  value={customFilter.fromDate.value}
+                  maximumDate={new Date()}
+                  onChange={(e, d) => {
+                    if (e.type === 'dismissed') {
+                      setCustomFilter(p => ({
+                        ...p,
+                        fromDate: {
+                          ...p.fromDate,
+                          showPicker: false,
+                        },
+                      }));
+                    }
+                    if (d) {
+                      if (Platform.OS === 'android') {
+                        setCustomFilter(prevState => {
+                          return {
+                            ...prevState,
+                            fromDate: {
+                              ...prevState.fromDate,
+                              showPicker: false,
+                            },
+                          };
+                        });
+                      }
+                      setCustomFilter(prevState => {
+                        return {
+                          ...prevState,
+                          fromDate: {
+                            ...prevState.fromDate,
+                            value: d,
+                          },
+                        };
+                      });
+                    }
+                  }}></DateTimePicker>
+              )}
+            </FlexRow>
+            <Spacer size={'xlarge'} />
+            <FlexRow justifyContent="space-between">
+              <Text>To Date : </Text>
+              {Platform.OS === 'android' && (
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: theme.colors.brand.secondary,
+                    padding: 15,
+                    paddingTop: 10,
+                    paddingBottom: 10,
+                    borderRadius: 10,
+                  }}
+                  onPress={() =>
+                    setCustomFilter(prevState => ({
+                      ...prevState,
+                      toDate: {
+                        ...prevState.toDate,
+                        showPicker: true,
+                      },
+                    }))
+                  }>
+                  <Text fontfamily="bodySemiBold" fontsize="14px">
+                    {moment(customFilter.toDate.value).format('MMM DD, YYYY')}
+                  </Text>
+                </TouchableOpacity>
+              )}
+
+              {customFilter.toDate.showPicker && (
+                <DateTimePicker
+                  style={{
+                    width: '100%',
+                    position: 'absolute',
+                    right: 10,
+                  }}
+                  mode="date"
+                  value={customFilter.toDate.value}
+                  maximumDate={new Date()}
+                  onChange={(e, d) => {
+                    if (e.type === 'dismissed') {
+                      setCustomFilter(p => ({
+                        ...p,
+                        fromDate: {
+                          ...p.toDate,
+                          showPicker: false,
+                        },
+                      }));
+                    }
+                    if (d) {
+                      if (Platform.OS === 'android') {
+                        setCustomFilter(prevState => {
+                          return {
+                            ...prevState,
+                            toDate: {
+                              ...prevState.toDate,
+                              showPicker: false,
+                            },
+                          };
+                        });
+                      }
+                      setCustomFilter(prevState => {
+                        return {
+                          ...prevState,
+                          toDate: {
+                            ...prevState.toDate,
+                            value: d,
+                          },
+                        };
+                      });
+                    }
+                  }}></DateTimePicker>
+              )}
+            </FlexRow>
+          </Dialog.Content>
+          <Dialog.Actions>
+            <Button onPress={onCloseCustomFilter} color="#aaa">
+              Close
+            </Button>
+            <Spacer position={'right'} size="large" />
+            <Button onPress={onResetCustomFilter} color="tomato">
+              Reset
+            </Button>
+            <Spacer position={'right'} size="large" />
+            <Button onPress={onCustomFilter}>Filter</Button>
+          </Dialog.Actions>
+        </Dialog>
+      </Portal>
     </SafeArea>
   );
 };
