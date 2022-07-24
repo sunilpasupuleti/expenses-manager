@@ -126,7 +126,6 @@ export const SheetStatsScreen = ({navigation, route}) => {
       }
       let expense = sDetails.filter(s => s.type === 'expense');
       let income = sDetails.filter(s => s.type === 'income');
-
       const groupByCategory = item => item.category.name;
       let expenseGrouped = _(expense).groupBy(groupByCategory).value();
       let incomeGrouped = _(income).groupBy(groupByCategory).value();
