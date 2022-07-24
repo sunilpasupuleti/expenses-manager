@@ -1,6 +1,2 @@
-*.java linguist-detectable=false
-*.c linguist-detectable=false
-*.cc linguist-detectable=false
-*.mm linguist-detectable=false
 *.js linguist-language=react-native
 *.java linguist-language=react-native
