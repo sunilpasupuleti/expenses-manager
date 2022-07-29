@@ -2,10 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>BGTaskSchedulerPermittedIdentifiers</key>
-	<array>
-		<string>com.expensesmanager.customtask</string>
-	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -39,7 +35,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.209649691146-3kjkk1crg2v9uhh8bgpo9nqln2hs4ni7</string>
+				<string>com.googleusercontent.apps.560966036314-hpv120rb0ojbabobbh8ipubaj9af40l7</string>
 			</array>
 		</dict>
 	</array>
@@ -69,6 +65,8 @@
 	<string>Allow $(PRODUCT_NAME) to use FaceID</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string></string>
+	<key>NSCameraUsageDescription</key>
+	<key>NSPhotoLibraryUsageDescription</key>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
