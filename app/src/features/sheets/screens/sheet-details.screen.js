@@ -69,7 +69,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
   const theme = useTheme();
   const [searchKeyword, setSearchKeyword] = useState('');
 
-  const {getSheetById, sheets} = useContext(SheetsContext);
+  const {getSheetById, calculateBalance} = useContext(SheetsContext);
   let menuRef = useRef();
   const dispatch = useDispatch();
 
@@ -274,6 +274,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
       }
     });
     fsheet.details = filteredDetails;
+    fsheet.totalBalance = calculateBalance(fsheet);
     setSheet(fsheet);
     setCustomFilteredSheet(fsheet);
     onGroupSheetDetails(fsheet);

@@ -11,7 +11,10 @@ import {Alert, PermissionsAndroid, Platform} from 'react-native';
 import Share from 'react-native-share';
 import DocumentPicker from 'react-native-document-picker';
 import RNFetchBlob from 'rn-fetch-blob';
-
+import useHttp from '../../hooks/use-http';
+import {GOOGLE_API_KEY, GOOGLE_CLOUD_VISION_API_URL} from '../../../config';
+import _ from 'lodash';
+import matchWords from './category-match-words.json';
 const defaultCategories = {
   expense: [
     {
@@ -100,6 +103,8 @@ export const SheetsContext = createContext({
   onImportData: () => null,
   onArchiveSheet: () => null,
   onPinSheet: () => null,
+  calculateBalance: sheet => null,
+  onGoogleCloudVision: base64 => null,
 });
 
 export const SheetsContextProvider = ({children}) => {
@@ -107,6 +112,7 @@ export const SheetsContextProvider = ({children}) => {
   const [categories, setCategories] = useState(defaultCategories);
   const [expensesData, setExpensesData] = useState(null);
   const {userData} = useContext(AuthenticationContext);
+  const {sendRequest} = useHttp();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -114,6 +120,139 @@ export const SheetsContextProvider = ({children}) => {
       retrieveExpensesData();
     }
   }, [userData]);
+
+  const onGoogleCloudVision = async base64 => {
+    if (!base64) {
+      Alert.alert('Required base64 string');
+      return;
+    }
+    let url = GOOGLE_CLOUD_VISION_API_URL + '?key=' + GOOGLE_API_KEY;
+    sendRequest(
+      {
+        type: 'POST',
+        url: url,
+        data: {
+          requests: {
+            image: {
+              content: base64,
+            },
+            features: [
+              {
+                type: 'DOCUMENT_TEXT_DETECTION',
+                maxResults: 1,
+              },
+            ],
+          },
+        },
+      },
+      {
+        successCallback: receivedResponse => {
+          let resultObj = receivedResponse.responses[0];
+          if (_.isEmpty(resultObj)) {
+            dispatch(
+              notificationActions.showToast({
+                status: 'warning',
+                message: 'No text detected from the Image!',
+              }),
+            );
+          } else {
+            onExtractAndFilterText(resultObj);
+          }
+        },
+        errorCallback: err => {
+          console.log(err);
+        },
+      },
+    );
+  };
+
+  const onExtractAndFilterText = result => {
+    let text = result.fullTextAnnotation.text;
+    function findTotalAmount() {
+      let pattern = /\d+\,?(?:\.\d{1,2})/g;
+      // changed pattern
+      // let pattern = /\d+(?:,?(\d+\.\d{1,2})|(\.\d{1,2}))/g;
+      let amounts = text.match(pattern);
+      let total = 0.0;
+      if (amounts) {
+        amounts = amounts.map(n => parseFloat(n.replace(/,/g, '')));
+        total = Math.max(...amounts);
+      }
+      return total;
+    }
+
+    function findDate() {
+      let pattern = /\d+[/.-]\S{2,3}[/.-]\d{2,4}/g;
+      let dates = text.match(pattern);
+      // to check include space patterns likd 16 jul 2022
+      let spattern = /\d{2}[ /.-]\S{2,3}[ /.-]\d{2,4}/g;
+      let sdates = text.match(spattern);
+      let date = new Date();
+      if (dates) {
+        date = dates[0];
+      } else {
+        if (sdates) {
+          date = sdates[0];
+        }
+      }
+      return date;
+    }
+
+    function findTitle() {
+      const splitLines = text.split(/\r?\n/);
+      let title = 'New title';
+      if (splitLines) {
+        title = splitLines[0];
+      }
+      return title;
+    }
+
+    function findCategory() {
+      let filteredCategories = [];
+      Object.keys(matchWords).map(key => {
+        let words = matchWords[key];
+        let matched = [];
+        words.forEach(obj => {
+          if (text.toLowerCase().includes(obj.word)) {
+            // let index = text.indexOf(obj.word);
+            // let subStrIndex = index + obj.word.length
+            // let matchedWord = text.substring(index , subStrIndex)
+            matched.push(obj.word);
+          }
+        });
+        filteredCategories.push({
+          name: key,
+          matchedWords: matched,
+        });
+      });
+      const categoryWithHighestMatchedWords = filteredCategories.reduce(
+        (prev, current) =>
+          prev.matchedWords.length > current.matchedWords.length
+            ? prev
+            : current,
+      );
+      let category = 'Others';
+      if (
+        categoryWithHighestMatchedWords &&
+        categoryWithHighestMatchedWords.matchedWords.length > 0
+      ) {
+        category = categoryWithHighestMatchedWords.name;
+      }
+      return category;
+    }
+
+    let total = findTotalAmount();
+    let date = findDate();
+    let title = findTitle();
+    let category = findCategory();
+    let data = {
+      Total: total,
+      Date: date,
+      Title: title,
+      Category: category,
+    };
+    console.log(data);
+  };
 
   const onSetChangesMade = (status = true) => {
     dispatch(setChangesMade({status}));
@@ -686,6 +825,8 @@ export const SheetsContextProvider = ({children}) => {
         onImportData,
         onArchiveSheet,
         onPinSheet,
+        calculateBalance,
+        onGoogleCloudVision,
       }}>
       {children}
     </SheetsContext.Provider>

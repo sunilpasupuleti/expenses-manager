@@ -62,6 +62,7 @@ const useHttp = () => {
         }
         request
           .then(res => {
+            setIsLoading(false);
             callbacks.successCallback(res.data);
             if (res.data && res.data.message) {
               dispatch(
@@ -71,8 +72,6 @@ const useHttp = () => {
                 }),
               );
             }
-
-            dispatch(loaderActions.hideLoader());
           })
           .catch(async err => {
             callbacks.errorCallback && callbacks.errorCallback();

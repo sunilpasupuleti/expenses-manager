@@ -19,7 +19,6 @@ import {
   NewSheet,
   UpperIcon,
 } from '../components/sheets.styles';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {
   Menu,
@@ -30,7 +29,7 @@ import {
 
 export const SheetsScreen = ({navigation}) => {
   const theme = useTheme();
-  const {sheets} = useContext(SheetsContext);
+  const {sheets, onGoogleCloudVision} = useContext(SheetsContext);
   const [searchKeyword, setSearchKeyword] = useState('');
   let menuRef = useRef();
   const menuOptionStyles = {
@@ -43,13 +42,27 @@ export const SheetsScreen = ({navigation}) => {
       mediaType: 'photo',
       cameraType: 'back',
       includeBase64: true,
-      saveToPhotos: true,
       presentationStyle: 'popover',
     };
+    let callback = response => {
+      if (
+        response &&
+        response.assets &&
+        response.assets[0] &&
+        response.assets[0].base64
+      ) {
+        let base64Data = response.assets[0].base64;
+        onGoogleCloudVision(base64Data);
+      }
+    };
     if (mode === 'camera') {
-      await launchCamera(options);
+      await launchCamera(options, response => {
+        callback(response);
+      });
     } else {
-      await launchImageLibrary(options);
+      await launchImageLibrary(options, response => {
+        callback(response);
+      });
     }
   };
   return (
