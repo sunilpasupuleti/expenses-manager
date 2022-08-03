@@ -77,7 +77,9 @@ export const AddCategoryScreen = ({navigation, route}) => {
       name: categoryName.charAt(0).toUpperCase() + categoryName.slice(1),
       color: categoryColor,
     };
-    onSaveCategory(category, categoryType, navigation);
+    onSaveCategory(category, categoryType, () => {
+      navigation.goBack();
+    });
   };
 
   const onEdit = () => {
@@ -87,7 +89,9 @@ export const AddCategoryScreen = ({navigation, route}) => {
       name: categoryName.charAt(0).toUpperCase() + categoryName.slice(1),
       color: categoryColor,
     };
-    onEditCategory(editedCategory, categoryType, navigation);
+    onEditCategory(editedCategory, categoryType, () => {
+      navigation.goBack();
+    });
   };
 
   const onCancel = () => {

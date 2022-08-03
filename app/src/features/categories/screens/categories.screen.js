@@ -11,6 +11,7 @@ import {SheetsContext} from '../../../services/sheets/sheets.context';
 import {CategoriesDetails} from '../components/categories-details.component';
 import {AddNewCategoryIcon, NewCategory} from '../components/categories.styles';
 import {CategoryTabs} from '../components/category-tabs.component';
+import _ from 'lodash';
 
 export const CategoriesScreen = ({navigation}) => {
   const theme = useTheme();
@@ -24,7 +25,8 @@ export const CategoriesScreen = ({navigation}) => {
 
   useEffect(() => {
     if (categories) {
-      setAllCategories(categories[activeType]);
+      let sorted = _.orderBy(categories[activeType], ['name'], ['asc']);
+      setAllCategories(sorted);
     }
   }, [activeType, categories]);
 
@@ -63,14 +65,16 @@ export const CategoriesScreen = ({navigation}) => {
   }, [deleteMode]);
 
   useEffect(() => {
-    setAllCategories(categories[activeType]);
+    let sorted = _.orderBy(categories[activeType], ['name'], ['asc']);
+    setAllCategories(sorted);
     if (searchKeyword !== '') {
       let filtered = allCategories.filter(c => {
         return c.name
           .toLowerCase()
           .includes(searchKeyword.trim().toLowerCase());
       });
-      setAllCategories(filtered);
+      let filterWithSorted = _.orderBy(filtered, ['name'], ['asc']);
+      setAllCategories(filterWithSorted);
     }
   }, [searchKeyword]);
 

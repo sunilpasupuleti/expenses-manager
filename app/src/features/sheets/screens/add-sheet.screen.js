@@ -91,7 +91,9 @@ export const AddSheetScreen = ({navigation, route}) => {
       details: [],
       currency: selectedCurrency,
     };
-    onSaveSheet(sheet, navigation);
+    onSaveSheet(sheet, () => {
+      navigation.goBack();
+    });
   };
 
   const onEdit = () => {

@@ -1,9 +1,9 @@
+import React, {useContext, useEffect, useState, useRef} from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import React, {useContext, useEffect, useState, useRef} from 'react';
 import {
   FlatList,
   TouchableNativeFeedback,
@@ -15,6 +15,9 @@ import {FlexRow, MainWrapper} from '../../../components/styles';
 import {Text} from '../../../components/typography/text.component';
 import {SafeArea} from '../../../components/utility/safe-area.component';
 import {
+  BottomIconsContainer,
+  CameraButton,
+  CameraIcon,
   SheetDetailsAddIcon,
   SheetDetailsTotalBalance,
   SheetDetailsUnderline,
@@ -24,7 +27,7 @@ import _ from 'lodash';
 import {SheetDetailsInfo} from '../components/sheet-details/sheet-details-info.component';
 import {Spacer} from '../../../components/spacer/spacer.component';
 import {SheetsContext} from '../../../services/sheets/sheets.context';
-import {Modal, Searchbar} from 'react-native-paper';
+import {Searchbar} from 'react-native-paper';
 import {
   Menu,
   MenuOptions,
@@ -33,9 +36,12 @@ import {
 } from 'react-native-popup-menu';
 import {GetCurrencySymbol} from '../../../components/symbol.currency';
 import {useDispatch} from 'react-redux';
-import {Button, Paragraph, Dialog, Portal} from 'react-native-paper';
+import {Button, Dialog, Portal} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Platform} from 'react-native';
+import {fetchExchangeRates} from '../../../store/service-slice';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {PermissionsAndroid} from 'react-native';
 
 const subtractMonths = numOfMonths => {
   let date = new Date();
@@ -69,8 +75,10 @@ export const SheetDetailsScreen = ({navigation, route}) => {
   const theme = useTheme();
   const [searchKeyword, setSearchKeyword] = useState('');
 
-  const {getSheetById, calculateBalance} = useContext(SheetsContext);
+  const {getSheetById, calculateBalance, onGoogleCloudVision} =
+    useContext(SheetsContext);
   let menuRef = useRef();
+  let cameraRef = useRef();
   const dispatch = useDispatch();
 
   const menuOptionStyles = {
@@ -249,6 +257,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
         );
       });
       fsheet.details = filteredDetails;
+      fsheet.totalBalance = calculateBalance(fsheet);
     }
     setSheet(fsheet);
     onGroupSheetDetails(fsheet);
@@ -309,6 +318,74 @@ export const SheetDetailsScreen = ({navigation, route}) => {
     setSheet(fsheet);
     setCustomFilteredSheet(fsheet);
     onGroupSheetDetails(fsheet);
+  };
+
+  const onClickScanButton = async mode => {
+    let options = {
+      mediaType: 'photo',
+      cameraType: 'back',
+      includeBase64: true,
+      presentationStyle: 'popover',
+    };
+    let callback = response => {
+      if (
+        response &&
+        response.assets &&
+        response.assets[0] &&
+        response.assets[0].base64
+      ) {
+        let base64Data = response.assets[0].base64;
+        onGoogleCloudVision(base64Data, fetchedData => {
+          navigation.navigate('AddSheetDetail', {
+            gcpVision: true,
+            sheetDetail: fetchedData,
+            sheet: sheet,
+          });
+        });
+      }
+    };
+    if (mode === 'camera') {
+      if (Platform.OS === 'android') {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.CAMERA,
+            {
+              title: 'Camera Permission',
+              message: 'App needs camera permission',
+            },
+          );
+          // If CAMERA Permission is granted
+          return granted === PermissionsAndroid.RESULTS.GRANTED;
+        } catch (err) {
+          console.warn('Please enable camera permission ');
+          return false;
+        }
+      }
+
+      await launchCamera(options, response => {
+        callback(response);
+      });
+    } else {
+      if (Platform.OS === 'android') {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+            {
+              title: 'External Storage Write Permission',
+              message: 'App needs write permission',
+            },
+          );
+          // If WRITE_EXTERNAL_STORAGE Permission is granted
+          return granted === PermissionsAndroid.RESULTS.GRANTED;
+        } catch (err) {
+          console.warn('Please enable permission ');
+        }
+        return false;
+      }
+      await launchImageLibrary(options, response => {
+        callback(response);
+      });
+    }
   };
 
   return (
@@ -409,16 +486,79 @@ export const SheetDetailsScreen = ({navigation, route}) => {
         </View>
       )}
 
-      <SheetDetailsAddIcon>
-        <TouchableNativeFeedback
-          onPress={() => {
-            navigation.navigate('AddSheetDetail', {
-              sheet: sheet,
-            });
-          }}>
-          <AntDesign name="plus" size={40} color={'#fff'} />
-        </TouchableNativeFeedback>
-      </SheetDetailsAddIcon>
+      <BottomIconsContainer>
+        {/*  for camera option */}
+        <Menu
+          onBackdropPress={() => cameraRef.current.close()}
+          ref={element => (cameraRef.current = element)}>
+          <MenuTrigger
+            customStyles={{
+              triggerTouchable: {
+                underlayColor: '#eee',
+                // onPress: () => {
+                //   console.log('pressed');
+                //   menuRef.current.open();
+                // },
+              },
+              TriggerTouchableComponent: TouchableOpacity,
+            }}>
+            <CameraButton onPress={() => cameraRef.current.open()}>
+              <CameraIcon
+                name="camera-outline"
+                size={25}
+                color="#fff"
+                // color={theme.colors.brand.primary}
+              />
+            </CameraButton>
+          </MenuTrigger>
+
+          <MenuOptions
+            optionsContainerStyle={{
+              marginLeft: 15,
+              marginTop: -40,
+              borderRadius: 10,
+              minWidth: 250,
+            }}>
+            <MenuOption
+              customStyles={menuOptionStyles}
+              onSelect={() => {
+                cameraRef.current.close();
+                onClickScanButton('camera');
+              }}>
+              <FlexRow justifyContent="space-between">
+                <Text color="#2f2f2f" fontfamily="heading">
+                  Take a Photo
+                </Text>
+                <Ionicons name="camera-outline" size={25} />
+              </FlexRow>
+            </MenuOption>
+            <MenuOption
+              customStyles={menuOptionStyles}
+              onSelect={() => {
+                cameraRef.current.close();
+                onClickScanButton('gallery');
+              }}>
+              <FlexRow justifyContent="space-between">
+                <Text color="#2f2f2f" fontfamily="heading">
+                  Choose a Photo
+                </Text>
+                <FontAwesome name="photo" size={20} />
+              </FlexRow>
+            </MenuOption>
+          </MenuOptions>
+          <Spacer size={'medium'} />
+        </Menu>
+        <SheetDetailsAddIcon>
+          <TouchableNativeFeedback
+            onPress={() => {
+              navigation.navigate('AddSheetDetail', {
+                sheet: sheet,
+              });
+            }}>
+            <AntDesign name="plus" size={40} color={'#fff'} />
+          </TouchableNativeFeedback>
+        </SheetDetailsAddIcon>
+      </BottomIconsContainer>
 
       {/* dialog for custom filter */}
       <Portal>

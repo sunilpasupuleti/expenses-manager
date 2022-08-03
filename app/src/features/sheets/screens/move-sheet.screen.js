@@ -62,7 +62,9 @@ export const MoveSheetScreen = ({navigation, route}) => {
   }, [sheets, sheet]);
 
   const onMove = (sheet, moveToSheet, sheetDetail) => {
-    onMoveSheets(sheet, moveToSheet, sheetDetail, navigation);
+    onMoveSheets(sheet, moveToSheet, sheetDetail, moveFromSheet => {
+      navigation.navigate('SheetDetails', {sheet: moveFromSheet});
+    });
   };
 
   return (

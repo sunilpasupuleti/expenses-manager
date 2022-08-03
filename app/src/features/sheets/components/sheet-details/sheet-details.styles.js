@@ -3,14 +3,7 @@ import {TextInput} from 'react-native-paper';
 import styled from 'styled-components/native';
 import {Text} from '../../../../components/typography/text.component';
 import {colors} from '../../../../infrastructure/theme/colors';
-export const SheetDetailsAddIcon = styled.View`
-  position: absolute;
-  bottom: 20px;
-  right: 10px;
-  background-color: ${({theme}) => theme.colors.brand.primary};
-  border-radius: 50px;
-  padding: 8px;
-`;
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 export const SheetDetailsTotalBalance = styled(Text)`
   margin-top: 20px;
@@ -79,4 +72,39 @@ export const SheetDetailNotes = styled(Text).attrs({
 
 export const SheetDetailInfo = styled.View`
   margin-left: 15px;
+`;
+
+export const BottomIconsContainer = styled.View`
+  position: absolute;
+  width: 100%;
+  bottom: 0%;
+  background-color: ${({theme}) => theme.colors.bg.primary};
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 10px;
+`;
+
+export const SheetDetailsAddIcon = styled.View`
+  // position: absolute;
+  // bottom: 20px;
+  // right: 10px;
+  background-color: ${({theme}) => theme.colors.brand.primary};
+  border-radius: 50px;
+  padding: 5px;
+`;
+
+export const CameraButton = styled.TouchableOpacity`
+  // position: absolute;
+  background-color: ${colors.brand.primary};
+  // bottom: -20px;
+  // left: 10px;
+  border-radius: 50px;
+  top: 4px;
+  padding: 14px;
+`;
+
+export const CameraIcon = styled(Ionicons)`
+  margin-right: 3px;
 `;

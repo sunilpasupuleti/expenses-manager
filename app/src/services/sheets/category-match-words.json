@@ -2656,11 +2656,7 @@
       "score": 5288006,
       "tags": ["n"]
     },
-    {
-      "word": "road",
-      "score": 5272958,
-      "tags": ["n"]
-    },
+
     {
       "word": "tour",
       "score": 5164173,
@@ -2701,11 +2697,7 @@
       "score": 4823478,
       "tags": ["n"]
     },
-    {
-      "word": "visit",
-      "score": 4809624,
-      "tags": ["n", "v"]
-    },
+
     {
       "word": "passage",
       "score": 4776677,
@@ -2901,11 +2893,7 @@
       "score": 4087905,
       "tags": ["n"]
     },
-    {
-      "word": "time",
-      "score": 4080083,
-      "tags": ["n"]
-    },
+
     {
       "word": "commute",
       "score": 4073852,
@@ -3181,11 +3169,7 @@
       "score": 7193611,
       "tags": ["n"]
     },
-    {
-      "word": "delivery",
-      "score": 7059197,
-      "tags": ["n"]
-    },
+
     {
       "word": "transportations",
       "score": 6982150,
@@ -3341,11 +3325,7 @@
       "score": 6199281,
       "tags": ["n", "adj"]
     },
-    {
-      "word": "deliver",
-      "score": 6114567,
-      "tags": ["v"]
-    },
+
     {
       "word": "vehicular",
       "score": 6081399,
@@ -10048,11 +10028,7 @@
       "score": 51039,
       "tags": ["n"]
     },
-    {
-      "word": "delivery",
-      "score": 51038,
-      "tags": ["n"]
-    },
+
     {
       "word": "carryout",
       "score": 51037,

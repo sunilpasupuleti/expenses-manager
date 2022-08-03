@@ -15,6 +15,7 @@ import useHttp from '../../hooks/use-http';
 import {GOOGLE_API_KEY, GOOGLE_CLOUD_VISION_API_URL} from '../../../config';
 import _ from 'lodash';
 import matchWords from './category-match-words.json';
+import test from './gcp-vision-responses.json';
 const defaultCategories = {
   expense: [
     {
@@ -52,7 +53,7 @@ const defaultCategories = {
     },
     {
       id: 'ex7',
-      name: 'Other',
+      name: 'Others',
       color: '#d1d1d5',
     },
   ],
@@ -75,7 +76,7 @@ const defaultCategories = {
     },
     {
       id: 'ex7',
-      name: 'Other',
+      name: 'Others',
       color: '#d1d1d5',
     },
   ],
@@ -85,26 +86,27 @@ export const SheetsContext = createContext({
   sheets: [],
   categories: defaultCategories,
   expensesData: {},
-  onSaveSheet: () => null,
-  onSaveCategory: () => null,
-  onSaveSheetDetails: () => null,
+  onSaveSheet: (sheet, callback = () => null) => null,
+  onSaveCategory: (category, type, callback = () => null) => null,
+  onSaveSheetDetails: (sheet, sheetDetail, callback = () => null) => null,
   onSaveExpensesData: () => null,
   onEditSheet: () => null,
-  onEditSheetDetails: () => null,
-  onEditCategory: () => null,
+  onEditSheetDetails: (sheet, sheetDetail, callback = () => null) => null,
+  onEditCategory: (category, type, callback = () => null) => null,
   onDeleteSheet: () => null,
-  onDeleteSheetDetails: () => null,
+  onDeleteSheetDetails: (sheet, sheetDetail, callback = () => null) => null,
   onDeleteCategory: () => null,
   getSheetById: () => null,
-  onMoveSheets: () => null,
-  onDuplicateSheet: () => null,
-  onChangeSheetType: () => null,
+  onMoveSheets: (sheet, moveToSheet, sheetDetail, callback = () => null) =>
+    null,
+  onDuplicateSheet: (sheet, sheetDetail, callback = () => null) => null,
+  onChangeSheetType: (sheet, sheetDetail, callback = () => null) => null,
   onExportData: () => null,
   onImportData: () => null,
   onArchiveSheet: () => null,
   onPinSheet: () => null,
   calculateBalance: sheet => null,
-  onGoogleCloudVision: base64 => null,
+  onGoogleCloudVision: (base64, callback) => null,
 });
 
 export const SheetsContextProvider = ({children}) => {
@@ -121,7 +123,11 @@ export const SheetsContextProvider = ({children}) => {
     }
   }, [userData]);
 
-  const onGoogleCloudVision = async base64 => {
+  const onGoogleCloudVision = async (base64, callback = () => null) => {
+    // let resultObj = test.response2.responses[0];
+    // let finalResult = onExtractAndFilterText(resultObj);
+    // callback(finalResult); // callback with data handler
+    // return;
     if (!base64) {
       Alert.alert('Required base64 string');
       return;
@@ -156,7 +162,8 @@ export const SheetsContextProvider = ({children}) => {
               }),
             );
           } else {
-            onExtractAndFilterText(resultObj);
+            let finalResult = onExtractAndFilterText(resultObj);
+            callback(finalResult); // callback with data handler
           }
         },
         errorCallback: err => {
@@ -225,6 +232,7 @@ export const SheetsContextProvider = ({children}) => {
           matchedWords: matched,
         });
       });
+      console.log(filteredCategories, 'matched words');
       const categoryWithHighestMatchedWords = filteredCategories.reduce(
         (prev, current) =>
           prev.matchedWords.length > current.matchedWords.length
@@ -245,13 +253,14 @@ export const SheetsContextProvider = ({children}) => {
     let date = findDate();
     let title = findTitle();
     let category = findCategory();
-    let data = {
-      Total: total,
-      Date: date,
-      Title: title,
-      Category: category,
+    let sheetData = {
+      amount: total,
+      date: date,
+      notes: title,
+      category: category,
+      type: 'expense',
     };
-    console.log(data);
+    return sheetData;
   };
 
   const onSetChangesMade = (status = true) => {
@@ -332,7 +341,7 @@ export const SheetsContextProvider = ({children}) => {
     }
   };
 
-  const onSaveSheet = async (sheet, navigation) => {
+  const onSaveSheet = async (sheet, callback = () => null) => {
     saveSheetRequest(sheet, sheets)
       .then(async result => {
         const updatedSheets = [...sheets, sheet];
@@ -342,7 +351,7 @@ export const SheetsContextProvider = ({children}) => {
         };
         onSaveExpensesData(updatedExpensesData).then(() => {
           onSetChangesMade(true); // set changes made to true so that backup occurs only if some changes are made
-          navigation.goBack();
+          callback();
         });
       })
       .catch(err => {
@@ -356,7 +365,11 @@ export const SheetsContextProvider = ({children}) => {
       });
   };
 
-  const onSaveSheetDetails = async (sheet, sheetDetail, navigation) => {
+  const onSaveSheetDetails = async (
+    sheet,
+    sheetDetail,
+    callback = () => null,
+  ) => {
     var presentSheets = [...sheets];
     var sheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
     var presentSheet = presentSheets[sheetIndex];
@@ -375,11 +388,11 @@ export const SheetsContextProvider = ({children}) => {
     };
     onSaveExpensesData(updatedExpensesData).then(() => {
       onSetChangesMade(true); // set changes made to true so that backup occurs only if some changes are made
-      navigation.navigate('SheetDetails', {sheet: presentSheet});
+      callback(presentSheet);
     });
   };
 
-  const onSaveCategory = async (category, type, navigation) => {
+  const onSaveCategory = async (category, type, callback = () => null) => {
     saveCategoryRequest(
       category,
       type === 'expense' ? categories.expense : categories.income,
@@ -397,7 +410,7 @@ export const SheetsContextProvider = ({children}) => {
         };
         onSaveExpensesData(updatedExpensesData);
         onSetChangesMade(true);
-        navigation.goBack();
+        callback();
       })
       .catch(err => {
         dispatch(
@@ -439,7 +452,11 @@ export const SheetsContextProvider = ({children}) => {
     }
   };
 
-  const onEditSheetDetails = async (sheet, sheetDetail, navigation) => {
+  const onEditSheetDetails = async (
+    sheet,
+    sheetDetail,
+    callback = () => null,
+  ) => {
     var presentSheets = [...sheets];
     var sheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
     var presentSheet = presentSheets[sheetIndex];
@@ -456,11 +473,11 @@ export const SheetsContextProvider = ({children}) => {
     };
     onSaveExpensesData(updatedExpensesData).then(() => {
       onSetChangesMade(true); // set changes made to true so that backup occurs only if some changes are made
-      navigation.navigate('SheetDetails', {sheet: presentSheet});
+      callback(presentSheet);
     });
   };
 
-  const onEditCategory = async (category, type, navigation) => {
+  const onEditCategory = async (category, type, callback = () => null) => {
     let index;
     let updatedCategories = categories;
 
@@ -493,7 +510,7 @@ export const SheetsContextProvider = ({children}) => {
       };
       onSaveExpensesData(updatedExpensesData);
       onSetChangesMade(true);
-      navigation.goBack();
+      callback();
     }
   };
 
@@ -526,7 +543,11 @@ export const SheetsContextProvider = ({children}) => {
     onSetChangesMade(true);
   };
 
-  const onDeleteSheetDetails = async (sheet, sheetDetail, navigation) => {
+  const onDeleteSheetDetails = async (
+    sheet,
+    sheetDetail,
+    callback = () => null,
+  ) => {
     let presentSheets = [...sheets];
     let presentSheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
     let remainingSheetDetails = presentSheets[presentSheetIndex].details.filter(
@@ -543,13 +564,16 @@ export const SheetsContextProvider = ({children}) => {
     };
     onSaveExpensesData(updatedExpensesData).then(() => {
       onSetChangesMade(true);
-      navigation.navigate('SheetDetails', {
-        sheet: presentSheets[presentSheetIndex],
-      });
+      callback(presentSheets[presentSheetIndex]);
     });
   };
 
-  const onMoveSheets = async (sheet, moveToSheet, sheetDetail, navigation) => {
+  const onMoveSheets = async (
+    sheet,
+    moveToSheet,
+    sheetDetail,
+    callback = () => null,
+  ) => {
     let presentSheets = [...sheets];
     let moveFromSheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
     let moveFromSheet = presentSheets[moveFromSheetIndex];
@@ -576,11 +600,15 @@ export const SheetsContextProvider = ({children}) => {
     };
     onSaveExpensesData(updatedExpensesData).then(() => {
       onSetChangesMade(true);
-      navigation.navigate('SheetDetails', {sheet: moveFromSheet});
+      callback(moveFromSheet);
     });
   };
 
-  const onDuplicateSheet = async (sheet, sheetDetail, navigation) => {
+  const onDuplicateSheet = async (
+    sheet,
+    sheetDetail,
+    callback = () => null,
+  ) => {
     let presentSheets = [...sheets];
     let dupSheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
     let dupSheet = presentSheets[dupSheetIndex];
@@ -598,11 +626,15 @@ export const SheetsContextProvider = ({children}) => {
 
     onSaveExpensesData(updatedExpensesData).then(() => {
       onSetChangesMade(true);
-      navigation.navigate('SheetDetails', {sheet: dupSheet});
+      callback(dupSheet);
     });
   };
 
-  const onChangeSheetType = async (sheet, sheetDetail, navigation) => {
+  const onChangeSheetType = async (
+    sheet,
+    sheetDetail,
+    callback = () => null,
+  ) => {
     let presentSheets = [...sheets];
     let changeSheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
     let changeSheet = presentSheets[changeSheetIndex];
@@ -621,7 +653,7 @@ export const SheetsContextProvider = ({children}) => {
 
     onSaveExpensesData(updatedExpensesData).then(() => {
       onSetChangesMade(true);
-      navigation.navigate('SheetDetails', {sheet: changeSheet});
+      callback(changeSheet);
     });
   };
 

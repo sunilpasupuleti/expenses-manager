@@ -63,7 +63,11 @@ export const SheetDetailsInfo = ({
         {
           text: 'Delete',
           onPress: () => {
-            onDeleteSheetDetails(sheet, sheetDetail, navigation);
+            onDeleteSheetDetails(sheet, sheetDetail, updatedSheet => {
+              navigation.navigate('SheetDetails', {
+                sheet: updatedSheet,
+              });
+            });
           },
         },
       ],
@@ -71,7 +75,9 @@ export const SheetDetailsInfo = ({
   };
 
   const onDuplicateButton = sheetDetail => {
-    onDuplicateSheet(sheet, sheetDetail, navigation);
+    onDuplicateSheet(sheet, sheetDetail, sheet => {
+      navigation.navigate('SheetDetails', {sheet: sheet});
+    });
   };
 
   const menuOptionStyles = {
@@ -167,7 +173,9 @@ export const SheetDetailsInfo = ({
                       customStyles={menuOptionStyles}
                       onSelect={() => {
                         menuRefs.current[index].close();
-                        onChangeSheetType(sheet, sd, navigation);
+                        onChangeSheetType(sheet, sd, sheet => {
+                          navigation.navigate('SheetDetails', {sheet: sheet});
+                        });
                       }}>
                       <FlexRow justifyContent="space-between">
                         <Text color="#2f2f2f" fontfamily="heading">

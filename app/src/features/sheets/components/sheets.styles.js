@@ -31,21 +31,6 @@ export const NewSheet = styled.TouchableOpacity`
   right: 20px;
 `;
 
-export const CameraButton = styled.TouchableOpacity`
-  flex-direction: row;
-  align-items: center;
-  position: absolute;
-  background-color: ${colors.brand.primary};
-  bottom: 0px;
-  left: 0px;
-  border-radius: 100px;
-  padding: 10px;
-`;
-
-export const CameraIcon = styled(Ionicons)`
-  margin-right: 3px;
-`;
-
 export const AddSheetIcon = styled(Ionicons)`
   margin-right: 3px;
 `;
