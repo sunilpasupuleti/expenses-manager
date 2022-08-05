@@ -345,43 +345,43 @@ export const SheetDetailsScreen = ({navigation, route}) => {
       }
     };
     if (mode === 'camera') {
-      if (Platform.OS === 'android') {
-        try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.CAMERA,
-            {
-              title: 'Camera Permission',
-              message: 'App needs camera permission',
-            },
-          );
-          // If CAMERA Permission is granted
-          return granted === PermissionsAndroid.RESULTS.GRANTED;
-        } catch (err) {
-          console.warn('Please enable camera permission ');
-          return false;
-        }
-      }
-
+      // if (Platform.OS === 'android') {
+      //   try {
+      //     const granted = await PermissionsAndroid.request(
+      //       PermissionsAndroid.PERMISSIONS.CAMERA,
+      //       {
+      //         title: 'Camera Permission',
+      //         message: 'App needs camera permission',
+      //       },
+      //     );
+      //     console.log(granted === PermissionsAndroid.RESULTS.GRANTED);
+      //     // If CAMERA Permission is granted
+      //     return granted === PermissionsAndroid.RESULTS.GRANTED;
+      //   } catch (err) {
+      //     console.warn('Please enable camera permission ');
+      //     return false;
+      //   }
+      // }
       await launchCamera(options, response => {
         callback(response);
       });
     } else {
-      if (Platform.OS === 'android') {
-        try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-            {
-              title: 'External Storage Write Permission',
-              message: 'App needs write permission',
-            },
-          );
-          // If WRITE_EXTERNAL_STORAGE Permission is granted
-          return granted === PermissionsAndroid.RESULTS.GRANTED;
-        } catch (err) {
-          console.warn('Please enable permission ');
-        }
-        return false;
-      }
+      // if (Platform.OS === 'android') {
+      //   try {
+      //     const granted = await PermissionsAndroid.request(
+      //       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      //       {
+      //         title: 'External Storage Write Permission',
+      //         message: 'App needs write permission',
+      //       },
+      //     );
+      //     // If WRITE_EXTERNAL_STORAGE Permission is granted
+      //     return granted === PermissionsAndroid.RESULTS.GRANTED;
+      //   } catch (err) {
+      //     console.warn('Please enable permission ');
+      //   }
+      //   return false;
+      // }
       await launchImageLibrary(options, response => {
         callback(response);
       });
@@ -529,7 +529,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 <Text color="#2f2f2f" fontfamily="heading">
                   Take a Photo
                 </Text>
-                <Ionicons name="camera-outline" size={25} />
+                <Ionicons name="camera-outline" size={25} color="#000" />
               </FlexRow>
             </MenuOption>
             <MenuOption
@@ -542,7 +542,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 <Text color="#2f2f2f" fontfamily="heading">
                   Choose a Photo
                 </Text>
-                <FontAwesome name="photo" size={20} />
+                <FontAwesome name="photo" size={20} color="#000" />
               </FlexRow>
             </MenuOption>
           </MenuOptions>
