@@ -35,7 +35,10 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   const [activeType, setActiveType] = useState('expense');
   const [sheet, setSheet] = useState(route.params.sheet);
   const [date, setDate] = useState(new Date());
-  const [time, setTime] = useState(new Date());
+  let d = new Date();
+  d.setMonth(date.getMonth());
+  d.setDate(date.getDate());
+  const [time, setTime] = useState(d);
 
   const [showPicker, setShowPicker] = useState({
     date: Platform.OS === 'ios' ? true : false,
@@ -170,7 +173,9 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       showTime: showTime,
       createdAt: Date.now(),
     };
-    if (showTime) sheetDetail.time = time.toString();
+    if (showTime) {
+      sheetDetail.time = time.toString();
+    }
     onSaveSheetDetails(sheet, sheetDetail, updatedSheet => {
       navigation.navigate('SheetDetails', {sheet: updatedSheet});
     });
@@ -202,6 +207,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       createdAt: Date.now(),
     };
     if (showTime) sheetDetail.time = time.toString();
+
     onEditSheetDetails(sheet, sheetDetail, updatedSheet => {
       navigation.navigate('SheetDetails', {sheet: updatedSheet});
     });
@@ -375,6 +381,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                           });
                         }
                         setDate(d);
+                        time.setMonth(d.getMonth());
+                        time.setDate(d.getDate());
                       }
                     }}></DateTimePicker>
                 )}

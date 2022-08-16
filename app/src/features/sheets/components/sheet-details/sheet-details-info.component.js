@@ -157,7 +157,7 @@ export const SheetDetailsInfo = ({
                       <SheetDetailNotes>
                         {sd.notes}
                         {sd.showTime &&
-                          ' at ' + moment(sd.time).format('hh:mm a')}
+                          ' at ' + moment(sd.time).format('hh:mm A')}
                       </SheetDetailNotes>
                     </SheetDetailInfo>
                   </MenuTrigger>

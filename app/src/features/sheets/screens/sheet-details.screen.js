@@ -41,7 +41,6 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {Platform} from 'react-native';
 import {fetchExchangeRates} from '../../../store/service-slice';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {PermissionsAndroid} from 'react-native';
 
 const subtractMonths = numOfMonths => {
   let date = new Date();
@@ -75,8 +74,12 @@ export const SheetDetailsScreen = ({navigation, route}) => {
   const theme = useTheme();
   const [searchKeyword, setSearchKeyword] = useState('');
 
-  const {getSheetById, calculateBalance, onGoogleCloudVision} =
-    useContext(SheetsContext);
+  const {
+    getSheetById,
+    calculateBalance,
+    onGoogleCloudVision,
+    onExportDataToExcel,
+  } = useContext(SheetsContext);
   let menuRef = useRef();
   let cameraRef = useRef();
   const dispatch = useDispatch();
@@ -111,6 +114,31 @@ export const SheetDetailsScreen = ({navigation, route}) => {
       });
       setGroupedSheetDetails(groupedDetails);
     }
+  };
+
+  const onClickExportData = () => {
+    let sheetDetails = sheet.details;
+    let structuredDetails = [{}];
+    sheetDetails.forEach((d, i) => {
+      let date = moment(d.date).format('MMM DD, YYYY ');
+      if (d.showTime) {
+        let time = moment(d.time).format('hh:mm A');
+        date += time;
+      }
+      let amount = `AMOUNT ( ${GetCurrencySymbol(sheet.currency)} )`;
+      let detail = {
+        'S.NO': i + 1,
+        TITLE: d.notes,
+        CATEGORY: d.category.name,
+        DATE: date,
+        [amount]: d.type === 'expense' ? -d.amount : d.amount,
+      };
+      structuredDetails.push(detail);
+    });
+    let config = {
+      title: sheet.name.toUpperCase(),
+    };
+    onExportDataToExcel(config, structuredDetails);
   };
 
   useEffect(() => {
@@ -169,7 +197,12 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 <Text color="#2f2f2f" fontfamily="heading">
                   Stats
                 </Text>
-                <Ionicons name="pie-chart-outline" size={22} />
+                <Ionicons
+                  style={{paddingBottom: 8}}
+                  name="pie-chart-outline"
+                  size={20}
+                  color={'#000'}
+                />
               </FlexRow>
             </MenuOption>
             <MenuOption
@@ -182,7 +215,12 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 <Text color="#2f2f2f" fontfamily="heading">
                   Trends
                 </Text>
-                <Ionicons name="trending-up-outline" size={22} />
+                <Ionicons
+                  style={{paddingBottom: 8}}
+                  name="trending-up-outline"
+                  size={20}
+                  color={'#000'}
+                />
               </FlexRow>
             </MenuOption>
 
@@ -206,7 +244,12 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 <Text color="#2f2f2f" fontfamily="heading">
                   Curreny Rate
                 </Text>
-                <FontAwesome name="money" size={20} />
+                <FontAwesome
+                  style={{paddingBottom: 8}}
+                  name="money"
+                  size={20}
+                  color={'#000'}
+                />
               </FlexRow>
             </MenuOption>
 
@@ -225,7 +268,31 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 <Text color="#2f2f2f" fontfamily="heading">
                   Edit Sheet
                 </Text>
-                <Ionicons name="pencil-outline" size={22} />
+                <Ionicons
+                  style={{paddingBottom: 8}}
+                  name="pencil-outline"
+                  size={20}
+                  color={'#000'}
+                />
+              </FlexRow>
+            </MenuOption>
+
+            <MenuOption
+              customStyles={menuOptionStyles}
+              onSelect={() => {
+                menuRef.current.close();
+                onClickExportData();
+              }}>
+              <FlexRow justifyContent="space-between">
+                <Text color="#2f2f2f" fontfamily="heading">
+                  Export as excel
+                </Text>
+                <FontAwesome
+                  style={{paddingBottom: 8}}
+                  name="file-excel-o"
+                  size={20}
+                  color={'#000'}
+                />
               </FlexRow>
             </MenuOption>
           </MenuOptions>
@@ -474,7 +541,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
             );
           }}
           keyExtractor={item => item}
-          contentContainerStyle={{paddingBottom: 50}}
+          contentContainerStyle={{paddingBottom: 150}}
         />
       )}
 

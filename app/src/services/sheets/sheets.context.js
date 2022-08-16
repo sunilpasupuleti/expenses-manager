@@ -11,11 +11,14 @@ import {Alert, PermissionsAndroid, Platform} from 'react-native';
 import Share from 'react-native-share';
 import DocumentPicker from 'react-native-document-picker';
 import RNFetchBlob from 'rn-fetch-blob';
+import RNFS from 'react-native-fs';
 import useHttp from '../../hooks/use-http';
 import {GOOGLE_API_KEY, GOOGLE_CLOUD_VISION_API_URL} from '../../../config';
 import _ from 'lodash';
 import matchWords from './category-match-words.json';
 import test from './gcp-vision-responses.json';
+import XLSX from 'xlsx';
+import moment from 'moment';
 const defaultCategories = {
   expense: [
     {
@@ -102,6 +105,7 @@ export const SheetsContext = createContext({
   onDuplicateSheet: (sheet, sheetDetail, callback = () => null) => null,
   onChangeSheetType: (sheet, sheetDetail, callback = () => null) => null,
   onExportData: () => null,
+  onExportDataToExcel: data => null,
   onImportData: () => null,
   onArchiveSheet: () => null,
   onPinSheet: () => null,
@@ -719,7 +723,8 @@ export const SheetsContextProvider = ({children}) => {
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         var toSaveData = JSON.stringify(data);
         const dirs = RNFetchBlob.fs.dirs;
-        var path = dirs.DownloadDir + '/transactions.json';
+        var path = dirs.DownloadDir + `/transactions-${moment()}.json`;
+
         RNFetchBlob.fs
           .writeFile(path, toSaveData)
           .then(res => {
@@ -744,10 +749,6 @@ export const SheetsContextProvider = ({children}) => {
       } else {
         Alert.alert('Permission denied');
       }
-
-      // let exists = await RNFS.exists(
-      //   RNFS.DownloadDirectoryPath + '/transactions.json',
-      // );
     }
   };
 
@@ -760,6 +761,8 @@ export const SheetsContextProvider = ({children}) => {
           if (Platform.OS === 'ios') {
             fileuri = fileuri.replace('file:', '');
           }
+          console.log(fileuri);
+
           RNFetchBlob.fs
             .readFile(fileuri)
             .then(file => {
@@ -799,6 +802,135 @@ export const SheetsContextProvider = ({children}) => {
       .catch(err => {
         console.log(err, 'error in document picker');
       });
+  };
+
+  const onExportDataToExcel = async (config, data) => {
+    if (Platform.OS === 'ios') {
+      const dirs = RNFetchBlob.fs.dirs;
+      var path = dirs.DocumentDir + '/transactions.xlsx';
+      let wb = XLSX.utils.book_new();
+      let ws = XLSX.utils.json_to_sheet(data);
+      XLSX.utils.book_append_sheet(wb, ws, 'Transactions');
+      const wbout = XLSX.write(wb, {type: 'binary', bookType: 'xlsx'});
+      RNFetchBlob.fs
+        .writeFile(path, wbout)
+        .then(res => {
+          console.log('successfully exported file ios - ' + res);
+          Share.open({
+            url: path,
+            filename: 'transactions.xlsx',
+            saveToFiles: true,
+            type: 'application/json',
+          }).catch(err => {
+            console.log(
+              err.error.message,
+              'error while exporting the data - ios',
+            );
+          });
+
+          dispatch(
+            notificationActions.showToast({
+              status: 'success',
+              message: 'Successfully exported file',
+            }),
+          );
+        })
+        .catch(err => {
+          console.log(err, 'err in exporting file in ios');
+          dispatch(
+            notificationActions.showToast({
+              status: 'error',
+              message: 'Something error occured while exporting the data',
+            }),
+          );
+        });
+    }
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'Expenses Manager wants to save your transactions file',
+          message: 'Your app needs permission.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        const dirs = RNFetchBlob.fs.dirs;
+        let wb = XLSX.utils.book_new();
+        let ws = XLSX.utils.json_to_sheet(data);
+        // for setting columns width to automatic
+        let objectMaxLength = [];
+        for (let i = 0; i < data.length; i++) {
+          let value = Object.values(data[i]);
+          for (let j = 0; j < value.length; j++) {
+            if (typeof value[j] == 'number') {
+              objectMaxLength[j] = 10;
+            } else {
+              objectMaxLength[j] =
+                objectMaxLength[j] >= value[j].length
+                  ? objectMaxLength[j]
+                  : value[j].length;
+            }
+          }
+        }
+        let wsCols = [];
+        objectMaxLength.forEach(element => {
+          wsCols.push({
+            width: element,
+          });
+        });
+        ws['!cols'] = wsCols;
+        XLSX.utils.book_append_sheet(wb, ws, config.title);
+        const wbout = XLSX.write(wb, {type: 'binary', bookType: 'xlsx'});
+        let path = dirs.DownloadDir + `/transactions-${moment()}.xlsx`;
+        RNFS.writeFile(path, wbout, 'ascii')
+          .then(r => {
+            dispatch(
+              notificationActions.showToast({
+                status: 'success',
+                message:
+                  'Your file is exported successfully. Please check the downloads folder for the file.',
+              }),
+            );
+          })
+          .catch(err => {
+            console.log(err, 'Error in exporting excel');
+            dispatch(
+              notificationActions.showToast({
+                status: 'error',
+                message: 'Something error occured while exporting the file.',
+              }),
+            );
+          });
+        return;
+        RNFetchBlob.fs
+          .writeFile(path, wbout, 'base64')
+          .then(res => {
+            console.log('successfully exported file');
+            dispatch(
+              notificationActions.showToast({
+                status: 'success',
+                message:
+                  'Your file is exported successfully. Please check the downloads folder for the file.',
+              }),
+            );
+          })
+          .catch(err => {
+            console.log(err, 'err in exporting file');
+            dispatch(
+              notificationActions.showToast({
+                status: 'error',
+                message: 'Something error occured while exporting the data',
+              }),
+            );
+          });
+      } else {
+        Alert.alert('Permission denied');
+      }
+    }
   };
 
   const onArchiveSheet = async sheet => {
@@ -857,6 +989,7 @@ export const SheetsContextProvider = ({children}) => {
         onImportData,
         onArchiveSheet,
         onPinSheet,
+        onExportDataToExcel,
         calculateBalance,
         onGoogleCloudVision,
       }}>
