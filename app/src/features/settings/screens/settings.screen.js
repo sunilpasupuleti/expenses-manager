@@ -1,5 +1,6 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import React, {useContext, useEffect, useState} from 'react';
 import {FlexRow, MainWrapper, ToggleSwitch} from '../../../components/styles';
@@ -53,7 +54,8 @@ export const SettingsScreen = ({navigation}) => {
       : false,
   );
 
-  const {onExportData, onImportData} = useContext(SheetsContext);
+  const {onExportData, onImportData, onExportAllSheetsToExcel, sheets} =
+    useContext(SheetsContext);
   const changesMade = useSelector(state => state.service.changesMade.status);
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -269,6 +271,22 @@ export const SettingsScreen = ({navigation}) => {
 
           <Spacer size={'xlarge'}>
             <SettingsCard>
+              <SettingsCardContent onPress={onExportAllSheetsToExcel}>
+                <Setting justifyContent="space-between">
+                  <FlexRow>
+                    <SettingIconWrapper color="#239F61">
+                      <FontAwesome
+                        name="file-excel-o"
+                        size={20}
+                        color="#fefefe"
+                      />
+                    </SettingIconWrapper>
+
+                    <SettingTitle>Export data to Excel</SettingTitle>
+                  </FlexRow>
+                </Setting>
+              </SettingsCardContent>
+
               <SettingsCardContent onPress={onExportData}>
                 <Setting justifyContent="space-between">
                   <FlexRow>
@@ -276,7 +294,7 @@ export const SettingsScreen = ({navigation}) => {
                       <AntDesign name="download" size={20} color="#fefefe" />
                     </SettingIconWrapper>
 
-                    <SettingTitle>Export data</SettingTitle>
+                    <SettingTitle>Export data to JSON</SettingTitle>
                   </FlexRow>
                 </Setting>
               </SettingsCardContent>
@@ -288,7 +306,7 @@ export const SettingsScreen = ({navigation}) => {
                       <AntDesign name="upload" size={20} color="#fefefe" />
                     </SettingIconWrapper>
 
-                    <SettingTitle>Import data</SettingTitle>
+                    <SettingTitle>Import data from JSON</SettingTitle>
                   </FlexRow>
                 </Setting>
               </SettingsCardContent>

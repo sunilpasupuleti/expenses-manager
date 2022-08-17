@@ -19,6 +19,7 @@ import matchWords from './category-match-words.json';
 import test from './gcp-vision-responses.json';
 import XLSX from 'xlsx';
 import moment from 'moment';
+import {GetCurrencySymbol} from '../../components/symbol.currency';
 const defaultCategories = {
   expense: [
     {
@@ -110,6 +111,7 @@ export const SheetsContext = createContext({
   onArchiveSheet: () => null,
   onPinSheet: () => null,
   calculateBalance: sheet => null,
+  onExportAllSheetsToExcel: () => null,
   onGoogleCloudVision: (base64, callback) => null,
 });
 
@@ -805,13 +807,36 @@ export const SheetsContextProvider = ({children}) => {
   };
 
   const onExportDataToExcel = async (config, data) => {
+    let wb = XLSX.utils.book_new();
+    let ws = XLSX.utils.json_to_sheet(data);
+    // for setting columns width to automatic
+    let objectMaxLength = [];
+    for (let i = 0; i < data.length; i++) {
+      let value = Object.values(data[i]);
+      for (let j = 0; j < value.length; j++) {
+        if (typeof value[j] == 'number') {
+          objectMaxLength[j] = 10;
+        } else {
+          objectMaxLength[j] =
+            objectMaxLength[j] >= value[j].length
+              ? objectMaxLength[j]
+              : value[j].length;
+        }
+      }
+    }
+    let wsCols = [];
+    objectMaxLength.forEach(element => {
+      wsCols.push({
+        width: element,
+      });
+    });
+    ws['!cols'] = wsCols;
+    XLSX.utils.book_append_sheet(wb, ws, config.title);
+    const wbout = XLSX.write(wb, {type: 'binary', bookType: 'xlsx'});
+
     if (Platform.OS === 'ios') {
       const dirs = RNFetchBlob.fs.dirs;
       var path = dirs.DocumentDir + '/transactions.xlsx';
-      let wb = XLSX.utils.book_new();
-      let ws = XLSX.utils.json_to_sheet(data);
-      XLSX.utils.book_append_sheet(wb, ws, 'Transactions');
-      const wbout = XLSX.write(wb, {type: 'binary', bookType: 'xlsx'});
       RNFetchBlob.fs
         .writeFile(path, wbout)
         .then(res => {
@@ -859,32 +884,160 @@ export const SheetsContextProvider = ({children}) => {
 
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         const dirs = RNFetchBlob.fs.dirs;
-        let wb = XLSX.utils.book_new();
-        let ws = XLSX.utils.json_to_sheet(data);
-        // for setting columns width to automatic
-        let objectMaxLength = [];
-        for (let i = 0; i < data.length; i++) {
-          let value = Object.values(data[i]);
+
+        let path = dirs.DownloadDir + `/transactions-${moment()}.xlsx`;
+        RNFS.writeFile(path, wbout, 'ascii')
+          .then(r => {
+            dispatch(
+              notificationActions.showToast({
+                status: 'success',
+                message:
+                  'Your file is exported successfully. Please check the downloads folder for the file.',
+              }),
+            );
+          })
+          .catch(err => {
+            console.log(err, 'Error in exporting excel');
+            dispatch(
+              notificationActions.showToast({
+                status: 'error',
+                message: 'Something error occured while exporting the file.',
+              }),
+            );
+          });
+        return;
+        RNFetchBlob.fs
+          .writeFile(path, wbout, 'base64')
+          .then(res => {
+            console.log('successfully exported file');
+            dispatch(
+              notificationActions.showToast({
+                status: 'success',
+                message:
+                  'Your file is exported successfully. Please check the downloads folder for the file.',
+              }),
+            );
+          })
+          .catch(err => {
+            console.log(err, 'err in exporting file');
+            dispatch(
+              notificationActions.showToast({
+                status: 'error',
+                message: 'Something error occured while exporting the data',
+              }),
+            );
+          });
+      } else {
+        Alert.alert('Permission denied');
+      }
+    }
+  };
+
+  const onExportAllSheetsToExcel = async data => {
+    let wb = XLSX.utils.book_new();
+    sheets.forEach((sheet, index) => {
+      let structuredDetails = [{}];
+      sheet.details.forEach((d, i) => {
+        let date = moment(d.date).format('MMM DD, YYYY ');
+        if (d.showTime) {
+          let time = moment(d.time).format('hh:mm A');
+          date += time;
+        }
+        let amount = `AMOUNT ( ${GetCurrencySymbol(sheet.currency)} )`;
+        let detail = {
+          'S.NO': i + 1,
+          TITLE: d.notes,
+          CATEGORY: d.category.name,
+          DATE: date,
+          [amount]: d.type === 'expense' ? -d.amount : d.amount,
+        };
+        structuredDetails.push(detail);
+      });
+      let config = {
+        title: sheet.name.toUpperCase(),
+      };
+      let ws = XLSX.utils.json_to_sheet(structuredDetails);
+      // for setting columns width to automatic
+      let objectMaxLength = [];
+      for (let i = 0; i < structuredDetails.length; i++) {
+        let value = Object.values(structuredDetails[i]);
+        if (value) {
           for (let j = 0; j < value.length; j++) {
-            if (typeof value[j] == 'number') {
-              objectMaxLength[j] = 10;
-            } else {
-              objectMaxLength[j] =
-                objectMaxLength[j] >= value[j].length
-                  ? objectMaxLength[j]
-                  : value[j].length;
+            if (value[j]) {
+              if (typeof value[j] == 'number') {
+                objectMaxLength[j] = 10;
+              } else {
+                objectMaxLength[j] =
+                  objectMaxLength[j] >= value[j].length
+                    ? objectMaxLength[j]
+                    : value[j].length;
+              }
             }
           }
         }
-        let wsCols = [];
-        objectMaxLength.forEach(element => {
-          wsCols.push({
-            width: element,
-          });
+      }
+      let wsCols = [];
+      objectMaxLength.forEach(element => {
+        wsCols.push({
+          width: element,
         });
-        ws['!cols'] = wsCols;
-        XLSX.utils.book_append_sheet(wb, ws, config.title);
-        const wbout = XLSX.write(wb, {type: 'binary', bookType: 'xlsx'});
+      });
+      ws['!cols'] = wsCols;
+      XLSX.utils.book_append_sheet(wb, ws, config.title);
+    });
+    const wbout = XLSX.write(wb, {type: 'binary', bookType: 'xlsx'});
+    if (Platform.OS === 'ios') {
+      const dirs = RNFetchBlob.fs.dirs;
+      var path = dirs.DocumentDir + '/transactions.xlsx';
+
+      RNFetchBlob.fs
+        .writeFile(path, wbout)
+        .then(res => {
+          console.log('successfully exported file ios - ' + res);
+          Share.open({
+            url: path,
+            filename: 'transactions.xlsx',
+            saveToFiles: true,
+            type: 'application/json',
+          }).catch(err => {
+            console.log(
+              err.error.message,
+              'error while exporting the data - ios',
+            );
+          });
+
+          dispatch(
+            notificationActions.showToast({
+              status: 'success',
+              message: 'Successfully exported file',
+            }),
+          );
+        })
+        .catch(err => {
+          console.log(err, 'err in exporting file in ios');
+          dispatch(
+            notificationActions.showToast({
+              status: 'error',
+              message: 'Something error occured while exporting the data',
+            }),
+          );
+        });
+    }
+    if (Platform.OS === 'android') {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+        {
+          title: 'Expenses Manager wants to save your transactions file',
+          message: 'Your app needs permission.',
+          buttonNeutral: 'Ask Me Later',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        const dirs = RNFetchBlob.fs.dirs;
+
         let path = dirs.DownloadDir + `/transactions-${moment()}.xlsx`;
         RNFS.writeFile(path, wbout, 'ascii')
           .then(r => {
@@ -973,6 +1126,7 @@ export const SheetsContextProvider = ({children}) => {
         categories,
         onSaveSheet,
         onSaveSheetDetails,
+        onExportAllSheetsToExcel,
         onSaveCategory,
         onDeleteSheet,
         onSaveExpensesData,

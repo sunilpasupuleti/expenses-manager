@@ -1,5 +1,5 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {FlatList, TouchableOpacity} from 'react-native';
 import {useTheme} from 'styled-components/native';
 import {FlexRow, MainWrapper} from '../../../../components/styles';
@@ -14,6 +14,8 @@ import {
 } from '../sheet-details/sheet-details.styles';
 import {Spacer} from '../../../../components/spacer/spacer.component';
 import {GetCurrencySymbol} from '../../../../components/symbol.currency';
+import {SheetsContext} from '../../../../services/sheets/sheets.context';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 export const SheetStatsDetailsScreen = ({navigation, route}) => {
   const [sheet, setSheet] = useState(null);
@@ -21,7 +23,9 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
   const [category, setCategory] = useState(null);
   const [totalAmount, setTotalAmount] = useState(0);
   const [groupedSheetDetails, setGroupedSheetDetails] = useState(null);
+  const {onExportDataToExcel} = useContext(SheetsContext);
   const theme = useTheme();
+
   useEffect(() => {
     let {sheet: ps, sheetDetails: psd, category: pc} = route.params;
     if (ps && psd && pc) {
@@ -29,26 +33,41 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
       setSheetDetails(psd);
       setCategory(pc);
       onGroupSheetDetails(psd);
+      navigation.setOptions({
+        headerTitle: pc.name,
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <FlexRow>
+              <Ionicons
+                name="chevron-back-outline"
+                size={25}
+                color={theme.colors.brand.primary}></Ionicons>
+              <Text color={theme.colors.brand.primary}>Back</Text>
+            </FlexRow>
+          </TouchableOpacity>
+        ),
+        headerRight: () => (
+          <Spacer position={'right'} size="medium">
+            <TouchableOpacity onPress={() => onClickExportData(ps, psd, pc)}>
+              <FlexRow>
+                <Spacer position={'right'} size="medium">
+                  <FontAwesome
+                    name="file-excel-o"
+                    size={20}
+                    color={theme.colors.brand.primary}
+                  />
+                </Spacer>
+                <Text color={theme.colors.brand.primary}>Export to Excel</Text>
+              </FlexRow>
+            </TouchableOpacity>
+          </Spacer>
+        ),
+      });
     }
-    navigation.setOptions({
-      headerTitle: pc.name,
-      headerLeft: () => (
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FlexRow>
-            <Ionicons
-              name="chevron-back-outline"
-              size={25}
-              color={theme.colors.brand.primary}></Ionicons>
-            <Text color={theme.colors.brand.primary}>Back</Text>
-          </FlexRow>
-        </TouchableOpacity>
-      ),
-    });
   }, [route.params]);
 
   const onGroupSheetDetails = sd => {
     const groupByDate = item => moment(item.date).format('YYYY-MM-DD');
-
     if (sd) {
       let totalAmount = 0;
       sd.map(d => {
@@ -67,6 +86,29 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
       });
       setGroupedSheetDetails(groupedDetails);
     }
+  };
+
+  const onClickExportData = (sh, sds, cat) => {
+    let structuredDetails = [{}];
+    sds.forEach((d, i) => {
+      let date = moment(d.date).format('MMM DD, YYYY ');
+      if (d.showTime) {
+        let time = moment(d.time).format('hh:mm A');
+        date += time;
+      }
+      let amount = `AMOUNT ( ${GetCurrencySymbol(sh.currency)} )`;
+      let detail = {
+        'S.NO': i + 1,
+        TITLE: d.notes,
+        DATE: date,
+        [amount]: d.type === 'expense' ? -d.amount : d.amount,
+      };
+      structuredDetails.push(detail);
+    });
+    let config = {
+      title: cat.name.toUpperCase(),
+    };
+    onExportDataToExcel(config, structuredDetails);
   };
 
   return (
