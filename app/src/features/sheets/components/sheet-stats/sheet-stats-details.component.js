@@ -53,11 +53,13 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
                 <Spacer position={'right'} size="medium">
                   <FontAwesome
                     name="file-excel-o"
-                    size={20}
+                    size={14}
                     color={theme.colors.brand.primary}
                   />
                 </Spacer>
-                <Text color={theme.colors.brand.primary}>Export to Excel</Text>
+                <Text fontsize={'13px'} color={theme.colors.brand.primary}>
+                  Export to Excel
+                </Text>
               </FlexRow>
             </TouchableOpacity>
           </Spacer>
@@ -90,11 +92,18 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
 
   const onClickExportData = (sh, sds, cat) => {
     let structuredDetails = [{}];
+    let totalIncome = 0;
+    let totalExpense = 0;
     sds.forEach((d, i) => {
       let date = moment(d.date).format('MMM DD, YYYY ');
       if (d.showTime) {
         let time = moment(d.time).format('hh:mm A');
         date += time;
+      }
+      if (d.type === 'expense') {
+        totalExpense += d.amount;
+      } else {
+        totalIncome += d.amount;
       }
       let amount = `AMOUNT ( ${GetCurrencySymbol(sh.currency)} )`;
       let detail = {
@@ -103,10 +112,52 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
         DATE: date,
         [amount]: d.type === 'expense' ? -d.amount : d.amount,
       };
+
       structuredDetails.push(detail);
     });
+    let extraCells = [
+      ['', '', '', '', ''],
+      [
+        '',
+        '',
+        'TOTAL INCOME ',
+        GetCurrencySymbol(sh.currency) +
+          ' ' +
+          totalIncome.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }),
+      ],
+      [
+        '',
+        '',
+        'TOTAL EXPENSES ',
+        GetCurrencySymbol(sh.currency) +
+          ' ' +
+          totalExpense.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }),
+      ],
+      [
+        '',
+        '',
+        'BALANCE',
+        GetCurrencySymbol(sh.currency) +
+          ' ' +
+          (totalIncome - totalExpense).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }),
+      ],
+    ];
+
     let config = {
       title: cat.name.toUpperCase(),
+      type: 'category',
+      extraCells,
+      sheet: {...sh},
+      wscols: [{wch: 5}, {wch: 40}, {wch: 40}, {wch: 30}],
     };
     onExportDataToExcel(config, structuredDetails);
   };

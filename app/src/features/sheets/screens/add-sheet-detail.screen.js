@@ -165,7 +165,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   const onSave = () => {
     let sheetDetail = {
       id: Date.now().toString(36) + Math.random().toString(36).substring(2),
-      amount: amount,
+      amount: parseFloat(amount),
       notes: notes ? notes.trim() : notes,
       type: activeType,
       category: selectedCategory,
@@ -198,8 +198,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   const onEdit = () => {
     let sheetDetail = {
       id: route.params.sheetDetail.id,
-      amount: amount,
-      notes: notes.trim(),
+      amount: parseFloat(amount),
+      notes: notes ? notes.trim() : notes,
       type: activeType,
       category: selectedCategory,
       date: date.toString(),
@@ -266,7 +266,12 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
             value={amount === 0 ? '' : amount.toString()}
             returnKeyType="done"
             onChangeText={n => {
-              setAmount(parseFloat(n));
+              // console.log(n.match(/\./).length);
+              if (/\./.test(n) && n.match(/\./g).length === 1) {
+                setAmount(n);
+              } else {
+                setAmount(parseFloat(n));
+              }
             }}
             placeholder="How much?"
             keyboardType="decimal-pad"

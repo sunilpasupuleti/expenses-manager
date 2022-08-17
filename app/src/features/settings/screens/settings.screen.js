@@ -294,7 +294,7 @@ export const SettingsScreen = ({navigation}) => {
                       <AntDesign name="download" size={20} color="#fefefe" />
                     </SettingIconWrapper>
 
-                    <SettingTitle>Export data to JSON</SettingTitle>
+                    <SettingTitle>Export data to JSON file</SettingTitle>
                   </FlexRow>
                 </Setting>
               </SettingsCardContent>
@@ -306,7 +306,7 @@ export const SettingsScreen = ({navigation}) => {
                       <AntDesign name="upload" size={20} color="#fefefe" />
                     </SettingIconWrapper>
 
-                    <SettingTitle>Import data from JSON</SettingTitle>
+                    <SettingTitle>Import data from JSON file</SettingTitle>
                   </FlexRow>
                 </Setting>
               </SettingsCardContent>

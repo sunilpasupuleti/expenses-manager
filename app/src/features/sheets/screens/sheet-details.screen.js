@@ -119,12 +119,20 @@ export const SheetDetailsScreen = ({navigation, route}) => {
   const onClickExportData = () => {
     let sheetDetails = sheet.details;
     let structuredDetails = [{}];
+    let totalIncome = 0;
+    let totalExpense = 0;
     sheetDetails.forEach((d, i) => {
       let date = moment(d.date).format('MMM DD, YYYY ');
       if (d.showTime) {
         let time = moment(d.time).format('hh:mm A');
         date += time;
       }
+      if (d.type === 'expense') {
+        totalExpense += d.amount;
+      } else {
+        totalIncome += d.amount;
+      }
+
       let amount = `AMOUNT ( ${GetCurrencySymbol(sheet.currency)} )`;
       let detail = {
         'S.NO': i + 1,
@@ -135,8 +143,51 @@ export const SheetDetailsScreen = ({navigation, route}) => {
       };
       structuredDetails.push(detail);
     });
+
+    let extraCells = [
+      ['', '', '', '', '', ''],
+      [
+        '',
+        '',
+        '',
+        'TOTAL INCOME ',
+        GetCurrencySymbol(sheet.currency) +
+          ' ' +
+          totalIncome.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }),
+      ],
+      [
+        '',
+        '',
+        '',
+        'TOTAL EXPENSES ',
+        GetCurrencySymbol(sheet.currency) +
+          ' ' +
+          totalExpense.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }),
+      ],
+      [
+        '',
+        '',
+        '',
+        'BALANCE',
+        GetCurrencySymbol(sheet.currency) +
+          ' ' +
+          (totalIncome - totalExpense).toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }),
+      ],
+    ];
     let config = {
       title: sheet.name.toUpperCase(),
+      extraCells,
+      sheet: {...sheet},
+      wscols: [{wch: 5}, {wch: 40}, {wch: 40}, {wch: 25}, {wch: 25}],
     };
     onExportDataToExcel(config, structuredDetails);
   };
@@ -484,7 +535,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
         value={searchKeyword}
         theme={{roundness: 10}}
         style={{elevation: 2, margin: 10, marginBottom: 0}}
-        placeholder="Search"
+        placeholder="Search by Category/Name/Amt"
         onChangeText={k => setSearchKeyword(k)}
         clearIcon={() =>
           searchKeyword !== '' && (
