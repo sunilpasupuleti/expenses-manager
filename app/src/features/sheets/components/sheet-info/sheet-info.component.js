@@ -26,26 +26,41 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
   const {sheets, onDeleteSheet, onArchiveSheet, onPinSheet} =
     useContext(SheetsContext);
   const theme = useTheme();
-  const [dupSheets, setDupSheets] = useState([]);
+  const [dupSheets, setDupSheets] = useState(null);
 
   const [showArchived, setShowArchived] = useState(true);
   const [showPinned, setShowPinned] = useState(true);
 
+  const [pinnedSheets, setPinnedSheets] = useState([null]);
+  const [archivedSheets, setArchivedSheets] = useState(null);
+
   useEffect(() => {
-    setDupSheets([...sheets]);
+    if (sheets) {
+      onGroupSheets(sheets);
+    }
   }, [sheets]);
 
   useEffect(() => {
-    setDupSheets(sheets);
+    onGroupSheets(sheets);
     if (searchKeyword !== '') {
       let filtered = sheets.filter(s => {
         return s.name
           .toLowerCase()
           .includes(searchKeyword.trim().toLowerCase());
       });
-      setDupSheets(filtered);
+      onGroupSheets(filtered);
     }
   }, [searchKeyword]);
+
+  const onGroupSheets = sheets => {
+    let pinned = sheets.filter(s => s.pinned);
+    let archived = sheets.filter(s => s.archived);
+    let normalSheets = sheets.filter(s => !s.pinned && !s.archived);
+
+    setPinnedSheets(pinned);
+    setDupSheets(normalSheets);
+    setArchivedSheets(archived);
+  };
 
   const {showActionSheetWithOptions} = useActionSheet();
 
@@ -174,10 +189,10 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
 
   return (
     <>
-      {dupSheets.length > 0 ? (
+      {sheets && sheets.length > 0 ? (
         <ScrollView showsVerticalScrollIndicator={false}>
           {/* for pinned */}
-          {dupSheets.filter(s => s.pinned).length > 0 && (
+          {pinnedSheets && pinnedSheets.length > 0 && (
             <Spacer size={'xlarge'}>
               <FlexRow justifyContent="space-between">
                 <Text fontfamily="bodyMedium">Pinned</Text>
@@ -201,138 +216,7 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
                 <Spacer size={'medium'}>
                   <Card theme={{roundness: 15}}>
                     <FadeInView>
-                      {dupSheets.map((item, index) => {
-                        if (item.pinned)
-                          return (
-                            <Swipeable
-                              key={item.id}
-                              renderRightActions={({progress, dragX}) =>
-                                rightSwipeActions(progress, dragX, item)
-                              }
-                              renderLeftActions={({progress, dragX}) =>
-                                leftSwipeActions(progress, dragX, item)
-                              }
-                              friction={2}
-                              ref={ref => {
-                                if (ref && !swipeableRefs.get(item.id)) {
-                                  swipeableRefs.set(item.id, ref);
-                                }
-                              }}
-                              onSwipeableWillOpen={() => {
-                                [...swipeableRefs.entries()].forEach(
-                                  ([key, ref]) => {
-                                    if (key !== item.id && ref) ref.close();
-                                  },
-                                );
-                              }}>
-                              <TouchableHighlightWithColor
-                                onLongPress={() => onLongPressActions(item)}
-                                padding={'0px'}
-                                onPress={
-                                  () =>
-                                    navigation.navigate('SheetDetailsHome', {
-                                      sheet: item,
-                                    })
-                                  // navigation.navigate('SheetDetails', {
-                                  //   sheet: item,
-                                  // })
-                                }>
-                                <SheetInfoCard sheet={item} index={index} />
-                              </TouchableHighlightWithColor>
-                            </Swipeable>
-                          );
-                      })}
-                    </FadeInView>
-                  </Card>
-                </Spacer>
-              )}
-            </Spacer>
-          )}
-
-          {/* normal sheets */}
-          {dupSheets.filter(s => !s.pinned && !s.archived).length > 0 ? (
-            <Spacer size="xlarge">
-              {dupSheets.filter(s => !s.pinned && !s.archived).length > 0 &&
-              (dupSheets.filter(s => s.pinned).length > 0 ||
-                dupSheets.filter(s => s.archived).length > 0) ? (
-                <Spacer position={'bottom'} size="medium">
-                  <Text fontfamily="bodyMedium">Sheets</Text>
-                </Spacer>
-              ) : null}
-              <Card theme={{roundness: 15}}>
-                <FadeInView>
-                  {dupSheets.map((item, index) => {
-                    if (!item.archived && !item.pinned)
-                      return (
-                        <Swipeable
-                          key={item.id}
-                          renderRightActions={({progress, dragX}) =>
-                            rightSwipeActions(progress, dragX, item)
-                          }
-                          renderLeftActions={({progress, dragX}) =>
-                            leftSwipeActions(progress, dragX, item)
-                          }
-                          friction={2}
-                          ref={ref => {
-                            if (ref && !swipeableRefs.get(item.id)) {
-                              swipeableRefs.set(item.id, ref);
-                            }
-                          }}
-                          onSwipeableWillOpen={() => {
-                            [...swipeableRefs.entries()].forEach(
-                              ([key, ref]) => {
-                                if (key !== item.id && ref) ref.close();
-                              },
-                            );
-                          }}>
-                          <TouchableHighlightWithColor
-                            onLongPress={() => onLongPressActions(item)}
-                            padding={'0px'}
-                            onPress={
-                              () =>
-                                navigation.navigate('SheetDetailsHome', {
-                                  sheet: item,
-                                })
-                              // navigation.navigate('SheetDetails', {
-                              //   sheet: item,
-                              // })
-                            }>
-                            <SheetInfoCard sheet={item} index={index} />
-                          </TouchableHighlightWithColor>
-                        </Swipeable>
-                      );
-                  })}
-                </FadeInView>
-              </Card>
-            </Spacer>
-          ) : null}
-          {/* for archieved */}
-          {dupSheets.filter(s => s.archived).length > 0 && (
-            <Spacer size={'xlarge'}>
-              <FlexRow justifyContent="space-between">
-                <Text fontfamily="bodyMedium">Archive</Text>
-                <Ionicons
-                  onPress={() => {
-                    Haptics.trigger('impactMedium', {
-                      ignoreAndroidSystemSettings: true,
-                    });
-                    setShowArchived(!showArchived);
-                  }}
-                  color={theme.colors.brand.primary}
-                  name={
-                    showArchived
-                      ? 'chevron-down-outline'
-                      : 'chevron-forward-outline'
-                  }
-                  size={25}
-                />
-              </FlexRow>
-              <Spacer size={'medium'} />
-              {showArchived && (
-                <Card theme={{roundness: 15}}>
-                  <FadeInView>
-                    {dupSheets.map((item, index) => {
-                      if (item.archived)
+                      {pinnedSheets.map((item, index) => {
                         return (
                           <Swipeable
                             key={item.id}
@@ -367,10 +251,148 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
                                 //   sheet: item,
                                 // })
                               }>
-                              <SheetInfoCard sheet={item} index={index} />
+                              <SheetInfoCard
+                                sheet={item}
+                                currentLength={pinnedSheets.length}
+                                index={index}
+                              />
                             </TouchableHighlightWithColor>
                           </Swipeable>
                         );
+                      })}
+                    </FadeInView>
+                  </Card>
+                </Spacer>
+              )}
+            </Spacer>
+          )}
+
+          {/* normal sheets */}
+          {dupSheets && dupSheets.length > 0 ? (
+            <Spacer size="xlarge">
+              {dupSheets.length > 0 &&
+              (sheets.filter(s => s.pinned).length > 0 ||
+                sheets.filter(s => s.archived).length > 0) ? (
+                <Spacer position={'bottom'} size="medium">
+                  <Text fontfamily="bodyMedium">Sheets</Text>
+                </Spacer>
+              ) : null}
+              <Card theme={{roundness: 15}}>
+                <FadeInView>
+                  {dupSheets.map((item, index) => {
+                    return (
+                      <Swipeable
+                        key={item.id}
+                        renderRightActions={({progress, dragX}) =>
+                          rightSwipeActions(progress, dragX, item)
+                        }
+                        renderLeftActions={({progress, dragX}) =>
+                          leftSwipeActions(progress, dragX, item)
+                        }
+                        friction={2}
+                        ref={ref => {
+                          if (ref && !swipeableRefs.get(item.id)) {
+                            swipeableRefs.set(item.id, ref);
+                          }
+                        }}
+                        onSwipeableWillOpen={() => {
+                          [...swipeableRefs.entries()].forEach(([key, ref]) => {
+                            if (key !== item.id && ref) ref.close();
+                          });
+                        }}>
+                        <TouchableHighlightWithColor
+                          onLongPress={() => onLongPressActions(item)}
+                          padding={'0px'}
+                          onPress={
+                            () =>
+                              navigation.navigate('SheetDetailsHome', {
+                                sheet: item,
+                              })
+                            // navigation.navigate('SheetDetails', {
+                            //   sheet: item,
+                            // })
+                          }>
+                          <SheetInfoCard
+                            sheet={item}
+                            index={index}
+                            currentLength={dupSheets.length}
+                          />
+                        </TouchableHighlightWithColor>
+                      </Swipeable>
+                    );
+                  })}
+                </FadeInView>
+              </Card>
+            </Spacer>
+          ) : null}
+          {/* for archived */}
+          {archivedSheets && archivedSheets.length > 0 && (
+            <Spacer size={'xlarge'}>
+              <FlexRow justifyContent="space-between">
+                <Text fontfamily="bodyMedium">Archive</Text>
+                <Ionicons
+                  onPress={() => {
+                    Haptics.trigger('impactMedium', {
+                      ignoreAndroidSystemSettings: true,
+                    });
+                    setShowArchived(!showArchived);
+                  }}
+                  color={theme.colors.brand.primary}
+                  name={
+                    showArchived
+                      ? 'chevron-down-outline'
+                      : 'chevron-forward-outline'
+                  }
+                  size={25}
+                />
+              </FlexRow>
+              <Spacer size={'medium'} />
+              {showArchived && (
+                <Card theme={{roundness: 15}}>
+                  <FadeInView>
+                    {archivedSheets.map((item, index) => {
+                      return (
+                        <Swipeable
+                          key={item.id}
+                          renderRightActions={({progress, dragX}) =>
+                            rightSwipeActions(progress, dragX, item)
+                          }
+                          renderLeftActions={({progress, dragX}) =>
+                            leftSwipeActions(progress, dragX, item)
+                          }
+                          friction={2}
+                          ref={ref => {
+                            if (ref && !swipeableRefs.get(item.id)) {
+                              swipeableRefs.set(item.id, ref);
+                            }
+                          }}
+                          onSwipeableWillOpen={() => {
+                            [...swipeableRefs.entries()].forEach(
+                              ([key, ref]) => {
+                                if (key !== item.id && ref) ref.close();
+                              },
+                            );
+                          }}>
+                          <TouchableHighlightWithColor
+                            onLongPress={() => onLongPressActions(item)}
+                            padding={'0px'}
+                            onPress={
+                              () =>
+                                navigation.navigate('SheetDetailsHome', {
+                                  sheet: item,
+                                })
+                              // navigation.navigate('SheetDetails', {
+                              //   sheet: item,
+                              // })
+                            }>
+                            <SheetInfoCard
+                              sheet={item}
+                              currentLength={archivedSheets.length}
+                              index={index}
+                            />
+                          </TouchableHighlightWithColor>
+                        </Swipeable>
+                      );
                     })}
                   </FadeInView>
                 </Card>

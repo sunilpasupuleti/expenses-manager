@@ -7,7 +7,8 @@ export const SheetName = styled(Text)`
 
 export const BorderLine = styled.View`
   border-bottom-color: #ccc;
-  border-bottom-width: 0.5px;
+  border-bottom-width: 0.7px;
+  border-radius: 10px;
 `;
 
 export const TotalBalance = styled(Text).attrs({

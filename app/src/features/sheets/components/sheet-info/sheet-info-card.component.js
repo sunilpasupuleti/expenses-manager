@@ -12,11 +12,13 @@ import {View} from 'react-native';
 import {FlexRow} from '../../../../components/styles';
 import {Text} from '../../../../components/typography/text.component';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
-import {GetCurrencySymbol} from '../../../../components/symbol.currency';
+import {
+  GetCurrencyLocalString,
+  GetCurrencySymbol,
+} from '../../../../components/symbol.currency';
 import {Spacer} from '../../../../components/spacer/spacer.component';
-export const SheetInfoCard = ({sheet = {}, index}) => {
+export const SheetInfoCard = ({sheet = {}, currentLength, index}) => {
   const {sheets} = useContext(SheetsContext);
-
   return (
     <>
       <FlexRow justifyContent="space-between">
@@ -27,10 +29,7 @@ export const SheetInfoCard = ({sheet = {}, index}) => {
               {sheet.showTotalBalance && (
                 <TotalBalance archived={sheet.archived}>
                   {GetCurrencySymbol(sheet.currency)}{' '}
-                  {sheet.totalBalance.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
+                  {GetCurrencyLocalString(sheet.totalBalance)}
                 </TotalBalance>
               )}
 
@@ -51,7 +50,7 @@ export const SheetInfoCard = ({sheet = {}, index}) => {
           </FlexRow>
         </View>
       </FlexRow>
-      {sheets.length - 1 != index && <BorderLine />}
+      {currentLength > 0 && currentLength - 1 !== index && <BorderLine />}
     </>
   );
 };

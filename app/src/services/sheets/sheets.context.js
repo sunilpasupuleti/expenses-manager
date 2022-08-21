@@ -19,7 +19,10 @@ import matchWords from '../../components/utility/category-match-words.json';
 import test from '../../components/utility/gcp-vision-responses.json';
 import XLSX from 'xlsx';
 import moment from 'moment';
-import {GetCurrencySymbol} from '../../components/symbol.currency';
+import {
+  GetCurrencyLocalString,
+  GetCurrencySymbol,
+} from '../../components/symbol.currency';
 const defaultCategories = {
   expense: [
     {
@@ -942,10 +945,7 @@ export const SheetsContextProvider = ({children}) => {
             'TOTAL INCOME ',
             GetCurrencySymbol(sheet.currency) +
               ' ' +
-              totalIncome.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              }),
+              GetCurrencyLocalString(totalIncome),
           ],
           [
             '',
@@ -954,10 +954,7 @@ export const SheetsContextProvider = ({children}) => {
             'TOTAL EXPENSES ',
             GetCurrencySymbol(sheet.currency) +
               ' ' +
-              totalExpense.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              }),
+              GetCurrencyLocalString(totalExpense),
           ],
           [
             '',
@@ -966,10 +963,7 @@ export const SheetsContextProvider = ({children}) => {
             'BALANCE',
             GetCurrencySymbol(sheet.currency) +
               ' ' +
-              sheet.totalBalance.toLocaleString(undefined, {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              }),
+              GetCurrencyLocalString(sheet.totalBalance),
           ],
         ],
         {origin: -1},

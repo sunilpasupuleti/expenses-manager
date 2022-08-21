@@ -86,7 +86,6 @@ export const AddCategoryScreen = ({navigation, route}) => {
         setEditMode(true);
         setDisabled(false);
         let category = route.params.category;
-        console.log(category);
         setCategoryId(category.id);
         setCategoryName(category.name);
         setCategoryColor(category.color);

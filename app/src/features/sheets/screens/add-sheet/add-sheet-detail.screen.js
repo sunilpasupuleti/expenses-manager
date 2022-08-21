@@ -22,7 +22,10 @@ import {
   ToggleSwitch,
 } from '../../../../components/styles';
 import {Text} from '../../../../components/typography/text.component';
-import {GetCurrencySymbol} from '../../../../components/symbol.currency';
+import {
+  GetCurrencyLocalString,
+  GetCurrencySymbol,
+} from '../../../../components/symbol.currency';
 import {CategoryTabs} from '../../../categories/components/category-tabs.component';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {
@@ -261,11 +264,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
           showsVerticalScrollIndicator={false}>
           <SheetDetailsTotalBalance fontsize={'30px'} fontfamily="bodySemiBold">
             {activeType === 'expense' && '-'}
-            {GetCurrencySymbol(sheet.currency)}{' '}
-            {amount.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+            {GetCurrencySymbol(sheet.currency)} {GetCurrencyLocalString(amount)}
           </SheetDetailsTotalBalance>
           <SheetDetailsUnderline />
 

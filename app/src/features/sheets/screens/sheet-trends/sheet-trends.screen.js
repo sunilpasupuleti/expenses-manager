@@ -13,7 +13,10 @@ import {SafeArea} from '../../../../components/utility/safe-area.component';
 import {CategoryTabs} from '../../../categories/components/category-tabs.component';
 import {Spacer} from '../../../../components/spacer/spacer.component';
 import {MainWrapper} from '../../../../components/styles';
-import {GetCurrencySymbol} from '../../../../components/symbol.currency';
+import {
+  GetCurrencyLocalString,
+  GetCurrencySymbol,
+} from '../../../../components/symbol.currency';
 import {
   StatsTitle,
   ToolTip,
@@ -280,11 +283,7 @@ export const SheetTrendsScreen = ({navigation, route}) => {
                     value +=
                       GetCurrencySymbol(sheet.currency) +
                       ' ' +
-                      data.value.toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      });
-
+                      GetCurrencyLocalString(data.value);
                     let isSamePoint =
                       tooltipPos.last14days.x === data.x &&
                       tooltipPos.last14days.y === data.y;
@@ -383,10 +382,7 @@ export const SheetTrendsScreen = ({navigation, route}) => {
                     value +=
                       GetCurrencySymbol(sheet.currency) +
                       '  ' +
-                      data.value.toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
-                      });
+                      GetCurrencyLocalString(data.value);
 
                     let isSamePoint =
                       tooltipPos.last12months.x === data.x &&

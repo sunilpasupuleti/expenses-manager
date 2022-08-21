@@ -24,7 +24,10 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {GetCurrencySymbol} from '../../../../components/symbol.currency';
+import {
+  GetCurrencyLocalString,
+  GetCurrencySymbol,
+} from '../../../../components/symbol.currency';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
 moment.suppressDeprecationWarnings = true;
 
@@ -115,10 +118,7 @@ export const SheetDetailsInfo = ({
                 fontfamily="bodyMedium"
                 color={theme.colors.brand.primary}>
                 {GetCurrencySymbol(sheet.currency)}{' '}
-                {totalBalance?.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
+                {GetCurrencyLocalString(totalBalance)}
               </Text>
             </SheetDetailDateAmount>
           </FlexRow>
@@ -156,10 +156,7 @@ export const SheetDetailsInfo = ({
                         <SheetDetailAmount type={sd.type}>
                           {sd.type === 'expense' && '-'}
                           {GetCurrencySymbol(sheet.currency)}{' '}
-                          {sd.amount.toLocaleString(undefined, {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })}
+                          {GetCurrencyLocalString(sd.amount)}
                         </SheetDetailAmount>
                       </FlexRow>
                       <SheetDetailNotes>

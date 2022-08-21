@@ -3,12 +3,16 @@ import Haptics from 'react-native-haptic-feedback';
 import React, {useEffect, useState} from 'react';
 import {Animated} from 'react-native';
 
-export const CategoryTabs = ({setActiveType, activeType}) => {
+export const CategoryTabs = ({
+  setActiveType,
+  activeType,
+  tabReverse = false,
+}) => {
   const [slideAnimation, setSlideAnimation] = useState(new Animated.Value(0));
 
   let interPolateRotating = slideAnimation.interpolate({
     inputRange: [0, 1, 2],
-    outputRange: [150, 0, -150],
+    outputRange: !tabReverse ? [150, 0, -150] : [-150, 0, 150],
   });
 
   const animatedStyles = {
@@ -46,7 +50,7 @@ export const CategoryTabs = ({setActiveType, activeType}) => {
     runAnimation();
   }, [activeType]);
 
-  return (
+  return !tabReverse ? (
     <Tabs>
       <Tab onPress={() => setActiveType('expense')}>
         <TabView
@@ -61,6 +65,24 @@ export const CategoryTabs = ({setActiveType, activeType}) => {
           active={activeType === 'income'}
           style={activeType === 'income' && animatedStyles.x}>
           <TabText>Income</TabText>
+        </TabView>
+      </Tab>
+    </Tabs>
+  ) : (
+    <Tabs>
+      <Tab onPress={() => setActiveType('income')}>
+        <TabView
+          active={activeType === 'income'}
+          style={activeType === 'income' && animatedStyles.x}>
+          <TabText>Income</TabText>
+        </TabView>
+      </Tab>
+
+      <Tab onPress={() => setActiveType('expense')}>
+        <TabView
+          active={activeType === 'expense'}
+          style={activeType === 'expense' && animatedStyles.x}>
+          <TabText>Expense</TabText>
         </TabView>
       </Tab>
     </Tabs>

@@ -4,7 +4,10 @@ import {View} from 'react-native';
 import {ProgressBar} from 'react-native-paper';
 import {Spacer} from '../../../../components/spacer/spacer.component';
 import {FlexRow} from '../../../../components/styles';
-import {GetCurrencySymbol} from '../../../../components/symbol.currency';
+import {
+  GetCurrencyLocalString,
+  GetCurrencySymbol,
+} from '../../../../components/symbol.currency';
 import {Text} from '../../../../components/typography/text.component';
 import {
   SheetDetailCategory,
@@ -41,11 +44,7 @@ export const StatsInfoCard = ({
           <Spacer />
           <Text fontsize="14px" color="#8a8a8d" fontfamily="bodyBold">
             {activeType === 'expense' && '-'}
-            {GetCurrencySymbol(currency)}{' '}
-            {totalBalance.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}{' '}
+            {GetCurrencySymbol(currency)} {GetCurrencyLocalString(totalBalance)}{' '}
           </Text>
           {!category.total && (
             <Spacer>

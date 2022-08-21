@@ -13,7 +13,10 @@ import {
   SheetDetailsUnderline,
 } from '../sheet-details/sheet-details.styles';
 import {Spacer} from '../../../../components/spacer/spacer.component';
-import {GetCurrencySymbol} from '../../../../components/symbol.currency';
+import {
+  GetCurrencyLocalString,
+  GetCurrencySymbol,
+} from '../../../../components/symbol.currency';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
 
 import {SheetDetailsInfo} from '../sheet-details/sheet-details-info.component';
@@ -124,10 +127,7 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
         'TOTAL INCOME ',
         GetCurrencySymbol(sh.currency) +
           ' ' +
-          totalIncome.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          }),
+          GetCurrencyLocalString(totalIncome),
       ],
       [
         '',
@@ -135,10 +135,7 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
         'TOTAL EXPENSES ',
         GetCurrencySymbol(sh.currency) +
           ' ' +
-          totalExpense.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          }),
+          GetCurrencyLocalString(totalExpense),
       ],
       [
         '',
@@ -146,10 +143,7 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
         'BALANCE',
         GetCurrencySymbol(sh.currency) +
           ' ' +
-          (totalIncome - totalExpense).toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          }),
+          GetCurrencyLocalString(totalIncome - totalExpense),
       ],
     ];
 
@@ -170,10 +164,7 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
           <SheetDetailsTotalBalance fontsize={'30px'} fontfamily="bodySemiBold">
             {/* {"\u20B9"}{" "} */}
             {GetCurrencySymbol(sheet.currency)}{' '}
-            {totalAmount.toLocaleString(undefined, {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            })}
+            {GetCurrencyLocalString(totalAmount)}
           </SheetDetailsTotalBalance>
           <SheetDetailsUnderline />
           <Spacer size={'xlarge'} />
