@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {FlatList, TouchableOpacity} from 'react-native';
-import {StatsInfoCard} from './sheet-stats-info-card.components';
 import _ from 'lodash';
+import {StatsInfoCard} from './sheet-stats-info-card.components';
 import {Text} from '../../../../components/typography/text.component';
 export const StatsInfo = ({details, activeType, navigation, sheet}) => {
   const [finalTotal, setFinalTotal] = useState(0);

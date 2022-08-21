@@ -2,17 +2,17 @@ import React, {useContext, useEffect, useState} from 'react';
 import {View} from 'react-native';
 import {Button, Card} from 'react-native-paper';
 import {useTheme} from 'styled-components/native';
-import {FadeInView} from '../../../components/animations/fade.animation';
+import {FadeInView} from '../../../../components/animations/fade.animation';
 import {
   ButtonText,
   MainWrapper,
   TouchableHighlightWithColor,
-} from '../../../components/styles';
-import {Text} from '../../../components/typography/text.component';
-import {SafeArea} from '../../../components/utility/safe-area.component';
-import {SheetsContext} from '../../../services/sheets/sheets.context';
-import {SheetInfoCard} from '../components/sheet-info-card.component';
-import {SheetsList} from '../components/sheets.styles';
+} from '../../../../components/styles';
+import {Text} from '../../../../components/typography/text.component';
+import {SafeArea} from '../../../../components/utility/safe-area.component';
+import {SheetsContext} from '../../../../services/sheets/sheets.context';
+import {SheetInfoCard} from '../../components/sheet-info/sheet-info-card.component';
+import {SheetsList} from '../../components/sheets.styles';
 export const MoveSheetScreen = ({navigation, route}) => {
   const [sheet, setSheet] = useState(null);
   const [sheetDetail, setSheetDetail] = useState(null);
@@ -31,17 +31,18 @@ export const MoveSheetScreen = ({navigation, route}) => {
         );
       },
       headerRight: () => {
-        if (!dupSheets || dupSheets.length === 0) {
-          return (
-            <Button
-              uppercase={false}
-              onPress={() => onMove(sheet, moveToSheet, sheetDetail)}>
-              <ButtonText>Done</ButtonText>
-            </Button>
-          );
-        } else {
-          return null;
-        }
+        // if (!dupSheets || dupSheets.length === 0) {
+        return (
+          <Button
+            uppercase={false}
+            disabled={!moveToSheet}
+            onPress={() => onMove(sheet, moveToSheet, sheetDetail)}>
+            <ButtonText disabled={!moveToSheet}>Done</ButtonText>
+          </Button>
+        );
+        // } else {
+        //   return null;
+        // }
       },
       headerTitle: 'Move Sheet',
     });
@@ -63,7 +64,11 @@ export const MoveSheetScreen = ({navigation, route}) => {
 
   const onMove = (sheet, moveToSheet, sheetDetail) => {
     onMoveSheets(sheet, moveToSheet, sheetDetail, moveFromSheet => {
-      navigation.navigate('SheetDetails', {sheet: moveFromSheet});
+      navigation.navigate('SheetDetailsHome', {
+        screen: 'Transactions',
+        sheet: moveFromSheet,
+      });
+      // navigation.navigate('SheetDetails', {sheet: moveFromSheet});
     });
   };
 

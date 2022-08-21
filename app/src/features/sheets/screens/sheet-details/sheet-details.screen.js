@@ -11,22 +11,9 @@ import {
   View,
 } from 'react-native';
 import {useTheme} from 'styled-components/native';
-import {FlexRow, MainWrapper} from '../../../components/styles';
-import {Text} from '../../../components/typography/text.component';
-import {SafeArea} from '../../../components/utility/safe-area.component';
-import {
-  BottomIconsContainer,
-  CameraButton,
-  CameraIcon,
-  SheetDetailsAddIcon,
-  SheetDetailsTotalBalance,
-  SheetDetailsUnderline,
-} from '../components/sheet-details/sheet-details.styles';
+
 import moment from 'moment';
 import _ from 'lodash';
-import {SheetDetailsInfo} from '../components/sheet-details/sheet-details-info.component';
-import {Spacer} from '../../../components/spacer/spacer.component';
-import {SheetsContext} from '../../../services/sheets/sheets.context';
 import {Searchbar} from 'react-native-paper';
 import {
   Menu,
@@ -34,13 +21,30 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
-import {GetCurrencySymbol} from '../../../components/symbol.currency';
+
 import {useDispatch} from 'react-redux';
 import {Button, Dialog, Portal} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Platform} from 'react-native';
-import {fetchExchangeRates} from '../../../store/service-slice';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {FlexRow, MainWrapper} from '../../../../components/styles';
+
+import {Text} from '../../../../components/typography/text.component';
+import {SafeArea} from '../../../../components/utility/safe-area.component';
+import {
+  BottomIconsContainer,
+  CameraButton,
+  CameraIcon,
+  SheetDetailsAddIcon,
+  SheetDetailsTotalBalance,
+  SheetDetailsUnderline,
+} from '../../components/sheet-details/sheet-details.styles';
+import {SheetDetailsInfo} from '../../components/sheet-details/sheet-details-info.component';
+import {Spacer} from '../../../../components/spacer/spacer.component';
+import {SheetsContext} from '../../../../services/sheets/sheets.context';
+import {GetCurrencySymbol} from '../../../../components/symbol.currency';
+import {fetchExchangeRates} from '../../../../store/service-slice';
+import {useIsFocused} from '@react-navigation/native';
 
 const subtractMonths = numOfMonths => {
   let date = new Date();
@@ -54,6 +58,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
   const [customFilteredSheet, setCustomFilteredSheet] = useState(
     route.params.sheet,
   );
+  const routeIsFocused = useIsFocused();
 
   const [groupedSheetDetails, setGroupedSheetDetails] = useState({});
   let date = new Date();
@@ -193,165 +198,171 @@ export const SheetDetailsScreen = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    navigation.setOptions({
-      headerTitle: '',
-      headerStyle: {
-        backgroundColor: theme.colors.bg.primary,
-      },
-      headerLeft: () => (
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FlexRow>
-            <Ionicons
-              name="chevron-back-outline"
-              size={25}
-              color={theme.colors.brand.primary}></Ionicons>
-            <Text color={theme.colors.brand.primary}>Back</Text>
-          </FlexRow>
-        </TouchableOpacity>
-      ),
-      headerRight: () => (
-        <Menu
-          style={{marginRight: 10}}
-          onBackdropPress={() => menuRef.current.close()}
-          ref={element => (menuRef.current = element)}>
-          <MenuTrigger
-            customStyles={{
-              triggerTouchable: {
-                underlayColor: '#eee',
-                onPress: () => {
-                  menuRef.current.open();
+    if (routeIsFocused) {
+      navigation.setOptions({
+        headerTitle: '',
+        headerStyle: {
+          backgroundColor: theme.colors.bg.primary,
+        },
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <FlexRow>
+              <Ionicons
+                name="chevron-back-outline"
+                size={25}
+                color={theme.colors.brand.primary}></Ionicons>
+              <Text color={theme.colors.brand.primary}>Back</Text>
+            </FlexRow>
+          </TouchableOpacity>
+        ),
+        headerRight: () => (
+          <Menu
+            style={{marginRight: 10}}
+            onBackdropPress={() => menuRef.current.close()}
+            ref={element => (menuRef.current = element)}>
+            <MenuTrigger
+              customStyles={{
+                triggerTouchable: {
+                  underlayColor: '#eee',
+                  onPress: () => {
+                    menuRef.current.open();
+                  },
                 },
-              },
-              TriggerTouchableComponent: TouchableOpacity,
-            }}>
-            <MaterialCommunityIcons
-              name="dots-horizontal-circle-outline"
-              size={25}
-              color={theme.colors.brand.primary}
-            />
-          </MenuTrigger>
+                TriggerTouchableComponent: TouchableOpacity,
+              }}>
+              <MaterialCommunityIcons
+                name="dots-horizontal-circle-outline"
+                size={25}
+                color={theme.colors.brand.primary}
+              />
+            </MenuTrigger>
 
-          <MenuOptions
-            optionsContainerStyle={{
-              marginRight: 10,
-              marginTop: 35,
-              borderRadius: 10,
-              minWidth: 250,
-            }}>
-            <MenuOption
-              customStyles={menuOptionStyles}
-              onSelect={() => {
-                menuRef.current.close();
-                navigation.navigate('SheetStats', {sheet});
+            <MenuOptions
+              optionsContainerStyle={{
+                marginRight: 10,
+                marginTop: 35,
+                borderRadius: 10,
+                minWidth: 250,
               }}>
-              <FlexRow justifyContent="space-between">
-                <Text color="#2f2f2f" fontfamily="heading">
-                  Stats
-                </Text>
-                <Ionicons
-                  style={{paddingBottom: 8}}
-                  name="pie-chart-outline"
-                  size={20}
-                  color={'#000'}
-                />
-              </FlexRow>
-            </MenuOption>
-            <MenuOption
-              customStyles={menuOptionStyles}
-              onSelect={() => {
-                menuRef.current.close();
-                navigation.navigate('SheetTrends', {sheet});
-              }}>
-              <FlexRow justifyContent="space-between">
-                <Text color="#2f2f2f" fontfamily="heading">
-                  Trends
-                </Text>
-                <Ionicons
-                  style={{paddingBottom: 8}}
-                  name="trending-up-outline"
-                  size={20}
-                  color={'#000'}
-                />
-              </FlexRow>
-            </MenuOption>
+              <MenuOption
+                customStyles={menuOptionStyles}
+                onSelect={() => {
+                  menuRef.current.close();
+                  navigation.navigate('SheetStats', {sheet});
+                }}>
+                <FlexRow justifyContent="space-between">
+                  <Text color="#2f2f2f" fontfamily="heading">
+                    Stats
+                  </Text>
+                  <Ionicons
+                    style={{paddingBottom: 8}}
+                    name="pie-chart-outline"
+                    size={20}
+                    color={'#000'}
+                  />
+                </FlexRow>
+              </MenuOption>
+              <MenuOption
+                customStyles={menuOptionStyles}
+                onSelect={() => {
+                  menuRef.current.close();
+                  navigation.navigate('SheetTrends', {sheet});
+                }}>
+                <FlexRow justifyContent="space-between">
+                  <Text color="#2f2f2f" fontfamily="heading">
+                    Trends
+                  </Text>
+                  <Ionicons
+                    style={{paddingBottom: 8}}
+                    name="trending-up-outline"
+                    size={20}
+                    color={'#000'}
+                  />
+                </FlexRow>
+              </MenuOption>
 
-            <MenuOption
-              customStyles={menuOptionStyles}
-              onSelect={() => {
-                dispatch(
-                  fetchExchangeRates({
-                    showAlert: false,
-                    BASE_CURRENCY: sheet.currency,
-                    dispatch: dispatch,
-                  }),
-                );
-                menuRef.current.close();
-                navigation.navigate('CurrencyRates', {
-                  display: true,
-                  selectedCurrency: sheet.currency,
-                });
-              }}>
-              <FlexRow justifyContent="space-between">
-                <Text color="#2f2f2f" fontfamily="heading">
-                  Curreny Rate
-                </Text>
-                <FontAwesome
-                  style={{paddingBottom: 8}}
-                  name="money"
-                  size={20}
-                  color={'#000'}
-                />
-              </FlexRow>
-            </MenuOption>
+              <MenuOption
+                customStyles={menuOptionStyles}
+                onSelect={() => {
+                  dispatch(
+                    fetchExchangeRates({
+                      showAlert: false,
+                      BASE_CURRENCY: sheet.currency,
+                      dispatch: dispatch,
+                    }),
+                  );
+                  menuRef.current.close();
+                  navigation.navigate('CurrencyRates', {
+                    display: true,
+                    selectedCurrency: sheet.currency,
+                  });
+                }}>
+                <FlexRow justifyContent="space-between">
+                  <Text color="#2f2f2f" fontfamily="heading">
+                    Curreny Rate
+                  </Text>
+                  <FontAwesome
+                    style={{paddingBottom: 8}}
+                    name="money"
+                    size={20}
+                    color={'#000'}
+                  />
+                </FlexRow>
+              </MenuOption>
 
-            <MenuOption
-              customStyles={menuOptionStyles}
-              onSelect={() => {
-                menuRef.current.close();
-                navigation.navigate('AddSheet', {
-                  sheet,
-                  edit: true,
-                  callback: sheet =>
-                    navigation.navigate('SheetDetails', {sheet}),
-                });
-              }}>
-              <FlexRow justifyContent="space-between">
-                <Text color="#2f2f2f" fontfamily="heading">
-                  Edit Sheet
-                </Text>
-                <Ionicons
-                  style={{paddingBottom: 8}}
-                  name="pencil-outline"
-                  size={20}
-                  color={'#000'}
-                />
-              </FlexRow>
-            </MenuOption>
+              <MenuOption
+                customStyles={menuOptionStyles}
+                onSelect={() => {
+                  menuRef.current.close();
+                  navigation.navigate('AddSheet', {
+                    sheet,
+                    edit: true,
+                    callback: sheet =>
+                      navigation.navigate('SheetDetailsHome', {
+                        screen: 'Transactions',
+                        sheet: sheet,
+                      }),
+                    // navigation.navigate('SheetDetails', {sheet}),
+                  });
+                }}>
+                <FlexRow justifyContent="space-between">
+                  <Text color="#2f2f2f" fontfamily="heading">
+                    Edit Sheet
+                  </Text>
+                  <Ionicons
+                    style={{paddingBottom: 8}}
+                    name="pencil-outline"
+                    size={20}
+                    color={'#000'}
+                  />
+                </FlexRow>
+              </MenuOption>
 
-            <MenuOption
-              customStyles={menuOptionStyles}
-              onSelect={() => {
-                menuRef.current.close();
-                onClickExportData();
-              }}>
-              <FlexRow justifyContent="space-between">
-                <Text color="#2f2f2f" fontfamily="heading">
-                  Export as excel
-                </Text>
-                <FontAwesome
-                  style={{paddingBottom: 8}}
-                  name="file-excel-o"
-                  size={20}
-                  color={'#000'}
-                />
-              </FlexRow>
-            </MenuOption>
-          </MenuOptions>
-          <Spacer size={'medium'} />
-        </Menu>
-      ),
-    });
-  }, [navigation, sheet]);
+              <MenuOption
+                customStyles={menuOptionStyles}
+                onSelect={() => {
+                  menuRef.current.close();
+                  onClickExportData();
+                }}>
+                <FlexRow justifyContent="space-between">
+                  <Text color="#2f2f2f" fontfamily="heading">
+                    Export as excel
+                  </Text>
+                  <FontAwesome
+                    style={{paddingBottom: 8}}
+                    name="file-excel-o"
+                    size={20}
+                    color={'#000'}
+                  />
+                </FlexRow>
+              </MenuOption>
+            </MenuOptions>
+            <Spacer size={'medium'} />
+          </Menu>
+        ),
+      });
+    }
+  }, [navigation, sheet, useIsFocused]);
 
   useEffect(() => {
     let fsheet;
@@ -623,7 +634,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
             <CameraButton onPress={() => cameraRef.current.open()}>
               <CameraIcon
                 name="camera-outline"
-                size={25}
+                size={20}
                 color="#fff"
                 // color={theme.colors.brand.primary}
               />
@@ -632,8 +643,8 @@ export const SheetDetailsScreen = ({navigation, route}) => {
 
           <MenuOptions
             optionsContainerStyle={{
-              marginLeft: 15,
-              marginTop: -40,
+              marginLeft: 35,
+              marginTop: -80,
               borderRadius: 10,
               minWidth: 250,
             }}>
@@ -647,7 +658,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 <Text color="#2f2f2f" fontfamily="heading">
                   Take a Photo
                 </Text>
-                <Ionicons name="camera-outline" size={25} color="#000" />
+                <Ionicons name="camera-outline" size={20} color="#000" />
               </FlexRow>
             </MenuOption>
             <MenuOption
@@ -673,7 +684,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 sheet: sheet,
               });
             }}>
-            <AntDesign name="plus" size={40} color={'#fff'} />
+            <AntDesign name="plus" size={20} color={'#fff'} />
           </TouchableNativeFeedback>
         </SheetDetailsAddIcon>
       </BottomIconsContainer>

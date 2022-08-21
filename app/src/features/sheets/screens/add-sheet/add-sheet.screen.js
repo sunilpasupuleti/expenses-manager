@@ -4,23 +4,23 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import React, {useContext, useEffect, useState} from 'react';
 import {Button} from 'react-native-paper';
 import {useTheme} from 'styled-components/native';
-import {Spacer} from '../../../components/spacer/spacer.component';
 import {
   ButtonText,
   FlexRow,
   MainWrapper,
   ToggleSwitch,
   TouchableHighlightWithColor,
-} from '../../../components/styles';
-import {Text} from '../../../components/typography/text.component';
-import {SafeArea} from '../../../components/utility/safe-area.component';
-import {SheetsContext} from '../../../services/sheets/sheets.context';
-import {AddSheetInput} from '../components/add-sheet-input.component';
+} from '../../../../components/styles';
+import {AddSheetInput} from '../../components/add-sheet/add-sheet-input.component';
+import {GetCurrencySymbol} from '../../../../components/symbol.currency';
 import {
   AdvancedSettings,
   AdvancedSettingsContainer,
-} from '../components/add-sheet.styles';
-import {GetCurrencySymbol} from '../../../components/symbol.currency';
+} from '../../components/add-sheet/add-sheet.styles';
+import {SheetsContext} from '../../../../services/sheets/sheets.context';
+import {SafeArea} from '../../../../components/utility/safe-area.component';
+import {Text} from '../../../../components/typography/text.component';
+import {Spacer} from '../../../../components/spacer/spacer.component';
 
 export const AddSheetScreen = ({navigation, route}) => {
   const theme = useTheme();
@@ -93,6 +93,10 @@ export const AddSheetScreen = ({navigation, route}) => {
     };
     onSaveSheet(sheet, () => {
       navigation.goBack();
+      // navigation.navigate('SheetDetailsHome', {
+      //   screen: 'Transactions',
+      //   sheet: sheet,
+      // });
     });
   };
 

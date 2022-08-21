@@ -2,12 +2,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import React, {useContext, useEffect, useState} from 'react';
 import {FlatList, TouchableOpacity} from 'react-native';
 import {useTheme} from 'styled-components/native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {FlexRow, MainWrapper} from '../../../../components/styles';
 import {Text} from '../../../../components/typography/text.component';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
 import moment from 'moment';
 import _ from 'lodash';
-import {SheetDetailsInfo} from '../sheet-details/sheet-details-info.component';
 import {
   SheetDetailsTotalBalance,
   SheetDetailsUnderline,
@@ -15,7 +15,8 @@ import {
 import {Spacer} from '../../../../components/spacer/spacer.component';
 import {GetCurrencySymbol} from '../../../../components/symbol.currency';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+import {SheetDetailsInfo} from '../sheet-details/sheet-details-info.component';
 
 export const SheetStatsDetailsScreen = ({navigation, route}) => {
   const [sheet, setSheet] = useState(null);

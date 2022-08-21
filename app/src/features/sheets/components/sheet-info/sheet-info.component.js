@@ -1,26 +1,27 @@
 import {Swipeable, TouchableOpacity} from 'react-native-gesture-handler';
-import {SwipeableView} from '../components/sheet-info-card.styles';
+import {SwipeableView} from './sheet-info-card.styles';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import {FadeInView} from '../../../components/animations/fade.animation';
-import {Spacer} from '../../../components/spacer/spacer.component';
-import {SheetsContext} from '../../../services/sheets/sheets.context';
-import {SheetInfoCard} from '../components/sheet-info-card.component';
 import React, {useContext, useEffect, useState} from 'react';
 import {Card} from 'react-native-paper';
-import {Text} from '../../../components/typography/text.component';
 
-import {NoSheets, SheetsList} from '../components/sheets.styles';
 import {Alert, ScrollView} from 'react-native';
 import {useActionSheet} from '@expo/react-native-action-sheet';
-
-import {FlexRow, TouchableHighlightWithColor} from '../../../components/styles';
 import Haptics from 'react-native-haptic-feedback';
-
 import {useTheme} from 'styled-components/native';
+import {FadeInView} from '../../../../components/animations/fade.animation';
+import {Spacer} from '../../../../components/spacer/spacer.component';
+import {SheetsContext} from '../../../../services/sheets/sheets.context';
+import {SheetInfoCard} from './sheet-info-card.component';
+import {Text} from '../../../../components/typography/text.component';
+import {NoSheets, SheetsList} from '../sheets.styles';
+import {
+  FlexRow,
+  TouchableHighlightWithColor,
+} from '../../../../components/styles';
 export const SheetsInfo = ({navigation, searchKeyword}) => {
   const {sheets, onDeleteSheet, onArchiveSheet, onPinSheet} =
     useContext(SheetsContext);
@@ -227,10 +228,14 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
                               <TouchableHighlightWithColor
                                 onLongPress={() => onLongPressActions(item)}
                                 padding={'0px'}
-                                onPress={() =>
-                                  navigation.navigate('SheetDetails', {
-                                    sheet: item,
-                                  })
+                                onPress={
+                                  () =>
+                                    navigation.navigate('SheetDetailsHome', {
+                                      sheet: item,
+                                    })
+                                  // navigation.navigate('SheetDetails', {
+                                  //   sheet: item,
+                                  // })
                                 }>
                                 <SheetInfoCard sheet={item} index={index} />
                               </TouchableHighlightWithColor>
@@ -283,10 +288,14 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
                           <TouchableHighlightWithColor
                             onLongPress={() => onLongPressActions(item)}
                             padding={'0px'}
-                            onPress={() =>
-                              navigation.navigate('SheetDetails', {
-                                sheet: item,
-                              })
+                            onPress={
+                              () =>
+                                navigation.navigate('SheetDetailsHome', {
+                                  sheet: item,
+                                })
+                              // navigation.navigate('SheetDetails', {
+                              //   sheet: item,
+                              // })
                             }>
                             <SheetInfoCard sheet={item} index={index} />
                           </TouchableHighlightWithColor>
@@ -349,10 +358,14 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
                             <TouchableHighlightWithColor
                               onLongPress={() => onLongPressActions(item)}
                               padding={'0px'}
-                              onPress={() =>
-                                navigation.navigate('SheetDetails', {
-                                  sheet: item,
-                                })
+                              onPress={
+                                () =>
+                                  navigation.navigate('SheetDetailsHome', {
+                                    sheet: item,
+                                  })
+                                // navigation.navigate('SheetDetails', {
+                                //   sheet: item,
+                                // })
                               }>
                               <SheetInfoCard sheet={item} index={index} />
                             </TouchableHighlightWithColor>

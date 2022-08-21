@@ -5,10 +5,16 @@ import {Card, Divider} from 'react-native-paper';
 import {Spacer} from '../../../components/spacer/spacer.component';
 import {TouchableHighlightWithColor} from '../../../components/styles';
 import {Text} from '../../../components/typography/text.component';
-
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {CategoryColor, CategoryItem} from './categories.styles';
 
-export const CategoriesDetails = ({deleteMode, details, onDeleteCategory}) => {
+export const CategoriesDetails = ({
+  navigation,
+  deleteMode,
+  activeType,
+  details,
+  onDeleteCategory,
+}) => {
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <Spacer size={'large'}></Spacer>
@@ -21,8 +27,8 @@ export const CategoriesDetails = ({deleteMode, details, onDeleteCategory}) => {
                 onPress={() => {
                   if (!c.default && !deleteMode) {
                     navigation.navigate('AddCategory', {
-                      category: expense,
-                      type: 'expense',
+                      category: c,
+                      type: activeType,
                       edit: true,
                     });
                   }
@@ -41,7 +47,15 @@ export const CategoriesDetails = ({deleteMode, details, onDeleteCategory}) => {
                       </>
                     )}
 
-                    <CategoryColor color={c.color} />
+                    <CategoryColor color={c.color}>
+                      {c.icon && (
+                        <MaterialCommunityIcon
+                          name={c.icon}
+                          size={16}
+                          color="#fff"
+                        />
+                      )}
+                    </CategoryColor>
                     <Spacer position={'left'} size={'medium'} />
 
                     <Text fontfamily="heading">{c.name}</Text>

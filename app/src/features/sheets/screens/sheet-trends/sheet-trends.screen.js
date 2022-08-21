@@ -1,22 +1,23 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import React, {useEffect, useRef, useState} from 'react';
 import {useTheme} from 'styled-components/native';
-import {Text} from '../../../components/typography/text.component';
-import {SafeArea} from '../../../components/utility/safe-area.component';
 import _, {keys} from 'lodash';
 import {Dimensions, ScrollView, TouchableOpacity} from 'react-native';
-import {CategoryTabs} from '../../categories/components/category-tabs.component';
-import {Spacer} from '../../../components/spacer/spacer.component';
+
 import {View} from 'react-native';
+import moment from 'moment';
+import {LineChart} from 'react-native-chart-kit';
+import Svg, {Line, Rect, Text as TextSVG} from 'react-native-svg';
+import {Text} from '../../../../components/typography/text.component';
+import {SafeArea} from '../../../../components/utility/safe-area.component';
+import {CategoryTabs} from '../../../categories/components/category-tabs.component';
+import {Spacer} from '../../../../components/spacer/spacer.component';
+import {MainWrapper} from '../../../../components/styles';
+import {GetCurrencySymbol} from '../../../../components/symbol.currency';
 import {
   StatsTitle,
   ToolTip,
-} from '../components/sheet-stats/sheet-stats.styles';
-import moment from 'moment';
-import {LineChart} from 'react-native-chart-kit';
-import {MainWrapper} from '../../../components/styles';
-import Svg, {Line, Rect, Text as TextSVG} from 'react-native-svg';
-import {GetCurrencySymbol} from '../../../components/symbol.currency';
+} from '../../components/sheet-stats/sheet-stats.styles';
 export const SheetTrendsScreen = ({navigation, route}) => {
   const theme = useTheme();
 

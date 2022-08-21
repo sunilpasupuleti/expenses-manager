@@ -92,7 +92,7 @@ export const SheetDetailsAddIcon = styled.View`
   // right: 10px;
   background-color: ${({theme}) => theme.colors.brand.primary};
   border-radius: 50px;
-  padding: 5px;
+  padding: 12px;
 `;
 
 export const CameraButton = styled.TouchableOpacity`
@@ -102,7 +102,7 @@ export const CameraButton = styled.TouchableOpacity`
   // left: 10px;
   border-radius: 50px;
   top: 4px;
-  padding: 14px;
+  padding: 12px;
 `;
 
 export const CameraIcon = styled(Ionicons)`

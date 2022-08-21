@@ -1,33 +1,36 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Button, Card, Dialog, Divider, Portal} from 'react-native-paper';
 import {useTheme} from 'styled-components/native';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import {
+  SheetDetailInput,
+  SheetDetailsTotalBalance,
+  SheetDetailsUnderline,
+} from '../../components/sheet-details/sheet-details.styles';
+
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import {Platform, TouchableOpacity} from 'react-native';
+import moment from 'moment';
+import Haptics from 'react-native-haptic-feedback';
+import {ScrollView} from 'react-native';
 import {
   ButtonText,
   FlexRow,
   MainWrapper,
   ToggleSwitch,
-} from '../../../components/styles';
-import {SafeArea} from '../../../components/utility/safe-area.component';
-import {
-  SheetDetailInput,
-  SheetDetailsTotalBalance,
-  SheetDetailsUnderline,
-} from '../components/sheet-details/sheet-details.styles';
-import {Spacer} from '../../../components/spacer/spacer.component';
+} from '../../../../components/styles';
+import {Text} from '../../../../components/typography/text.component';
+import {GetCurrencySymbol} from '../../../../components/symbol.currency';
+import {CategoryTabs} from '../../../categories/components/category-tabs.component';
+import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {
   CategoryColor,
   CategoryItem,
-} from '../../categories/components/categories.styles';
-import {Text} from '../../../components/typography/text.component';
-import {SheetsContext} from '../../../services/sheets/sheets.context';
-import {CategoryTabs} from '../../categories/components/category-tabs.component';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {Platform, TouchableOpacity} from 'react-native';
-import moment from 'moment';
-import {GetCurrencySymbol} from '../../../components/symbol.currency';
-import Haptics from 'react-native-haptic-feedback';
-import {ScrollView} from 'react-native';
+} from '../../../categories/components/categories.styles';
+import {Spacer} from '../../../../components/spacer/spacer.component';
+import {SafeArea} from '../../../../components/utility/safe-area.component';
 
 export const AddSheetDetailScreen = ({navigation, route}) => {
   const theme = useTheme();
@@ -177,7 +180,11 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       sheetDetail.time = time.toString();
     }
     onSaveSheetDetails(sheet, sheetDetail, updatedSheet => {
-      navigation.navigate('SheetDetails', {sheet: updatedSheet});
+      navigation.navigate('SheetDetailsHome', {
+        screen: 'Transactions',
+        sheet: updatedSheet,
+      });
+      // navigation.navigate('SheetDetails', {sheet: updatedSheet});
     });
   };
 
@@ -209,7 +216,11 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     if (showTime) sheetDetail.time = time.toString();
 
     onEditSheetDetails(sheet, sheetDetail, updatedSheet => {
-      navigation.navigate('SheetDetails', {sheet: updatedSheet});
+      navigation.navigate('SheetDetailsHome', {
+        screen: 'Transactions',
+        sheet: updatedSheet,
+      });
+      // navigation.navigate('SheetDetails', {sheet: updatedSheet});
     });
   };
 
@@ -318,8 +329,15 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
             <Card.Content>
               <CategoryItem>
                 <CategoryColor
-                  color={selectedCategory ? selectedCategory.color : '#fff'}
-                />
+                  color={selectedCategory ? selectedCategory.color : '#fff'}>
+                  {selectedCategory && selectedCategory.icon && (
+                    <MaterialCommunityIcon
+                      name={selectedCategory.icon}
+                      size={16}
+                      color="#fff"
+                    />
+                  )}
+                </CategoryColor>
                 <Spacer position={'left'} size={'medium'} />
                 <Text fontfamily="heading">{selectedCategory?.name}</Text>
               </CategoryItem>

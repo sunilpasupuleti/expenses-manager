@@ -5,18 +5,18 @@ import React, {useContext, useRef, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {useTheme} from 'styled-components/native';
-import {Spacer} from '../../../components/spacer/spacer.component';
-import {MainWrapper} from '../../../components/styles';
-import {Text} from '../../../components/typography/text.component';
-import {SafeArea} from '../../../components/utility/safe-area.component';
-import {SheetsContext} from '../../../services/sheets/sheets.context';
-import {SheetsInfo} from '../components/sheet-info.component';
+import {SheetsInfo} from '../components/sheet-info/sheet-info.component';
 import {
   AddSheetIcon,
   IconsContainer,
   NewSheet,
   UpperIcon,
 } from '../components/sheets.styles';
+import {Spacer} from '../../../components/spacer/spacer.component';
+import {MainWrapper} from '../../../components/styles';
+import {Text} from '../../../components/typography/text.component';
+import {SafeArea} from '../../../components/utility/safe-area.component';
+import {SheetsContext} from '../../../services/sheets/sheets.context';
 
 export const SheetsScreen = ({navigation}) => {
   const theme = useTheme();

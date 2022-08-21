@@ -12,11 +12,33 @@ export const TabBarLabel = styled(Text)`
 `;
 
 export const CategoryColor = styled.View`
+  width: 33px;
+  height: 33px;
+  border-radius: 50px;
+  align-items: center;
+  justify-content: center;
+  ${props => props.color && `background-color : ${props.color}`}
+`;
+
+export const ColorPickerView = styled.View`
   height: 20px;
   width: 20px;
   border-radius: 50px;
-  ${props => props.color && `background-color : ${props.color}`}
+  align-items: center;
+  justify-content: center;
+  ${props => props.color && `border :1px solid ${props.color}`}
 `;
+
+export const IconView = styled.View`
+  border-radius: 50px;
+  padding: 14px;
+  margin-left: 10px;
+  margin-bottom: 10px;
+  align-items: center;
+  justify-content: center;
+  ${props => props.color && `border :1px solid ${props.color}`}
+`;
+// ${props => props.color && `background-color : ${props.color}`}
 
 export const CategoryItem = styled.View`
   flex-direction: row;

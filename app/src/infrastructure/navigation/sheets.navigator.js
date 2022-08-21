@@ -8,14 +8,15 @@ import {Dimensions} from 'react-native';
 import {useTheme} from 'styled-components/native';
 import {CurrenciesScreen} from '../../features/currencies/screens/currencies.screen';
 import {SheetStatsDetailsScreen} from '../../features/sheets/components/sheet-stats/sheet-stats-details.component';
-import {AddSheetDetailScreen} from '../../features/sheets/screens/add-sheet-detail.screen';
-import {AddSheetScreen} from '../../features/sheets/screens/add-sheet.screen';
-import {MoveSheetScreen} from '../../features/sheets/screens/move-sheet.screen';
-import {SelectCategoryScreen} from '../../features/sheets/screens/select-category.screen';
-import {SheetDetailsScreen} from '../../features/sheets/screens/sheet-details.screen';
-import {SheetStatsScreen} from '../../features/sheets/screens/sheet-stats.screen';
-import {SheetTrendsScreen} from '../../features/sheets/screens/sheet-trends.screen';
+import {AddSheetDetailScreen} from '../../features/sheets/screens/add-sheet/add-sheet-detail.screen';
+import {AddSheetScreen} from '../../features/sheets/screens/add-sheet/add-sheet.screen';
+import {MoveSheetScreen} from '../../features/sheets/screens/move-sheet/move-sheet.screen';
+import {SelectCategoryScreen} from '../../features/sheets/screens/select-category/select-category.screen';
+import {SheetDetailsScreen} from '../../features/sheets/screens//sheet-details/sheet-details.screen';
+import {SheetStatsScreen} from '../../features/sheets/screens/sheet-stats/sheet-stats.screen';
+import {SheetTrendsScreen} from '../../features/sheets/screens/sheet-trends/sheet-trends.screen';
 import {SheetsScreen} from '../../features/sheets/screens/sheets.screen';
+import {SheetDetailsHome} from '../../features/sheets/screens/sheet-details/sheet-details-home.screen';
 
 const SheetStack = createStackNavigator();
 
@@ -45,7 +46,19 @@ export const SheetsNavigator = () => {
         name="AddSheet"
         component={AddSheetScreen}
       />
+
       <SheetStack.Screen
+        options={{
+          headerShown: true,
+          headerMode: 'screen',
+          ...headerStyles,
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        }}
+        name="SheetDetailsHome"
+        component={SheetDetailsHome}
+      />
+
+      {/* <SheetStack.Screen
         options={{
           headerShown: true,
           headerMode: 'screen',
@@ -54,7 +67,7 @@ export const SheetsNavigator = () => {
         }}
         name="SheetDetails"
         component={SheetDetailsScreen}
-      />
+      /> */}
 
       <SheetStack.Screen
         options={{

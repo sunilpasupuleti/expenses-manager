@@ -15,8 +15,8 @@ import RNFS from 'react-native-fs';
 import useHttp from '../../hooks/use-http';
 import {GOOGLE_API_KEY, GOOGLE_CLOUD_VISION_API_URL} from '../../../config';
 import _ from 'lodash';
-import matchWords from './category-match-words.json';
-import test from './gcp-vision-responses.json';
+import matchWords from '../../components/utility/category-match-words.json';
+import test from '../../components/utility/gcp-vision-responses.json';
 import XLSX from 'xlsx';
 import moment from 'moment';
 import {GetCurrencySymbol} from '../../components/symbol.currency';
@@ -27,38 +27,44 @@ const defaultCategories = {
       name: 'No Category',
       color: '#8e8e92',
       default: true,
+      icon: 'close',
     },
     {
       id: 'ex2',
       name: 'Groceries',
       color: '#2fb0c7',
+      icon: 'store-settings',
     },
     {
       id: 'ex3',
-
       name: 'Food & Drink',
       color: '#5756d5',
+      icon: 'food',
     },
 
     {
       id: 'ex4',
       name: 'Transport',
       color: '#007aff',
+      icon: 'road-variant',
     },
     {
       id: 'ex5',
       name: 'Rent',
       color: '#ffcc00',
+      icon: 'greenhouse',
     },
     {
       id: 'ex6',
       name: 'Entertainment',
       color: '#fe9500',
+      icon: 'movie',
     },
     {
       id: 'ex7',
       name: 'Others',
       color: '#d1d1d5',
+      icon: 'dots-horizontal',
     },
   ],
   income: [
@@ -67,21 +73,25 @@ const defaultCategories = {
       name: 'No Category',
       color: '#8e8e92',
       default: true,
+      icon: 'close',
     },
     {
       id: 'in2',
       name: 'Salary',
       color: '#2fb0c7',
+      icon: 'laptop',
     },
     {
       id: 'in3',
       name: 'Budget',
       color: '#5756d5',
+      icon: 'calculator',
     },
     {
       id: 'ex7',
       name: 'Others',
       color: '#d1d1d5',
+      icon: 'dots-horizontal',
     },
   ],
 };

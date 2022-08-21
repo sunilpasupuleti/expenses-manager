@@ -1,7 +1,4 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Spacer} from '../../../components/spacer/spacer.component';
-import {FlexRow} from '../../../components/styles';
-import {Text} from '../../../components/typography/text.component';
 import {
   BorderLine,
   SheetInfoWrapper,
@@ -11,9 +8,12 @@ import {
 } from './sheet-info-card.styles';
 import moment from 'moment';
 import React, {useContext} from 'react';
-import {SheetsContext} from '../../../services/sheets/sheets.context';
 import {View} from 'react-native';
-import {GetCurrencySymbol} from '../../../components/symbol.currency';
+import {FlexRow} from '../../../../components/styles';
+import {Text} from '../../../../components/typography/text.component';
+import {SheetsContext} from '../../../../services/sheets/sheets.context';
+import {GetCurrencySymbol} from '../../../../components/symbol.currency';
+import {Spacer} from '../../../../components/spacer/spacer.component';
 export const SheetInfoCard = ({sheet = {}, index}) => {
   const {sheets} = useContext(SheetsContext);
 

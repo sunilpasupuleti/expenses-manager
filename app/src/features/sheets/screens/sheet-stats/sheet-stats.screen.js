@@ -1,14 +1,9 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import React, {useEffect, useRef, useState} from 'react';
 import {useTheme} from 'styled-components/native';
-import {Text} from '../../../components/typography/text.component';
-import {SafeArea} from '../../../components/utility/safe-area.component';
 import _ from 'lodash';
 import {Dimensions, TouchableOpacity} from 'react-native';
 import {VictoryPie} from 'victory-native';
-import {CategoryTabs} from '../../categories/components/category-tabs.component';
-import {StatsInfo} from '../components/sheet-stats/sheet-stats-info.component';
-import {Spacer} from '../../../components/spacer/spacer.component';
 import {View} from 'react-native';
 import {
   Menu,
@@ -16,9 +11,17 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
-import {FlexRow} from '../../../components/styles';
-import {StatsTitle} from '../components/sheet-stats/sheet-stats.styles';
+
 import moment from 'moment';
+import {Text} from '../../../../components/typography/text.component';
+import {SafeArea} from '../../../../components/utility/safe-area.component';
+import {CategoryTabs} from '../../../categories/components/category-tabs.component';
+import {StatsInfo} from '../../components/sheet-stats/sheet-stats-info.component';
+import {Spacer} from '../../../../components/spacer/spacer.component';
+import {FlexRow} from '../../../../components/styles';
+import {StatsTitle} from '../../components/sheet-stats/sheet-stats.styles';
+import {useDispatch} from 'react-redux';
+import {loaderActions} from '../../../../store/loader-slice';
 const menuOptions = [
   {key: 'daily', value: 'Daily'},
   {key: 'weekly', value: 'Weekly'},
@@ -34,7 +37,8 @@ export const SheetStatsScreen = ({navigation, route}) => {
   const [groupedDetails, setGroupedDetails] = useState(null);
   const [activeType, setActiveType] = useState('expense');
   const [report, setReport] = useState({key: 'allitems', value: 'All items'});
-  const [chartData, setChartData] = useState([]);
+  const [chartData, setChartData] = useState(null);
+  const dispatch = useDispatch();
 
   let menuRef = useRef();
   const menuOptionStyles = {
@@ -206,36 +210,51 @@ export const SheetStatsScreen = ({navigation, route}) => {
   const onSetActiveType = type => {
     setActiveType(type);
   };
+
+  useEffect(() => {
+    if (!chartData) {
+      console.log('no chart data');
+      dispatch(loaderActions.showLoader({backdrop: true}));
+    } else {
+      dispatch(loaderActions.hideLoader());
+    }
+  }, [chartData]);
   return (
     <SafeArea>
       <StatsTitle>
         <Text color="#fff">{report.value}</Text>
       </StatsTitle>
-      <VictoryPie
-        data={chartData.datasets}
-        width={Dimensions.get('window').width}
-        height={280}
-        innerRadius={50}
-        colorScale={chartData.colors}
-        style={{
-          labels: {
-            fill: theme.colors.text.primary,
-            fontSize: 15,
-            padding: 7,
-          },
-        }}
-      />
-
-      <View style={{marginLeft: 10, marginRight: 10}}>
-        <CategoryTabs setActiveType={onSetActiveType} activeType={activeType} />
-      </View>
-      <Spacer size={'xlarge'} />
-      <StatsInfo
-        details={groupedDetails}
-        navigation={navigation}
-        activeType={activeType}
-        sheet={sheet}
-      />
+      {chartData && (
+        <>
+          <VictoryPie
+            data={chartData.datasets}
+            width={Dimensions.get('window').width}
+            height={280}
+            innerRadius={50}
+            colorScale={chartData.colors}
+            style={{
+              labels: {
+                fill: theme.colors.text.primary,
+                fontSize: 15,
+                padding: 7,
+              },
+            }}
+          />
+          <View style={{marginLeft: 10, marginRight: 10}}>
+            <CategoryTabs
+              setActiveType={onSetActiveType}
+              activeType={activeType}
+            />
+          </View>
+          <Spacer size={'xlarge'} />
+          <StatsInfo
+            details={groupedDetails}
+            navigation={navigation}
+            activeType={activeType}
+            sheet={sheet}
+          />
+        </>
+      )}
     </SafeArea>
   );
 };

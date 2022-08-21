@@ -3,21 +3,24 @@ import React, {useContext, useEffect, useState} from 'react';
 import {ScrollView, TouchableOpacity} from 'react-native';
 import {Card, Divider, Searchbar} from 'react-native-paper';
 import {useTheme} from 'styled-components/native';
-import {Spacer} from '../../../components/spacer/spacer.component';
+import {
+  CategoryColor,
+  AddNewCategoryIcon,
+  CategoryItem,
+  NewCategory,
+} from '../../../categories/components/categories.styles';
+import {SheetsContext} from '../../../../services/sheets/sheets.context';
+import {SafeArea} from '../../../../components/utility/safe-area.component';
+import {Text} from '../../../../components/typography/text.component';
 import {
   FlexRow,
   MainWrapper,
   TouchableHighlightWithColor,
-} from '../../../components/styles';
-import {Text} from '../../../components/typography/text.component';
-import {SafeArea} from '../../../components/utility/safe-area.component';
-import {SheetsContext} from '../../../services/sheets/sheets.context';
-import {
-  AddNewCategoryIcon,
-  CategoryColor,
-  CategoryItem,
-  NewCategory,
-} from '../../categories/components/categories.styles';
+} from '../../../../components/styles';
+import _ from 'lodash';
+import {Spacer} from '../../../../components/spacer/spacer.component';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 export const SelectCategoryScreen = ({navigation, route}) => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -27,9 +30,15 @@ export const SelectCategoryScreen = ({navigation, route}) => {
   useEffect(() => {
     if (route.params.type) {
       if (route.params.type === 'expense') {
-        setCategories(allCategories.expense);
+        const sortedExpenses = _.orderBy(
+          allCategories.expense,
+          ['name'],
+          ['asc'],
+        );
+        setCategories(sortedExpenses);
       } else {
-        setCategories(allCategories.income);
+        const sortedIncome = _.orderBy(allCategories.income, ['name'], ['asc']);
+        setCategories(sortedIncome);
       }
     }
     if (route.params.selectedCategory) {
@@ -38,10 +47,11 @@ export const SelectCategoryScreen = ({navigation, route}) => {
   }, [route.params]);
 
   useEffect(() => {
+    const sortedExpenses = _.orderBy(allCategories.expense, ['name'], ['asc']);
+    const sortedIncome = _.orderBy(allCategories.income, ['name'], ['asc']);
+
     setCategories(
-      route.params.type === 'expense'
-        ? allCategories.expense
-        : allCategories.income,
+      route.params.type === 'expense' ? sortedExpenses : sortedIncome,
     );
     if (searchKeyword !== '') {
       let filtered = categories.filter(c => {
@@ -49,15 +59,18 @@ export const SelectCategoryScreen = ({navigation, route}) => {
           .toLowerCase()
           .includes(searchKeyword.trim().toLowerCase());
       });
-      setCategories(filtered);
+      const sortedFiltered = _.orderBy(filtered, ['name'], ['asc']);
+
+      setCategories(sortedFiltered);
     }
   }, [searchKeyword]);
 
   useEffect(() => {
+    const sortedExpenses = _.orderBy(allCategories.expense, ['name'], ['asc']);
+    const sortedIncome = _.orderBy(allCategories.income, ['name'], ['asc']);
+
     setCategories(
-      route.params.type === 'expense'
-        ? allCategories.expense
-        : allCategories.income,
+      route.params.type === 'expense' ? sortedExpenses : sortedIncome,
     );
   }, [allCategories]);
 
@@ -99,7 +112,7 @@ export const SelectCategoryScreen = ({navigation, route}) => {
         <Spacer size={'xlarge'}></Spacer>
 
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Card theme={{roundness: 20}}>
+          <Card theme={{roundness: 20}} style={{marginBottom: 100}}>
             {categories.map(c => {
               return (
                 <TouchableHighlightWithColor
@@ -121,7 +134,15 @@ export const SelectCategoryScreen = ({navigation, route}) => {
                   <Card.Content key={c.id}>
                     <FlexRow justifyContent="space-between">
                       <CategoryItem>
-                        <CategoryColor color={c.color} />
+                        <CategoryColor color={c.color}>
+                          {c.icon && (
+                            <MaterialCommunityIcon
+                              name={c.icon}
+                              size={16}
+                              color="#fff"
+                            />
+                          )}
+                        </CategoryColor>
                         <Spacer position={'left'} size={'medium'} />
                         <Text fontfamily="heading">{c.name}</Text>
                       </CategoryItem>

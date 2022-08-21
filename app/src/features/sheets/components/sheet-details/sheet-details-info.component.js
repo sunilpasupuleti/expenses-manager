@@ -15,7 +15,6 @@ import {Spacer} from '../../../../components/spacer/spacer.component';
 import {Alert, FlatList, TouchableOpacity, View} from 'react-native';
 import _ from 'lodash';
 import React, {useContext, useRef, useState} from 'react';
-import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import Haptics from 'react-native-haptic-feedback';
 
 import {
@@ -26,6 +25,7 @@ import {
 } from 'react-native-popup-menu';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {GetCurrencySymbol} from '../../../../components/symbol.currency';
+import {SheetsContext} from '../../../../services/sheets/sheets.context';
 moment.suppressDeprecationWarnings = true;
 
 export const SheetDetailsInfo = ({
@@ -64,9 +64,13 @@ export const SheetDetailsInfo = ({
           text: 'Delete',
           onPress: () => {
             onDeleteSheetDetails(sheet, sheetDetail, updatedSheet => {
-              navigation.navigate('SheetDetails', {
+              navigation.navigate('SheetDetailsHome', {
+                screen: 'Transactions',
                 sheet: updatedSheet,
               });
+              // navigation.navigate('SheetDetails', {
+              //   sheet: updatedSheet,
+              // });
             });
           },
         },
@@ -76,7 +80,11 @@ export const SheetDetailsInfo = ({
 
   const onDuplicateButton = sheetDetail => {
     onDuplicateSheet(sheet, sheetDetail, sheet => {
-      navigation.navigate('SheetDetails', {sheet: sheet});
+      // navigation.navigate('SheetDetails', {sheet: sheet});
+      navigation.navigate('SheetDetailsHome', {
+        screen: 'Transactions',
+        sheet: sheet,
+      });
     });
   };
 
@@ -174,7 +182,11 @@ export const SheetDetailsInfo = ({
                       onSelect={() => {
                         menuRefs.current[index].close();
                         onChangeSheetType(sheet, sd, sheet => {
-                          navigation.navigate('SheetDetails', {sheet: sheet});
+                          navigation.navigate('SheetDetailsHome', {
+                            screen: 'Transactions',
+                            sheet: sheet,
+                          });
+                          // navigation.navigate('SheetDetails', {sheet: sheet});
                         });
                       }}>
                       <FlexRow justifyContent="space-between">

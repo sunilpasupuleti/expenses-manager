@@ -109,6 +109,8 @@ export const CategoriesScreen = ({navigation}) => {
         <Spacer size={'large'}></Spacer>
         <CategoryTabs activeType={activeType} setActiveType={onSetActiveType} />
         <CategoriesDetails
+          navigation={navigation}
+          activeType={activeType}
           deleteMode={deleteMode}
           onDeleteCategory={onClickDeleteCategory}
           details={allCategories}

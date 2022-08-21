@@ -1,8 +1,8 @@
 import {Card, TextInput} from 'react-native-paper';
 import styled from 'styled-components/native';
-import {colors} from '../../../infrastructure/theme/colors';
 import {Switch} from 'react-native-paper';
 import React from 'react';
+import {colors} from '../../../../infrastructure/theme/colors';
 export const TopNavigationContainer = styled.View`
   flex-direction: row;
   align-items: center;
