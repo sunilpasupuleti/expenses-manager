@@ -13,6 +13,7 @@ export const IconsContainer = styled.View`
 
 export const UpperIcon = styled(Ionicons)`
   margin-left: 40px;
+  margin-top: 20px;
 `;
 
 // flex-direction: row;

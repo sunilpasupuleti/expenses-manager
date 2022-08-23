@@ -35,7 +35,7 @@ export const AddSheetScreen = ({navigation, route}) => {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: editMode ? 'Edit Sheet' : 'New Sheet',
+      headerTitle: editMode ? 'Edit Account' : 'New Account',
       headerLeft: () => (
         <Button uppercase={false} onPress={onCancel}>
           <ButtonText>Cancel</ButtonText>

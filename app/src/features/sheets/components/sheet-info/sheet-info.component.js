@@ -28,7 +28,7 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
   const theme = useTheme();
   const [dupSheets, setDupSheets] = useState(null);
 
-  const [showArchived, setShowArchived] = useState(true);
+  const [showArchived, setShowArchived] = useState(false);
   const [showPinned, setShowPinned] = useState(true);
 
   const [pinnedSheets, setPinnedSheets] = useState([null]);
@@ -82,7 +82,7 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
           'Cancel',
           'Edit ',
           sheet.pinned ? 'Unpin' : 'Pin',
-          sheet.archived ? 'Unarchieve' : 'Archieve',
+          sheet.archived ? 'Unarchive' : 'Archive',
           'Delete ',
         ],
         cancelButtonIndex: 0,
@@ -119,7 +119,7 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
   const onPressDeleteButton = sheet => {
     return Alert.alert(
       'Confirm?',
-      `Are you sure you want to delete "${sheet.name.toUpperCase()}" sheet? You won't be able to revert this back?`,
+      `Are you sure you want to delete "${sheet.name.toUpperCase()}" account? You won't be able to revert this back?`,
       [
         // No buton to dismiss the alert
         {
@@ -274,7 +274,7 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
               (sheets.filter(s => s.pinned).length > 0 ||
                 sheets.filter(s => s.archived).length > 0) ? (
                 <Spacer position={'bottom'} size="medium">
-                  <Text fontfamily="bodyMedium">Sheets</Text>
+                  <Text fontfamily="bodyMedium">Accounts</Text>
                 </Spacer>
               ) : null}
               <Card theme={{roundness: 15}}>
@@ -403,7 +403,7 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
       ) : (
         <NoSheets>
           <Text style={{textAlign: 'center'}}>
-            There are no sheets yet. Create a new sheet from below
+            There are no accounts yet. Create a new account from below.
           </Text>
         </NoSheets>
       )}

@@ -1,16 +1,16 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useDispatch } from "react-redux";
-import { Alert } from "react-native";
-import { loaderActions } from "./loader-slice";
+import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch} from 'react-redux';
+import {Alert} from 'react-native';
+import {loaderActions} from './loader-slice';
 
 export const fetchChangesMade = createAsyncThunk(
-  "service/fetchChangesMade",
+  'service/fetchChangesMade',
   async () => {
     try {
       const result = await AsyncStorage.getItem(
-        `@expenses-manager-changesmade`
-      ).then((d) => {
+        `@expenses-manager-changesmade`,
+      ).then(d => {
         return JSON.parse(d);
       });
 
@@ -20,18 +20,18 @@ export const fetchChangesMade = createAsyncThunk(
 
       return false;
     } catch (e) {
-      console.log("error in fetching changesmade - ", e);
+      console.log('error in fetching changesmade - ', e);
       return false;
     }
-  }
+  },
 );
 
-export const fetchTheme = createAsyncThunk("service/fetchTheme", async () => {
+export const fetchTheme = createAsyncThunk('service/fetchTheme', async () => {
   try {
     const result = await AsyncStorage.getItem(`@expenses-manager-theme`).then(
-      (d) => {
+      d => {
         return JSON.parse(d);
-      }
+      },
     );
 
     if (result) {
@@ -39,33 +39,33 @@ export const fetchTheme = createAsyncThunk("service/fetchTheme", async () => {
     }
     return false;
   } catch (e) {
-    console.log("error in fetching changesmade - ", e);
+    console.log('error in fetching changesmade - ', e);
     return false;
   }
 });
 
 export const fetchExchangeRates = createAsyncThunk(
-  "service/fetchExchangeRates",
-  async ({ showAlert = false, BASE_CURRENCY = "INR", dispatch = null }) => {
+  'service/fetchExchangeRates',
+  async ({showAlert = false, BASE_CURRENCY = 'INR', dispatch = null}) => {
     if (dispatch) {
-      dispatch(loaderActions.showLoader({ backdrop: true }));
+      dispatch(loaderActions.showLoader({backdrop: true}));
     }
-    let url = "https://open.er-api.com/v6/latest/" + BASE_CURRENCY;
+    let url = 'https://open.er-api.com/v6/latest/' + BASE_CURRENCY;
     let response = await fetch(url, {
-      method: "GET",
+      method: 'GET',
     });
     if (response.ok) {
       let responseJson = await response.json();
-      if (responseJson.result === "success") {
+      if (responseJson.result === 'success') {
         if (showAlert) {
-          Alert.alert("Successfully fetched the currency rates.");
+          Alert.alert('Successfully fetched the currency rates.');
         }
         if (dispatch) dispatch(loaderActions.hideLoader());
-        console.log("got the exchange rates from exchange rates api");
+        console.log('got the exchange rates from exchange rates api');
         return responseJson.rates;
       } else {
         if (dispatch) dispatch(loaderActions.hideLoader());
-        console.log("error from fetching currency rates - ", responseJson);
+        console.log('error from fetching currency rates - ', responseJson);
         if (showAlert) {
           Alert.alert(`Error in fetching currency rates!`);
         }
@@ -76,49 +76,49 @@ export const fetchExchangeRates = createAsyncThunk(
       if (showAlert) {
         Alert.alert(`Error in fetching currency rates! Servers are busy`);
       }
-      console.log("unable to get the exchange rates - error from api");
+      console.log('unable to get the exchange rates - error from api');
       return false;
     }
-  }
+  },
 );
 
 export const setChangesMade = createAsyncThunk(
-  "service/setChangesMade",
-  async ({ status, loaded = false }) => {
+  'service/setChangesMade',
+  async ({status, loaded = false}) => {
     await AsyncStorage.setItem(
       `@expenses-manager-changesmade`,
-      JSON.stringify(status)
+      JSON.stringify(status),
     );
     return {
       status: status,
       loaded: loaded,
     };
-  }
+  },
 );
 
 export const setTheme = createAsyncThunk(
-  "service/setTheme",
-  async ({ theme }) => {
+  'service/setTheme',
+  async ({theme}) => {
     await AsyncStorage.setItem(
       `@expenses-manager-theme`,
-      JSON.stringify(theme)
+      JSON.stringify(theme),
     );
     return theme;
-  }
+  },
 );
 
 const serviceSlice = createSlice({
-  name: "service",
+  name: 'service',
   initialState: {
     changesMade: {
       loaded: false,
       status: null,
     },
-    theme: "automatic",
+    theme: 'light',
     exchangeRates: null,
   },
   reducers: {},
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder.addCase(fetchChangesMade.fulfilled, (state, action) => {
       state.changesMade = {
         loaded: true,

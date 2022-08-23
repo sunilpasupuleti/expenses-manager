@@ -44,7 +44,7 @@ export const MoveSheetScreen = ({navigation, route}) => {
         //   return null;
         // }
       },
-      headerTitle: 'Move Sheet',
+      headerTitle: 'Move to account',
     });
   }, [navigation, sheet, moveToSheet, sheetDetail]);
 
@@ -112,7 +112,7 @@ export const MoveSheetScreen = ({navigation, route}) => {
               textAlign: 'center',
             }}>
             {' '}
-            There are no sheets to move.
+            There are no accounts to move.
           </Text>
         ))}
     </SafeArea>

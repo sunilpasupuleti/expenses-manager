@@ -1,5 +1,5 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {useTheme} from 'styled-components/native';
 import _ from 'lodash';
 import {Dimensions, TouchableOpacity} from 'react-native';
@@ -22,6 +22,8 @@ import {FlexRow} from '../../../../components/styles';
 import {StatsTitle} from '../../components/sheet-stats/sheet-stats.styles';
 import {useDispatch} from 'react-redux';
 import {loaderActions} from '../../../../store/loader-slice';
+import {ActivityIndicator} from 'react-native-paper';
+import {SheetsContext} from '../../../../services/sheets/sheets.context';
 const menuOptions = [
   {key: 'daily', value: 'Daily'},
   {key: 'weekly', value: 'Weekly'},
@@ -38,6 +40,7 @@ export const SheetStatsScreen = ({navigation, route}) => {
   const [activeType, setActiveType] = useState('expense');
   const [report, setReport] = useState({key: 'allitems', value: 'All items'});
   const [chartData, setChartData] = useState(null);
+  const {categories} = useContext(SheetsContext);
   const dispatch = useDispatch();
 
   let menuRef = useRef();
@@ -130,7 +133,7 @@ export const SheetStatsScreen = ({navigation, route}) => {
       }
       let expense = sDetails.filter(s => s.type === 'expense');
       let income = sDetails.filter(s => s.type === 'income');
-      const groupByCategory = item => item.category.name;
+      const groupByCategory = item => item.category.id;
       let expenseGrouped = _(expense).groupBy(groupByCategory).value();
       let incomeGrouped = _(income).groupBy(groupByCategory).value();
       if (activeType === 'expense') {
@@ -194,7 +197,14 @@ export const SheetStatsScreen = ({navigation, route}) => {
         y: categoryAmount,
         x: ' ',
       };
-      data.colors.push(details[0].category.color);
+
+      let allCategories = categories[activeType];
+      let categoryObj = allCategories.filter(c => c.id === key)[0];
+      if (!categoryObj) {
+        categoryObj = details.filter(sd => sd.category.id)[0].category;
+      }
+
+      data.colors.push(categoryObj.color);
       data.datasets.push(dataset);
     });
     // if empty push something as 100%
@@ -213,7 +223,6 @@ export const SheetStatsScreen = ({navigation, route}) => {
 
   useEffect(() => {
     if (!chartData) {
-      console.log('no chart data');
       dispatch(loaderActions.showLoader({backdrop: true}));
     } else {
       dispatch(loaderActions.hideLoader());
@@ -221,11 +230,11 @@ export const SheetStatsScreen = ({navigation, route}) => {
   }, [chartData]);
   return (
     <SafeArea>
-      <StatsTitle>
-        <Text color="#fff">{report.value}</Text>
-      </StatsTitle>
-      {chartData && (
+      {chartData && chartData.datasets.length > 0 && (
         <>
+          <StatsTitle>
+            <Text color="#fff">{report.value}</Text>
+          </StatsTitle>
           <VictoryPie
             data={chartData.datasets}
             width={Dimensions.get('window').width}

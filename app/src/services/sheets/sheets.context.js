@@ -81,13 +81,13 @@ const defaultCategories = {
     {
       id: 'in2',
       name: 'Salary',
-      color: '#2fb0c7',
+      color: '#FE6667',
       icon: 'laptop',
     },
     {
       id: 'in3',
       name: 'Budget',
-      color: '#5756d5',
+      color: '#0F9F08',
       icon: 'calculator',
     },
     {

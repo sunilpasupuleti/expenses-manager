@@ -146,7 +146,7 @@ export const SelectCategoryScreen = ({navigation, route}) => {
                         <Spacer position={'left'} size={'medium'} />
                         <Text fontfamily="heading">{c.name}</Text>
                       </CategoryItem>
-                      {selectedCategory.id === c.id && (
+                      {selectedCategory && selectedCategory.id === c.id && (
                         <Ionicons
                           name="checkmark-outline"
                           size={25}

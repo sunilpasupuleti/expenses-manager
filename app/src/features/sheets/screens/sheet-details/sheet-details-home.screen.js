@@ -27,6 +27,7 @@ export const SheetDetailsHome = ({navigation, route}) => {
         tabBarActiveTintColor: theme.colors.brand.primary,
         tabBarStyle: {
           backgroundColor: theme.colors.bg.primary,
+          paddingBottom: 10,
         },
       }}>
       <Tab.Screen

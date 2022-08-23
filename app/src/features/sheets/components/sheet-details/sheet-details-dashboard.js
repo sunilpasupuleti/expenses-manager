@@ -29,6 +29,7 @@ import {Card} from 'react-native-paper';
 import {CategoryColor} from '../../../categories/components/categories.styles';
 import _ from 'lodash';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
+import {FadeInView} from '../../../../components/animations/fade.animation';
 export const SheetDetailsDashboard = ({navigation, route}) => {
   const theme = useTheme();
   const routeIsFocused = useIsFocused();
@@ -36,6 +37,7 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
   const [sheet, setSheet] = useState(route.params.sheet);
   const [activeType, setActiveType] = useState('income');
   const [groupedDetails, setGroupedDetails] = useState(null);
+  const [sortedByPercentages, setSortedByPercentages] = useState(null);
 
   const getTotalIncome = () => {
     let sheetDetails = sheet.details;
@@ -45,9 +47,12 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
         totalIncome += d.amount;
       }
     });
-    totalIncome = GetCurrencyLocalString(totalIncome);
+    let data = {
+      amount: totalIncome,
+      localStringAmount: GetCurrencyLocalString(totalIncome),
+    };
 
-    return totalIncome;
+    return data;
   };
 
   const getTotalExpense = () => {
@@ -58,15 +63,18 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
         totalExpense += d.amount;
       }
     });
-    totalExpense = GetCurrencyLocalString(totalExpense);
 
-    return totalExpense;
+    let data = {
+      amount: totalExpense,
+      localStringAmount: GetCurrencyLocalString(totalExpense),
+    };
+    return data;
   };
 
   useEffect(() => {
     if (routeIsFocused) {
       navigation.setOptions({
-        headerTitle: '',
+        headerTitle: sheet.name,
         headerStyle: {
           backgroundColor: theme.colors.bg.primary,
         },
@@ -92,15 +100,60 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
 
       let expense = sDetails.filter(s => s.type === 'expense');
       let income = sDetails.filter(s => s.type === 'income');
-      const groupByCategory = item => item.category.name;
+      const groupByCategory = item => item.category.id;
       let expenseGrouped = _(expense).groupBy(groupByCategory).value();
       let incomeGrouped = _(income).groupBy(groupByCategory).value();
+
+      let sortedPercentages = [];
+
+      Object.keys(
+        activeType === 'expense' ? expenseGrouped : incomeGrouped,
+      ).map(key => {
+        let details =
+          activeType === 'expense' ? expenseGrouped[key] : incomeGrouped[key];
+        let total = 0;
+        details.forEach(detail => {
+          total += detail.amount;
+        });
+        let categoryTotal =
+          activeType === 'expense'
+            ? getTotalExpense().amount
+            : getTotalIncome().amount;
+        let percentage = (total / categoryTotal) * 100;
+        let allCategories = categories[activeType];
+        let categoryObj = allCategories.filter(c => c.id === key)[0];
+        if (!categoryObj) {
+          categoryObj = details.filter(c => c.category.id)[0].category;
+        }
+
+        // details.percentage = Math.round(percentage);
+        details.percentage = Number(percentage.toFixed(2));
+        details.category = categoryObj;
+
+        details.totalAmount = total;
+        sortedPercentages.push({
+          key: key,
+          percentage: percentage,
+        });
+        activeType === 'expense'
+          ? (expenseGrouped[key] = details)
+          : (incomeGrouped[key] = details);
+      });
+
+      let finalSorted = _.chain(sortedPercentages)
+        .sortBy('percentage')
+        .reverse()
+        .map((value, index) => {
+          return value.key;
+        })
+        .value();
 
       if (activeType === 'expense') {
         setGroupedDetails(expenseGrouped);
       } else {
         setGroupedDetails(incomeGrouped);
       }
+      setSortedByPercentages(finalSorted);
     }
   }, [activeType]);
 
@@ -144,7 +197,7 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                   </Text>
                   <Spacer />
                   <Text color="#fff" fontfamily="headingBold" fontsize="16px">
-                    {getTotalIncome()}
+                    {getTotalIncome().localStringAmount}
                   </Text>
                 </InExAmount>
               </InEx>
@@ -163,35 +216,39 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                   </Text>
                   <Spacer />
                   <Text color="#fff" fontfamily="headingBold" fontsize="16px">
-                    {getTotalExpense()}
+                    {getTotalExpense().localStringAmount}
                   </Text>
                 </InExAmount>
               </InEx>
             </FlexRow>
           </LinearGradient>
           <Spacer size={'large'} />
-          {groupedDetails && Object.keys(groupedDetails).length > 0 && (
+          <CategoryTabs
+            activeType={activeType}
+            setActiveType={setActiveType}
+            tabReverse={true}
+            animation={false}
+          />
+
+          {sortedByPercentages && sortedByPercentages.length > 0 && (
             <>
-              <CategoryTabs
-                activeType={activeType}
-                setActiveType={setActiveType}
-                tabReverse={true}
-              />
-              {Object.keys(groupedDetails).map(key => {
+              {sortedByPercentages.map(key => {
                 let details = groupedDetails[key];
-                let category = details[0].category;
-                let allCategories = categories[activeType];
+
+                let category = details.category;
                 // get the icon from categoires list
-                let categoryObj = allCategories.filter(c => c.name === key)[0];
+                // let categoryObj = allCategories.filter(c => c.name === key)[0];
                 let categoryIcon = null;
-                if (categoryObj && categoryObj.icon) {
-                  categoryIcon = categoryObj.icon;
+                if (category && category.icon) {
+                  categoryIcon = category.icon;
                 }
-                let totalAmount = 0;
-                details.forEach(d => (totalAmount += d.amount));
+
                 return (
                   <Spacer size={'large'} key={key}>
-                    <Card theme={{roundness: 10}} elevation={2}>
+                    <Card
+                      theme={{roundness: 10}}
+                      elevation={2}
+                      style={{position: 'relative'}}>
                       <TouchableHighlightWithColor
                         style={{
                           paddingTop: 12,
@@ -206,42 +263,55 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                             sheet: sheet,
                           })
                         }>
-                        <Card.Content>
-                          <FlexRow justifyContent="space-between">
-                            <FlexRow>
-                              <CategoryColor
-                                color={category.color}
-                                style={{width: 50, height: 50}}>
-                                {categoryIcon && (
-                                  <MaterialCommunityIcon
-                                    name={categoryIcon}
-                                    size={22}
-                                    color="#fff"
-                                  />
-                                )}
-                              </CategoryColor>
-                              <Spacer size={'large'} position="left" />
-                              <Text fontsize="16px" fontfamily="heading">
-                                {key}
-                              </Text>
+                        <>
+                          <View
+                            style={{
+                              position: 'absolute',
+                              bottom: 0,
+                              height: 2,
+                              width: details.percentage + '%',
+                              backgroundColor: category.color,
+                            }}
+                          />
+                          <Card.Content>
+                            <FlexRow justifyContent="space-between">
+                              <FlexRow>
+                                <CategoryColor
+                                  color={category.color}
+                                  style={{width: 50, height: 50}}>
+                                  {categoryIcon && (
+                                    <MaterialCommunityIcon
+                                      name={categoryIcon}
+                                      size={22}
+                                      color="#fff"
+                                    />
+                                  )}
+                                </CategoryColor>
+                                <Spacer size={'large'} position="left" />
+                                <Text fontsize="16px" fontfamily="heading">
+                                  {category.name}
+                                </Text>
+                              </FlexRow>
+                              <View>
+                                <Text fontsize="14px" fontfamily="heading">
+                                  {GetCurrencySymbol(sheet.currency)}{' '}
+                                  {activeType === 'expense' && '-'}{' '}
+                                  {GetCurrencyLocalString(details.totalAmount)}
+                                  {/* -40,000.23 */}
+                                </Text>
+                                <Spacer size={'medium'} />
+                                <FlexRow justifyContent="flex-end">
+                                  <Text
+                                    fontsize="16px"
+                                    fontfamily="heading"
+                                    color="#292929">
+                                    {details.percentage}%
+                                  </Text>
+                                </FlexRow>
+                              </View>
                             </FlexRow>
-                            <View>
-                              <Text fontsize="14px" fontfamily="heading">
-                                {GetCurrencySymbol(sheet.currency)}{' '}
-                                {activeType === 'expense' && '-'}{' '}
-                                {GetCurrencyLocalString(totalAmount)}
-                                {/* -40,000.23 */}
-                              </Text>
-                              <Spacer />
-                              <Text
-                                fontsize="14px"
-                                fontfamily="heading"
-                                color="#aaa">
-                                Yesterday
-                              </Text>
-                            </View>
-                          </FlexRow>
-                        </Card.Content>
+                          </Card.Content>
+                        </>
                       </TouchableHighlightWithColor>
                     </Card>
                   </Spacer>
@@ -249,6 +319,24 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
               })}
             </>
           )}
+          {!sortedByPercentages ||
+            (sortedByPercentages.length === 0 && (
+              <View
+                style={{
+                  marginTop: 100,
+                }}>
+                <Text
+                  fontfamily="heading"
+                  style={{
+                    textAlign: 'center',
+                    letterSpacing: 1,
+                    lineHeight: 30,
+                  }}>
+                  There are no {_.capitalize(activeType)}s to display. Create
+                  one from Transactions tab.
+                </Text>
+              </View>
+            ))}
         </MainWrapper>
       </ScrollView>
     </SafeArea>

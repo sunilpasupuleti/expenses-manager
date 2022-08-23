@@ -15,7 +15,7 @@ import {
   OtpStrips,
 } from '../components/account.styles';
 export const PhoneLoginScreen = ({navigation, route}) => {
-  const [phone, setPhone] = useState({value: '', error: false});
+  const [phone, setPhone] = useState({value: '91', error: false});
   const [otp, setOtp] = useState({value: '------', error: false});
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -31,7 +31,7 @@ export const PhoneLoginScreen = ({navigation, route}) => {
   const {onSignInWithMobile, onSetUserData} = useContext(AuthenticationContext);
 
   const onResetAllValues = () => {
-    setPhone({value: null, error: false});
+    setPhone({value: '91', error: false});
     setOtp({value: '------', error: false});
     setError(null);
     setShowLoader(false);
@@ -50,7 +50,9 @@ export const PhoneLoginScreen = ({navigation, route}) => {
 
   useEffect(() => {
     let showPhoneError = false;
-    if (phone.value === '') showPhoneError = true;
+    if (phone.value === '') {
+      showPhoneError = true;
+    }
     setPhone(p => ({...p, error: showPhoneError}));
   }, [phone.value]);
 
@@ -126,7 +128,6 @@ export const PhoneLoginScreen = ({navigation, route}) => {
       if (result.status) {
         onChangeMode('otp');
         setSuccess(result);
-        console.log(result.confirmCode);
         setConfirmCode(result.result);
       }
     }

@@ -7,6 +7,7 @@ export const CategoryTabs = ({
   setActiveType,
   activeType,
   tabReverse = false,
+  animation = true,
 }) => {
   const [slideAnimation, setSlideAnimation] = useState(new Animated.Value(0));
 
@@ -19,7 +20,7 @@ export const CategoryTabs = ({
     x: {
       transform: [
         {
-          translateX: interPolateRotating,
+          translateX: animation ? interPolateRotating : 0,
         },
       ],
     },
@@ -47,8 +48,10 @@ export const CategoryTabs = ({
     Haptics.trigger('impactMedium', {
       ignoreAndroidSystemSettings: true,
     });
-    runAnimation();
-  }, [activeType]);
+    if (animation) {
+      runAnimation();
+    }
+  }, [activeType, animation]);
 
   return !tabReverse ? (
     <Tabs>

@@ -48,6 +48,7 @@ import {
 } from '../../../../components/symbol.currency';
 import {fetchExchangeRates} from '../../../../store/service-slice';
 import {useIsFocused} from '@react-navigation/native';
+import {loaderActions} from '../../../../store/loader-slice';
 
 const subtractMonths = numOfMonths => {
   let date = new Date();
@@ -194,7 +195,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
   useEffect(() => {
     if (routeIsFocused) {
       navigation.setOptions({
-        headerTitle: '',
+        headerTitle: sheet.name,
         headerStyle: {
           backgroundColor: theme.colors.bg.primary,
         },
@@ -241,8 +242,8 @@ export const SheetDetailsScreen = ({navigation, route}) => {
               <MenuOption
                 customStyles={menuOptionStyles}
                 onSelect={() => {
-                  menuRef.current.close();
                   navigation.navigate('SheetStats', {sheet});
+                  menuRef.current.close();
                 }}>
                 <FlexRow justifyContent="space-between">
                   <Text color="#2f2f2f" fontfamily="heading">
@@ -321,7 +322,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 }}>
                 <FlexRow justifyContent="space-between">
                   <Text color="#2f2f2f" fontfamily="heading">
-                    Edit Sheet
+                    Edit Account
                   </Text>
                   <Ionicons
                     style={{paddingBottom: 8}}
@@ -457,8 +458,12 @@ export const SheetDetailsScreen = ({navigation, route}) => {
         response.assets[0] &&
         response.assets[0].base64
       ) {
+        let base64 = 'data:' + response.assets[0].type + ';base64,';
         let base64Data = response.assets[0].base64;
         onGoogleCloudVision(base64Data, fetchedData => {
+          if (fetchedData) {
+            fetchedData.image = base64 + base64Data;
+          }
           navigation.navigate('AddSheetDetail', {
             gcpVision: true,
             sheetDetail: fetchedData,
@@ -516,26 +521,12 @@ export const SheetDetailsScreen = ({navigation, route}) => {
       style={{
         backgroundColor: theme.colors.bg.primary,
       }}>
-      <FlexRow justifyContent="space-between">
-        <Text fontsize={'30px'} fontfamily="headingBold" style={{padding: 10}}>
-          {sheet.name}
-        </Text>
-        <Spacer position={'right'} size="medium">
-          <MaterialCommunityIcons
-            onPress={() =>
-              setCustomFilter(p => ({
-                ...p,
-                modalVisible: true,
-              }))
-            }
-            name={
-              customFilter.filtered ? 'filter-remove-outline' : 'filter-outline'
-            }
-            size={30}
-            color={theme.colors.brand.primary}
-          />
-        </Spacer>
-      </FlexRow>
+      <SheetDetailsTotalBalance fontsize={'30px'} fontfamily="bodySemiBold">
+        {GetCurrencySymbol(sheet.currency)}{' '}
+        {GetCurrencyLocalString(sheet.totalBalance)}
+      </SheetDetailsTotalBalance>
+      <SheetDetailsUnderline />
+
       <Searchbar
         value={searchKeyword}
         theme={{roundness: 10}}
@@ -553,13 +544,35 @@ export const SheetDetailsScreen = ({navigation, route}) => {
           )
         }
       />
+      <Spacer size={'large'} />
+      <FlexRow justifyContent="flex-end">
+        {/* <Text fontsize={'30px'} fontfamily="headingBold" style={{padding: 10}}>
+          {sheet.name}
+        </Text> */}
 
-      <SheetDetailsTotalBalance fontsize={'30px'} fontfamily="bodySemiBold">
+        <Spacer position={'right'} size="medium">
+          <MaterialCommunityIcons
+            onPress={() =>
+              setCustomFilter(p => ({
+                ...p,
+                modalVisible: true,
+              }))
+            }
+            name={
+              customFilter.filtered ? 'filter-remove-outline' : 'filter-outline'
+            }
+            size={30}
+            color={theme.colors.brand.primary}
+          />
+        </Spacer>
+      </FlexRow>
+
+      {/* <SheetDetailsTotalBalance fontsize={'30px'} fontfamily="bodySemiBold">
         {GetCurrencySymbol(sheet.currency)}{' '}
         {GetCurrencyLocalString(sheet.totalBalance)}
-      </SheetDetailsTotalBalance>
+      </SheetDetailsTotalBalance> */}
 
-      <SheetDetailsUnderline />
+      {/* <SheetDetailsUnderline /> */}
 
       <Spacer size={'xlarge'} />
       {sheet.details && sheet.details.length > 0 && (

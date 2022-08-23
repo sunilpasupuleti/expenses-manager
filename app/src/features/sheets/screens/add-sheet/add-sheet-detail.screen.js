@@ -1,7 +1,16 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {Button, Card, Dialog, Divider, Portal} from 'react-native-paper';
+import React, {useContext, useEffect, useRef, useState} from 'react';
+import {
+  Avatar,
+  Button,
+  Card,
+  Dialog,
+  Divider,
+  Menu,
+  Portal,
+} from 'react-native-paper';
 import {useTheme} from 'styled-components/native';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import {
   SheetDetailInput,
@@ -11,7 +20,14 @@ import {
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {Platform, TouchableOpacity} from 'react-native';
+import {
+  Alert,
+  Image,
+  PermissionsAndroid,
+  Platform,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import moment from 'moment';
 import Haptics from 'react-native-haptic-feedback';
 import {ScrollView} from 'react-native';
@@ -34,6 +50,10 @@ import {
 } from '../../../categories/components/categories.styles';
 import {Spacer} from '../../../../components/spacer/spacer.component';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
+import {useDispatch} from 'react-redux';
+import {notificationActions} from '../../../../store/notification-slice';
+import {launchImageLibrary} from 'react-native-image-picker';
+import RNFetchBlob from 'rn-fetch-blob';
 
 export const AddSheetDetailScreen = ({navigation, route}) => {
   const theme = useTheme();
@@ -45,6 +65,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   d.setMonth(date.getMonth());
   d.setDate(date.getDate());
   const [time, setTime] = useState(d);
+  const dispatch = useDispatch();
 
   const [showPicker, setShowPicker] = useState({
     date: Platform.OS === 'ios' ? true : false,
@@ -61,6 +82,9 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [gcpVisionMode, setGcpVisionMode] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [open, setOpen] = useState(false);
+
   const [newCategoryIdentified, setNewCategoryIdentified] = useState({
     showDialog: false,
     category: null,
@@ -72,9 +96,10 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     let result;
     if (fromRoute) {
       result = selectedCategories.filter(c => c.id === fromRoute.id)[0];
-    } else {
-      result = selectedCategories.filter(c => c.default)[0];
     }
+    // else {
+    //   result = selectedCategories.filter(c => c.default)[0];
+    // }
     setSelectedCategory(result);
   }
 
@@ -83,9 +108,17 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       setAmount(0);
       setDisabled(true);
     } else {
-      setDisabled(false);
+      if (selectedCategory) setDisabled(false);
     }
   }, [amount]);
+
+  useEffect(() => {
+    if (!selectedCategory) {
+      setDisabled(true);
+    } else {
+      setDisabled(false);
+    }
+  }, [selectedCategory]);
 
   useEffect(() => {
     if (!editMode) {
@@ -120,17 +153,19 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
         setGcpVisionMode(true);
         setAmount(sheetDetail.amount);
         setNotes(sheetDetail.notes);
+        setSelectedImage(sheetDetail?.image);
         setActiveType(sheetDetail.type);
         let dateIsValid = moment(sheetDetail.date).isValid();
         let date = new Date();
-        console.log(moment(sheetDetail.date).format('DD MMM YYYY'));
         if (dateIsValid) {
           date = new Date(sheetDetail.date);
         }
         setDate(date);
-        let categoryAlreadyExists = categories['expense'].filter(c =>
-          c.name.toLowerCase().includes(sheetDetail.category.toLowerCase()),
-        )[0];
+        let categoryAlreadyExists = categories['expense'].filter(c => {
+          return c.name
+            .toLowerCase()
+            .includes(sheetDetail.category.toLowerCase());
+        })[0];
         if (categoryAlreadyExists) {
           setSelectedCategory(categoryAlreadyExists);
         } else {
@@ -149,11 +184,18 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
         setNotes(sheetDetail.notes);
         setActiveType(sheetDetail.type);
         setDate(new Date(sheetDetail.date));
+        setSelectedImage(sheetDetail?.image);
         setShowTime(sheetDetail.showTime);
         if (sheetDetail.showTime) {
           setTime(new Date(sheetDetail.time));
         }
-        setSelectedCategory(sheetDetail.category);
+        let category = categories[sheetDetail.type].filter(
+          c => c.id === sheetDetail.category.id,
+        )[0];
+        if (!category) {
+          category = sheetDetail.category;
+        }
+        setSelectedCategory(category);
         navigation.setOptions({
           headerTitle:
             'Edit ' +
@@ -169,6 +211,15 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   };
 
   const onSave = () => {
+    if (!selectedCategory) {
+      dispatch(
+        notificationActions.showToast({
+          status: 'error',
+          message: 'Please select category',
+        }),
+      );
+      return;
+    }
     let sheetDetail = {
       id: Date.now().toString(36) + Math.random().toString(36).substring(2),
       amount: parseFloat(amount),
@@ -181,6 +232,9 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     };
     if (showTime) {
       sheetDetail.time = time.toString();
+    }
+    if (selectedImage) {
+      sheetDetail.image = selectedImage;
     }
     onSaveSheetDetails(sheet, sheetDetail, updatedSheet => {
       navigation.navigate('SheetDetailsHome', {
@@ -217,6 +271,9 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       createdAt: Date.now(),
     };
     if (showTime) sheetDetail.time = time.toString();
+    if (selectedImage) {
+      sheetDetail.image = selectedImage;
+    }
 
     onEditSheetDetails(sheet, sheetDetail, updatedSheet => {
       navigation.navigate('SheetDetailsHome', {
@@ -249,6 +306,88 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       }));
     });
   };
+
+  const onAddImage = async () => {
+    let options = {
+      mediaType: 'photo',
+      cameraType: 'back',
+      includeBase64: true,
+      presentationStyle: 'popover',
+    };
+
+    await launchImageLibrary(options, response => {
+      if (
+        response &&
+        response.assets &&
+        response.assets[0] &&
+        response.assets[0].base64
+      ) {
+        let base64 = 'data:' + response.assets[0].type + ';base64,';
+        let base64Data = base64 + response.assets[0].base64;
+        setSelectedImage(base64Data);
+      }
+    });
+  };
+
+  const onDownloadImage = async () => {
+    if (selectedImage) {
+      if (Platform.OS === 'ios') {
+        // write code
+      } else {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+            {
+              title: 'Storage Permission Required',
+              message: 'App needs access to your storage to download Photos',
+            },
+          );
+
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            downloadImage(selectedImage);
+          } else {
+            Alert.alert('Storage Permission not granted');
+          }
+        } catch (err) {
+          console.warn(err, 'error occured storage');
+        }
+      }
+    }
+  };
+
+  const downloadImage = image => {
+    if (image) {
+      var Base64Code = image.split(/,\s*/);
+      let prefix = Base64Code[0]; //data:image/png;base64,
+      let format = prefix.match(/image\/(jpeg|png|jpg)/); //at 0 index image/jpeg at 1 index it shows png or jpeg
+      const dirs = RNFetchBlob.fs.dirs;
+      var path = dirs.DownloadDir + '/transaction-image.' + format[1];
+      RNFetchBlob.fs
+        .writeFile(path, Base64Code[1], 'base64')
+        .then(res => {
+          console.log('image download : ', res);
+          setOpen(false);
+          dispatch(
+            notificationActions.showToast({
+              status: 'success',
+              message: 'Image downloaded! Please check your Downloads folder.',
+            }),
+          );
+        })
+        .catch(err => {
+          console.log(err, 'err in download qr');
+          dispatch(
+            notificationActions.showToast({
+              status: 'error',
+              message: 'Error occured while downloading the  Image',
+            }),
+          );
+        });
+    } else {
+      Alert.alert('Error while download');
+    }
+  };
+
   return (
     <SafeArea>
       <MainWrapper>
@@ -326,20 +465,40 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
               });
             }}>
             <Card.Content>
-              <CategoryItem>
-                <CategoryColor
-                  color={selectedCategory ? selectedCategory.color : '#fff'}>
-                  {selectedCategory && selectedCategory.icon && (
+              {selectedCategory ? (
+                <CategoryItem>
+                  <CategoryColor
+                    color={selectedCategory ? selectedCategory.color : '#fff'}>
+                    {selectedCategory && selectedCategory.icon && (
+                      <MaterialCommunityIcon
+                        name={selectedCategory.icon}
+                        size={16}
+                        color="#fff"
+                      />
+                    )}
+                  </CategoryColor>
+
+                  <Spacer position={'left'} size={'medium'} />
+                  <Text fontfamily="heading">{selectedCategory?.name}</Text>
+                </CategoryItem>
+              ) : (
+                <CategoryItem>
+                  <CategoryColor color={'#aaa'}>
+                    {/* {selectedCategory && selectedCategory.icon && (
                     <MaterialCommunityIcon
                       name={selectedCategory.icon}
                       size={16}
                       color="#fff"
                     />
-                  )}
-                </CategoryColor>
-                <Spacer position={'left'} size={'medium'} />
-                <Text fontfamily="heading">{selectedCategory?.name}</Text>
-              </CategoryItem>
+                  )} */}
+                  </CategoryColor>
+
+                  <Spacer position={'left'} size={'medium'} />
+                  <Text fontfamily="heading">
+                    {'Select category from here'}
+                  </Text>
+                </CategoryItem>
+              )}
               <Spacer size={'small'} />
             </Card.Content>
           </Card>
@@ -496,9 +655,45 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                 <Spacer size={'large'} />
               </>
             )}
+
+            <Card.Content>
+              {!selectedImage && (
+                <TouchableOpacity onPress={onAddImage}>
+                  <FlexRow justifyContent="space-between">
+                    <Text>Add Image</Text>
+
+                    <FontAwesome
+                      name="photo"
+                      size={20}
+                      color={theme.colors.brand.primary}
+                    />
+                  </FlexRow>
+                </TouchableOpacity>
+              )}
+
+              {selectedImage && (
+                <FlexRow justifyContent="space-between">
+                  <TouchableOpacity onPress={onAddImage}>
+                    <Text>Change Image</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity onPress={() => setOpen(true)}>
+                    <Avatar.Image
+                      size={70}
+                      source={{
+                        uri: selectedImage,
+                      }}
+                    />
+                  </TouchableOpacity>
+                </FlexRow>
+              )}
+            </Card.Content>
+            <Spacer position={'bottom'} size="large" />
+            <Divider />
           </Card>
 
           <Spacer size={'large'} />
+
           <Button
             uppercase={false}
             onPress={() => {
@@ -562,6 +757,30 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                   color={theme.colors.brand.primary}>
                   Add and Continue
                 </Button>
+              </Dialog.Actions>
+            </Dialog>
+          </Portal>
+        )}
+
+        {/* for dialog to show image */}
+        {open && (
+          <Portal>
+            <Dialog visible={open} onDismiss={() => setOpen(false)}>
+              <Image style={{height: 400}} source={{uri: selectedImage}} />
+              <Dialog.Actions>
+                <Button onPress={() => setOpen(false)} color="#aaa">
+                  Cancel
+                </Button>
+                {editMode && (
+                  <>
+                    <Spacer position={'left'} size="xlarge" />
+                    <Button onPress={onDownloadImage} mode="contained">
+                      <FontAwesome name="download" size={20} color={'#fff'} />
+                    </Button>
+                  </>
+                )}
+
+                <Spacer position={'left'} size="large" />
               </Dialog.Actions>
             </Dialog>
           </Portal>

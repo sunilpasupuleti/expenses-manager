@@ -29,7 +29,7 @@ export const AddSheetInput = ({
       mode="outlined"
       value={sheetName}
       onChangeText={n => onChangeSheetName(n)}
-      placeholder="Enter the sheet name"
+      placeholder="Enter the account name"
       right={
         <SheetNameInput.Icon
           name="close-circle"

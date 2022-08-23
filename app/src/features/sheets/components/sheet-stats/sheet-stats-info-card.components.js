@@ -31,7 +31,8 @@ export const StatsInfoCard = ({
           </Spacer>
           <FlexRow>
             <Text color="#8a8a8d" fontfamily="bodyBold">
-              {Math.round(percentage * 100).toString() + '%'}{' '}
+              {(percentage * 100).toFixed(2).toString() + '%'}{' '}
+              {/* {Math.round(percentage * 100).toString() + '%'}{' '} */}
             </Text>
             <Ionicons
               name="chevron-forward-outline"
@@ -49,7 +50,7 @@ export const StatsInfoCard = ({
           {!category.total && (
             <Spacer>
               <ProgressBar
-                style={{backgroundColor: '#ccc'}}
+                style={{backgroundColor: '#eee'}}
                 color={category.color}
                 progress={percentage}
               />

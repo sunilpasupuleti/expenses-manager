@@ -45,7 +45,7 @@ export const SheetsScreen = ({navigation}) => {
           </TouchableOpacity>
         </IconsContainer>
         <Text fontfamily="bodyBold" fontsize="30px">
-          Sheets
+          Accounts
         </Text>
 
         <Spacer size={'large'} />

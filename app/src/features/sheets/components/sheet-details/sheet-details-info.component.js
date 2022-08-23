@@ -39,8 +39,12 @@ export const SheetDetailsInfo = ({
   sheet,
 }) => {
   const theme = useTheme();
-  const {onDeleteSheetDetails, onDuplicateSheet, onChangeSheetType} =
-    useContext(SheetsContext);
+  const {
+    onDeleteSheetDetails,
+    onDuplicateSheet,
+    categories,
+    onChangeSheetType,
+  } = useContext(SheetsContext);
 
   const onPressEditButton = sheetDetail => {
     navigation.navigate('AddSheetDetail', {
@@ -126,6 +130,12 @@ export const SheetDetailsInfo = ({
           <FlatList
             data={sheetDetails}
             renderItem={({item: sd, index}) => {
+              let category = categories[sd.type].filter(
+                c => c.id === sd.category.id,
+              )[0];
+              if (!category) {
+                category = sd.category;
+              }
               return (
                 <Menu
                   onBackdropPress={() => menuRefs.current[index].close()}
@@ -147,11 +157,11 @@ export const SheetDetailsInfo = ({
                       },
                       TriggerTouchableComponent: TouchableOpacity,
                     }}>
-                    <SheetDetailCategoryColor color={sd.category.color} />
+                    <SheetDetailCategoryColor color={category.color} />
                     <SheetDetailInfo>
                       <FlexRow justifyContent="space-between">
                         <SheetDetailCategory>
-                          {sd.category.name}{' '}
+                          {category.name}{' '}
                         </SheetDetailCategory>
                         <SheetDetailAmount type={sd.type}>
                           {sd.type === 'expense' && '-'}

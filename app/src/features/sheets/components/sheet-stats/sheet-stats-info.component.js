@@ -1,12 +1,17 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {FlatList, TouchableOpacity} from 'react-native';
 import _ from 'lodash';
 import {StatsInfoCard} from './sheet-stats-info-card.components';
 import {Text} from '../../../../components/typography/text.component';
+
+import {useDispatch} from 'react-redux';
+import {SheetsContext} from '../../../../services/sheets/sheets.context';
 export const StatsInfo = ({details, activeType, navigation, sheet}) => {
   const [finalTotal, setFinalTotal] = useState(0);
   const [getSheet, setGetSheet] = useState(sheet);
+  const {categories} = useContext(SheetsContext);
   const [sortedByPercentages, setSortedByPercentages] = useState([]);
+
   useEffect(() => {
     if (sheet) {
       setGetSheet(sheet);
@@ -20,18 +25,18 @@ export const StatsInfo = ({details, activeType, navigation, sheet}) => {
         let sds = details[key];
         sds.map(d => (total += d.amount));
       });
-
       // for sorting according to percentages
       let sortedPercentages = [];
       Object.keys(details).map(key => {
         let sds = details[key];
         let categoryTotal = 0;
         sds.forEach(e => (categoryTotal += e.amount));
-        let percentage = categoryTotal / total;
-        percentage = Math.round(percentage * 100);
+        let percentage = (categoryTotal / total) * 100;
+        // percentage = Math.round(percentage * 100);
+        percentage = percentage.toFixed(2);
         sortedPercentages.push({
           key: key,
-          percentage: percentage,
+          percentage: Number(percentage),
         });
       });
 
@@ -42,6 +47,7 @@ export const StatsInfo = ({details, activeType, navigation, sheet}) => {
           return value.key;
         })
         .value();
+
       setSortedByPercentages(finalSorted);
       // ending of sort by percentages
       setFinalTotal(total);
@@ -68,7 +74,12 @@ export const StatsInfo = ({details, activeType, navigation, sheet}) => {
         renderItem={({item, index}) => {
           let sds = details[item];
           if (sds) {
-            let category = sds[0].category;
+            let allCategories = categories[activeType];
+            let categoryObj = allCategories.filter(c => c.id === item)[0];
+            if (!categoryObj) {
+              categoryObj = sds.filter(sd => sd.category.id)[0].category;
+            }
+            let category = categoryObj;
             let categoryTotal = 0;
             let totalAmount = 0;
             Object.keys(details).map(key => {
@@ -85,13 +96,13 @@ export const StatsInfo = ({details, activeType, navigation, sheet}) => {
             });
             return (
               <TouchableOpacity
-                onPress={() =>
+                onPress={() => {
                   navigation.navigate('SheetStatsDetails', {
                     category,
                     sheetDetails: sds,
                     sheet: sheet,
-                  })
-                }>
+                  });
+                }}>
                 <StatsInfoCard
                   category={category}
                   percentage={percentage}
