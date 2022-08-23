@@ -3,6 +3,10 @@ apply plugin: 'com.google.gms.google-services' // <- Add this line google
 import com.android.build.OutputFile
 import org.apache.tools.ant.taskdefs.condition.Os
 
+
+
+
+
 /**
  * The react.gradle file registers a task for each build variant (e.g. bundleDebugJsAndAssets
  * and bundleReleaseJsAndAssets).
@@ -92,12 +96,14 @@ apply from: "../../node_modules/react-native/react.gradle"
  * Upload all the APKs to the Play Store and people will download
  * the correct one based on the CPU architecture of their device.
  */
-def enableSeparateBuildPerCPUArchitecture = false
-
+def enableSeparateBuildPerCPUArchitecture = true
+// changed to true
 /**
  * Run Proguard to shrink the Java bytecode in release builds.
  */
-def enableProguardInReleaseBuilds = false
+def enableProguardInReleaseBuilds = true
+// changed to true
+
 
 /**
  * The preferred build flavor of JavaScriptCore.
@@ -217,7 +223,8 @@ android {
         abi {
             reset()
             enable enableSeparateBuildPerCPUArchitecture
-            universalApk false  // If true, also generate a universal APK
+            universalApk true  // If true, also generate a universal APK
+            // changed to true
             include (*reactNativeArchitectures())
         }
     }
@@ -227,21 +234,21 @@ android {
             storePassword 'android'
             keyAlias 'androiddebugkey'
             keyPassword 'android'
-        },
+        }
+        release {
+            if (project.hasProperty('MYAPP_UPLOAD_STORE_FILE')) {
+                storeFile file(MYAPP_UPLOAD_STORE_FILE)
+                storePassword MYAPP_UPLOAD_STORE_PASSWORD
+                keyAlias MYAPP_UPLOAD_KEY_ALIAS
+                keyPassword MYAPP_UPLOAD_KEY_PASSWORD
+            }
+        }
         // release {
         //     storeFile file('release.keystore')
         //     storePassword 'Sunil@123'
         //     keyAlias 'androidreleasekey'
         //     keyPassword 'android'
         // }
-        // for security purpose
-        release {
-              storeFile file('release.keystore')
-              storePassword System.console().readLine("\nKeystore password:")
-              keyAlias System.console().readLine("\nAlias: ")
-              keyPassword System.console().readLine("\Alias password: ")
-        }
-
     }
     buildTypes {
         debug {

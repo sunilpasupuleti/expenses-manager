@@ -124,7 +124,7 @@ export const SheetsContext = createContext({
   onArchiveSheet: () => null,
   onPinSheet: () => null,
   calculateBalance: sheet => null,
-  onExportAllSheetsToExcel: () => null,
+  onExportAllSheetsToExcel: config => null,
   onGoogleCloudVision: (base64, callback) => null,
 });
 
@@ -901,12 +901,14 @@ export const SheetsContextProvider = ({children}) => {
     }
   };
 
-  const onExportAllSheetsToExcel = async data => {
+  const onExportAllSheetsToExcel = async config => {
     let wb = XLSX.utils.book_new();
+
     sheets.forEach((sheet, index) => {
       let totalIncome = 0;
       let totalExpense = 0;
       let structuredDetails = [{}];
+
       sheet.details.forEach((d, i) => {
         let date = moment(d.date).format('MMM DD, YYYY ');
         if (d.showTime) {
@@ -934,6 +936,7 @@ export const SheetsContextProvider = ({children}) => {
       let ws = XLSX.utils.json_to_sheet(structuredDetails);
       let wsCols = [{wch: 5}, {wch: 40}, {wch: 40}, {wch: 25}, {wch: 25}];
       ws['!cols'] = wsCols;
+
       XLSX.utils.sheet_add_aoa(
         ws,
         [
@@ -971,7 +974,12 @@ export const SheetsContextProvider = ({children}) => {
 
       XLSX.utils.book_append_sheet(wb, ws, config.title);
     });
-    const wbout = XLSX.write(wb, {type: 'binary', bookType: 'xlsx'});
+    let opt = {
+      type: 'binary',
+      bookType: 'xlsx',
+    };
+
+    const wbout = XLSX.write(wb, opt);
     if (Platform.OS === 'ios') {
       const dirs = RNFetchBlob.fs.dirs;
       var path = dirs.DocumentDir + '/transactions.xlsx';

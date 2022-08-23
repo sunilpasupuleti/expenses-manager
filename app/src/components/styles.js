@@ -31,6 +31,8 @@ export const FlexRow = styled.View`
 export const FlexColumn = styled.View`
   flex-direction: column;
   align-items: center;
+  ${props =>
+    props.justifyContent && `justify-content : ${props.justifyContent}`};
 `;
 
 export const NotLoggedInContainer = styled(SafeArea)`

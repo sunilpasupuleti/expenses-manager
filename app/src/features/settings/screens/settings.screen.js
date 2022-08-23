@@ -3,7 +3,12 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import React, {useContext, useEffect, useState} from 'react';
-import {FlexRow, MainWrapper, ToggleSwitch} from '../../../components/styles';
+import {
+  FlexColumn,
+  FlexRow,
+  MainWrapper,
+  ToggleSwitch,
+} from '../../../components/styles';
 import {SafeArea} from '../../../components/utility/safe-area.component';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -34,6 +39,8 @@ import {SheetsContext} from '../../../services/sheets/sheets.context';
 import {fetchExchangeRates} from '../../../store/service-slice';
 import TouchID from 'react-native-touch-id';
 import moment from 'moment';
+import {Button, Dialog, Portal, TextInput} from 'react-native-paper';
+import {notificationActions} from '../../../store/notification-slice';
 
 export const SettingsScreen = ({navigation}) => {
   const {onLogout, userData, userAdditionalDetails, onUpdateUserDetails} =
@@ -53,6 +60,12 @@ export const SettingsScreen = ({navigation}) => {
       ? userAdditionalDetails.dailyReminder
       : false,
   );
+
+  const [open, setOpen] = useState(false);
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+
+  const [encrypted, setEncrypted] = useState(false);
 
   const {onExportData, onImportData, onExportAllSheetsToExcel, sheets} =
     useContext(SheetsContext);
@@ -141,6 +154,25 @@ export const SettingsScreen = ({navigation}) => {
 
   const onFetchExchangeRates = () => {
     dispatch(fetchExchangeRates({showAlert: true, dispatch: dispatch}));
+  };
+
+  const onClickExportDataToExcel = () => {
+    let config = {
+      encrypted: encrypted,
+      password: password,
+    };
+
+    if (encrypted && (!password || password.trim() === '')) {
+      dispatch(
+        notificationActions.showToast({
+          status: 'warning',
+          message: 'Enter the password to protect the file continue',
+        }),
+      );
+      return;
+    }
+    onExportAllSheetsToExcel(config);
+    setOpen(false);
   };
 
   return (
@@ -404,6 +436,93 @@ export const SettingsScreen = ({navigation}) => {
           </Spacer>
         </MainWrapper>
       </ScrollView>
+
+      <Portal>
+        <Dialog
+          visible={open}
+          onDismiss={() => {
+            setOpen(false);
+            setEncrypted(false);
+            setPassword(false);
+          }}>
+          {encrypted && (
+            <Dialog.Content>
+              <TextInput
+                secureTextEntry={!showPassword}
+                theme={{roundness: 10}}
+                mode="outlined"
+                value={password}
+                returnKeyType="done"
+                onChangeText={n => {
+                  // console.log(n.match(/\./).length);
+                  setPassword(n.trim());
+                }}
+                placeholder="Enter password to protect file"
+                right={
+                  password && (
+                    <TextInput.Icon
+                      name={!showPassword ? 'eye-outline' : 'eye-off-outline'}
+                      color="#bbb"
+                      onPress={() => setShowPassword(!showPassword)}
+                    />
+                  )
+                }
+                maxLength={20}
+              />
+            </Dialog.Content>
+          )}
+
+          {encrypted && (
+            <Dialog.Actions>
+              <Button
+                onPress={() => {
+                  setEncrypted(false);
+                  setPassword('');
+                }}
+                mode="outlined"
+                icon={'chevron-left'}>
+                Back
+              </Button>
+              <Spacer size={'large'} position="left" />
+              <Button
+                mode="contained"
+                disabled={!password || password.trim() === ''}
+                onPress={onClickExportDataToExcel}>
+                Export
+              </Button>
+              <Spacer size={'large'} position="right" />
+            </Dialog.Actions>
+          )}
+
+          {!encrypted && (
+            <Dialog.Content>
+              <FlexColumn justifyContent="center">
+                <Button
+                  onPress={() => setEncrypted(true)}
+                  mode="contained"
+                  icon={'lock'}
+                  style={{backgroundColor: '#3AA75F'}}>
+                  With Encryption
+                </Button>
+                <Spacer size={'large'} position="top">
+                  <Button
+                    mode="outlined"
+                    onPress={onClickExportDataToExcel}
+                    icon={() => (
+                      <MaterialCommunityIcons
+                        name="lock-open-variant"
+                        color={theme.colors.brand.primary}
+                        size={18}
+                      />
+                    )}>
+                    Without Encryption
+                  </Button>
+                </Spacer>
+              </FlexColumn>
+            </Dialog.Content>
+          )}
+        </Dialog>
+      </Portal>
     </SafeArea>
   );
 };

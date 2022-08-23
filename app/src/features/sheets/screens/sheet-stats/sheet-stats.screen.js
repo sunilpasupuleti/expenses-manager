@@ -228,26 +228,29 @@ export const SheetStatsScreen = ({navigation, route}) => {
       dispatch(loaderActions.hideLoader());
     }
   }, [chartData]);
+
+  console.log(chartData);
   return (
     <SafeArea>
-      {chartData && chartData.datasets.length > 0 && (
+      {chartData && chartData.datasets && chartData.datasets.length > 0 && (
         <>
           <StatsTitle>
             <Text color="#fff">{report.value}</Text>
           </StatsTitle>
           <VictoryPie
             data={chartData.datasets}
-            width={Dimensions.get('window').width}
+            // width={Dimensions.get('window').width}
+            width={400}
             height={280}
-            innerRadius={50}
-            colorScale={chartData.colors}
-            style={{
-              labels: {
-                fill: theme.colors.text.primary,
-                fontSize: 15,
-                padding: 7,
-              },
-            }}
+            // innerRadius={50}
+            // colorScale={chartData.colors}
+            // style={{
+            //   labels: {
+            //     fill: theme.colors.text.primary,
+            //     fontSize: 15,
+            //     padding: 7,
+            //   },
+            // }}
           />
           <View style={{marginLeft: 10, marginRight: 10}}>
             <CategoryTabs
