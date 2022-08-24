@@ -3,7 +3,6 @@ import React, {useContext, useEffect, useRef, useState} from 'react';
 import {useTheme} from 'styled-components/native';
 import _ from 'lodash';
 import {Dimensions, TouchableOpacity} from 'react-native';
-import {VictoryPie} from 'victory-native';
 import {View} from 'react-native';
 import {
   Menu,
@@ -24,6 +23,7 @@ import {useDispatch} from 'react-redux';
 import {loaderActions} from '../../../../store/loader-slice';
 import {ActivityIndicator} from 'react-native-paper';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
+import {PieChart} from 'react-native-chart-kit';
 const menuOptions = [
   {key: 'daily', value: 'Daily'},
   {key: 'weekly', value: 'Weekly'},
@@ -186,7 +186,7 @@ export const SheetStatsScreen = ({navigation, route}) => {
 
   const onSetChartData = () => {
     //  chart data format is x and y
-    let data = {datasets: [], colors: []};
+    let data = [];
     Object.keys(groupedDetails).map((key, index) => {
       let details = groupedDetails[key];
       let categoryAmount = 0;
@@ -194,8 +194,8 @@ export const SheetStatsScreen = ({navigation, route}) => {
         categoryAmount += element.amount;
       });
       let dataset = {
-        y: categoryAmount,
-        x: ' ',
+        name: key,
+        amount: categoryAmount,
       };
 
       let allCategories = categories[activeType];
@@ -203,17 +203,17 @@ export const SheetStatsScreen = ({navigation, route}) => {
       if (!categoryObj) {
         categoryObj = details.filter(sd => sd.category.id)[0].category;
       }
+      dataset.color = categoryObj.color;
 
-      data.colors.push(categoryObj.color);
-      data.datasets.push(dataset);
+      data.push(dataset);
     });
     // if empty push something as 100%
-    if (data.datasets.length === 0) {
-      data.datasets.push({
-        y: 1,
-        x: ' ',
+    if (data.length === 0) {
+      data.push({
+        amount: 1,
+        name: ' ',
+        color: '#bbb',
       });
-      data.colors.push('#bbb');
     }
     setChartData(data);
   };
@@ -229,29 +229,40 @@ export const SheetStatsScreen = ({navigation, route}) => {
     }
   }, [chartData]);
 
-  console.log(chartData);
   return (
     <SafeArea>
-      {chartData && chartData.datasets && chartData.datasets.length > 0 && (
+      {chartData && chartData.length > 0 && (
         <>
           <StatsTitle>
             <Text color="#fff">{report.value}</Text>
           </StatsTitle>
-          <VictoryPie
-            data={chartData.datasets}
-            // width={Dimensions.get('window').width}
-            width={400}
-            height={280}
-            // innerRadius={50}
-            // colorScale={chartData.colors}
-            // style={{
-            //   labels: {
-            //     fill: theme.colors.text.primary,
-            //     fontSize: 15,
-            //     padding: 7,
-            //   },
-            // }}
-          />
+          <Spacer size={'xlarge'} />
+          <View
+            style={{
+              position: 'relative',
+              height: 270,
+            }}>
+            <PieChart
+              data={chartData}
+              width={Dimensions.get('window').width}
+              height={270}
+              absolute
+              hasLegend={false}
+              paddingLeft="100"
+              chartConfig={{
+                decimalPlaces: 2, // optional, defaults to 2dp
+                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                style: {
+                  borderRadius: 16,
+                },
+              }}
+              accessor="amount"
+              backgroundColor="transparent"
+            />
+          </View>
+
+          <Spacer size={'xlarge'} />
+
           <View style={{marginLeft: 10, marginRight: 10}}>
             <CategoryTabs
               setActiveType={onSetActiveType}

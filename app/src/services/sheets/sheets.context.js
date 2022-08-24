@@ -768,16 +768,19 @@ export const SheetsContextProvider = ({children}) => {
   };
 
   const onImportData = async () => {
-    await DocumentPicker.pickSingle({type: [DocumentPicker.types.allFiles]})
+    await DocumentPicker.pickSingle({
+      type: [DocumentPicker.types.allFiles],
+      copyTo: 'documentDirectory',
+    })
       .then(async r => {
         if (r.type === 'application/json') {
           let fileuri = r.uri;
-
           if (Platform.OS === 'ios') {
             fileuri = fileuri.replace('file:', '');
           }
-          console.log(fileuri);
-
+          if (Platform.OS === 'android') {
+            fileuri = r.fileCopyUri;
+          }
           RNFetchBlob.fs
             .readFile(fileuri)
             .then(file => {

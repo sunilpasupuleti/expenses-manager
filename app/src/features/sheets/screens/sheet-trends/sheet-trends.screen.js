@@ -3,6 +3,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {useTheme} from 'styled-components/native';
 import _, {keys} from 'lodash';
 import {Dimensions, ScrollView, TouchableOpacity} from 'react-native';
+import Crashlytics from '@react-native-firebase/crashlytics';
 
 import {View} from 'react-native';
 import moment from 'moment';
@@ -222,214 +223,223 @@ export const SheetTrendsScreen = ({navigation, route}) => {
     setActiveType(type);
   };
 
+  Crashlytics().log(JSON.stringify(chartData));
   return (
     <SafeArea>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <Spacer size={'large'} />
-        <View style={{marginLeft: 10, marginRight: 10}}>
-          <CategoryTabs
-            setActiveType={onSetActiveType}
-            activeType={activeType}
-          />
-        </View>
-        <Spacer size={'xlarge'} />
-
-        {/* last 14 days */}
-        <View last14days>
-          <StatsTitle>
-            <Text color="#fff">Last 14 days</Text>
-          </StatsTitle>
-
-          {tooltipPos.last14days.visible ? (
-            <ToolTip>
-              <Text fontfamily="headingSemiBold" fontsize={'12px'}>
-                {tooltipPos.last14days.value}
-              </Text>
-            </ToolTip>
-          ) : (
+      {chartData &&
+        chartData.last14days &&
+        chartData.last12months &&
+        chartData.last14days.datasets &&
+        chartData.last12months.datasets &&
+        chartData.last14days.datasets.length > 0 &&
+        chartData.last12months.datasets.length > 0 && (
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <Spacer size={'large'} />
+            <View style={{marginLeft: 10, marginRight: 10}}>
+              <CategoryTabs
+                setActiveType={onSetActiveType}
+                activeType={activeType}
+              />
+            </View>
             <Spacer size={'xlarge'} />
-          )}
 
-          <MainWrapper>
-            {chartData.last14days && (
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}>
-                <LineChart
-                  withHorizontalLabels={false}
-                  withInnerLines={false}
-                  withOuterLines={false}
-                  style={{
-                    backgroundColor: theme.colors.bg.secondary,
-                    borderRadius: 15,
-                    paddingRight: 20,
-                  }}
-                  data={{
-                    labels: chartData.last14days.labels,
-                    datasets: [
-                      {
-                        data: chartData.last14days.datasets,
-                        color: (opacity = 1) => `rgb(87,86,213 ,0.7)`, // optional
-                        strokeWidth: 2, // optional
-                      },
-                    ],
-                  }}
-                  width={Dimensions.get('window').width}
-                  height={200}
-                  chartConfig={chartConfig}
-                  onDataPointClick={data => {
-                    let key = chartData.last14days.keys[data.index];
-                    let value = moment(key).format('ddd, DD MMM, YYYY - ');
-                    value +=
-                      GetCurrencySymbol(sheet.currency) +
-                      ' ' +
-                      GetCurrencyLocalString(data.value);
-                    let isSamePoint =
-                      tooltipPos.last14days.x === data.x &&
-                      tooltipPos.last14days.y === data.y;
+            {/* last 14 days */}
+            <View last14days>
+              <StatsTitle>
+                <Text color="#fff">Last 14 days</Text>
+              </StatsTitle>
 
-                    isSamePoint
-                      ? setTooltipPos(previousState => {
-                          return {
-                            ...previousState,
-                            last14days: {
-                              ...previousState.last14days,
-                              visible: !previousState.last14days.visible,
-                            },
-                          };
-                        })
-                      : setTooltipPos(prevState => ({
-                          ...prevState,
-                          last14days: {
-                            x: data.x,
-                            y: data.y,
-                            value: value,
-                            visible: true,
+              {tooltipPos.last14days.visible ? (
+                <ToolTip>
+                  <Text fontfamily="headingSemiBold" fontsize={'12px'}>
+                    {tooltipPos.last14days.value}
+                  </Text>
+                </ToolTip>
+              ) : (
+                <Spacer size={'xlarge'} />
+              )}
+
+              <MainWrapper>
+                {chartData.last14days && (
+                  <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}>
+                    <LineChart
+                      withHorizontalLabels={false}
+                      withInnerLines={false}
+                      withOuterLines={false}
+                      style={{
+                        backgroundColor: theme.colors.bg.secondary,
+                        borderRadius: 15,
+                        paddingRight: 20,
+                      }}
+                      data={{
+                        labels: chartData.last14days.labels,
+                        datasets: [
+                          {
+                            data: chartData.last14days.datasets,
+                            color: (opacity = 1) => `rgb(87,86,213 ,0.7)`, // optional
+                            strokeWidth: 2, // optional
                           },
-                        }));
-                  }}
-                  decorator={() => {
-                    return tooltipPos.last14days.visible ? (
-                      <View>
-                        <Svg>
-                          <Line
-                            x1={tooltipPos.last14days.x}
-                            y1="0"
-                            x2={tooltipPos.last14days.x}
-                            y2="170"
-                            stroke={theme.colors.brand.primaryHex}
-                            strokeWidth="2"
-                          />
-                        </Svg>
-                      </View>
-                    ) : null;
-                  }}
-                />
-              </ScrollView>
-            )}
-          </MainWrapper>
-        </View>
+                        ],
+                      }}
+                      width={Dimensions.get('window').width}
+                      height={200}
+                      chartConfig={chartConfig}
+                      onDataPointClick={data => {
+                        let key = chartData.last14days.keys[data.index];
+                        let value = moment(key).format('ddd, DD MMM, YYYY - ');
+                        value +=
+                          GetCurrencySymbol(sheet.currency) +
+                          ' ' +
+                          GetCurrencyLocalString(data.value);
+                        let isSamePoint =
+                          tooltipPos.last14days.x === data.x &&
+                          tooltipPos.last14days.y === data.y;
 
-        {/* last 12 months */}
-        <View last12months>
-          <Spacer size={'large'} />
-          <StatsTitle>
-            <Text color="#fff">Last 12 months</Text>
-          </StatsTitle>
+                        isSamePoint
+                          ? setTooltipPos(previousState => {
+                              return {
+                                ...previousState,
+                                last14days: {
+                                  ...previousState.last14days,
+                                  visible: !previousState.last14days.visible,
+                                },
+                              };
+                            })
+                          : setTooltipPos(prevState => ({
+                              ...prevState,
+                              last14days: {
+                                x: data.x,
+                                y: data.y,
+                                value: value,
+                                visible: true,
+                              },
+                            }));
+                      }}
+                      decorator={() => {
+                        return tooltipPos.last14days.visible ? (
+                          <View>
+                            <Svg>
+                              <Line
+                                x1={tooltipPos.last14days.x}
+                                y1="0"
+                                x2={tooltipPos.last14days.x}
+                                y2="170"
+                                stroke={theme.colors.brand.primaryHex}
+                                strokeWidth="2"
+                              />
+                            </Svg>
+                          </View>
+                        ) : null;
+                      }}
+                    />
+                  </ScrollView>
+                )}
+              </MainWrapper>
+            </View>
 
-          {tooltipPos.last12months.visible ? (
-            <ToolTip>
-              <Text fontfamily="headingSemiBold" fontsize={'12px'}>
-                {tooltipPos.last12months.value}
-              </Text>
-            </ToolTip>
-          ) : (
-            <Spacer size={'xlarge'} />
-          )}
+            {/* last 12 months */}
+            <View last12months>
+              <Spacer size={'large'} />
+              <StatsTitle>
+                <Text color="#fff">Last 12 months</Text>
+              </StatsTitle>
 
-          <MainWrapper>
-            {chartData.last12months && (
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}>
-                <LineChart
-                  withHorizontalLabels={false}
-                  withInnerLines={false}
-                  withOuterLines={false}
-                  style={{
-                    backgroundColor: theme.colors.bg.secondary,
-                    borderRadius: 15,
-                    paddingRight: 20,
-                  }}
-                  data={{
-                    labels: chartData.last12months.labels,
-                    datasets: [
-                      {
-                        data: chartData.last12months.datasets,
-                        color: (opacity = 1) => `rgb(87,86,213 ,0.7)`, // optional
-                        strokeWidth: 2, // optional
-                      },
-                    ],
-                  }}
-                  formatXLabel={xValue => moment(xValue).format('MMM')}
-                  width={Dimensions.get('window').width}
-                  height={200}
-                  chartConfig={chartConfig}
-                  onDataPointClick={data => {
-                    let key = chartData.last12months.labels[data.index];
-                    key = moment(key).format('MMM, YYYY - ');
-                    let value = key;
-                    value +=
-                      GetCurrencySymbol(sheet.currency) +
-                      '  ' +
-                      GetCurrencyLocalString(data.value);
+              {tooltipPos.last12months.visible ? (
+                <ToolTip>
+                  <Text fontfamily="headingSemiBold" fontsize={'12px'}>
+                    {tooltipPos.last12months.value}
+                  </Text>
+                </ToolTip>
+              ) : (
+                <Spacer size={'xlarge'} />
+              )}
 
-                    let isSamePoint =
-                      tooltipPos.last12months.x === data.x &&
-                      tooltipPos.last12months.y === data.y;
-
-                    isSamePoint
-                      ? setTooltipPos(previousState => {
-                          return {
-                            ...previousState,
-                            last12months: {
-                              ...previousState.last12months,
-                              visible: !previousState.last12months.visible,
-                            },
-                          };
-                        })
-                      : setTooltipPos(prevState => ({
-                          ...prevState,
-                          last12months: {
-                            x: data.x,
-                            y: data.y,
-                            value: value,
-                            visible: true,
+              <MainWrapper>
+                {chartData.last12months && (
+                  <ScrollView
+                    horizontal={true}
+                    showsHorizontalScrollIndicator={false}>
+                    <LineChart
+                      withHorizontalLabels={false}
+                      withInnerLines={false}
+                      withOuterLines={false}
+                      style={{
+                        backgroundColor: theme.colors.bg.secondary,
+                        borderRadius: 15,
+                        paddingRight: 20,
+                      }}
+                      data={{
+                        labels: chartData.last12months.labels,
+                        datasets: [
+                          {
+                            data: chartData.last12months.datasets,
+                            color: (opacity = 1) => `rgb(87,86,213 ,0.7)`, // optional
+                            strokeWidth: 2, // optional
                           },
-                        }));
-                  }}
-                  decorator={() => {
-                    return tooltipPos.last12months.visible ? (
-                      <View>
-                        <Svg>
-                          <Line
-                            x1={tooltipPos.last12months.x}
-                            y1="0"
-                            x2={tooltipPos.last12months.x}
-                            y2="170"
-                            stroke={theme.colors.brand.primaryHex}
-                            strokeWidth="2"
-                          />
-                        </Svg>
-                      </View>
-                    ) : null;
-                  }}
-                />
-              </ScrollView>
-            )}
-          </MainWrapper>
-        </View>
-      </ScrollView>
+                        ],
+                      }}
+                      formatXLabel={xValue => moment(xValue).format('MMM')}
+                      width={Dimensions.get('window').width}
+                      height={200}
+                      chartConfig={chartConfig}
+                      onDataPointClick={data => {
+                        let key = chartData.last12months.labels[data.index];
+                        key = moment(key).format('MMM, YYYY - ');
+                        let value = key;
+                        value +=
+                          GetCurrencySymbol(sheet.currency) +
+                          '  ' +
+                          GetCurrencyLocalString(data.value);
+
+                        let isSamePoint =
+                          tooltipPos.last12months.x === data.x &&
+                          tooltipPos.last12months.y === data.y;
+
+                        isSamePoint
+                          ? setTooltipPos(previousState => {
+                              return {
+                                ...previousState,
+                                last12months: {
+                                  ...previousState.last12months,
+                                  visible: !previousState.last12months.visible,
+                                },
+                              };
+                            })
+                          : setTooltipPos(prevState => ({
+                              ...prevState,
+                              last12months: {
+                                x: data.x,
+                                y: data.y,
+                                value: value,
+                                visible: true,
+                              },
+                            }));
+                      }}
+                      decorator={() => {
+                        return tooltipPos.last12months.visible ? (
+                          <View>
+                            <Svg>
+                              <Line
+                                x1={tooltipPos.last12months.x}
+                                y1="0"
+                                x2={tooltipPos.last12months.x}
+                                y2="170"
+                                stroke={theme.colors.brand.primaryHex}
+                                strokeWidth="2"
+                              />
+                            </Svg>
+                          </View>
+                        ) : null;
+                      }}
+                    />
+                  </ScrollView>
+                )}
+              </MainWrapper>
+            </View>
+          </ScrollView>
+        )}
     </SafeArea>
   );
 };

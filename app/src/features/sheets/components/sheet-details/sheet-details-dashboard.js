@@ -1,7 +1,7 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Text} from '../../../../components/typography/text.component';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {ScrollView, TouchableOpacity, View} from 'react-native';
+import {Dimensions, ScrollView, TouchableOpacity, View} from 'react-native';
 import {
   FlexColumn,
   FlexRow,
@@ -30,6 +30,7 @@ import {CategoryColor} from '../../../categories/components/categories.styles';
 import _ from 'lodash';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {FadeInView} from '../../../../components/animations/fade.animation';
+
 export const SheetDetailsDashboard = ({navigation, route}) => {
   const theme = useTheme();
   const routeIsFocused = useIsFocused();

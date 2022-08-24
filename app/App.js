@@ -17,6 +17,7 @@ import {
 import moment from 'moment';
 import SplashScreen from 'react-native-splash-screen';
 import './src/components/fcm/FCMService';
+
 moment.suppressDeprecationWarnings = true;
 if (Platform.OS === 'android') {
   require('intl');
