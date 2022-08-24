@@ -14,6 +14,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import RNFS from 'react-native-fs';
 import useHttp from '../../hooks/use-http';
 import {GOOGLE_API_KEY, GOOGLE_CLOUD_VISION_API_URL} from '../../../config';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import _ from 'lodash';
 import matchWords from '../../components/utility/category-match-words.json';
 import test from '../../components/utility/gcp-vision-responses.json';
@@ -23,6 +24,7 @@ import {
   GetCurrencyLocalString,
   GetCurrencySymbol,
 } from '../../components/symbol.currency';
+import {useTheme} from 'styled-components/native';
 const defaultCategories = {
   expense: [
     {
@@ -120,6 +122,7 @@ export const SheetsContext = createContext({
   onChangeSheetType: (sheet, sheetDetail, callback = () => null) => null,
   onExportData: () => null,
   onExportDataToExcel: (config, data) => null,
+  onExportAllDataToPdf: (config, data) => null,
   onImportData: () => null,
   onArchiveSheet: () => null,
   onPinSheet: () => null,
@@ -135,6 +138,7 @@ export const SheetsContextProvider = ({children}) => {
   const {userData} = useContext(AuthenticationContext);
   const {sendRequest} = useHttp();
   const dispatch = useDispatch();
+  const theme = useTheme();
 
   useEffect(() => {
     if (userData) {
@@ -169,6 +173,8 @@ export const SheetsContextProvider = ({children}) => {
             ],
           },
         },
+        // extra data to use-http hook
+        loaderType: 'scanning',
       },
       {
         successCallback: receivedResponse => {
@@ -689,14 +695,14 @@ export const SheetsContextProvider = ({children}) => {
     if (Platform.OS === 'ios') {
       var toSaveData = JSON.stringify(data);
       const dirs = RNFetchBlob.fs.dirs;
-      var path = dirs.DocumentDir + '/transactions.json';
+      var path = dirs.DocumentDir + `/transactions-${moment()}.json`;
       RNFetchBlob.fs
         .writeFile(path, toSaveData)
         .then(res => {
           console.log('successfully exported file ios - ' + res);
           Share.open({
             url: path,
-            filename: 'transactions.json',
+            filename: `transactions-${moment()}.json`,
             saveToFiles: true,
             type: 'application/json',
           }).catch(err => {
@@ -705,13 +711,6 @@ export const SheetsContextProvider = ({children}) => {
               'error while exporting the data - ios',
             );
           });
-
-          // dispatch(
-          //   notificationActions.showToast({
-          //     status: 'success',
-          //     message: 'Successfully exported file',
-          //   }),
-          // );
         })
         .catch(err => {
           console.log(err, 'err in exporting file in ios');
@@ -823,6 +822,8 @@ export const SheetsContextProvider = ({children}) => {
   };
 
   const onExportDataToExcel = async (config, data) => {
+    dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'excel'}));
+
     let wb = XLSX.utils.book_new();
     let ws = XLSX.utils.json_to_sheet(data);
     // add extracells
@@ -837,16 +838,19 @@ export const SheetsContextProvider = ({children}) => {
 
     if (Platform.OS === 'ios') {
       const dirs = RNFetchBlob.fs.dirs;
-      var path = dirs.DocumentDir + '/transactions.xlsx';
+      var path = dirs.DocumentDir + `/transactions-${moment()}.xlsx`;
       RNFS.writeFile(path, wbout, 'ascii')
         .then(res => {
+          dispatch(loaderActions.hideLoader());
+
           console.log('successfully exported file ios - ' + res);
           Share.open({
             url: path,
-            filename: 'transactions.xlsx',
+            filename: `transactions-${moment()}.xlsx`,
             saveToFiles: true,
             type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           }).catch(err => {
+            dispatch(loaderActions.hideLoader());
             console.log(
               err.error.message,
               'error while exporting the data - ios',
@@ -854,6 +858,8 @@ export const SheetsContextProvider = ({children}) => {
           });
         })
         .catch(err => {
+          dispatch(loaderActions.hideLoader());
+
           console.log(err, 'err in exporting file in ios');
           dispatch(
             notificationActions.showToast({
@@ -881,6 +887,8 @@ export const SheetsContextProvider = ({children}) => {
         let path = dirs.DownloadDir + `/transactions-${moment()}.xlsx`;
         RNFS.writeFile(path, wbout, 'ascii')
           .then(r => {
+            dispatch(loaderActions.hideLoader());
+
             dispatch(
               notificationActions.showToast({
                 status: 'success',
@@ -890,6 +898,8 @@ export const SheetsContextProvider = ({children}) => {
             );
           })
           .catch(err => {
+            dispatch(loaderActions.hideLoader());
+
             console.log(err, 'Error in exporting excel');
             dispatch(
               notificationActions.showToast({
@@ -899,12 +909,260 @@ export const SheetsContextProvider = ({children}) => {
             );
           });
       } else {
+        dispatch(loaderActions.hideLoader());
+
         Alert.alert('Permission denied');
       }
     }
   };
 
+  const onExportAllDataToPdf = async () => {
+    dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'pdf'}));
+    let sheet = sheets[0];
+    let tableHeads = `
+      <th>S.NO</th>
+      <th>TITLE</th>
+      <th>CATEGORY</th>
+      <th>DATE</th>
+      <th>AMOUNT ( ${GetCurrencySymbol(sheet.currency)} )</th>
+    `;
+    let styles = `
+      <style>
+      .styled-table {
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 0.9em;
+        font-family: sans-serif;
+        min-width: 400px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+      }
+      .styled-table thead tr {
+        background-color: ${theme.colors.brand.primary};
+        color: #ffffff;
+        text-align: left;
+      }
+      .styled-table th,
+      .styled-table td {
+          padding: 12px 15px;
+      }
+
+      .styled-table tbody tr {
+        border-bottom: 1px solid #dddddd;
+      }
+    
+      .styled-table tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+      }
+    
+      .styled-table tbody tr:last-of-type {
+        border-bottom: 2px solid #009879;
+      }
+
+      .styled-table tbody tr.active-row {
+        font-weight: bold;
+        color: #009879;
+      }
+    </style>
+    `;
+
+    let tableBody = '';
+    let totalIncome = 0;
+    let totalExpense = 0;
+
+    sheet.details.forEach((detail, index) => {
+      let date = moment(detail.date).format('MMM DD, YYYY ');
+      if (detail.showTime) {
+        let time = moment(detail.time).format('hh:mm A');
+        date += time;
+      }
+      if (detail.type === 'expense') {
+        totalExpense += detail.amount;
+      } else {
+        totalIncome += detail.amount;
+      }
+      let tableRow = `
+        <tr>
+            <td>${index + 1}</td>
+            <td>${detail.notes ? detail.notes : ''}</td>
+            <td>${detail.category.name}</td>
+            <td>${date}</td>
+            <td>${
+              detail.type === 'expense' ? -detail.amount : detail.amount
+            }</td>
+        </tr>
+      `;
+      tableBody += tableRow;
+    });
+
+    tableBody += `
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>TOTAL INCOME</td>
+        <td>${
+          GetCurrencySymbol(sheet.currency) +
+          ' ' +
+          GetCurrencyLocalString(totalIncome)
+        }</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>TOTAL INCOME</td>
+        <td>${
+          GetCurrencySymbol(sheet.currency) +
+          ' ' +
+          GetCurrencyLocalString(totalExpense)
+        }</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>TOTAL INCOME</td>
+        <td>${
+          GetCurrencySymbol(sheet.currency) +
+          ' ' +
+          GetCurrencyLocalString(sheet.totalBalance)
+        }</td>
+       </tr>
+
+
+    `;
+    let html = `
+    <!DOCTYPE html>
+    <head>
+     ${styles}
+    </head>
+    <body>
+      <table class="styled-table">
+          <thead>
+              <tr>
+                  ${tableHeads}
+              </tr>
+          </thead>
+          <tbody>
+              ${tableBody}
+          </tbody>
+       </table>
+    </body>
+
+    `;
+    let options = {
+      html: html,
+      fileName: 'transactions',
+      directory: 'Documents', //for ios only Documents is allowed
+    };
+
+    let file = await RNHTMLtoPDF.convert(options);
+    // console.log(file.filePath);
+
+    if (file.filePath) {
+      if (Platform.OS === 'ios') {
+        // write code
+      } else {
+        try {
+          const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+            {
+              title: 'Storage Permission Required',
+              message: 'App needs access to your storage to download file',
+            },
+          );
+
+          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            downloadPdf(file.filePath);
+          } else {
+            dispatch(loaderActions.hideLoader());
+            Alert.alert(
+              'Storage Permission not granted, please enable in app settings',
+            );
+          }
+        } catch (err) {
+          dispatch(loaderActions.hideLoader());
+          console.warn(err, 'error occured storage');
+        }
+      }
+    }
+  };
+
+  const downloadPdf = async filePath => {
+    if (filePath) {
+      let toPath =
+        RNFetchBlob.fs.dirs.DownloadDir + `/transactions-${moment()}.pdf`;
+      if (Platform.OS === 'ios') {
+        RNFetchBlob.fs
+          .mv(filePath, toPath)
+          .then(r => {
+            dispatch(loaderActions.hideLoader());
+
+            console.log('successfully exported file ios - pdf' + r);
+            Share.open({
+              url: toPath,
+              filename: `transactions-${moment()}.json`,
+              saveToFiles: true,
+              type: 'application/json',
+            }).catch(err => {
+              dispatch(loaderActions.hideLoader());
+              console.log(
+                err.error.message,
+                'error while exporting the data pdf - ios',
+              );
+            });
+          })
+          .catch(err => {
+            dispatch(loaderActions.hideLoader());
+            console.log(err, 'err in exporting file in ios pdf');
+            dispatch(
+              notificationActions.showToast({
+                status: 'error',
+                message: 'Something error occured while exporting the pdf',
+              }),
+            );
+          });
+      }
+
+      if (Platform.OS === 'android') {
+        RNFetchBlob.fs
+          .mv(filePath, toPath)
+          .then(r => {
+            dispatch(loaderActions.hideLoader());
+
+            console.log('successfully exported file android - pdf' + r);
+            dispatch(
+              notificationActions.showToast({
+                status: 'success',
+                message:
+                  'Your file is exported successfully. Please check the downloads folder for the file.',
+              }),
+            );
+          })
+          .catch(err => {
+            dispatch(loaderActions.hideLoader());
+            console.log(err, 'err in exporting file in anroid pdf', err);
+            dispatch(
+              notificationActions.showToast({
+                status: 'error',
+                message: 'Something error occured while exporting the pdf',
+              }),
+            );
+          });
+      }
+    }
+  };
+
   const onExportAllSheetsToExcel = async config => {
+    dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'excel'}));
+
     let wb = XLSX.utils.book_new();
 
     sheets.forEach((sheet, index) => {
@@ -988,6 +1246,8 @@ export const SheetsContextProvider = ({children}) => {
       var path = dirs.DocumentDir + '/transactions.xlsx';
       RNFS.writeFile(path, wbout, 'ascii')
         .then(res => {
+          dispatch(loaderActions.hideLoader());
+
           console.log('successfully exported file ios - ' + res);
           Share.open({
             url: path,
@@ -995,6 +1255,8 @@ export const SheetsContextProvider = ({children}) => {
             saveToFiles: true,
             type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           }).catch(err => {
+            dispatch(loaderActions.hideLoader());
+
             console.log(
               err.error.message,
               'error while exporting the data - ios',
@@ -1002,6 +1264,8 @@ export const SheetsContextProvider = ({children}) => {
           });
         })
         .catch(err => {
+          dispatch(loaderActions.hideLoader());
+
           console.log(err, 'err in exporting file in ios');
           dispatch(
             notificationActions.showToast({
@@ -1029,6 +1293,8 @@ export const SheetsContextProvider = ({children}) => {
         let path = dirs.DownloadDir + `/transactions-${moment()}.xlsx`;
         RNFS.writeFile(path, wbout, 'ascii')
           .then(r => {
+            dispatch(loaderActions.hideLoader());
+
             dispatch(
               notificationActions.showToast({
                 status: 'success',
@@ -1038,6 +1304,8 @@ export const SheetsContextProvider = ({children}) => {
             );
           })
           .catch(err => {
+            dispatch(loaderActions.hideLoader());
+
             console.log(err, 'Error in exporting excel');
             dispatch(
               notificationActions.showToast({
@@ -1047,6 +1315,8 @@ export const SheetsContextProvider = ({children}) => {
             );
           });
       } else {
+        dispatch(loaderActions.hideLoader());
+
         Alert.alert('Permission denied');
       }
     }
@@ -1112,6 +1382,7 @@ export const SheetsContextProvider = ({children}) => {
         onExportDataToExcel,
         calculateBalance,
         onGoogleCloudVision,
+        onExportAllDataToPdf,
       }}>
       {children}
     </SheetsContext.Provider>

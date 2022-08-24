@@ -39,8 +39,9 @@ export const GoogleButton = styled.TouchableOpacity`
 export const GoogleButtonImageWrapper = styled.View`
   background-color: #fff;
   padding: 3px;
-  height: 100%;
-  width : 50px
+  height: 110%;
+  left: -1px;
+  width: 60px;
   display: flex;
   align-items: center;
   justify-content: center;

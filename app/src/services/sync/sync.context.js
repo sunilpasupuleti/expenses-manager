@@ -40,7 +40,7 @@ export const SyncContextProvider = ({children}) => {
       );
       return;
     }
-    dispatch(loaderActions.showLoader({backdrop: true}));
+    dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'backup'}));
 
     await firestore()
       .collection(userData.uid)
@@ -102,7 +102,8 @@ export const SyncContextProvider = ({children}) => {
       });
   };
   const restoreData = async (docId = null) => {
-    dispatch(loaderActions.showLoader({backdrop: true}));
+    dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'restore'}));
+
     if (docId) {
       await firestore()
         .collection(userData.uid)
@@ -195,7 +196,8 @@ export const SyncContextProvider = ({children}) => {
   };
 
   const onGetRestoreDates = async () => {
-    dispatch(loaderActions.showLoader({backdrop: true}));
+    dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'restore'}));
+
     return await firestore()
       .collection(userData.uid)
       .get()

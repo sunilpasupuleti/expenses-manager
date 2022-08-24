@@ -660,7 +660,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
               {!selectedImage && (
                 <TouchableOpacity onPress={onAddImage}>
                   <FlexRow justifyContent="space-between">
-                    <Text>Add Image</Text>
+                    <Text>Add Bill</Text>
 
                     <FontAwesome
                       name="photo"
@@ -674,7 +674,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
               {selectedImage && (
                 <FlexRow justifyContent="space-between">
                   <TouchableOpacity onPress={onAddImage}>
-                    <Text>Change Image</Text>
+                    <Text>Change Bill</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity onPress={() => setOpen(true)}>

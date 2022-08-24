@@ -3,7 +3,6 @@ import React, {useEffect, useRef, useState} from 'react';
 import {useTheme} from 'styled-components/native';
 import _, {keys} from 'lodash';
 import {Dimensions, ScrollView, TouchableOpacity} from 'react-native';
-import Crashlytics from '@react-native-firebase/crashlytics';
 
 import {View} from 'react-native';
 import moment from 'moment';
@@ -223,7 +222,6 @@ export const SheetTrendsScreen = ({navigation, route}) => {
     setActiveType(type);
   };
 
-  Crashlytics().log(JSON.stringify(chartData));
   return (
     <SafeArea>
       {chartData &&

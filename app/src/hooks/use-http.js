@@ -5,11 +5,24 @@ import {loaderActions} from '../store/loader-slice';
 import {notificationActions} from '../store/notification-slice';
 
 const useHttp = () => {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState({
+    status: false,
+    loaderType: null,
+  });
+
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
   useEffect(() => {
-    if (isLoading) {
+    if (isLoading.status) {
+      if (isLoading.loaderType) {
+        dispatch(
+          loaderActions.showLoader({
+            backdrop: true,
+            loaderType: isLoading.loaderType,
+          }),
+        );
+        return;
+      }
       dispatch(loaderActions.showLoader({backdrop: true}));
     } else {
       dispatch(loaderActions.hideLoader());
@@ -38,12 +51,18 @@ const useHttp = () => {
         errorCallback: () => null,
       },
     ) => {
-      setIsLoading(true);
-      setError(null);
       let type = requestConfig.type;
       let url = requestConfig.url;
       let data = requestConfig.data;
       let headers = requestConfig.headers;
+      let loaderType = requestConfig.loaderType;
+
+      setIsLoading({
+        status: true,
+        loaderType: loaderType,
+      });
+      setError(null);
+
       try {
         let request;
         if (!type || type === 'GET') {
@@ -62,7 +81,10 @@ const useHttp = () => {
         }
         request
           .then(res => {
-            setIsLoading(false);
+            setIsLoading({
+              status: false,
+              loaderType: null,
+            });
             callbacks.successCallback(res.data);
             if (res.data && res.data.message) {
               dispatch(

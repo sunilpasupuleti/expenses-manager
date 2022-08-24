@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {Animated, StyleSheet, Text, View} from 'react-native';
+import {Animated, StyleSheet, View} from 'react-native';
 import {useSelector} from 'react-redux';
 import styled from 'styled-components/native';
+import Lottie from 'lottie-react-native';
+import {Text} from '../typography/text.component';
 
 const LoaderContainer = styled.View`
   position: absolute;
@@ -28,23 +30,56 @@ const LoaderMain = styled(Animated.View)`
 export const Loader = () => {
   const isLoading = useSelector(state => state.loader.isLoading);
   const backdrop = useSelector(state => state.loader.backdrop);
+  const loaderType = useSelector(state => state.loader.loaderType);
+
   const [rotationAnimation, setRotationAnimation] = useState(
     new Animated.Value(0),
   );
 
+  const [animatedJson, setAnimatedJson] = useState(
+    require('../../../assets/lottie/loader.json'),
+  );
+
   useEffect(() => {
     if (isLoading) {
-      runAnimation();
+      if (loaderType === 'spinner') {
+        runAnimation();
+      }
+
+      if (loaderType === 'backup') {
+        setAnimatedJson(require('../../../assets/lottie/backup.json'));
+      }
+
+      if (loaderType === 'restore') {
+        setAnimatedJson(require('../../../assets/lottie/restore.json'));
+      }
+
+      if (loaderType === 'scanning') {
+        setAnimatedJson(require('../../../assets/lottie/scanning.json'));
+      }
+
+      if (loaderType === 'pdf') {
+        setAnimatedJson(require('../../../assets/lottie/pdf.json'));
+      }
+
+      if (loaderType === 'excel') {
+        setAnimatedJson(require('../../../assets/lottie/excel.json'));
+      }
     } else {
-      rotationAnimation.setValue(0);
+      if (loaderType === 'spinner') {
+        rotationAnimation.setValue(0);
+      } else {
+        setAnimatedJson(require('../../../assets/lottie/loader.json'));
+      }
     }
-  }, [isLoading]);
+  }, [isLoading, loaderType]);
 
   const interPolateRotating = rotationAnimation.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
   });
 
+  //  if you want to use custome spinng loader
   const animatedStyles = {
     upper: {
       transform: [
@@ -67,9 +102,14 @@ export const Loader = () => {
       },
     ).start(() => rotationAnimation.setValue(1));
   }
+
   return isLoading ? (
     <LoaderContainer backdrop={backdrop}>
-      <LoaderMain style={animatedStyles.upper} />
+      {loaderType !== 'spinner' && (
+        <Lottie source={animatedJson} autoPlay loop />
+      )}
+      {loaderType === 'spinner' && <LoaderMain style={animatedStyles.upper} />}
+      {/* if you want to use spinner loader uncomment this and use */}
     </LoaderContainer>
   ) : null;
 };

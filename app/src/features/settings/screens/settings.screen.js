@@ -67,8 +67,13 @@ export const SettingsScreen = ({navigation}) => {
 
   const [encrypted, setEncrypted] = useState(false);
 
-  const {onExportData, onImportData, onExportAllSheetsToExcel, sheets} =
-    useContext(SheetsContext);
+  const {
+    onExportData,
+    onImportData,
+    onExportAllSheetsToExcel,
+    onExportAllDataToPdf,
+    sheets,
+  } = useContext(SheetsContext);
   const changesMade = useSelector(state => state.service.changesMade.status);
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -298,11 +303,43 @@ export const SettingsScreen = ({navigation}) => {
                   </FlexRow>
                 </Setting>
               </SettingsCardContent>
+
+              <SettingsCardContent onPress={onFetchExchangeRates}>
+                <Setting justifyContent="space-between">
+                  <FlexRow>
+                    <SettingIconWrapper color="#08A405">
+                      <MaterialCommunityIcons
+                        name="currency-eur"
+                        size={20}
+                        color="#fefefe"
+                      />
+                    </SettingIconWrapper>
+
+                    <SettingTitle>Fetch Latest Currency Rates</SettingTitle>
+                  </FlexRow>
+                </Setting>
+              </SettingsCardContent>
             </SettingsCard>
           </Spacer>
 
           <Spacer size={'xlarge'}>
             <SettingsCard>
+              <SettingsCardContent onPress={onExportAllDataToPdf}>
+                <Setting justifyContent="space-between">
+                  <FlexRow>
+                    <SettingIconWrapper color="red">
+                      <FontAwesome
+                        name="file-pdf-o"
+                        size={20}
+                        color="#fefefe"
+                      />
+                    </SettingIconWrapper>
+
+                    <SettingTitle>Export data to Pdf</SettingTitle>
+                  </FlexRow>
+                </Setting>
+              </SettingsCardContent>
+
               <SettingsCardContent onPress={onExportAllSheetsToExcel}>
                 <Setting justifyContent="space-between">
                   <FlexRow>
@@ -318,7 +355,21 @@ export const SettingsScreen = ({navigation}) => {
                   </FlexRow>
                 </Setting>
               </SettingsCardContent>
+            </SettingsCard>
+          </Spacer>
 
+          {/* another card for json imports */}
+          <Spacer size={'large'}>
+            <SettingsCard>
+              <Spacer size={'large'}>
+                <SettingHint marginLeft="10px">
+                  If you have this exported JSON file, in the future simply you
+                  can import all the data from the exported JSON File. You can
+                  use this file inorder to read the data in another device or
+                  you can send the file to other user who are using this app
+                  also
+                </SettingHint>
+              </Spacer>
               <SettingsCardContent onPress={onExportData}>
                 <Setting justifyContent="space-between">
                   <FlexRow>
@@ -339,22 +390,6 @@ export const SettingsScreen = ({navigation}) => {
                     </SettingIconWrapper>
 
                     <SettingTitle>Import data from JSON file</SettingTitle>
-                  </FlexRow>
-                </Setting>
-              </SettingsCardContent>
-
-              <SettingsCardContent onPress={onFetchExchangeRates}>
-                <Setting justifyContent="space-between">
-                  <FlexRow>
-                    <SettingIconWrapper color="#08A405">
-                      <MaterialCommunityIcons
-                        name="currency-eur"
-                        size={20}
-                        color="#fefefe"
-                      />
-                    </SettingIconWrapper>
-
-                    <SettingTitle>Fetch Latest Currency Rates</SettingTitle>
                   </FlexRow>
                 </Setting>
               </SettingsCardContent>
