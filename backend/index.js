@@ -28,11 +28,11 @@ http.listen(process.env.PORT || 8080, () => {
 
 const crons = require("./crons");
 
-var firebaseadmin = require("firebase-admin");
+const { initializeApp, cert } = require("firebase-admin/app");
 var serviceAccount = require("./expenses-manager.json");
 
-firebaseadmin.initializeApp({
-  credential: firebaseadmin.credential.cert(serviceAccount),
+initializeApp({
+  credential: cert(serviceAccount),
   databaseURL: process.env.FIREBASE_DATABASE_URL,
   storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
 });

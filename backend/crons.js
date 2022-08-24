@@ -1,6 +1,8 @@
 const dotenv = require("dotenv");
 const crons = require("node-cron");
-const firebaseadmin = require("firebase-admin");
+const { getFirestore } = require("firebase-admin/firestore");
+const { getMessaging } = require("firebase-admin/messaging");
+
 const fs = require("fs");
 const moment = require("moment");
 
@@ -17,14 +19,13 @@ async function scheduleDailyBackUpNotification(data) {
   crons.schedule(
     "1 0 * * *", // daily at 12 am
     async () => {
-      firebaseadmin
-        .firestore()
+      getFirestore()
         .listCollections()
         .then((snapshots) => {
           snapshots.forEach(async (snaps) => {
             let collectionId = snaps["_queryOptions"].collectionId;
-            firebaseadmin
-              .firestore()
+
+            getFirestore()
               .collection(collectionId)
               .get()
               .then((data) => {
@@ -53,16 +54,15 @@ async function scheduleDailyBackUpNotification(data) {
 
 async function scheduleDailyReminderNotification(data) {
   crons.schedule(
-    "0 21 * * *", // daily at 9 pm
+    "*/20 * * * * *",
+    // "0 21 * * *", // daily at 9 pm
     async () => {
-      firebaseadmin
-        .firestore()
+      getFirestore()
         .listCollections()
         .then((snapshots) => {
           snapshots.forEach(async (snaps) => {
             let collectionId = snaps["_queryOptions"].collectionId;
-            firebaseadmin
-              .firestore()
+            getFirestore()
               .collection(collectionId)
               .get()
               .then((data) => {
@@ -96,8 +96,7 @@ const sendDailyReminderNotification = async (data) => {
   let payload = {
     data: { type: "daily-reminder", uid: data.uid },
   };
-  firebaseadmin
-    .messaging()
+  getMessaging()
     .sendToDevice(token, payload, { priority: "high" })
     .then((r) => {
       let error = null;
@@ -130,8 +129,7 @@ const sendDailyBackupNotification = async (data) => {
     data: { type: "daily-backup", uid: data.uid },
   };
 
-  firebaseadmin
-    .messaging()
+  getMessaging()
     .sendToDevice(token, payload, { priority: "high" })
     .then((r) => {
       let error = null;

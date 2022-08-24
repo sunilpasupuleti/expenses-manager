@@ -24,6 +24,7 @@
 		D6D8160128507713004EE44C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D6D8160028507713004EE44C /* GoogleService-Info.plist */; };
 		D6D8160228507713004EE44C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D6D8160028507713004EE44C /* GoogleService-Info.plist */; };
 		EAAF2F0B0A7D45E7B627203B /* Montserrat-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 67DBE92FF6C443A7972489CC /* Montserrat-SemiBold.ttf */; };
+		DF35D34CA86D4DA3AF8FB328 /* notification.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 28A2B0E83BCC47898F6A0EDE /* notification.mp3 */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,7 @@
 		E1D41407065C4EE2B4D10D62 /* Lato-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Regular.ttf"; path = "../assets/fonts/Lato-Regular.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F681DD3BD0E24B7798185FF3 /* Lato-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Black.ttf"; path = "../assets/fonts/Lato-Black.ttf"; sourceTree = "<group>"; };
+		28A2B0E83BCC47898F6A0EDE /* notification.mp3 */ = {isa = PBXFileReference; name = "notification.mp3"; path = "../assets/notification.mp3"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +184,7 @@
 				0B50F3EAAD55457A8B3AE762 /* Montserrat-Regular.ttf */,
 				67DBE92FF6C443A7972489CC /* Montserrat-SemiBold.ttf */,
 				71A50E7EA0D24382ADC6AF38 /* Oswald-Regular.ttf */,
+				28A2B0E83BCC47898F6A0EDE /* notification.mp3 */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -293,6 +296,7 @@
 				8ED30098EE0E4D9F9018BDA1 /* Montserrat-Regular.ttf in Resources */,
 				EAAF2F0B0A7D45E7B627203B /* Montserrat-SemiBold.ttf in Resources */,
 				88802C4C3E9C45D491F66BFC /* Oswald-Regular.ttf in Resources */,
+				DF35D34CA86D4DA3AF8FB328 /* notification.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
