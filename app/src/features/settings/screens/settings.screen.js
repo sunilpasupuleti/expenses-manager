@@ -71,7 +71,7 @@ export const SettingsScreen = ({navigation}) => {
     onExportData,
     onImportData,
     onExportAllSheetsToExcel,
-    onExportAllDataToPdf,
+    onExportDataToPdf,
     sheets,
   } = useContext(SheetsContext);
   const changesMade = useSelector(state => state.service.changesMade.status);
@@ -324,7 +324,7 @@ export const SettingsScreen = ({navigation}) => {
 
           <Spacer size={'xlarge'}>
             <SettingsCard>
-              <SettingsCardContent onPress={onExportAllDataToPdf}>
+              <SettingsCardContent onPress={() => onExportDataToPdf(sheets[0])}>
                 <Setting justifyContent="space-between">
                   <FlexRow>
                     <SettingIconWrapper color="red">

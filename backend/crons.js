@@ -54,8 +54,8 @@ async function scheduleDailyBackUpNotification(data) {
 
 async function scheduleDailyReminderNotification(data) {
   crons.schedule(
-    "*/20 * * * * *",
-    // "0 21 * * *", // daily at 9 pm
+    // "*/20 * * * * *",
+    "0 21 * * *", // daily at 9 pm
     async () => {
       getFirestore()
         .listCollections()

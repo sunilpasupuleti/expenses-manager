@@ -6,6 +6,8 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {FlexRow, MainWrapper} from '../../../../components/styles';
 import {Text} from '../../../../components/typography/text.component';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+
 import moment from 'moment';
 import _ from 'lodash';
 import {
@@ -20,6 +22,7 @@ import {
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
 
 import {SheetDetailsInfo} from '../sheet-details/sheet-details-info.component';
+import {SheetExport} from '../sheet-export/sheet-export.component';
 
 export const SheetStatsDetailsScreen = ({navigation, route}) => {
   const [sheet, setSheet] = useState(null);
@@ -49,24 +52,6 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
               <Text color={theme.colors.brand.primary}>Back</Text>
             </FlexRow>
           </TouchableOpacity>
-        ),
-        headerRight: () => (
-          <Spacer position={'right'} size="medium">
-            <TouchableOpacity onPress={() => onClickExportData(ps, psd, pc)}>
-              <FlexRow>
-                <Spacer position={'right'} size="medium">
-                  <FontAwesome
-                    name="file-excel-o"
-                    size={14}
-                    color={theme.colors.brand.primary}
-                  />
-                </Spacer>
-                <Text fontsize={'13px'} color={theme.colors.brand.primary}>
-                  Export to Excel
-                </Text>
-              </FlexRow>
-            </TouchableOpacity>
-          </Spacer>
         ),
       });
     }

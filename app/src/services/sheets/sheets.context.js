@@ -121,8 +121,8 @@ export const SheetsContext = createContext({
   onDuplicateSheet: (sheet, sheetDetail, callback = () => null) => null,
   onChangeSheetType: (sheet, sheetDetail, callback = () => null) => null,
   onExportData: () => null,
-  onExportDataToExcel: (config, data) => null,
-  onExportAllDataToPdf: (config, data) => null,
+  onExportDataToExcel: (config, data, callback) => null,
+  onExportDataToPdf: (sheet, config, callback) => null,
   onImportData: () => null,
   onArchiveSheet: () => null,
   onPinSheet: () => null,
@@ -343,7 +343,6 @@ export const SheetsContextProvider = ({children}) => {
         `@expenses-manager-data-${userData.uid}`,
       );
       value = JSON.parse(value);
-
       if (value != null) {
         setExpensesData(value);
         // set sheets accoring to updated date wise
@@ -821,7 +820,7 @@ export const SheetsContextProvider = ({children}) => {
       });
   };
 
-  const onExportDataToExcel = async (config, data) => {
+  const onExportDataToExcel = async (config, data, callback = () => null) => {
     dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'excel'}));
 
     let wb = XLSX.utils.book_new();
@@ -842,7 +841,7 @@ export const SheetsContextProvider = ({children}) => {
       RNFS.writeFile(path, wbout, 'ascii')
         .then(res => {
           dispatch(loaderActions.hideLoader());
-
+          callback();
           console.log('successfully exported file ios - ' + res);
           Share.open({
             url: path,
@@ -888,7 +887,7 @@ export const SheetsContextProvider = ({children}) => {
         RNFS.writeFile(path, wbout, 'ascii')
           .then(r => {
             dispatch(loaderActions.hideLoader());
-
+            callback();
             dispatch(
               notificationActions.showToast({
                 status: 'success',
@@ -916,13 +915,13 @@ export const SheetsContextProvider = ({children}) => {
     }
   };
 
-  const onExportAllDataToPdf = async () => {
+  const onExportDataToPdf = async (sheet, config, callback = () => null) => {
     dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'pdf'}));
-    let sheet = sheets[0];
     let tableHeads = `
       <th>S.NO</th>
       <th>TITLE</th>
       <th>CATEGORY</th>
+      <th>BILL IMAGE</th>
       <th>DATE</th>
       <th>AMOUNT ( ${GetCurrencySymbol(sheet.currency)} )</th>
     `;
@@ -980,11 +979,15 @@ export const SheetsContextProvider = ({children}) => {
       } else {
         totalIncome += detail.amount;
       }
+      // ${detail.image && `<img src='${detail.image}'/>`}
+
       let tableRow = `
         <tr>
             <td>${index + 1}</td>
             <td>${detail.notes ? detail.notes : ''}</td>
             <td>${detail.category.name}</td>
+            <td>
+            </td>
             <td>${date}</td>
             <td>${
               detail.type === 'expense' ? -detail.amount : detail.amount
@@ -1001,8 +1004,10 @@ export const SheetsContextProvider = ({children}) => {
         <td></td>
         <td></td>
         <td></td>
+        <td></td>
       </tr>
       <tr>
+        <td></td>
         <td></td>
         <td></td>
         <td></td>
@@ -1017,7 +1022,8 @@ export const SheetsContextProvider = ({children}) => {
         <td></td>
         <td></td>
         <td></td>
-        <td>TOTAL INCOME</td>
+        <td></td>
+        <td>TOTAL EXPENSE</td>
         <td>${
           GetCurrencySymbol(sheet.currency) +
           ' ' +
@@ -1028,11 +1034,12 @@ export const SheetsContextProvider = ({children}) => {
         <td></td>
         <td></td>
         <td></td>
-        <td>TOTAL INCOME</td>
+        <td></td>
+        <td>BALANCE</td>
         <td>${
           GetCurrencySymbol(sheet.currency) +
           ' ' +
-          GetCurrencyLocalString(sheet.totalBalance)
+          GetCurrencyLocalString(totalIncome - totalExpense)
         }</td>
        </tr>
 
@@ -1080,7 +1087,7 @@ export const SheetsContextProvider = ({children}) => {
           );
 
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            downloadPdf(file.filePath);
+            downloadPdf(file.filePath, callback);
           } else {
             dispatch(loaderActions.hideLoader());
             Alert.alert(
@@ -1095,7 +1102,7 @@ export const SheetsContextProvider = ({children}) => {
     }
   };
 
-  const downloadPdf = async filePath => {
+  const downloadPdf = async (filePath, callback) => {
     if (filePath) {
       let toPath =
         RNFetchBlob.fs.dirs.DownloadDir + `/transactions-${moment()}.pdf`;
@@ -1104,7 +1111,7 @@ export const SheetsContextProvider = ({children}) => {
           .mv(filePath, toPath)
           .then(r => {
             dispatch(loaderActions.hideLoader());
-
+            callback();
             console.log('successfully exported file ios - pdf' + r);
             Share.open({
               url: toPath,
@@ -1136,7 +1143,7 @@ export const SheetsContextProvider = ({children}) => {
           .mv(filePath, toPath)
           .then(r => {
             dispatch(loaderActions.hideLoader());
-
+            callback();
             console.log('successfully exported file android - pdf' + r);
             dispatch(
               notificationActions.showToast({
@@ -1382,7 +1389,7 @@ export const SheetsContextProvider = ({children}) => {
         onExportDataToExcel,
         calculateBalance,
         onGoogleCloudVision,
-        onExportAllDataToPdf,
+        onExportDataToPdf,
       }}>
       {children}
     </SheetsContext.Provider>

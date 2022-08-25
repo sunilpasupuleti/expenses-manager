@@ -3,6 +3,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import {
   FlatList,
@@ -49,6 +50,7 @@ import {
 import {fetchExchangeRates} from '../../../../store/service-slice';
 import {useIsFocused} from '@react-navigation/native';
 import {loaderActions} from '../../../../store/loader-slice';
+import {SheetExport} from '../../components/sheet-export/sheet-export.component';
 
 const subtractMonths = numOfMonths => {
   let date = new Date();
@@ -65,6 +67,9 @@ export const SheetDetailsScreen = ({navigation, route}) => {
   const routeIsFocused = useIsFocused();
 
   const [groupedSheetDetails, setGroupedSheetDetails] = useState({});
+
+  const [modalOpen, setModalOpen] = useState(false);
+
   let date = new Date();
   // for custom date range
   const [customFilter, setCustomFilter] = useState({
@@ -125,72 +130,72 @@ export const SheetDetailsScreen = ({navigation, route}) => {
     }
   };
 
-  const onClickExportData = () => {
-    let sheetDetails = sheet.details;
-    let structuredDetails = [{}];
-    let totalIncome = 0;
-    let totalExpense = 0;
-    sheetDetails.forEach((d, i) => {
-      let date = moment(d.date).format('MMM DD, YYYY ');
-      if (d.showTime) {
-        let time = moment(d.time).format('hh:mm A');
-        date += time;
-      }
-      if (d.type === 'expense') {
-        totalExpense += d.amount;
-      } else {
-        totalIncome += d.amount;
-      }
+  // const onClickExportData = () => {
+  //   let sheetDetails = sheet.details;
+  //   let structuredDetails = [{}];
+  //   let totalIncome = 0;
+  //   let totalExpense = 0;
+  //   sheetDetails.forEach((d, i) => {
+  //     let date = moment(d.date).format('MMM DD, YYYY ');
+  //     if (d.showTime) {
+  //       let time = moment(d.time).format('hh:mm A');
+  //       date += time;
+  //     }
+  //     if (d.type === 'expense') {
+  //       totalExpense += d.amount;
+  //     } else {
+  //       totalIncome += d.amount;
+  //     }
 
-      let amount = `AMOUNT ( ${GetCurrencySymbol(sheet.currency)} )`;
-      let detail = {
-        'S.NO': i + 1,
-        TITLE: d.notes,
-        CATEGORY: d.category.name,
-        DATE: date,
-        [amount]: d.type === 'expense' ? -d.amount : d.amount,
-      };
-      structuredDetails.push(detail);
-    });
+  //     let amount = `AMOUNT ( ${GetCurrencySymbol(sheet.currency)} )`;
+  //     let detail = {
+  //       'S.NO': i + 1,
+  //       TITLE: d.notes,
+  //       CATEGORY: d.category.name,
+  //       DATE: date,
+  //       [amount]: d.type === 'expense' ? -d.amount : d.amount,
+  //     };
+  //     structuredDetails.push(detail);
+  //   });
 
-    let extraCells = [
-      ['', '', '', '', '', ''],
-      [
-        '',
-        '',
-        '',
-        'TOTAL INCOME ',
-        GetCurrencySymbol(sheet.currency) +
-          ' ' +
-          GetCurrencyLocalString(totalIncome),
-      ],
-      [
-        '',
-        '',
-        '',
-        'TOTAL EXPENSES ',
-        GetCurrencySymbol(sheet.currency) +
-          ' ' +
-          GetCurrencyLocalString(totalExpense),
-      ],
-      [
-        '',
-        '',
-        '',
-        'BALANCE',
-        GetCurrencySymbol(sheet.currency) +
-          ' ' +
-          GetCurrencyLocalString(totalIncome - totalExpense),
-      ],
-    ];
-    let config = {
-      title: sheet.name.toUpperCase(),
-      extraCells,
-      sheet: {...sheet},
-      wscols: [{wch: 5}, {wch: 40}, {wch: 40}, {wch: 25}, {wch: 25}],
-    };
-    onExportDataToExcel(config, structuredDetails);
-  };
+  //   let extraCells = [
+  //     ['', '', '', '', '', ''],
+  //     [
+  //       '',
+  //       '',
+  //       '',
+  //       'TOTAL INCOME ',
+  //       GetCurrencySymbol(sheet.currency) +
+  //         ' ' +
+  //         GetCurrencyLocalString(totalIncome),
+  //     ],
+  //     [
+  //       '',
+  //       '',
+  //       '',
+  //       'TOTAL EXPENSES ',
+  //       GetCurrencySymbol(sheet.currency) +
+  //         ' ' +
+  //         GetCurrencyLocalString(totalExpense),
+  //     ],
+  //     [
+  //       '',
+  //       '',
+  //       '',
+  //       'BALANCE',
+  //       GetCurrencySymbol(sheet.currency) +
+  //         ' ' +
+  //         GetCurrencyLocalString(totalIncome - totalExpense),
+  //     ],
+  //   ];
+  //   let config = {
+  //     title: sheet.name.toUpperCase(),
+  //     extraCells,
+  //     sheet: {...sheet},
+  //     wscols: [{wch: 5}, {wch: 40}, {wch: 40}, {wch: 25}, {wch: 25}],
+  //   };
+  //   onExportDataToExcel(config, structuredDetails);
+  // };
 
   useEffect(() => {
     if (routeIsFocused) {
@@ -212,7 +217,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
         ),
         headerRight: () => (
           <Menu
-            style={{marginRight: 10}}
+            style={{marginRight: 20}}
             onBackdropPress={() => menuRef.current.close()}
             ref={element => (menuRef.current = element)}>
             <MenuTrigger
@@ -337,17 +342,18 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 customStyles={menuOptionStyles}
                 onSelect={() => {
                   menuRef.current.close();
-                  onClickExportData();
+                  setModalOpen(true);
+                  // onClickExportData();
                 }}>
                 <FlexRow justifyContent="space-between">
                   <Text color="#2f2f2f" fontfamily="heading">
-                    Export as excel
+                    Export Account
                   </Text>
-                  <FontAwesome
+                  <FontAwesome5
                     style={{paddingBottom: 8}}
-                    name="file-excel-o"
-                    size={20}
-                    color={'#000'}
+                    name="file-export"
+                    size={18}
+                    color={theme.colors.brand.primary}
                   />
                 </FlexRow>
               </MenuOption>
@@ -856,6 +862,12 @@ export const SheetDetailsScreen = ({navigation, route}) => {
           </Dialog.Actions>
         </Dialog>
       </Portal>
+
+      <SheetExport
+        sheet={sheet}
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+      />
     </SafeArea>
   );
 };

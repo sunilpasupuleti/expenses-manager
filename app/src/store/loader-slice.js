@@ -13,6 +13,7 @@ const laoderSlice = createSlice({
     },
     hideLoader(state) {
       state.isLoading = false;
+      state.loaderType = null;
     },
   },
 });

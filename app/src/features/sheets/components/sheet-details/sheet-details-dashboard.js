@@ -1,6 +1,8 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Text} from '../../../../components/typography/text.component';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+
 import {Dimensions, ScrollView, TouchableOpacity, View} from 'react-native';
 import {
   FlexColumn,
@@ -29,7 +31,7 @@ import {Card} from 'react-native-paper';
 import {CategoryColor} from '../../../categories/components/categories.styles';
 import _ from 'lodash';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
-import {FadeInView} from '../../../../components/animations/fade.animation';
+import {SheetExport} from '../sheet-export/sheet-export.component';
 
 export const SheetDetailsDashboard = ({navigation, route}) => {
   const theme = useTheme();
@@ -39,6 +41,8 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
   const [activeType, setActiveType] = useState('income');
   const [groupedDetails, setGroupedDetails] = useState(null);
   const [sortedByPercentages, setSortedByPercentages] = useState(null);
+
+  const [modalOpen, setModalOpen] = useState(false);
 
   const getTotalIncome = () => {
     let sheetDetails = sheet.details;
@@ -90,7 +94,21 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
             </FlexRow>
           </TouchableOpacity>
         ),
-        headerRight: () => null,
+        headerRight: () => (
+          <Spacer position={'right'} size="large">
+            <TouchableOpacity onPress={() => setModalOpen(true)}>
+              <FlexRow>
+                <FontAwesome5
+                  name="file-export"
+                  size={16}
+                  color={theme.colors.brand.primary}
+                />
+                <Spacer position={'right'} size="medium" />
+                <Text color={theme.colors.brand.primary}>Export</Text>
+              </FlexRow>
+            </TouchableOpacity>
+          </Spacer>
+        ),
       });
     }
   }, [routeIsFocused]);
@@ -340,6 +358,12 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
             ))}
         </MainWrapper>
       </ScrollView>
+
+      <SheetExport
+        sheet={sheet}
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+      />
     </SafeArea>
   );
 };
