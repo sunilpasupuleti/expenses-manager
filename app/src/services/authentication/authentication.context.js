@@ -46,6 +46,7 @@ export const AuthenticationContext = createContext({
   userData: null,
   onLogout: () => null,
   onUpdateUserDetails: () => null,
+  onSetUserAdditionalDetails: data => null,
 });
 
 export const AuthenticationContextProvider = ({children}) => {
@@ -55,6 +56,9 @@ export const AuthenticationContextProvider = ({children}) => {
   const [userAdditionalDetails, setUserAdditionalDetails] = useState(null);
   const dispatch = useDispatch();
 
+  const onSetUserAdditionalDetails = data => {
+    setUserAdditionalDetails(data);
+  };
   // for push notifications
 
   const [expoPushToken, setExpoPushToken] = useState('');
@@ -285,6 +289,7 @@ export const AuthenticationContextProvider = ({children}) => {
     auth()
       .signOut()
       .then(async () => {
+        messaging().deleteToken();
         setIsAuthenticated(false);
         setIsLocalAuthenticated('pending');
         dispatch(setChangesMade({status: false, loaded: true}));
@@ -300,6 +305,7 @@ export const AuthenticationContextProvider = ({children}) => {
       .doc('user-data')
       .update({
         active: false,
+        dailyReminder: null,
       })
       .then(() => {})
       .catch(err => {
@@ -378,6 +384,7 @@ export const AuthenticationContextProvider = ({children}) => {
         onSignInWithMobile,
         onSetUserData,
         onUpdateUserDetails,
+        onSetUserAdditionalDetails,
         userAdditionalDetails,
       }}>
       {children}

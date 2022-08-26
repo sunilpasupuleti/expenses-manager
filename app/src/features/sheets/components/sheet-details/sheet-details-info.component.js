@@ -13,7 +13,7 @@ import {FlexRow} from '../../../../components/styles';
 import {useTheme} from 'styled-components/native';
 import {Spacer} from '../../../../components/spacer/spacer.component';
 import {Alert, FlatList, TouchableOpacity, View} from 'react-native';
-import _ from 'lodash';
+import _, {update} from 'lodash';
 import React, {useContext, useRef, useState} from 'react';
 import Haptics from 'react-native-haptic-feedback';
 
@@ -75,9 +75,6 @@ export const SheetDetailsInfo = ({
                 screen: 'Transactions',
                 sheet: updatedSheet,
               });
-              // navigation.navigate('SheetDetails', {
-              //   sheet: updatedSheet,
-              // });
             });
           },
         },

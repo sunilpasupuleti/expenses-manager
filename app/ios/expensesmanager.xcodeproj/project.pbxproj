@@ -23,8 +23,8 @@
 		8ED30098EE0E4D9F9018BDA1 /* Montserrat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0B50F3EAAD55457A8B3AE762 /* Montserrat-Regular.ttf */; };
 		D6D8160128507713004EE44C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D6D8160028507713004EE44C /* GoogleService-Info.plist */; };
 		D6D8160228507713004EE44C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D6D8160028507713004EE44C /* GoogleService-Info.plist */; };
-		EAAF2F0B0A7D45E7B627203B /* Montserrat-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 67DBE92FF6C443A7972489CC /* Montserrat-SemiBold.ttf */; };
 		DF35D34CA86D4DA3AF8FB328 /* notification.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 28A2B0E83BCC47898F6A0EDE /* notification.mp3 */; };
+		EAAF2F0B0A7D45E7B627203B /* Montserrat-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 67DBE92FF6C443A7972489CC /* Montserrat-SemiBold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +50,7 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = expensesmanager/main.m; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-expensesmanager-expensesmanagerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-expensesmanager-expensesmanagerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		1AB85A0D2DD04568BFB59F9C /* Montserrat-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat-Medium.ttf"; path = "../assets/fonts/Montserrat-Medium.ttf"; sourceTree = "<group>"; };
+		28A2B0E83BCC47898F6A0EDE /* notification.mp3 */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = notification.mp3; path = ../assets/notification.mp3; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-expensesmanager.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-expensesmanager.debug.xcconfig"; path = "Target Support Files/Pods-expensesmanager/Pods-expensesmanager.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-expensesmanager.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-expensesmanager.release.xcconfig"; path = "Target Support Files/Pods-expensesmanager/Pods-expensesmanager.release.xcconfig"; sourceTree = "<group>"; };
 		5B7EB9410499542E8C5724F5 /* Pods-expensesmanager-expensesmanagerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-expensesmanager-expensesmanagerTests.debug.xcconfig"; path = "Target Support Files/Pods-expensesmanager-expensesmanagerTests/Pods-expensesmanager-expensesmanagerTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -65,7 +66,6 @@
 		E1D41407065C4EE2B4D10D62 /* Lato-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Regular.ttf"; path = "../assets/fonts/Lato-Regular.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F681DD3BD0E24B7798185FF3 /* Lato-Black.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Lato-Black.ttf"; path = "../assets/fonts/Lato-Black.ttf"; sourceTree = "<group>"; };
-		28A2B0E83BCC47898F6A0EDE /* notification.mp3 */ = {isa = PBXFileReference; name = "notification.mp3"; path = "../assets/notification.mp3"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */

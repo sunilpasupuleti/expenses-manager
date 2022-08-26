@@ -17,7 +17,7 @@ import {
   SheetDetailsTotalBalance,
   SheetDetailsUnderline,
 } from '../../components/sheet-details/sheet-details.styles';
-
+import storage from '@react-native-firebase/storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
@@ -28,6 +28,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {utils} from '@react-native-firebase/app';
 import moment from 'moment';
 import Haptics from 'react-native-haptic-feedback';
 import {ScrollView} from 'react-native';
@@ -54,6 +55,7 @@ import {useDispatch} from 'react-redux';
 import {notificationActions} from '../../../../store/notification-slice';
 import {launchImageLibrary} from 'react-native-image-picker';
 import RNFetchBlob from 'rn-fetch-blob';
+import {loaderActions} from '../../../../store/loader-slice';
 
 export const AddSheetDetailScreen = ({navigation, route}) => {
   const theme = useTheme();
@@ -82,7 +84,13 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [gcpVisionMode, setGcpVisionMode] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState({
+    url: null,
+  });
+
+  const [imageChanged, setImageChanged] = useState(false);
+
+  // let imageChanged = false
   const [open, setOpen] = useState(false);
 
   const [newCategoryIdentified, setNewCategoryIdentified] = useState({
@@ -153,7 +161,9 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
         setGcpVisionMode(true);
         setAmount(sheetDetail.amount);
         setNotes(sheetDetail.notes);
-        setSelectedImage(sheetDetail?.image);
+        setSelectedImage({
+          url: sheetDetail?.image,
+        });
         setActiveType(sheetDetail.type);
         let dateIsValid = moment(sheetDetail.date).isValid();
         let date = new Date();
@@ -229,13 +239,12 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       date: date.toString(),
       showTime: showTime,
       createdAt: Date.now(),
+      image: selectedImage,
     };
     if (showTime) {
       sheetDetail.time = time.toString();
     }
-    if (selectedImage) {
-      sheetDetail.image = selectedImage;
-    }
+
     onSaveSheetDetails(sheet, sheetDetail, updatedSheet => {
       navigation.navigate('SheetDetailsHome', {
         screen: 'Transactions',
@@ -259,7 +268,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     }
     return null;
   };
-  const onEdit = () => {
+  const onEdit = (deleteImage = false) => {
     let sheetDetail = {
       id: route.params.sheetDetail.id,
       amount: parseFloat(amount),
@@ -269,17 +278,24 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       date: date.toString(),
       showTime: showTime,
       createdAt: Date.now(),
+      image: selectedImage,
+      imageChanged: imageChanged,
+      imageDeleted: deleteImage,
     };
     if (showTime) sheetDetail.time = time.toString();
-    if (selectedImage) {
-      sheetDetail.image = selectedImage;
-    }
-
+    setOpen(false);
     onEditSheetDetails(sheet, sheetDetail, updatedSheet => {
+      // if (!deleteImage) {
       navigation.navigate('SheetDetailsHome', {
         screen: 'Transactions',
         sheet: updatedSheet,
       });
+      // } else {
+      //   setOpen(false);
+      //   setSelectedImage({
+      //     url: null,
+      //   });
+      // }
       // navigation.navigate('SheetDetails', {sheet: updatedSheet});
     });
   };
@@ -324,7 +340,12 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       ) {
         let base64 = 'data:' + response.assets[0].type + ';base64,';
         let base64Data = base64 + response.assets[0].base64;
-        setSelectedImage(base64Data);
+        if (editMode) {
+          setImageChanged(true);
+        }
+        setSelectedImage({
+          url: base64Data,
+        });
       }
     });
   };
@@ -355,18 +376,25 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     }
   };
 
-  const downloadImage = image => {
-    if (image) {
-      var Base64Code = image.split(/,\s*/);
-      let prefix = Base64Code[0]; //data:image/png;base64,
-      let format = prefix.match(/image\/(jpeg|png|jpg)/); //at 0 index image/jpeg at 1 index it shows png or jpeg
-      const dirs = RNFetchBlob.fs.dirs;
-      var path = dirs.DownloadDir + '/transaction-image.' + format[1];
-      RNFetchBlob.fs
-        .writeFile(path, Base64Code[1], 'base64')
-        .then(res => {
-          console.log('image download : ', res);
-          setOpen(false);
+  const downloadImage = async image => {
+    if (image && image.url) {
+      // Getting the extention of the file
+      // get bytes
+
+      let {config, fs} = RNFetchBlob;
+
+      let ext = image.extension;
+      const dirs = fs.dirs;
+      var path = dirs.DownloadDir + `/transaction-image-${moment()}.${ext}`;
+      const reference = storage().ref(image.path);
+      setOpen(false);
+      dispatch(
+        loaderActions.showLoader({backdrop: true, loaderType: 'restore'}),
+      );
+      await reference
+        .writeToFile(path)
+        .then(r => {
+          dispatch(loaderActions.hideLoader());
           dispatch(
             notificationActions.showToast({
               status: 'success',
@@ -375,16 +403,13 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
           );
         })
         .catch(err => {
-          console.log(err, 'err in download qr');
-          dispatch(
-            notificationActions.showToast({
-              status: 'error',
-              message: 'Error occured while downloading the  Image',
-            }),
-          );
+          dispatch(loaderActions.hideLoader());
+          console.log('Error occured in downloading image ', err);
+          Alert.alert('Error occured in downloading the file');
         });
     } else {
-      Alert.alert('Error while download');
+      dispatch(loaderActions.hideLoader());
+      Alert.alert('No Image Found');
     }
   };
 
@@ -403,7 +428,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
           showsVerticalScrollIndicator={false}>
           <SheetDetailsTotalBalance fontsize={'30px'} fontfamily="bodySemiBold">
             {activeType === 'expense' && '-'}
-            {GetCurrencySymbol(sheet.currency)} {GetCurrencyLocalString(amount)}
+            {GetCurrencySymbol(sheet?.currency)}{' '}
+            {GetCurrencyLocalString(amount)}
           </SheetDetailsTotalBalance>
           <SheetDetailsUnderline />
 
@@ -657,10 +683,10 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
             )}
 
             <Card.Content>
-              {!selectedImage && (
+              {!selectedImage?.url && (
                 <TouchableOpacity onPress={onAddImage}>
                   <FlexRow justifyContent="space-between">
-                    <Text>Add Bill</Text>
+                    <Text>Add Image</Text>
 
                     <FontAwesome
                       name="photo"
@@ -671,17 +697,20 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                 </TouchableOpacity>
               )}
 
-              {selectedImage && (
+              {selectedImage?.url && (
                 <FlexRow justifyContent="space-between">
-                  <TouchableOpacity onPress={onAddImage}>
-                    <Text>Change Bill</Text>
+                  <TouchableOpacity
+                    onPress={() => {
+                      onAddImage();
+                    }}>
+                    <Text>Change Image</Text>
                   </TouchableOpacity>
 
                   <TouchableOpacity onPress={() => setOpen(true)}>
                     <Avatar.Image
                       size={70}
                       source={{
-                        uri: selectedImage,
+                        uri: selectedImage.url,
                       }}
                     />
                   </TouchableOpacity>
@@ -766,13 +795,20 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
         {open && (
           <Portal>
             <Dialog visible={open} onDismiss={() => setOpen(false)}>
-              <Image style={{height: 400}} source={{uri: selectedImage}} />
+              <Image style={{height: 400}} source={{uri: selectedImage?.url}} />
               <Dialog.Actions>
                 <Button onPress={() => setOpen(false)} color="#aaa">
                   Cancel
                 </Button>
-                {editMode && (
+                {editMode && !imageChanged && (
                   <>
+                    <Spacer position={'left'} size="xlarge" />
+                    <Button
+                      onPress={() => {
+                        onEdit(true);
+                      }}>
+                      <FontAwesome name="trash" size={20} color={'tomato'} />
+                    </Button>
                     <Spacer position={'left'} size="xlarge" />
                     <Button onPress={onDownloadImage} mode="contained">
                       <FontAwesome name="download" size={20} color={'#fff'} />

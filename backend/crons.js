@@ -1,7 +1,6 @@
 const dotenv = require("dotenv");
 const crons = require("node-cron");
 const { getFirestore } = require("firebase-admin/firestore");
-const { getMessaging } = require("firebase-admin/messaging");
 
 const fs = require("fs");
 const moment = require("moment");
@@ -88,37 +87,6 @@ async function scheduleDailyReminderNotification(data) {
     }
   );
 }
-
-const sendDailyReminderNotification = async (data) => {
-  console.log("sending daily reminder notification to  - " + data.displayName);
-  console.log("-----------------------------------");
-  let token = data.fcmToken;
-  let payload = {
-    data: { type: "daily-reminder", uid: data.uid },
-  };
-  getMessaging()
-    .sendToDevice(token, payload, { priority: "high" })
-    .then((r) => {
-      let error = null;
-      if (r.results[0] && r.results[0].error) {
-        error = r.results[0].error;
-      }
-      if (error) {
-        console.log(
-          error.code,
-          error.message,
-          "error in sending daily reminder notification"
-        );
-        console.log("------------------------");
-      } else {
-        console.log(r, "success");
-        console.log("------------------------");
-      }
-    })
-    .catch((err) => {
-      console.log(err, " error in sending the daily reminder notification");
-    });
-};
 
 const sendDailyBackupNotification = async (data) => {
   console.log("sending daily backup notification to - " + data.displayName);

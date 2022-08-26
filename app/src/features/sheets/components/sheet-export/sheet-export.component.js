@@ -272,24 +272,23 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
             <RadioButton.Group
               onValueChange={newValue => setCategoryType(newValue)}
               value={categoryType}>
+              <Text fontfamily="heading">Category Type (optional)</Text>
+              <Spacer />
               <FlexRow justifyContent="space-between">
-                <Text fontfamily="heading">Category Type (optional)</Text>
-                <>
-                  <FlexRow>
-                    <RadioButton
-                      color={theme.colors.brand.primary}
-                      value="expense"
-                    />
-                    <Text>Expense</Text>
-                  </FlexRow>
-                  <FlexRow>
-                    <RadioButton
-                      color={theme.colors.brand.primary}
-                      value="income"
-                    />
-                    <Text>Income</Text>
-                  </FlexRow>
-                </>
+                <FlexRow>
+                  <RadioButton
+                    color={theme.colors.brand.primary}
+                    value="expense"
+                  />
+                  <Text>Expense</Text>
+                </FlexRow>
+                <FlexRow>
+                  <RadioButton
+                    color={theme.colors.brand.primary}
+                    value="income"
+                  />
+                  <Text>Income</Text>
+                </FlexRow>
               </FlexRow>
             </RadioButton.Group>
 

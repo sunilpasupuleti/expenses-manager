@@ -5,10 +5,14 @@ const dotenv = require("dotenv");
 dotenv.config();
 const app = express();
 
+const schedule = require("node-schedule");
+const notification = require("./routes/notification-routes");
 app.use(cors());
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true, limit: "100mb" }));
 app.use("/public", express.static(__dirname + "/public"));
+
+app.use("/notification", notification);
 
 process.on("uncaughtException", (error, promise) => {
   console.log("----- uncaught exception -----");
@@ -18,6 +22,10 @@ process.on("uncaughtException", (error, promise) => {
 process.on("unhandledRejection", (reason, promise) => {
   console.log("----- Reason -----");
   console.log(reason);
+});
+
+process.on("SIGINT", function () {
+  schedule.gracefulShutdown().then(() => process.exit(0));
 });
 
 const http = require("http").Server(app);
@@ -37,4 +45,4 @@ initializeApp({
   storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
 });
 
-crons.cron();
+// crons.cron();

@@ -13,13 +13,22 @@ import DocumentPicker from 'react-native-document-picker';
 import RNFetchBlob from 'rn-fetch-blob';
 import RNFS from 'react-native-fs';
 import useHttp from '../../hooks/use-http';
-import {GOOGLE_API_KEY, GOOGLE_CLOUD_VISION_API_URL} from '../../../config';
+import {
+  BACKEND_URL,
+  GOOGLE_API_KEY,
+  GOOGLE_CLOUD_VISION_API_URL,
+} from '../../../config';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import _ from 'lodash';
+import _, {result} from 'lodash';
 import matchWords from '../../components/utility/category-match-words.json';
 import test from '../../components/utility/gcp-vision-responses.json';
+import storage from '@react-native-firebase/storage';
 import XLSX from 'xlsx';
 import moment from 'moment';
+import {zip} from 'react-native-zip-archive';
+import auth from '@react-native-firebase/auth';
+import messaging from '@react-native-firebase/messaging';
+
 import {
   GetCurrencyLocalString,
   GetCurrencySymbol,
@@ -122,6 +131,7 @@ export const SheetsContext = createContext({
   onChangeSheetType: (sheet, sheetDetail, callback = () => null) => null,
   onExportData: () => null,
   onExportDataToExcel: (config, data, callback) => null,
+  onExportAllDataToPdf: () => null,
   onExportDataToPdf: (sheet, config, callback) => null,
   onImportData: () => null,
   onArchiveSheet: () => null,
@@ -129,13 +139,17 @@ export const SheetsContext = createContext({
   calculateBalance: sheet => null,
   onExportAllSheetsToExcel: config => null,
   onGoogleCloudVision: (base64, callback) => null,
+  onUpdateDailyReminder: dailyReminder => null,
+  onUpdateDailyBackup: dailyBackup => null,
 });
 
 export const SheetsContextProvider = ({children}) => {
   const [sheets, setSheets] = useState([]);
   const [categories, setCategories] = useState(defaultCategories);
   const [expensesData, setExpensesData] = useState(null);
-  const {userData} = useContext(AuthenticationContext);
+  const {userData, onSetUserAdditionalDetails} = useContext(
+    AuthenticationContext,
+  );
   const {sendRequest} = useHttp();
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -145,6 +159,48 @@ export const SheetsContextProvider = ({children}) => {
       retrieveExpensesData();
     }
   }, [userData]);
+
+  const onUpdateDailyReminder = async dailyReminder => {
+    if (!dailyReminder.enabled || !dailyReminder.time) {
+      return;
+    }
+    let jwtToken = await auth().currentUser.getIdToken();
+    let fcmToken = null;
+    await messaging()
+      .getToken()
+      .then(t => {
+        fcmToken = t;
+      })
+      .catch(err => {});
+
+    sendRequest(
+      {
+        type: 'POST',
+        url: BACKEND_URL + '/notification/update-daily-reminder/',
+        data: {
+          ...dailyReminder,
+          uid: userData.uid,
+          fcmToken: fcmToken,
+        },
+        headers: {
+          authorization: 'Bearer ' + jwtToken,
+        },
+      },
+      {
+        successCallback: res => {
+          console.log(res);
+          onSetUserAdditionalDetails(res.userDetails);
+        },
+        errorCallback: err => {},
+      },
+    );
+  };
+
+  const onUpdateDailyBackup = dailyBackup => {
+    if (time) {
+      return;
+    }
+  };
 
   const onGoogleCloudVision = async (base64, callback = () => null) => {
     // let resultObj = test.response2.responses[0];
@@ -317,13 +373,13 @@ export const SheetsContextProvider = ({children}) => {
       );
       setSheets(sortedSheets);
     }
+
     if (passedExpensesData.categories) {
       let changedCategories = {...passedExpensesData.categories};
       setCategories(changedCategories);
     }
 
     try {
-      dispatch(loaderActions.hideLoader());
       const jsonValue = JSON.stringify(passedExpensesData);
       await AsyncStorage.setItem(
         `@expenses-manager-data-${userData.uid}`,
@@ -331,7 +387,6 @@ export const SheetsContextProvider = ({children}) => {
       );
       // retrieveExpensesData();
     } catch (e) {
-      console.log('error saving expenses data to local storage - ', e);
       dispatch(loaderActions.hideLoader());
     }
   };
@@ -394,6 +449,36 @@ export const SheetsContextProvider = ({children}) => {
     sheetDetail,
     callback = () => null,
   ) => {
+    if (sheetDetail.image && sheetDetail.image.url) {
+      var Base64Code = sheetDetail.image.url.split(/,\s*/);
+      let prefix = Base64Code[0]; //data:image/png;base64,
+      let format = prefix.match(/image\/(jpeg|png|jpg)/); //at 0 index image/jpeg at 1 index it shows png or jpeg
+      let path = `${userData.uid}/${sheet.id}/${sheetDetail.id}.${format[1]}`;
+      const reference = storage().ref(path);
+      dispatch(
+        loaderActions.showLoader({backdrop: true, loaderType: 'image_upload'}),
+      );
+      await reference
+        .putString(Base64Code[1], 'base64', {contentType: format[0]})
+        .then(async r => {
+          const url = await reference.getDownloadURL().catch(err => {
+            console.log('Error in getting download url ', err);
+            Alert.alert('Error in uploading the bill');
+          });
+          dispatch(loaderActions.hideLoader());
+          console.log(url);
+          sheetDetail.image.url = url;
+          sheetDetail.image.path = r.metadata.fullPath;
+          sheetDetail.image.type = format[0];
+          sheetDetail.image.extension = format[1];
+        })
+        .catch(err => {
+          dispatch(loaderActions.hideLoader());
+          Alert.alert('Error in uploading the bill');
+          console.log('Error in uploading the image ', err);
+        });
+    }
+
     var presentSheets = [...sheets];
     var sheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
     var presentSheet = presentSheets[sheetIndex];
@@ -487,6 +572,74 @@ export const SheetsContextProvider = ({children}) => {
     let sheetDetailIndex = presentSheet.details.findIndex(
       sd => sd.id === sheetDetail.id,
     );
+    // if image changed delete the image
+    if (sheetDetail.imageChanged) {
+      if (
+        sheetDetail.image &&
+        sheetDetail.image.url &&
+        sheetDetail.image.url ===
+          presentSheet.details[sheetDetailIndex].image.url
+      ) {
+        let previousImage = storage().refFromURL(
+          presentSheet.details[sheetDetailIndex].image.url,
+        );
+        // delete previous image
+        previousImage.delete();
+      }
+
+      if (sheetDetail.image && sheetDetail.image.url) {
+        var Base64Code = sheetDetail.image.url.split(/,\s*/);
+        let prefix = Base64Code[0]; //data:image/png;base64,
+        let format = prefix.match(/image\/(jpeg|png|jpg)/); //at 0 index image/jpeg at 1 index it shows png or jpeg
+        let path = `${userData.uid}/${sheet.id}/${sheetDetail.id}.${format[1]}`;
+        const reference = storage().ref(path);
+        dispatch(
+          loaderActions.showLoader({
+            backdrop: true,
+            loaderType: 'image_upload',
+          }),
+        );
+        await reference
+          .putString(Base64Code[1], 'base64', {contentType: format[0]})
+          .then(async r => {
+            const url = await reference.getDownloadURL().catch(err => {
+              console.log('Error in getting download url ', err);
+              Alert.alert('Error in uploading the bill');
+            });
+            dispatch(loaderActions.hideLoader());
+            sheetDetail.image.url = url;
+            sheetDetail.image.path = r.metadata.fullPath;
+            sheetDetail.image.type = format[0];
+            sheetDetail.image.extension = format[1];
+          })
+          .catch(err => {
+            dispatch(loaderActions.hideLoader());
+            Alert.alert('Error in uploading the bill');
+            console.log('Error in uploading the image ', err);
+          });
+      }
+    }
+
+    // if image delete request
+    if (sheetDetail.imageDeleted) {
+      let path = presentSheet.details[sheetDetailIndex].image.url;
+      if (path) {
+        dispatch(loaderActions.showLoader({backdrop: true}));
+        let toDeleteImage = storage().refFromURL(path);
+        sheetDetail.image = {url: null};
+        toDeleteImage
+          .delete()
+          .then(() => dispatch(loaderActions.hideLoader()))
+          .catch(err => {
+            console.log('error in deleteing image', err);
+            dispatch(loaderActions.hideLoader());
+          });
+      }
+    }
+
+    delete sheetDetail.imageChanged;
+    delete sheetDetail.imageDeleted;
+
     presentSheet.details[sheetDetailIndex] = sheetDetail;
     presentSheet.totalBalance = calculateBalance(presentSheet);
     presentSheet.updatedAt = Date.now();
@@ -574,6 +727,13 @@ export const SheetsContextProvider = ({children}) => {
   ) => {
     let presentSheets = [...sheets];
     let presentSheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
+    // delete bill
+    if (sheetDetail.image && sheetDetail.image.url) {
+      let image = storage().refFromURL(sheetDetail.image.url);
+      // delete previous image
+      image.delete().catch(err => console.log('error in deleting image', err));
+    }
+
     let remainingSheetDetails = presentSheets[presentSheetIndex].details.filter(
       s => s.id != sheetDetail.id,
     );
@@ -586,9 +746,10 @@ export const SheetsContextProvider = ({children}) => {
       ...expensesData,
       sheets: presentSheets,
     };
+    // callback
     onSaveExpensesData(updatedExpensesData).then(() => {
-      onSetChangesMade(true);
       callback(presentSheets[presentSheetIndex]);
+      onSetChangesMade(true);
     });
   };
 
@@ -638,6 +799,7 @@ export const SheetsContextProvider = ({children}) => {
     let dupSheet = presentSheets[dupSheetIndex];
     dupSheet.details.push({
       ...sheetDetail,
+      image: {url: null},
       id: Date.now().toString(36) + Math.random().toString(36).substring(2),
     });
     dupSheet.updatedAt = Date.now();
@@ -916,17 +1078,22 @@ export const SheetsContextProvider = ({children}) => {
   };
 
   const onExportDataToPdf = async (sheet, config, callback = () => null) => {
-    dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'pdf'}));
+    // dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'pdf'}));
     let tableHeads = `
       <th>S.NO</th>
       <th>TITLE</th>
       <th>CATEGORY</th>
-      <th>BILL IMAGE</th>
+      <th>IMAGE</th>
       <th>DATE</th>
       <th>AMOUNT ( ${GetCurrencySymbol(sheet.currency)} )</th>
     `;
     let styles = `
       <style>
+      img{
+        height : 100px;
+        widht : 100px;
+        object-fit : contain;
+      }
       .styled-table {
         border-collapse: collapse;
         margin: 25px 0;
@@ -980,13 +1147,17 @@ export const SheetsContextProvider = ({children}) => {
         totalIncome += detail.amount;
       }
       // ${detail.image && `<img src='${detail.image}'/>`}
-
+      let image =
+        detail.image && detail.image.url
+          ? `<img src='${detail.image.url}'/>`
+          : '';
       let tableRow = `
         <tr>
             <td>${index + 1}</td>
             <td>${detail.notes ? detail.notes : ''}</td>
             <td>${detail.category.name}</td>
             <td>
+            ${image}
             </td>
             <td>${date}</td>
             <td>${
@@ -996,7 +1167,6 @@ export const SheetsContextProvider = ({children}) => {
       `;
       tableBody += tableRow;
     });
-
     tableBody += `
       <tr>
         <td></td>
@@ -1100,6 +1270,222 @@ export const SheetsContextProvider = ({children}) => {
         }
       }
     }
+  };
+
+  const onExportAllDataToPdf = async () => {
+    dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'pdf'}));
+    let folderName = `transaction-pdfs-${moment()}`;
+    let fPath = RNFetchBlob.fs.dirs.DownloadDir + '/' + folderName;
+    await RNFetchBlob.fs.mkdir(fPath).catch(err => {
+      console.log('Error in creating folder');
+      dispatch(loaderActions.hideLoader());
+      return;
+    });
+
+    for await (const sheet of sheets) {
+      let tableHeads = `
+      <th>S.NO</th>
+      <th>TITLE</th>
+      <th>CATEGORY</th>
+      <th>IMAGE</th>
+      <th>DATE</th>
+      <th>AMOUNT ( ${GetCurrencySymbol(sheet.currency)} )</th>
+    `;
+      let styles = `
+      <style>
+      img{
+        height : 100px;
+        widht : 100px;
+        object-fit : contain;
+      }
+      .styled-table {
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 0.9em;
+        font-family: sans-serif;
+        min-width: 400px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+      }
+      .styled-table thead tr {
+        background-color: ${theme.colors.brand.primary};
+        color: #ffffff;
+        text-align: left;
+      }
+      .styled-table th,
+      .styled-table td {
+          padding: 12px 15px;
+      }
+
+      .styled-table tbody tr {
+        border-bottom: 1px solid #dddddd;
+      }
+    
+      .styled-table tbody tr:nth-of-type(even) {
+        background-color: #f3f3f3;
+      }
+    
+      .styled-table tbody tr:last-of-type {
+        border-bottom: 2px solid #009879;
+      }
+
+      .styled-table tbody tr.active-row {
+        font-weight: bold;
+        color: #009879;
+      }
+    </style>
+    `;
+
+      let tableBody = '';
+      let totalIncome = 0;
+      let totalExpense = 0;
+
+      sheet.details.forEach((detail, index) => {
+        let date = moment(detail.date).format('MMM DD, YYYY ');
+        if (detail.showTime) {
+          let time = moment(detail.time).format('hh:mm A');
+          date += time;
+        }
+        if (detail.type === 'expense') {
+          totalExpense += detail.amount;
+        } else {
+          totalIncome += detail.amount;
+        }
+        // ${detail.image && `<img src='${detail.image}'/>`}
+        let image =
+          detail.image && detail.image.url
+            ? `<img src='${detail.image.url}'/>`
+            : '';
+        let tableRow = `
+        <tr>
+            <td>${index + 1}</td>
+            <td>${detail.notes ? detail.notes : ''}</td>
+            <td>${detail.category.name}</td>
+            <td>
+            ${image}
+            </td>
+            <td>${date}</td>
+            <td>${
+              detail.type === 'expense' ? -detail.amount : detail.amount
+            }</td>
+        </tr>
+      `;
+        tableBody += tableRow;
+      });
+      tableBody += `
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>TOTAL INCOME</td>
+        <td>${
+          GetCurrencySymbol(sheet.currency) +
+          ' ' +
+          GetCurrencyLocalString(totalIncome)
+        }</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>TOTAL EXPENSE</td>
+        <td>${
+          GetCurrencySymbol(sheet.currency) +
+          ' ' +
+          GetCurrencyLocalString(totalExpense)
+        }</td>
+      </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>BALANCE</td>
+        <td>${
+          GetCurrencySymbol(sheet.currency) +
+          ' ' +
+          GetCurrencyLocalString(totalIncome - totalExpense)
+        }</td>
+       </tr>
+
+
+    `;
+      let html = `
+    <!DOCTYPE html>
+    <head>
+     ${styles}
+    </head>
+    <body>
+      <table class="styled-table">
+          <thead>
+              <tr>
+                  ${tableHeads}
+              </tr>
+          </thead>
+          <tbody>
+              ${tableBody}
+          </tbody>
+       </table>
+    </body>
+
+    `;
+      let options = {
+        html: html,
+        fileName: sheet.name,
+        directory: 'Documents', //for ios only Documents is allowed
+      };
+
+      let file = await RNHTMLtoPDF.convert(options);
+
+      let toPath =
+        RNFetchBlob.fs.dirs.DownloadDir +
+        `/${folderName}/${sheet.name}-${moment()}.pdf`;
+      await RNFetchBlob.fs
+        .mv(file.filePath, toPath)
+        .then(r => {
+          console.log(`successfully exported file  -  ${sheet.name} pdf`);
+        })
+        .catch(err => {
+          console.log('Error in moving the pdf ', err);
+          dispatch(
+            notificationActions.showToast({
+              status: 'error',
+              message: 'Something error occured while exporting the pdf',
+            }),
+          );
+          dispatch(loaderActions.hideLoader());
+        });
+    }
+
+    const targetPath = `${RNFetchBlob.fs.dirs.DownloadDir}/${folderName}.zip`;
+    const sourcePath = RNFetchBlob.fs.dirs.DownloadDir + '/' + folderName;
+
+    zip(sourcePath, targetPath)
+      .then(path => {
+        RNFetchBlob.fs.unlink(sourcePath);
+        dispatch(loaderActions.hideLoader());
+        console.log(`zip completed at ${path}`);
+        dispatch(
+          notificationActions.showToast({
+            status: 'success',
+            message:
+              'Your file is exported successfully. Please check the downloads folder for the file.',
+          }),
+        );
+      })
+      .catch(error => {
+        dispatch(loaderActions.hideLoader());
+        console.error(error);
+      });
   };
 
   const downloadPdf = async (filePath, callback) => {
@@ -1390,6 +1776,9 @@ export const SheetsContextProvider = ({children}) => {
         calculateBalance,
         onGoogleCloudVision,
         onExportDataToPdf,
+        onExportAllDataToPdf,
+        onUpdateDailyReminder,
+        onUpdateDailyBackup,
       }}>
       {children}
     </SheetsContext.Provider>

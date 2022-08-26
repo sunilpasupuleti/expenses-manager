@@ -5,6 +5,14 @@ import styled from 'styled-components/native';
 import Lottie from 'lottie-react-native';
 import {Text} from '../typography/text.component';
 
+import backup from '../../../assets/lottie/backup.json';
+import excel from '../../../assets/lottie/excel.json';
+import image_upload from '../../../assets/lottie/image_upload.json';
+import loader from '../../../assets/lottie/loader.json';
+import pdf from '../../../assets/lottie/pdf.json';
+import restore from '../../../assets/lottie/restore.json';
+import scanning from '../../../assets/lottie/scanning.json';
+
 const LoaderContainer = styled.View`
   position: absolute;
   left: 0px;
@@ -36,9 +44,7 @@ export const Loader = () => {
     new Animated.Value(0),
   );
 
-  const [animatedJson, setAnimatedJson] = useState(
-    require('../../../assets/lottie/loader.json'),
-  );
+  const [animatedJson, setAnimatedJson] = useState(loader);
 
   useEffect(() => {
     if (isLoading) {
@@ -47,29 +53,44 @@ export const Loader = () => {
       }
 
       if (loaderType === 'backup') {
-        setAnimatedJson(require('../../../assets/lottie/backup.json'));
+        // setAnimatedJson(require('../../../assets/lottie/backup.json'));
+        setAnimatedJson(backup);
       }
 
       if (loaderType === 'restore') {
-        setAnimatedJson(require('../../../assets/lottie/restore.json'));
+        setAnimatedJson(restore);
+        // setAnimatedJson(require('../../../assets/lottie/restore.json'));
       }
 
       if (loaderType === 'scanning') {
-        setAnimatedJson(require('../../../assets/lottie/scanning.json'));
+        setAnimatedJson(scanning);
+
+        // setAnimatedJson(require('../../../assets/lottie/scanning.json'));
       }
 
       if (loaderType === 'pdf') {
-        setAnimatedJson(require('../../../assets/lottie/pdf.json'));
+        setAnimatedJson(pdf);
+
+        // setAnimatedJson(require('../../../assets/lottie/pdf.json'));
       }
 
       if (loaderType === 'excel') {
-        setAnimatedJson(require('../../../assets/lottie/excel.json'));
+        setAnimatedJson(excel);
+
+        // setAnimatedJson(require('../../../assets/lottie/excel.json'));
+      }
+
+      if (loaderType === 'image_upload') {
+        setAnimatedJson(image_upload);
+
+        // setAnimatedJson(require('../../../assets/lottie/image_upload.json'));
       }
     } else {
       if (loaderType === 'spinner') {
         rotationAnimation.setValue(0);
       } else {
-        setAnimatedJson(require('../../../assets/lottie/loader.json'));
+        setAnimatedJson(loader);
+        // setAnimatedJson(require('../../../assets/lottie/loader.json'));
       }
     }
   }, [isLoading, loaderType]);

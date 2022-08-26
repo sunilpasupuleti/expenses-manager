@@ -104,12 +104,13 @@ export const SheetDetailsScreen = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    if (route.params.sheet) {
-      setSheet(route.params.sheet);
-      setFilteredSheet(route.params.sheet);
-      onGroupSheetDetails(getSheetById(route.params.sheet.id));
+    if (route.params.sheet && routeIsFocused) {
+      let s = getSheetById(route.params.sheet.id);
+      setSheet(s);
+      setFilteredSheet(s);
+      onGroupSheetDetails(s);
     }
-  }, [route.params]);
+  }, [route.params, useIsFocused]);
 
   const onGroupSheetDetails = s => {
     let sheetDetails = s.details;

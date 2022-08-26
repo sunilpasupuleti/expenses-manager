@@ -217,48 +217,50 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
                   <Card theme={{roundness: 15}}>
                     <FadeInView>
                       {pinnedSheets.map((item, index) => {
-                        return (
-                          <Swipeable
-                            key={item.id}
-                            renderRightActions={({progress, dragX}) =>
-                              rightSwipeActions(progress, dragX, item)
-                            }
-                            renderLeftActions={({progress, dragX}) =>
-                              leftSwipeActions(progress, dragX, item)
-                            }
-                            friction={2}
-                            ref={ref => {
-                              if (ref && !swipeableRefs.get(item.id)) {
-                                swipeableRefs.set(item.id, ref);
+                        if (item)
+                          return (
+                            <Swipeable
+                              key={item.id}
+                              renderRightActions={({progress, dragX}) =>
+                                rightSwipeActions(progress, dragX, item)
                               }
-                            }}
-                            onSwipeableWillOpen={() => {
-                              [...swipeableRefs.entries()].forEach(
-                                ([key, ref]) => {
-                                  if (key !== item.id && ref) ref.close();
-                                },
-                              );
-                            }}>
-                            <TouchableHighlightWithColor
-                              onLongPress={() => onLongPressActions(item)}
-                              padding={'0px'}
-                              onPress={
-                                () =>
-                                  navigation.navigate('SheetDetailsHome', {
-                                    sheet: item,
-                                  })
-                                // navigation.navigate('SheetDetails', {
-                                //   sheet: item,
-                                // })
-                              }>
-                              <SheetInfoCard
-                                sheet={item}
-                                currentLength={pinnedSheets.length}
-                                index={index}
-                              />
-                            </TouchableHighlightWithColor>
-                          </Swipeable>
-                        );
+                              renderLeftActions={({progress, dragX}) =>
+                                leftSwipeActions(progress, dragX, item)
+                              }
+                              friction={2}
+                              ref={ref => {
+                                if (ref && !swipeableRefs.get(item.id)) {
+                                  swipeableRefs.set(item.id, ref);
+                                }
+                              }}
+                              onSwipeableWillOpen={() => {
+                                [...swipeableRefs.entries()].forEach(
+                                  ([key, ref]) => {
+                                    if (key !== item.id && ref) ref.close();
+                                  },
+                                );
+                              }}>
+                              <TouchableHighlightWithColor
+                                onLongPress={() => onLongPressActions(item)}
+                                padding={'0px'}
+                                onPress={
+                                  () =>
+                                    navigation.navigate('SheetDetailsHome', {
+                                      sheet: item,
+                                    })
+
+                                  // navigation.navigate('SheetDetails', {
+                                  //   sheet: item,
+                                  // })
+                                }>
+                                <SheetInfoCard
+                                  sheet={item}
+                                  currentLength={pinnedSheets.length}
+                                  index={index}
+                                />
+                              </TouchableHighlightWithColor>
+                            </Swipeable>
+                          );
                       })}
                     </FadeInView>
                   </Card>

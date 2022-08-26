@@ -57,6 +57,8 @@ const useHttp = () => {
       let headers = requestConfig.headers;
       let loaderType = requestConfig.loaderType;
 
+      // console.log(url);
+
       setIsLoading({
         status: true,
         loaderType: loaderType,
@@ -96,8 +98,7 @@ const useHttp = () => {
             }
           })
           .catch(async err => {
-            callbacks.errorCallback && callbacks.errorCallback();
-            console.log(err, 'error in http call');
+            callbacks.errorCallback && callbacks.errorCallback(err);
             let message;
             if (
               err.response &&
@@ -110,10 +111,11 @@ const useHttp = () => {
             } else {
               message = 'Error in http call request';
             }
+            console.log(message || err, 'error in http call');
             setError(message);
           });
       } catch (err) {
-        callbacks.errorCallback && callbacks.errorCallback();
+        callbacks.errorCallback && callbacks.errorCallback(err);
         setError(err);
       }
     },
