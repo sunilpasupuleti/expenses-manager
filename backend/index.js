@@ -38,7 +38,7 @@ http.listen(process.env.PORT || 8080, () => {
 const crons = require("./crons");
 
 const { initializeApp, cert } = require("firebase-admin/app");
-var serviceAccount = require("./expenses-manager.json");
+var serviceAccount = require("./expensesmanager.json");
 
 initializeApp({
   credential: cert(serviceAccount),

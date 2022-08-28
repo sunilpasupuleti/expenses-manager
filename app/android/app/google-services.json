@@ -1,42 +1,50 @@
 {
   "project_info": {
-    "project_number": "560966036314",
-    "project_id": "expenses-manager-357607",
-    "storage_bucket": "expenses-manager-357607.appspot.com"
+    "project_number": "4544693826",
+    "firebase_url": "https://expensesmanager-da065-default-rtdb.firebaseio.com",
+    "project_id": "expensesmanager-da065",
+    "storage_bucket": "expensesmanager-da065.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:560966036314:android:e653415e75129951e86163",
+        "mobilesdk_app_id": "1:4544693826:android:befb91e9ceef16df548fdb",
         "android_client_info": {
           "package_name": "com.expensesmanager"
         }
       },
       "oauth_client": [
         {
-          "client_id": "560966036314-er4grjh6polfn6t72crhapc9ddvsihqd.apps.googleusercontent.com",
+          "client_id": "4544693826-9loafu0epq1es2ip6qikq97b0pcfc7ig.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.expensesmanager",
-            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+            "certificate_hash": "4965b1e9e042963f6c830cc2d603b5715c893727"
           }
         },
         {
-          "client_id": "560966036314-qc2s1njts5t11aanrge4t8qmavjartoi.apps.googleusercontent.com",
+          "client_id": "4544693826-dcfvcng0op5c5me3homei0mcki4k6ue9.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDs_QU0iHfT7ibMr-bWWdMxqrWsfa0LNfk"
+          "current_key": "AIzaSyDhR9uJvwGgxkoH62C9ECs87DnHE3mE7bU"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "560966036314-qc2s1njts5t11aanrge4t8qmavjartoi.apps.googleusercontent.com",
+              "client_id": "4544693826-dcfvcng0op5c5me3homei0mcki4k6ue9.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "4544693826-7mabkjo0tovttcsaqr5cd7vqo74s047i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.expensesmanager"
+              }
             }
           ]
         }
