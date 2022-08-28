@@ -314,11 +314,14 @@ export const SettingsScreen = ({navigation}) => {
                         onPress={() => {
                           if (userAdditionalDetails?.dailyReminder?.enabled) {
                             onUpdateDailyReminder({
-                              ...isDailyReminderEnabled,
+                              time: isDailyReminderEnabled.time,
                               update: true,
                             });
                           } else {
-                            onUpdateDailyReminder({...isDailyReminderEnabled});
+                            onUpdateDailyReminder({
+                              enable: true,
+                              time: isDailyReminderEnabled.time,
+                            });
                           }
                         }}>
                         {userAdditionalDetails?.dailyReminder?.enabled

@@ -40,6 +40,7 @@ const sendDailyReminderNotification = async (data) => {
 };
 
 const sendDailyBackupNotification = async (data) => {
+  console.log(data);
   console.log("sending daily backup notification to  - " + data.displayName);
   console.log("-----------------------------------");
   let token = data.fcmToken;
@@ -72,7 +73,7 @@ const sendDailyBackupNotification = async (data) => {
 
 module.exports = {
   async updateDailyReminder(req, res) {
-    const { time, fcmToken, update, disable } = req.body;
+    const { time, fcmToken, enable, update, disable } = req.body;
     let { uid } = req.user;
     if (!uid || !time || !fcmToken) {
       res.status(httpstatus.CONFLICT).json({ message: "All fields required" });
@@ -86,10 +87,6 @@ module.exports = {
         let data = result.data();
 
         let jobs = schedule.scheduledJobs;
-        let jobsLength = Object.keys(jobs).length;
-
-        let alreadyReminderSet =
-          data.dailyReminder && data.dailyReminder.enabled;
 
         function scheduleFunction() {
           let formatedTime = moment(time).format("HH:mm");
@@ -125,7 +122,7 @@ module.exports = {
                   );
                   console.log("-----------------------------------");
                   schedule.scheduleJob(jobId, rule, function () {
-                    sendDailyReminderNotification(data);
+                    sendDailyReminderNotification(returnData);
                   });
                   return res.status(httpstatus.OK).json({
                     message: "Daily Reminder enabled.",
@@ -149,54 +146,55 @@ module.exports = {
             });
         }
 
-        if (!alreadyReminderSet || jobsLength === 0) {
+        if (enable) {
           scheduleFunction();
-        } else if (update && jobsLength > 0) {
-          let jobs = schedule.scheduledJobs;
-          Object.keys(jobs).map((key) => {
-            let jobId = `${uid}-daily-reminder`;
-            if (key === jobId) {
-              let jobData = jobs[key];
-              jobData.cancel();
-              console.log(
-                "Updated time in daily reminder. Cancelling the previous one and scheduling new reminder"
-              );
-              console.log("-----------------------------------");
-              scheduleFunction();
-            }
-          });
-        } else if (disable && jobsLength > 0) {
+        } else if (update) {
+          let jobId = `${uid}-daily-reminder`;
+          let jobKeyFound = Object.keys(jobs).filter((key) => key === jobId)[0];
+          let jobFound = jobs[jobKeyFound];
+          console.log(
+            "Updated time in daily reminder. Cancelling the previous one and scheduling new reminder"
+          );
+          console.log("-----------------------------------");
+
+          if (jobFound) {
+            jobFound.cancel();
+            scheduleFunction();
+          } else {
+            scheduleFunction();
+          }
+        } else if (disable) {
           let jobId = `${uid}-daily-reminder`;
           let jobs = schedule.scheduledJobs;
           let jobKeyFound = Object.keys(jobs).filter((key) => key === jobId)[0];
           let jobFound = jobs[jobKeyFound];
 
-          if (jobFound) {
-            getFirestore()
-              .collection(uid)
-              .doc("user-data")
-              .update({
-                dailyReminder: {
-                  enabled: false,
-                },
-                fcmToken: null,
-              })
-              .then(() => {
-                console.log(`Daily reminder disabled for - ${uid} `);
-                console.log("-----------------------------------");
+          getFirestore()
+            .collection(uid)
+            .doc("user-data")
+            .update({
+              dailyReminder: {
+                enabled: false,
+              },
+              fcmToken: null,
+            })
+            .then(() => {
+              console.log(`Daily reminder disabled for - ${uid} `);
+              console.log("-----------------------------------");
+              if (jobFound) {
                 jobFound.cancel();
-                return res.status(httpstatus.OK).json({
-                  message: "Daily Reminder Disabled.",
-                });
-              })
-              .catch((err) => {
-                res.status(httpstatus.CONFLICT).json({
-                  message: "Error occured in disabling daily reminder",
-                });
-                console.log("error occured", err);
-                return;
+              }
+              return res.status(httpstatus.OK).json({
+                message: "Daily Reminder Disabled.",
               });
-          }
+            })
+            .catch((err) => {
+              res.status(httpstatus.CONFLICT).json({
+                message: "Error occured in disabling daily reminder",
+              });
+              console.log("error occured", err);
+              return;
+            });
         } else {
           res.status(httpstatus.OK).json({ message: "Updated Successfully" });
           console.log("No if block conditions found", err);
@@ -218,6 +216,7 @@ module.exports = {
       res.status(httpstatus.CONFLICT).json({ message: "All fields required" });
       return;
     }
+
     getFirestore()
       .collection(uid)
       .doc("user-data")
@@ -226,8 +225,6 @@ module.exports = {
         let data = result.data();
         let jobs = schedule.scheduledJobs;
         let jobsLength = Object.keys(jobs).length;
-
-        let alreadyBackupSet = data.dailyBackup;
 
         function scheduleFunction() {
           var rule = new schedule.RecurrenceRule();
@@ -255,7 +252,7 @@ module.exports = {
 
                   console.log("-----------------------------------");
                   schedule.scheduleJob(jobId, rule, function () {
-                    sendDailyBackupNotification(data);
+                    sendDailyBackupNotification(returnData);
                   });
                   return res.status(httpstatus.OK).json({
                     message: "Daily Backup enabled.",
@@ -279,52 +276,49 @@ module.exports = {
             });
         }
 
-        if (!alreadyBackupSet || jobsLength === 0) {
-          scheduleFunction();
-        } else if (enabled && jobsLength > 0) {
-          let jobs = schedule.scheduledJobs;
-          Object.keys(jobs).map((key) => {
-            let jobId = `${uid}-daily-backup`;
-            if (key === jobId) {
-              let jobData = jobs[key];
-              jobData.cancel();
-              scheduleFunction();
-            }
-          });
-        } else if (!enabled && jobsLength > 0) {
+        if (enabled) {
+          if (jobsLength > 0) {
+            let jobs = schedule.scheduledJobs;
+            Object.keys(jobs).map((key) => {
+              let jobId = `${uid}-daily-backup`;
+              if (key === jobId) {
+                let jobData = jobs[key];
+                jobData.cancel();
+                scheduleFunction();
+              }
+            });
+          } else {
+            scheduleFunction();
+          }
+        } else if (!enabled) {
           let jobId = `${uid}-daily-backup`;
           let jobs = schedule.scheduledJobs;
           let jobKeyFound = Object.keys(jobs).filter((key) => key === jobId)[0];
           let jobFound = jobs[jobKeyFound];
-
-          if (jobFound) {
-            getFirestore()
-              .collection(uid)
-              .doc("user-data")
-              .update({
-                dailyBackup: false,
-                fcmToken: null,
-              })
-              .then(() => {
-                console.log(`Daily Backup disabled for - ${uid} `);
-                console.log("-----------------------------------");
+          getFirestore()
+            .collection(uid)
+            .doc("user-data")
+            .update({
+              dailyBackup: false,
+              fcmToken: null,
+            })
+            .then(() => {
+              console.log(`Daily Backup disabled for - ${uid} `);
+              console.log("-----------------------------------");
+              if (jobFound) {
                 jobFound.cancel();
-                return res.status(httpstatus.OK).json({
-                  message: "Daily Backup Disabled.",
-                });
-              })
-              .catch((err) => {
-                res.status(httpstatus.CONFLICT).json({
-                  message: "Error occured in disabling daily backup",
-                });
-                console.log("error occured", err);
-                return;
+              }
+              return res.status(httpstatus.OK).json({
+                message: "Daily Backup Disabled.",
               });
-          }
-        } else {
-          res.status(httpstatus.OK).json({ message: "Updated Successfully" });
-          console.log("No if block conditions found", err);
-          return;
+            })
+            .catch((err) => {
+              res.status(httpstatus.CONFLICT).json({
+                message: "Error occured in disabling daily backup",
+              });
+              console.log("error occured", err);
+              return;
+            });
         }
       })
       .catch((err) => {
