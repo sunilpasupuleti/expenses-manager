@@ -11,37 +11,28 @@ const useHttp = () => {
   });
 
   const [error, setError] = useState(null);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    if (isLoading.status) {
-      if (isLoading.loaderType) {
-        dispatch(
-          loaderActions.showLoader({
-            backdrop: true,
-            loaderType: isLoading.loaderType,
-          }),
-        );
-        return;
-      }
-      dispatch(loaderActions.showLoader({backdrop: true}));
-    } else {
-      dispatch(loaderActions.hideLoader());
-    }
-  }, [isLoading]);
+  // const dispatch = useDispatch();
+  // useEffect(() => {
+  //   if (isLoading.status) {
+  //     dispatch(loaderActions.showLoader({backdrop: true}));
+  //   } else {
+  //     dispatch(loaderActions.hideLoader());
+  //   }
+  // }, [isLoading]);
 
-  useEffect(() => {
-    if (error) {
-      dispatch(loaderActions.hideLoader());
-      dispatch(
-        notificationActions.showToast({
-          status: 'error',
-          message: error,
-        }),
-      );
-    } else {
-      dispatch(loaderActions.hideLoader());
-    }
-  }, [error]);
+  // useEffect(() => {
+  //   if (error) {
+  //     dispatch(loaderActions.hideLoader());
+  //     dispatch(
+  //       notificationActions.showToast({
+  //         status: 'error',
+  //         message: error,
+  //       }),
+  //     );
+  //   } else {
+  //     dispatch(loaderActions.hideLoader());
+  //   }
+  // }, [error]);
 
   const sendRequest = useCallback(
     async (
@@ -55,13 +46,9 @@ const useHttp = () => {
       let url = requestConfig.url;
       let data = requestConfig.data;
       let headers = requestConfig.headers;
-      let loaderType = requestConfig.loaderType;
-
-      // console.log(url);
 
       setIsLoading({
         status: true,
-        loaderType: loaderType,
       });
       setError(null);
 
@@ -88,17 +75,16 @@ const useHttp = () => {
               loaderType: null,
             });
             callbacks.successCallback(res.data);
-            if (res.data && res.data.message) {
-              dispatch(
-                notificationActions.showToast({
-                  status: 'success',
-                  message: res.data.message,
-                }),
-              );
-            }
+            // if (res.data && res.data.message) {
+            //   dispatch(
+            //     notificationActions.showToast({
+            //       status: 'success',
+            //       message: res.data.message,
+            //     }),
+            //   );
+            // }
           })
           .catch(async err => {
-            callbacks.errorCallback && callbacks.errorCallback(err);
             let message;
             if (
               err.response &&
@@ -113,13 +99,14 @@ const useHttp = () => {
             }
             console.log(message || err, 'error in http call');
             setError(message);
+            callbacks.errorCallback && callbacks.errorCallback(message);
           });
       } catch (err) {
         callbacks.errorCallback && callbacks.errorCallback(err);
         setError(err);
       }
     },
-    [dispatch],
+    [],
   );
 
   return {

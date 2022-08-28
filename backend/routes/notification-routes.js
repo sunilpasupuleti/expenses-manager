@@ -10,4 +10,10 @@ router.post(
   notificationCtrl.updateDailyReminder
 );
 
+router.post(
+  "/update-daily-backup",
+  AuthHelper.VerifyToken,
+  notificationCtrl.updateDailyBackUp
+);
+
 module.exports = router;

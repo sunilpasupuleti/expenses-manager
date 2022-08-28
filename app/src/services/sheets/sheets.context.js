@@ -139,8 +139,8 @@ export const SheetsContext = createContext({
   calculateBalance: sheet => null,
   onExportAllSheetsToExcel: config => null,
   onGoogleCloudVision: (base64, callback) => null,
-  onUpdateDailyReminder: dailyReminder => null,
-  onUpdateDailyBackup: dailyBackup => null,
+  onUpdateDailyReminder: (dailyReminder, callback) => null,
+  onUpdateDailyBackup: (enabled, callback) => null,
 });
 
 export const SheetsContextProvider = ({children}) => {
@@ -160,10 +160,11 @@ export const SheetsContextProvider = ({children}) => {
     }
   }, [userData]);
 
-  const onUpdateDailyReminder = async dailyReminder => {
-    if (!dailyReminder.enabled || !dailyReminder.time) {
-      return;
-    }
+  const onUpdateDailyReminder = async (
+    dailyReminder,
+    callback = () => null,
+  ) => {
+    dispatch(loaderActions.showLoader({backdrop: true}));
     let jwtToken = await auth().currentUser.getIdToken();
     let fcmToken = null;
     await messaging()
@@ -179,7 +180,6 @@ export const SheetsContextProvider = ({children}) => {
         url: BACKEND_URL + '/notification/update-daily-reminder/',
         data: {
           ...dailyReminder,
-          uid: userData.uid,
           fcmToken: fcmToken,
         },
         headers: {
@@ -188,18 +188,89 @@ export const SheetsContextProvider = ({children}) => {
       },
       {
         successCallback: res => {
-          console.log(res);
-          onSetUserAdditionalDetails(res.userDetails);
+          callback();
+          if (res.userDetails) {
+            onSetUserAdditionalDetails(res.userDetails);
+          } else {
+            onSetUserAdditionalDetails(p => ({
+              ...p,
+              dailyReminder: dailyReminder,
+            }));
+          }
+          dispatch(loaderActions.hideLoader());
+          dispatch(
+            notificationActions.showToast({
+              status: 'success',
+              message: res.message,
+            }),
+          );
         },
-        errorCallback: err => {},
+        errorCallback: err => {
+          dispatch(loaderActions.hideLoader());
+          dispatch(
+            notificationActions.showToast({
+              status: 'error',
+              message: err,
+            }),
+          );
+        },
       },
     );
   };
 
-  const onUpdateDailyBackup = dailyBackup => {
-    if (time) {
-      return;
-    }
+  const onUpdateDailyBackup = async (enabled, callback = () => null) => {
+    dispatch(loaderActions.showLoader({backdrop: true}));
+    let jwtToken = await auth().currentUser.getIdToken();
+    let fcmToken = null;
+    await messaging()
+      .getToken()
+      .then(t => {
+        fcmToken = t;
+      })
+      .catch(err => {});
+
+    sendRequest(
+      {
+        type: 'POST',
+        url: BACKEND_URL + '/notification/update-daily-backup/',
+        data: {
+          enabled: enabled,
+          fcmToken: fcmToken,
+        },
+        headers: {
+          authorization: 'Bearer ' + jwtToken,
+        },
+      },
+      {
+        successCallback: res => {
+          callback();
+          if (res.userDetails) {
+            onSetUserAdditionalDetails(res.userDetails);
+          } else {
+            onSetUserAdditionalDetails(p => ({
+              ...p,
+              dailyBackup: enabled,
+            }));
+          }
+          dispatch(loaderActions.hideLoader());
+          dispatch(
+            notificationActions.showToast({
+              status: 'success',
+              message: res.message,
+            }),
+          );
+        },
+        errorCallback: err => {
+          dispatch(loaderActions.hideLoader());
+          dispatch(
+            notificationActions.showToast({
+              status: 'error',
+              message: err,
+            }),
+          );
+        },
+      },
+    );
   };
 
   const onGoogleCloudVision = async (base64, callback = () => null) => {

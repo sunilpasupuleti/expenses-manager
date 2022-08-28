@@ -41,9 +41,6 @@ import TouchID from 'react-native-touch-id';
 import moment from 'moment';
 import {Button, Card, Dialog, Portal, TextInput} from 'react-native-paper';
 import {notificationActions} from '../../../store/notification-slice';
-import {zip, unzip, unzipAssets, subscribe} from 'react-native-zip-archive';
-import {MainBundlePath, DocumentDirectoryPath} from 'react-native-fs';
-import RNFetchBlob from 'rn-fetch-blob';
 
 export const SettingsScreen = ({navigation}) => {
   const {onLogout, userData, userAdditionalDetails, onUpdateUserDetails} =
@@ -57,6 +54,7 @@ export const SettingsScreen = ({navigation}) => {
       ? userAdditionalDetails.dailyBackup
       : null,
   );
+
   let date = new Date();
   if (userAdditionalDetails?.dailyReminder?.enabled) {
     let time = userAdditionalDetails.dailyReminder.time;
@@ -86,6 +84,7 @@ export const SettingsScreen = ({navigation}) => {
     onExportAllSheetsToExcel,
     onExportAllDataToPdf,
     onUpdateDailyReminder,
+    onUpdateDailyBackup,
   } = useContext(SheetsContext);
   const changesMade = useSelector(state => state.service.changesMade.status);
   const dispatch = useDispatch();
@@ -121,13 +120,6 @@ export const SettingsScreen = ({navigation}) => {
         console.log(error, 'error in biometric settings screen');
         // Failure code
       });
-  };
-
-  const onEnableDailyBackup = async () => {
-    onUpdateUserDetails({
-      dailyBackup: !isDailyBackUpEnabled,
-    });
-    setIsDailyBackUpEnabled(!isDailyBackUpEnabled);
   };
 
   const onRevealSecretKey = async () => {
@@ -187,6 +179,10 @@ export const SettingsScreen = ({navigation}) => {
     setOpen(false);
   };
 
+  const toggleSwithStyles = {
+    backgroundColor: '#ddd',
+    padding: 3,
+  };
   return (
     <SafeArea>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -234,17 +230,28 @@ export const SettingsScreen = ({navigation}) => {
                   </FlexRow>
 
                   <ToggleSwitch
-                    style={{
-                      backgroundColor: '#ddd',
-                      padding: 3,
-                    }}
+                    style={toggleSwithStyles}
                     value={isDailyReminderEnabled.enabled}
                     onValueChange={() => {
-                      // onUpdateDailyReminder(!isDailyReminderEnabled.enabled);
-                      setIsDailyReminderEnabled(p => ({
-                        ...p,
-                        enabled: !isDailyReminderEnabled.enabled,
-                      }));
+                      if (isDailyReminderEnabled.enabled) {
+                        onUpdateDailyReminder(
+                          {
+                            time: isDailyReminderEnabled.time,
+                            disable: true,
+                          },
+                          // callback
+                          () =>
+                            setIsDailyReminderEnabled(p => ({
+                              ...p,
+                              enabled: false,
+                            })),
+                        );
+                      } else {
+                        setIsDailyReminderEnabled(p => ({
+                          ...p,
+                          enabled: !isDailyReminderEnabled.enabled,
+                        }));
+                      }
                     }}
                   />
                 </Setting>
@@ -347,8 +354,20 @@ export const SettingsScreen = ({navigation}) => {
                   </FlexRow>
 
                   <ToggleSwitch
+                    style={toggleSwithStyles}
                     value={isDailyBackUpEnabled}
-                    onValueChange={onEnableDailyBackup}
+                    onValueChange={() => {
+                      if (isDailyBackUpEnabled) {
+                        onUpdateDailyBackup(false, () =>
+                          setIsDailyBackUpEnabled(false),
+                        );
+                      }
+                      if (!isDailyBackUpEnabled) {
+                        onUpdateDailyBackup(true, () =>
+                          setIsDailyBackUpEnabled(true),
+                        );
+                      }
+                    }}
                   />
                 </Setting>
 
@@ -501,6 +520,7 @@ export const SettingsScreen = ({navigation}) => {
                   </FlexRow>
 
                   <ToggleSwitch
+                    style={toggleSwithStyles}
                     value={isAppLockEnabled}
                     onValueChange={() => onSetScreenLock()}
                   />

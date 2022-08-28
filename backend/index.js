@@ -35,8 +35,6 @@ http.listen(process.env.PORT || 8080, () => {
   console.log(`server started on port number ${process.env.PORT}`);
 });
 
-const crons = require("./crons");
-
 const { initializeApp, cert } = require("firebase-admin/app");
 var serviceAccount = require("./expensesmanager.json");
 
@@ -45,5 +43,3 @@ initializeApp({
   databaseURL: process.env.FIREBASE_DATABASE_URL,
   storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
 });
-
-// crons.cron();
