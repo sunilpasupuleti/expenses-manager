@@ -25,6 +25,7 @@ process.on("unhandledRejection", (reason, promise) => {
 });
 
 process.on("SIGINT", function () {
+  console.log("Server is shutting down");
   schedule.gracefulShutdown().then(() => process.exit(0));
 });
 

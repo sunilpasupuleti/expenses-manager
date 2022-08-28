@@ -300,17 +300,17 @@ export const AuthenticationContextProvider = ({children}) => {
           notificationActions.showToast({status: 'error', message: err}),
         );
       });
-    firestore()
-      .collection(uid)
-      .doc('user-data')
-      .update({
-        active: false,
-        dailyReminder: null,
-      })
-      .then(() => {})
-      .catch(err => {
-        console.log(err, 'In setting logout value to false');
-      });
+    // firestore()
+    //   .collection(uid)
+    //   .doc('user-data')
+    //   .update({
+    //     active: false,
+    //     dailyReminder: null,
+    //   })
+    //   .then(() => {})
+    //   .catch(err => {
+    //     console.log(err, 'In setting logout value to false');
+    //   });
   };
 
   const onUpdateUserDetails = async details => {

@@ -15,7 +15,7 @@ const sendDailyReminderNotification = async (data) => {
   console.log("-----------------------------------");
   let token = data.fcmToken;
   let payload = {
-    data: { type: "daily-reminder", uid: data.uid },
+    data: { type: "expenses-daily-reminder", uid: data.uid },
   };
   getMessaging()
     .sendToDevice(token, payload, { priority: "high" })
@@ -55,13 +55,20 @@ module.exports = {
       .get()
       .then((result) => {
         let data = result.data();
-        console.log(data?.dailyReminder?.enabled, data.dailyReminder?.time);
         console.log(enabled, moment(time).format("HH:mm"));
-        if ((!data.dailyReminder || !data.dailyReminder.enabled) && !update) {
+
+        let jobs = schedule.scheduledJobs;
+        let jobsLength = Object.keys(jobs).length;
+
+        let alreadyReminderSet =
+          data.dailyReminder && data.dailyReminder.enabled;
+
+        function scheduleFunction() {
           let formatedTime = moment(time).format("HH:mm");
           let hr = moment(time).format("HH");
           let min = moment(time).format("mm");
           var rule = new schedule.RecurrenceRule();
+          // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
           rule.hour = hr;
           rule.minute = min;
           rule.dayOfWeek = [0, 1, 2, 3, 4, 5, 6, 7];
@@ -83,7 +90,6 @@ module.exports = {
                 .get()
                 .then((response) => {
                   let returnData = response.data();
-
                   console.log("enabling daily reminder");
                   schedule.scheduleJob(jobId, rule, function () {
                     sendDailyReminderNotification(data);
@@ -109,12 +115,20 @@ module.exports = {
               return;
             });
         }
+        if (!alreadyReminderSet || jobsLength === 0) {
+          scheduleFunction();
+        }
 
-        if (update) {
-          let list = schedule.scheduledJobs;
-          console.log(list);
-          Object.keys(list).map((key) => {
-            console.log(key);
+        if (update && jobsLength > 0) {
+          let jobs = schedule.scheduledJobs;
+          Object.keys(jobs).map((key) => {
+            let jobId = `${uid}-daily-reminder`;
+            if (key === jobId) {
+              let jobData = jobs[key];
+              jobData.cancel();
+              console.log("cancelled the previous job");
+              scheduleFunction();
+            }
           });
         }
       })

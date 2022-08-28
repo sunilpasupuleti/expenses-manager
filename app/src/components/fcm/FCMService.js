@@ -77,7 +77,7 @@ notifee.getNotificationSettings().then(settings => {
 export async function onMessageReceived(message) {
   let type = message.data.type;
   let uid = message.data?.uid;
-  if (type && type === 'daily-reminder') {
+  if (type && type === 'expenses-daily-reminder') {
     let title = 'Reminder 🔔';
     let body = `Have you recorded your  transactions.. 🤔? 
 If not 😕 do it now.`;
@@ -94,7 +94,7 @@ If not 😕 do it now.`;
     showNotification(title, body, 'daily-reminder', false, actions);
   }
 
-  if (type && type === 'daily-backup') {
+  if (type && type === 'expenses-daily-backup') {
     let title = 'Back Up 🔄';
     let body = `Please wait while we are backing up your data......`;
 
