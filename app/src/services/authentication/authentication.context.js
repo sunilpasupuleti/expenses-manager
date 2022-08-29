@@ -14,7 +14,8 @@ import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import {WEB_CLIENT_ID} from '../../../config';
+import {BACKEND_URL, WEB_CLIENT_ID} from '../../../config';
+import useHttp from '../../hooks/use-http';
 
 GoogleSignin.configure({
   webClientId: WEB_CLIENT_ID,
@@ -55,6 +56,8 @@ export const AuthenticationContextProvider = ({children}) => {
   const [userData, setUserData] = useState(null);
   const [userAdditionalDetails, setUserAdditionalDetails] = useState(null);
   const dispatch = useDispatch();
+
+  const {sendRequest} = useHttp();
 
   const onSetUserAdditionalDetails = data => {
     setUserAdditionalDetails(data);
@@ -101,6 +104,7 @@ export const AuthenticationContextProvider = ({children}) => {
         // Failure code
       });
   };
+
   const onGoogleAuthentication = async () => {
     dispatch(loaderActions.showLoader({backdrop: true}));
     try {
@@ -269,6 +273,16 @@ export const AuthenticationContextProvider = ({children}) => {
     };
     onStoreUserDataToFirebase(transformedData)
       .then(async () => {
+        // for enabling notifications
+        let jwtToken = await auth().currentUser.getIdToken();
+        sendRequest({
+          type: 'POST',
+          url: BACKEND_URL + '/notification/enable-notifications/',
+          data: {},
+          headers: {
+            authorization: 'Bearer ' + jwtToken,
+          },
+        });
         dispatch(loaderActions.hideLoader());
       })
       .catch(err => {
@@ -286,6 +300,8 @@ export const AuthenticationContextProvider = ({children}) => {
 
   const onLogout = async () => {
     let uid = userData.uid;
+    let jwtToken = await auth().currentUser.getIdToken();
+
     auth()
       .signOut()
       .then(async () => {
@@ -300,17 +316,27 @@ export const AuthenticationContextProvider = ({children}) => {
           notificationActions.showToast({status: 'error', message: err}),
         );
       });
-    // firestore()
-    //   .collection(uid)
-    //   .doc('user-data')
-    //   .update({
-    //     active: false,
-    //     dailyReminder: null,
-    //   })
-    //   .then(() => {})
-    //   .catch(err => {
-    //     console.log(err, 'In setting logout value to false');
-    //   });
+    // destroy the daily reminder notification and daily backup notification
+    sendRequest({
+      type: 'POST',
+      url: BACKEND_URL + '/notification/destroy-notifications/',
+      data: {},
+      headers: {
+        authorization: 'Bearer ' + jwtToken,
+      },
+    });
+
+    firestore()
+      .collection(uid)
+      .doc('user-data')
+      .update({
+        active: false,
+        fcmToken: null,
+      })
+      .then(() => {})
+      .catch(err => {
+        console.log(err, 'In setting logout value to false');
+      });
   };
 
   const onUpdateUserDetails = async details => {

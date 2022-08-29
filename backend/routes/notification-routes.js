@@ -16,4 +16,16 @@ router.post(
   notificationCtrl.updateDailyBackUp
 );
 
+router.post(
+  "/destroy-notifications",
+  AuthHelper.VerifyToken,
+  notificationCtrl.destroyNotifications
+);
+
+router.post(
+  "/enable-notifications",
+  AuthHelper.VerifyToken,
+  notificationCtrl.enableNotifications
+);
+
 module.exports = router;
