@@ -475,7 +475,7 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
               marginRight: 10,
             }}>
             <Button onPress={onResetFilters} color="#111">
-              Reset Filters
+              Reset
             </Button>
             <Spacer size={'medium'} position="right" />
             <Button

@@ -545,6 +545,7 @@ export const SheetsContextProvider = ({children}) => {
         })
         .catch(err => {
           dispatch(loaderActions.hideLoader());
+          sheetDetail.image = null;
           Alert.alert('Error in uploading the bill');
           console.log('Error in uploading the image ', err);
         });
@@ -648,6 +649,8 @@ export const SheetsContextProvider = ({children}) => {
       if (
         sheetDetail.image &&
         sheetDetail.image.url &&
+        presentSheet.details[sheetDetailIndex].image &&
+        presentSheet.details[sheetDetailIndex].image.url &&
         sheetDetail.image.url ===
           presentSheet.details[sheetDetailIndex].image.url
       ) {
@@ -1149,7 +1152,7 @@ export const SheetsContextProvider = ({children}) => {
   };
 
   const onExportDataToPdf = async (sheet, config, callback = () => null) => {
-    // dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'pdf'}));
+    dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'pdf'}));
     let tableHeads = `
       <th>S.NO</th>
       <th>TITLE</th>
