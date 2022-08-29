@@ -3,11 +3,14 @@ const cors = require("cors");
 const { getFirestore } = require("firebase-admin/firestore");
 const dotenv = require("dotenv");
 const moment = require("moment");
+const logger = require("./logger");
+
 dotenv.config();
 const app = express();
 
 const schedule = require("node-schedule");
 const notification = require("./routes/notification-routes");
+
 app.use(cors());
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true, limit: "100mb" }));
@@ -16,24 +19,24 @@ app.use("/public", express.static(__dirname + "/public"));
 app.use("/notification", notification);
 
 process.on("uncaughtException", (error, promise) => {
-  console.log("----- uncaught exception -----");
-  console.log(error);
+  logger.error("----- uncaught exception -----");
+  logger.error(error.stack);
 });
 
 process.on("unhandledRejection", (reason, promise) => {
-  console.log("----- Reason -----");
-  console.log(reason);
+  logger.error("----- Reason -----");
+  logger.error(reason);
 });
 
 process.on("SIGINT", function () {
-  console.log("Server is shutting down");
+  logger.info("Server is shutting down");
   schedule.gracefulShutdown().then(() => process.exit(0));
 });
 
 const http = require("http").Server(app);
 
 http.listen(process.env.PORT || 8080, () => {
-  console.log(`server started on port number ${process.env.PORT}`);
+  logger.info(`server started on port number ${process.env.PORT}`);
 });
 
 const { initializeApp, cert } = require("firebase-admin/app");
@@ -94,7 +97,7 @@ getFirestore()
                 rule.minute = min;
                 rule.dayOfWeek = new schedule.Range(0, 6);
                 let jobId = `${userData.uid}-daily-reminder`;
-                console.log(
+                logger.info(
                   `Enabling daily reminder for ${userData.displayName} at time - ${dailyReminder.time}`
                 );
 
@@ -115,11 +118,11 @@ getFirestore()
                 rule.minute = 01;
                 rule.dayOfWeek = new schedule.Range(0, 6);
                 let jobId = `${userData.uid}-daily-backup`;
-                console.log(
+                logger.info(
                   `Enabling daily backup for ${userData.displayName} `
                 );
 
-                console.log("-----------------------------------");
+                logger.info("-----------------------------------");
                 schedule.scheduleJob(jobId, rule, function () {
                   sendDailyBackupNotification(userData);
                 });

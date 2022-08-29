@@ -8,6 +8,7 @@ const {
   sendDailyReminderNotification,
   sendDailyBackupNotification,
 } = require("../helpers/notificationHelpers");
+const logger = require("../logger");
 
 dotenv.config();
 
@@ -55,12 +56,12 @@ module.exports = {
                 .get()
                 .then((response) => {
                   let returnData = response.data();
-                  console.log(
+                  logger.info(
                     `Enabling daily reminder for ${
                       data.displayName
                     } at time - ${moment(time).format("HH:mm")}`
                   );
-                  console.log("-----------------------------------");
+                  logger.info("-----------------------------------");
                   schedule.scheduleJob(jobId, rule, function () {
                     sendDailyReminderNotification(returnData);
                   });
@@ -70,7 +71,8 @@ module.exports = {
                   });
                 })
                 .catch((err) => {
-                  console.log("err in updating the data", err);
+                  logger.error("err in updating the data");
+                  logger.error(JSON.stringify(err));
                   res.status(httpstatus.CONFLICT).json({
                     message: "Error occured in enabling daily reminder",
                   });
@@ -78,7 +80,7 @@ module.exports = {
                 });
             })
             .catch((err) => {
-              console.log("err in updating the data", err);
+              console.error("err in updating the data", err);
               res.status(httpstatus.CONFLICT).json({
                 message: "Error occured in enabling daily reminder",
               });
@@ -92,10 +94,10 @@ module.exports = {
           let jobId = `${uid}-daily-reminder`;
           let jobKeyFound = Object.keys(jobs).filter((key) => key === jobId)[0];
           let jobFound = jobs[jobKeyFound];
-          console.log(
+          logger.info(
             "Updated time in daily reminder. Cancelling the previous one and scheduling new reminder"
           );
-          console.log("-----------------------------------");
+          logger.info("-----------------------------------");
 
           if (jobFound) {
             jobFound.cancel();
@@ -118,8 +120,8 @@ module.exports = {
               },
             })
             .then(() => {
-              console.log(`Daily reminder disabled for - ${uid} `);
-              console.log("-----------------------------------");
+              logger.info(`Daily reminder disabled for - ${uid} `);
+              logger.info("-----------------------------------");
               if (jobFound) {
                 jobFound.cancel();
               }
@@ -131,19 +133,21 @@ module.exports = {
               res.status(httpstatus.CONFLICT).json({
                 message: "Error occured in disabling daily reminder",
               });
-              console.log("error occured", err);
+              logger.error("error occured ");
+              logger.error(JSON.stringify(err));
               return;
             });
         } else {
           res.status(httpstatus.OK).json({ message: "Updated Successfully" });
-          console.log("No if block conditions found", err);
+          logger.error("No if block conditions found");
         }
       })
       .catch((err) => {
         res
           .status(httpstatus.CONFLICT)
           .json({ message: "Error occured in enabling daily reminder" });
-        console.log("error occured", err);
+        logger.error("error occured");
+        logger.error(JSON.stringify(err));
         return;
       });
   },
@@ -184,9 +188,9 @@ module.exports = {
                 .get()
                 .then((response) => {
                   let returnData = response.data();
-                  console.log(`Enabling daily backup for ${data.displayName} `);
+                  logger.info(`Enabling daily backup for ${data.displayName} `);
 
-                  console.log("-----------------------------------");
+                  logger.info("-----------------------------------");
                   schedule.scheduleJob(jobId, rule, function () {
                     sendDailyBackupNotification(returnData);
                   });
@@ -196,7 +200,8 @@ module.exports = {
                   });
                 })
                 .catch((err) => {
-                  console.log("err in updating the data", err);
+                  logger.error("err in updating the data");
+                  logger.error(JSON.stringify(err));
                   res.status(httpstatus.CONFLICT).json({
                     message: "Error occured in enabling daily reminder",
                   });
@@ -204,7 +209,9 @@ module.exports = {
                 });
             })
             .catch((err) => {
-              console.log("err in updating the data", err);
+              logger.error("err in updating the data");
+              logger.error(JSON.stringify(err));
+
               res.status(httpstatus.CONFLICT).json({
                 message: "Error occured in enabling daily reminder",
               });
@@ -237,12 +244,12 @@ module.exports = {
             })
             .then(() => {
               if (jobFound) {
-                console.log("cancelling the  backup ");
+                logger.info("cancelling the  backup ");
                 jobFound.cancel();
               }
 
-              console.log(`Daily Backup disabled for - ${uid} `);
-              console.log("-----------------------------------");
+              logger.info(`Daily Backup disabled for - ${uid} `);
+              logger.info("-----------------------------------");
 
               return res.status(httpstatus.OK).json({
                 message: "Daily Backup Disabled.",
@@ -252,7 +259,8 @@ module.exports = {
               res.status(httpstatus.CONFLICT).json({
                 message: "Error occured in disabling daily backup",
               });
-              console.log("error occured", err);
+              logger.error("error occured");
+              logger.error(JSON.stringify(err));
               return;
             });
         }
@@ -261,7 +269,8 @@ module.exports = {
         res
           .status(httpstatus.CONFLICT)
           .json({ message: "Error occured in enabling daily backup" });
-        console.log("error occured", err);
+        logger.error("error occured");
+        logger.error(JSON.stringify(err));
         return;
       });
   },
@@ -289,15 +298,15 @@ module.exports = {
     let jobFoundDailyBackup = jobs[jobKeyDailyBackupFound];
 
     if (jobFoundDailyBackup) {
-      console.log("Destroying daily backup " + uid);
+      logger.info("Destroying daily backup " + uid);
       jobFoundDailyBackup.cancel();
     }
     if (jobFoundDailyReminder) {
-      console.log("Destroying daily reminder " + uid);
+      logger.info("Destroying daily reminder " + uid);
       jobFoundDailyReminder.cancel();
     }
 
-    console.log("---------------------");
+    logger.info("---------------------");
     return res
       .status(httpstatus.OK)
       .json({ message: "Destroyed daily reminder and daily backup" });
@@ -350,10 +359,10 @@ module.exports = {
           let jobId = `${uid}-daily-reminder`;
 
           if (jobFoundDailyReminder) {
-            console.log("canceling the previous daily reminder notification");
+            logger.info("canceling the previous daily reminder notification");
             jobFoundDailyReminder.cancel();
           }
-          console.log(
+          logger.info(
             `Enabling daily reminder for ${returnData.displayName} at time - ${dailyReminder.time}`
           );
 
@@ -371,24 +380,25 @@ module.exports = {
           let jobId = `${uid}-daily-backup`;
 
           if (jobFoundDailyBackup) {
-            console.log("canceling the previous backup notification");
+            logger.info("canceling the previous backup notification");
             jobFoundDailyBackup.cancel();
           }
 
-          console.log(`Enabling daily backup for ${returnData.displayName} `);
+          logger.info(`Enabling daily backup for ${returnData.displayName} `);
 
           schedule.scheduleJob(jobId, rule, function () {
             sendDailyBackupNotification(returnData);
           });
         }
-        console.log("-----------------------------------");
+        logger.info("-----------------------------------");
 
         return res
           .status(httpstatus.OK)
           .json({ message: "Enabled notifications successfully" });
       })
       .catch((err) => {
-        console.log("err in getting the data", err);
+        logger.error("err in getting the data");
+        logger.error(JSON.stringify(err));
         res.status(httpstatus.CONFLICT).json({
           message: "Error occured in enabling daily reminder",
         });

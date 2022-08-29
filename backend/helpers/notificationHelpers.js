@@ -1,14 +1,14 @@
 const dotenv = require("dotenv");
 const { getMessaging } = require("firebase-admin/messaging");
+const logger = require("../logger");
 
 dotenv.config();
 
 module.exports = {
   async sendDailyReminderNotification(data) {
-    console.log(
+    logger.info(
       "sending daily reminder notification to  - " + data.displayName
     );
-    console.log("-----------------------------------");
     let token = data.fcmToken;
     let payload = {
       data: { type: "daily-reminder", uid: data.uid },
@@ -21,26 +21,22 @@ module.exports = {
           error = r.results[0].error;
         }
         if (error) {
-          console.log(
-            error.code,
-            error.message,
-            "error in sending daily reminder notification"
+          logger.error(
+            `error in sending daily reminder notification ${error.code} ${error.message}`
           );
-          console.log("------------------------");
         } else {
-          console.log(r, "success");
-          console.log("------------------------");
+          logger.info("successfully sent daily reminder notification");
+          logger.info(JSON.stringify(r));
         }
       })
       .catch((err) => {
-        console.log(err, " error in sending the daily reminder notification");
+        logger.error(" error in sending the daily reminder notification ");
+        logger.error(JSON.stringify(err));
       });
   },
 
   async sendDailyBackupNotification(data) {
-    console.log(data);
-    console.log("sending daily backup notification to  - " + data.displayName);
-    console.log("-----------------------------------");
+    logger.info("sending daily backup notification to  - " + data.displayName);
     let token = data.fcmToken;
     let payload = {
       data: { type: "daily-backup", uid: data.uid },
@@ -53,19 +49,17 @@ module.exports = {
           error = r.results[0].error;
         }
         if (error) {
-          console.log(
-            error.code,
-            error.message,
-            "error in sending daily backup notification"
+          logger.error(
+            `error in sending daily backup notification ${error.code} ${error.message}`
           );
-          console.log("------------------------");
         } else {
-          console.log(r, "success");
-          console.log("------------------------");
+          logger.info("successfully sent daily backup notification ");
+          logger.info(JSON.stringify(r));
         }
       })
       .catch((err) => {
-        console.log(err, " error in sending the daily backup notification");
+        logger.error(" error in sending the daily backup notification ");
+        logger.error(JSON.stringify(err));
       });
   },
 };
