@@ -132,7 +132,7 @@ export const SheetsContext = createContext({
   onExportData: () => null,
   onExportDataToExcel: (config, data, callback) => null,
   onExportAllDataToPdf: () => null,
-  onExportDataToPdf: (sheet, config, callback) => null,
+  onExportDataToPdf: (config, sheet, callback) => null,
   onImportData: () => null,
   onArchiveSheet: () => null,
   onPinSheet: () => null,
@@ -1119,18 +1119,37 @@ export const SheetsContextProvider = ({children}) => {
       if (granted === PermissionsAndroid.RESULTS.GRANTED) {
         const dirs = RNFetchBlob.fs.dirs;
 
-        let path = dirs.DownloadDir + `/transactions-${moment()}.xlsx`;
+        let path;
+
+        path = dirs.DownloadDir + `/transactions-${moment()}.xlsx`;
+        if (config && config.sharing) {
+          path = dirs.CacheDir + `/transactions-${moment()}.xlsx`;
+        }
+
         RNFS.writeFile(path, wbout, 'ascii')
           .then(r => {
+            let finalPath = 'file://' + path;
+            if (config && config.sharing) {
+              Share.open({
+                url: finalPath,
+                subject: 'Transaction file - Excel',
+                title: 'Transactions Excel File',
+              }).catch(err => {
+                console.log(err, 'error while sharing the data - android');
+              });
+            }
+
             dispatch(loaderActions.hideLoader());
             callback();
-            dispatch(
-              notificationActions.showToast({
-                status: 'success',
-                message:
-                  'Your file is exported successfully. Please check the downloads folder for the file.',
-              }),
-            );
+            if (!config || !config.sharing) {
+              dispatch(
+                notificationActions.showToast({
+                  status: 'success',
+                  message:
+                    'Your file is exported successfully. Please check the downloads folder for the file.',
+                }),
+              );
+            }
           })
           .catch(err => {
             dispatch(loaderActions.hideLoader());
@@ -1146,12 +1165,14 @@ export const SheetsContextProvider = ({children}) => {
       } else {
         dispatch(loaderActions.hideLoader());
 
-        Alert.alert('Permission denied');
+        Alert.alert(
+          'Permission denied! Please enable permission from app settings',
+        );
       }
     }
   };
 
-  const onExportDataToPdf = async (sheet, config, callback = () => null) => {
+  const onExportDataToPdf = async (config, sheet, callback = () => null) => {
     dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'pdf'}));
     let tableHeads = `
       <th>S.NO</th>
@@ -1315,7 +1336,19 @@ export const SheetsContextProvider = ({children}) => {
     };
 
     let file = await RNHTMLtoPDF.convert(options);
-    // console.log(file.filePath);
+
+    if (config && config.sharing) {
+      let finalPath = 'file://' + file.filePath;
+      Share.open({
+        url: finalPath,
+        title: 'Transactions Pdf File',
+        subject: 'Transaction file - Pdf',
+      }).catch(err => {
+        console.log(err, 'error while sharing the data - android');
+      });
+      dispatch(loaderActions.hideLoader());
+      return;
+    }
 
     if (file.filePath) {
       if (Platform.OS === 'ios') {
@@ -1331,7 +1364,9 @@ export const SheetsContextProvider = ({children}) => {
           );
 
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            downloadPdf(file.filePath, callback);
+            if (!config || !config.sharing) {
+              downloadPdf(file.filePath, callback);
+            }
           } else {
             dispatch(loaderActions.hideLoader());
             Alert.alert(
@@ -1784,7 +1819,9 @@ export const SheetsContextProvider = ({children}) => {
       } else {
         dispatch(loaderActions.hideLoader());
 
-        Alert.alert('Permission denied');
+        Alert.alert(
+          'Permission denied. Please enable permission from the app settings',
+        );
       }
     }
   };

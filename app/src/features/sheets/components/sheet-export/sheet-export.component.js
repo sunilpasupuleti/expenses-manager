@@ -99,7 +99,7 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
     }
   }, [categoryType]);
 
-  const onFilter = () => {
+  const onFilter = config => {
     let finalData = [];
     let sheetDetails = sheet.details;
     if (categoryType && categories.length && categories.length > 0) {
@@ -156,14 +156,14 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
       return;
     }
     if (type === 'pdf') {
-      exportPdf(sortedSheetDetails);
+      exportPdf(config, sortedSheetDetails);
     }
     if (type === 'excel') {
-      exportExcel(sortedSheetDetails);
+      exportExcel(config, sortedSheetDetails);
     }
   };
 
-  const exportExcel = sheetDetails => {
+  const exportExcel = (configData, sheetDetails) => {
     let totalIncome = 0;
     let totalExpense = 0;
     let structuredDetails = [];
@@ -225,17 +225,25 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
       extraCells,
       sheet: {...sheet},
       wscols: [{wch: 5}, {wch: 40}, {wch: 40}, {wch: 25}, {wch: 25}],
+      ...configData,
     };
     onHideModal();
     onExportDataToExcel(config, structuredDetails);
   };
 
-  const exportPdf = sheetDetails => {
+  const exportPdf = (configData, sheetDetails) => {
     onHideModal();
     let finalSheet = {...sheet};
     finalSheet.details = sheetDetails;
+    let config = {
+      ...configData,
+    };
+    onExportDataToPdf(config, finalSheet);
+  };
 
-    onExportDataToPdf(finalSheet, sheetDetails);
+  const toggleSwithStyles = {
+    backgroundColor: theme.colors.switchBg,
+    padding: 3,
   };
 
   return (
@@ -316,13 +324,7 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
             <Spacer size={'large'} />
             <FlexRow justifyContent="space-between">
               <Text fontfamily="heading">Date Filter (optional)</Text>
-              <View
-                style={{
-                  backgroundColor: '#eee',
-                  padding: 2,
-                  borderColor: '#ddd',
-                  borderWidth: 1,
-                }}>
+              <View style={toggleSwithStyles}>
                 <Switch
                   value={dateFilter}
                   color={theme.colors.brand.primary}
@@ -338,9 +340,8 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
                     <Ionicons
                       name="calendar-outline"
                       size={25}
-                      color={theme.colors.brand.primary}>
-                      <Spacer position={'left'} />
-                    </Ionicons>
+                      color={theme.colors.brand.primary}></Ionicons>
+                    <Spacer position={'left'} />
                     <Text fontfamily="heading">From </Text>
                   </FlexRow>
 
@@ -400,9 +401,8 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
                     <Ionicons
                       name="time-outline"
                       size={25}
-                      color={theme.colors.brand.primary}>
-                      <Spacer position={'left'} />
-                    </Ionicons>
+                      color={theme.colors.brand.primary}></Ionicons>
+                    <Spacer position={'left'} />
                     <Text fontfamily="heading">To</Text>
                   </FlexRow>
 
@@ -474,21 +474,26 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
               alignSelf: 'flex-end',
               marginRight: 10,
             }}>
-            <Button onPress={onResetFilters} color="#111">
+            <Button onPress={onResetFilters} color={theme.colors.text.primary}>
               Reset
             </Button>
             <Spacer size={'medium'} position="right" />
             <Button
               mode="contained"
-              style={{backgroundColor: '#01AFDB'}}
+              onPress={() => onFilter({sharing: true})}
+              style={{
+                backgroundColor: '#01AFDB',
+              }}
               icon="share">
               SHARE
             </Button>
             <Spacer size={'medium'} position="right" />
             <Button
-              onPress={onFilter}
+              onPress={() => onFilter({})}
               mode="contained"
-              style={{backgroundColor: '#32B997'}}
+              style={{
+                backgroundColor: '#32B997',
+              }}
               icon="download">
               Export
             </Button>

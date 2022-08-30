@@ -216,6 +216,42 @@ export const SheetTrendsScreen = ({navigation, route}) => {
     });
     data.last12months.datasets = datasets;
     data.last12months.labels = sortedlabels;
+
+    let last12monthsVal = moment(data.last12months.labels[0]).format(
+      'MMM, YYYY - ',
+    );
+    last12monthsVal +=
+      GetCurrencySymbol(sheet.currency) +
+      ' ' +
+      GetCurrencyLocalString(data.last12months.datasets[0]);
+
+    let last12months = {
+      x: 20,
+      y: 166,
+      value: last12monthsVal,
+      visible: true,
+    };
+
+    let last14daysVal = moment(data.last14days.keys[0]).format(
+      'ddd, DD MMM, YYYY - ',
+    );
+
+    last14daysVal +=
+      GetCurrencySymbol(sheet.currency) +
+      ' ' +
+      GetCurrencyLocalString(data.last14days.datasets[0]);
+
+    let last14days = {
+      x: 20,
+      y: 166,
+      value: last14daysVal,
+      visible: true,
+    };
+
+    setTooltipPos({
+      last14days: last14days,
+      last12months: last12months,
+    });
     setChartData(data);
   };
   const onSetActiveType = type => {
@@ -286,6 +322,7 @@ export const SheetTrendsScreen = ({navigation, route}) => {
                       chartConfig={chartConfig}
                       onDataPointClick={data => {
                         let key = chartData.last14days.keys[data.index];
+
                         let value = moment(key).format('ddd, DD MMM, YYYY - ');
                         value +=
                           GetCurrencySymbol(sheet.currency) +

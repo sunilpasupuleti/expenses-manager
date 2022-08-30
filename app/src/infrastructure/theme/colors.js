@@ -55,6 +55,7 @@ export const colors = {
     highlight: '#9a99e6',
   },
   headerTintColor: '#000',
+  switchBg: '#ddd',
 };
 
 export const darkModeColors = {
@@ -77,4 +78,5 @@ export const darkModeColors = {
     primary: '#fff',
   },
   headerTintColor: '#fff',
+  switchBg: 'transparent',
 };

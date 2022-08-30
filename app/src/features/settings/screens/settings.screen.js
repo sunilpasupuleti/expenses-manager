@@ -180,7 +180,7 @@ export const SettingsScreen = ({navigation}) => {
   };
 
   const toggleSwithStyles = {
-    backgroundColor: '#ddd',
+    backgroundColor: theme.colors.switchBg,
     padding: 3,
   };
   return (

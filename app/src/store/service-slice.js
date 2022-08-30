@@ -114,7 +114,7 @@ const serviceSlice = createSlice({
       loaded: false,
       status: null,
     },
-    theme: 'light',
+    theme: 'automatic',
     exchangeRates: null,
   },
   reducers: {},
