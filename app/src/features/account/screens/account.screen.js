@@ -146,7 +146,7 @@ export const AccountScreen = ({navigation}) => {
             width: 160,
             height: 160,
             borderRadius: 100,
-            borderColor: '#ddd',
+            // borderColor: '#ddd',
             borderWidth: 1,
           }}
           source={require('../../../../assets/login-screen.png')}
@@ -156,9 +156,9 @@ export const AccountScreen = ({navigation}) => {
       <Text
         fontfamily="bodyBold"
         style={{textAlign: 'center'}}
-        color="#000"
+        color={theme.colors.text.primary}
         fontsize="25px">
-        Expenses manager
+        Expenses Manager
       </Text>
       <AccountContainer showsVerticalScrollIndicator={false}>
         {error && <ErrorMessage fontsize="13px">{error.message}</ErrorMessage>}

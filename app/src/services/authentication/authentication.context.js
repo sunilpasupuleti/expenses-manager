@@ -200,7 +200,7 @@ export const AuthenticationContextProvider = ({children}) => {
       return {
         status: true,
         message:
-          'Password reset link has been sent to your email. If not received ,please check your spam folder also',
+          'Password reset link has been sent to your email. If not received ,please check your spam box.',
       };
     } catch (e) {
       console.log(e, 'error in sending password reset link');
