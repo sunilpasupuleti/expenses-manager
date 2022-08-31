@@ -1,5 +1,12 @@
 const { createLogger, format, transports } = require("winston");
 require("winston-daily-rotate-file");
+
+const timezoned = () => {
+  return new Date().toLocaleString("en-US", {
+    timeZone: "Asia/Calcutta",
+  });
+};
+
 module.exports = createLogger({
   transports: [
     new transports.DailyRotateFile({
@@ -25,7 +32,7 @@ module.exports = createLogger({
   format: format.combine(
     format.errors({ stack: true }),
     format.timestamp({
-      format: "MMM-DD-YYYY HH:mm:ss",
+      format: timezoned,
     }),
     format.align(),
     format.splat(),

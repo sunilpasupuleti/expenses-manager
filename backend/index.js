@@ -15,6 +15,16 @@ app.use(cors());
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true, limit: "100mb" }));
 app.use("/public", express.static(__dirname + "/public"));
+app.use("/logs", express.static(__dirname + "/logs"));
+app.use(
+  "/logs/server",
+  express.static(__dirname + `/logs/server_${moment().format("MMM_YYYY")}.log`)
+);
+
+app.use(
+  "/logs/error",
+  express.static(__dirname + `/logs/error_${moment().format("MMM_YYYY")}.log`)
+);
 
 app.use("/notification", notification);
 

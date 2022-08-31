@@ -282,6 +282,9 @@ export const SheetsContextProvider = ({children}) => {
       Alert.alert('Required base64 string');
       return;
     }
+    dispatch(
+      loaderActions.showLoader({backdrop: true, loaderType: 'scanning'}),
+    );
     let url = GOOGLE_CLOUD_VISION_API_URL + '?key=' + GOOGLE_API_KEY;
     sendRequest(
       {
@@ -301,12 +304,13 @@ export const SheetsContextProvider = ({children}) => {
           },
         },
         // extra data to use-http hook
-        loaderType: 'scanning',
       },
       {
         successCallback: receivedResponse => {
+          dispatch(loaderActions.hideLoader());
           let resultObj = receivedResponse.responses[0];
           if (_.isEmpty(resultObj)) {
+            dispatch(loaderActions.hideLoader());
             dispatch(
               notificationActions.showToast({
                 status: 'warning',
@@ -319,6 +323,13 @@ export const SheetsContextProvider = ({children}) => {
           }
         },
         errorCallback: err => {
+          dispatch(loaderActions.hideLoader());
+          dispatch(
+            notificationActions.showToast({
+              status: 'warning',
+              message: 'Something error occured while extracting text!',
+            }),
+          );
           console.log(err);
         },
       },

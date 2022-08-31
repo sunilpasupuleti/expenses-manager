@@ -467,6 +467,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
       ) {
         let base64 = 'data:' + response.assets[0].type + ';base64,';
         let base64Data = response.assets[0].base64;
+
         onGoogleCloudVision(base64Data, fetchedData => {
           if (fetchedData) {
             fetchedData.image = base64 + base64Data;
@@ -643,12 +644,17 @@ export const SheetDetailsScreen = ({navigation, route}) => {
               TriggerTouchableComponent: TouchableOpacity,
             }}>
             <CameraButton onPress={() => cameraRef.current.open()}>
-              <CameraIcon
-                name="camera-outline"
-                size={20}
-                color="#fff"
-                // color={theme.colors.brand.primary}
-              />
+              <FlexRow>
+                <CameraIcon
+                  name="scan"
+                  size={20}
+                  color="#fff"
+                  // color={theme.colors.brand.primary}
+                />
+                <Spacer position={'left'}>
+                  <Text fontsize="12px">Smart Scan Receipt</Text>
+                </Spacer>
+              </FlexRow>
             </CameraButton>
           </MenuTrigger>
 
@@ -695,7 +701,12 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 sheet: sheet,
               });
             }}>
-            <AntDesign name="plus" size={20} color={'#fff'} />
+            <FlexRow>
+              <AntDesign name="plus" size={20} color={'#fff'} />
+              <Spacer position={'left'}>
+                <Text fontsize="12px">Add new</Text>
+              </Spacer>
+            </FlexRow>
           </TouchableNativeFeedback>
         </SheetDetailsAddIcon>
       </BottomIconsContainer>

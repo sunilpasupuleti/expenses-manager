@@ -97,6 +97,7 @@ const useHttp = () => {
             } else {
               message = 'Error in http call request';
             }
+            console.log(err);
             console.log(message || err, 'error in http call');
             setError(message);
             callbacks.errorCallback && callbacks.errorCallback(message);
