@@ -1,4 +1,4 @@
-package com.expensesmanager.newarchitecture.modules;
+package com.webwizard.expensesmanager.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

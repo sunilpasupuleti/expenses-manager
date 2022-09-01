@@ -27,7 +27,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.expensesmanager</string>
+				<string>com.webwizard.expensesmanager</string>
 			</array>
 		</dict>
 		<dict>

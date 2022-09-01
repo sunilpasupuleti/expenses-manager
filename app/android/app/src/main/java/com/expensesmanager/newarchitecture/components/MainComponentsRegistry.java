@@ -1,4 +1,4 @@
-package com.expensesmanager.newarchitecture.components;
+package com.webwizard.expensesmanager.newarchitecture.components;
 
 import com.facebook.jni.HybridData;
 import com.facebook.proguard.annotations.DoNotStrip;

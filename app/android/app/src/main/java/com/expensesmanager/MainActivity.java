@@ -1,4 +1,4 @@
-package com.expensesmanager;
+package com.webwizard.expensesmanager;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

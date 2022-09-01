@@ -565,7 +565,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.expensesmanager;
+				PRODUCT_BUNDLE_IDENTIFIER = com.webwizard.expensesmanager;
 				PRODUCT_NAME = expensesmanager;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -595,7 +595,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.expensesmanager;
+				PRODUCT_BUNDLE_IDENTIFIER = com.webwizard.expensesmanager;
 				PRODUCT_NAME = expensesmanager;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
