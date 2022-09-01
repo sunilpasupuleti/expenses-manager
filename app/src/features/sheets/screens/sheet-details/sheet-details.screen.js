@@ -652,7 +652,9 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                   // color={theme.colors.brand.primary}
                 />
                 <Spacer position={'left'}>
-                  <Text fontsize="12px">Smart Scan Receipt</Text>
+                  <Text fontsize="12px" color={'#fff'}>
+                    Smart Scan Receipt
+                  </Text>
                 </Spacer>
               </FlexRow>
             </CameraButton>
@@ -704,7 +706,9 @@ export const SheetDetailsScreen = ({navigation, route}) => {
             <FlexRow>
               <AntDesign name="plus" size={20} color={'#fff'} />
               <Spacer position={'left'}>
-                <Text fontsize="12px">Add new</Text>
+                <Text fontsize="12px" color={'#fff'}>
+                  Add new
+                </Text>
               </Spacer>
             </FlexRow>
           </TouchableNativeFeedback>
