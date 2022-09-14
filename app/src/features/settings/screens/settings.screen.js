@@ -180,7 +180,7 @@ export const SettingsScreen = ({navigation}) => {
   };
 
   const toggleSwithStyles = {
-    backgroundColor: theme.colors.switchBg,
+    backgroundColor: Platform.OS !== 'ios' && theme.colors.switchBg,
     padding: 3,
   };
   return (

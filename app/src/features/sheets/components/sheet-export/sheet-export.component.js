@@ -11,7 +11,7 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Text} from '../../../../components/typography/text.component';
 import React from 'react';
-import {TouchableOpacity, View} from 'react-native';
+import {Platform, TouchableOpacity, View} from 'react-native';
 import {useTheme} from 'styled-components/native';
 import {FlexColumn, FlexRow} from '../../../../components/styles';
 import {Spacer} from '../../../../components/spacer/spacer.component';
@@ -29,9 +29,11 @@ import {
 import {useDispatch} from 'react-redux';
 import {notificationActions} from '../../../../store/notification-slice';
 
-const subtractYears = numOfYears => {
+const onSetFromDate = () => {
   let date = new Date();
-  date.setFullYear(date.getFullYear() - numOfYears);
+  date.setMonth(date.getMonth() - 1);
+  date.setDate(date.getDate() - 1);
+
   return date;
 };
 
@@ -48,7 +50,7 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
     to: Platform.OS === 'ios' ? true : false,
   });
 
-  const [fromDate, setFromDate] = useState(subtractYears(1));
+  const [fromDate, setFromDate] = useState(onSetFromDate());
   const [toDate, setToDate] = useState(new Date());
 
   const [value, setValue] = useState(null);
@@ -70,6 +72,8 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
   const onResetFilters = () => {
     setCategories([]);
     setDateFilter(false);
+    setFromDate(onSetFromDate());
+    setToDate(new Date());
     setCategoryType(null);
     setType(null);
     setOpenDropdownPicker(false);
@@ -100,8 +104,19 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
   }, [categoryType]);
 
   const onFilter = config => {
-    let finalData = [];
     let sheetDetails = sheet.details;
+
+    if (!type) {
+      setModalOpen(false);
+      dispatch(
+        notificationActions.showToast({
+          status: 'error',
+          message: 'Please select the format (Pdf or Excel)',
+        }),
+      );
+      return;
+    }
+
     if (categoryType && categories.length && categories.length > 0) {
       sheetDetails = sheetDetails.filter(
         s => categories.includes(s.category.id) && s.type === categoryType,
@@ -112,18 +127,41 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
     }
 
     if (dateFilter) {
-      let date = new Date();
       //   for exact filter between dates
-      let from = new Date(); //minus one day
-      let to = new Date(); //plus one day
+      let from = new Date(fromDate); //minus one day
+      let to = new Date(toDate); //plus one day
 
-      from.setDate(fromDate.getDate() - 1);
-      from.setMonth(fromDate.getMonth());
-      from.setFullYear(fromDate.getFullYear());
+      const fromDateDaysInMonth = moment(fromDate).daysInMonth();
+      const fromDateMonth = moment(fromDate).format('M');
+      const fromDateDay = moment(fromDate).format('D');
 
-      to.setDate(toDate.getDate() + 1);
-      to.setMonth(toDate.getMonth());
-      to.setFullYear(toDate.getFullYear());
+      const toDateDaysInMonth = moment(toDate).daysInMonth();
+      const toDateMonth = moment(toDate).format('M');
+      const toDateDay = moment(toDate).format('D');
+
+      from.setDate(Number(fromDateDay) - 1);
+      Number(fromDateDay) === 1
+        ? from.setMonth(fromDate.getMonth() - 1)
+        : from.setMonth(fromDate.getMonth());
+
+      Number(fromDateMonth) === 1 && Number(fromDateDay) === 1
+        ? from.setFullYear(fromDate.getFullYear() - 1)
+        : from.setFullYear(fromDate.getFullYear());
+
+      from = moment(from).format('YYYY-MM-DD');
+
+      to.setDate(Number(toDateDay) + 1);
+
+      Number(toDateDay) >= Number(toDateDaysInMonth)
+        ? to.setMonth(toDate.getMonth() + 1)
+        : to.setMonth(toDate.getMonth());
+
+      Number(toDateMonth) === 12 &&
+      Number(toDateDay) >= Number(toDateDaysInMonth)
+        ? to.setFullYear(toDate.getFullYear() + 1)
+        : to.setFullYear(toDate.getFullYear());
+
+      to = moment(to).format('YYYY-MM-DD');
 
       let filteredDetails = [];
       sheetDetails.map(sd => {
@@ -134,6 +172,7 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
           null,
           '[]',
         );
+
         if (isBetweenFilteredDates) {
           filteredDetails.push(sd);
         }
@@ -155,6 +194,7 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
       );
       return;
     }
+
     if (type === 'pdf') {
       exportPdf(config, sortedSheetDetails);
     }
@@ -242,7 +282,7 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
   };
 
   const toggleSwithStyles = {
-    backgroundColor: theme.colors.switchBg,
+    backgroundColor: Platform.OS !== 'ios' && theme.colors.switchBg,
     padding: 3,
   };
 
@@ -260,14 +300,14 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
 
                 <>
                   <FlexRow>
-                    <RadioButton
+                    <RadioButton.Android
                       color={theme.colors.brand.primary}
                       value="pdf"
                     />
                     <Text>Pdf</Text>
                   </FlexRow>
                   <FlexRow>
-                    <RadioButton
+                    <RadioButton.Android
                       color={theme.colors.brand.primary}
                       value="excel"
                     />
@@ -284,14 +324,14 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
               <Spacer />
               <FlexRow justifyContent="space-between">
                 <FlexRow>
-                  <RadioButton
+                  <RadioButton.Android
                     color={theme.colors.brand.primary}
                     value="expense"
                   />
                   <Text>Expense</Text>
                 </FlexRow>
                 <FlexRow>
-                  <RadioButton
+                  <RadioButton.Android
                     color={theme.colors.brand.primary}
                     value="income"
                   />
@@ -316,8 +356,17 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
                   setItems={setItems}
                   multiple={true}
                   mode="BADGE"
-                  textStyle={{color: theme.colors.text.primary}}
+                  textStyle={{
+                    color: theme.colors.text.primary,
+                  }}
+                  stickyHeader
                   badgeDotColors={itemsColors}
+                  dropDownDirection="TOP"
+                  dropDownContainerStyle={{
+                    backgroundColor: 'whitesmoke',
+                    borderWidth: 0.2,
+                    overflow: 'scroll',
+                  }}
                 />
               </>
             )}
@@ -370,6 +419,7 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
                     <DateTimePicker
                       style={{width: '100%', position: 'absolute', right: 0}}
                       mode="date"
+                      maximumDate={new Date(toDate)}
                       value={fromDate}
                       onChange={(e, d) => {
                         if (e.type === 'dismissed') {

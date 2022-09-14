@@ -1075,8 +1075,6 @@ export const SheetsContextProvider = ({children}) => {
     // add extracells
     XLSX.utils.sheet_add_aoa(ws, config.extraCells, {origin: -1});
 
-    var wscols = config.wscols;
-
     ws['!cols'] = config.wscols;
 
     XLSX.utils.book_append_sheet(wb, ws, config.title);
@@ -1348,8 +1346,9 @@ export const SheetsContextProvider = ({children}) => {
 
     let file = await RNHTMLtoPDF.convert(options);
 
+    let finalPath = 'file://' + file.filePath;
+
     if (config && config.sharing) {
-      let finalPath = 'file://' + file.filePath;
       Share.open({
         url: finalPath,
         title: 'Transactions Pdf File',
@@ -1363,7 +1362,18 @@ export const SheetsContextProvider = ({children}) => {
 
     if (file.filePath) {
       if (Platform.OS === 'ios') {
-        // write code
+        Share.open({
+          url: finalPath,
+          filename: `transactions.pdf`,
+          saveToFiles: true,
+          type: 'application/pdf',
+        }).catch(err => {
+          console.log(
+            err.error.message,
+            'error while exporting the data pdf - ios',
+          );
+        });
+        dispatch(loaderActions.hideLoader());
       } else {
         try {
           const granted = await PermissionsAndroid.request(
@@ -1396,8 +1406,11 @@ export const SheetsContextProvider = ({children}) => {
     dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'pdf'}));
     let folderName = `transaction-pdfs-${moment()}`;
     let fPath = RNFetchBlob.fs.dirs.DownloadDir + '/' + folderName;
+    if (Platform.OS === 'ios') {
+      fPath = RNFetchBlob.fs.dirs.DocumentDir + '/' + folderName;
+    }
     await RNFetchBlob.fs.mkdir(fPath).catch(err => {
-      console.log('Error in creating folder');
+      console.log('Error in creating folder', err);
       dispatch(loaderActions.hideLoader());
       return;
     });
@@ -1566,9 +1579,17 @@ export const SheetsContextProvider = ({children}) => {
 
       let file = await RNHTMLtoPDF.convert(options);
 
-      let toPath =
-        RNFetchBlob.fs.dirs.DownloadDir +
-        `/${folderName}/${sheet.name}-${moment()}.pdf`;
+      let toPath;
+      if (Platform.OS === 'ios') {
+        toPath =
+          RNFetchBlob.fs.dirs.DocumentDir +
+          `/${folderName}/${sheet.name}-${moment()}.pdf`;
+      } else {
+        toPath =
+          RNFetchBlob.fs.dirs.DownloadDir +
+          `/${folderName}/${sheet.name}-${moment()}.pdf`;
+      }
+
       await RNFetchBlob.fs
         .mv(file.filePath, toPath)
         .then(r => {
@@ -1586,14 +1607,33 @@ export const SheetsContextProvider = ({children}) => {
         });
     }
 
-    const targetPath = `${RNFetchBlob.fs.dirs.DownloadDir}/${folderName}.zip`;
-    const sourcePath = RNFetchBlob.fs.dirs.DownloadDir + '/' + folderName;
+    let targetPath = `${RNFetchBlob.fs.dirs.DownloadDir}/${folderName}.zip`;
+    let sourcePath = RNFetchBlob.fs.dirs.DownloadDir + '/' + folderName;
 
+    if (Platform.OS === 'ios') {
+      targetPath = `${RNFetchBlob.fs.dirs.DocumentDir}/${folderName}.zip`;
+      sourcePath = RNFetchBlob.fs.dirs.DocumentDir + '/' + folderName;
+    }
     zip(sourcePath, targetPath)
       .then(path => {
         RNFetchBlob.fs.unlink(sourcePath);
         dispatch(loaderActions.hideLoader());
         console.log(`zip completed at ${path}`);
+
+        if (Platform.OS === 'ios') {
+          Share.open({
+            url: path,
+            saveToFiles: true,
+            title: 'Transactions Pdf File',
+            subject: 'Transaction file - Pdf',
+          }).catch(err => {
+            console.log(
+              err.error.message,
+              'error while exporting the all pdfs - ios',
+            );
+          });
+          return;
+        }
         dispatch(
           notificationActions.showToast({
             status: 'success',
