@@ -1,4 +1,7 @@
 
+![Logo](https://expenses-manager-app.webwizard.in/expenses%20manager%20app%20graphics/EXPENSES%20MANAGER.jpg)
+
+
 # Expenses Manager
 Spend Better, Live Better
 
@@ -96,21 +99,21 @@ https://play.google.com/store/apps/details?id=com.webwizard.expensesmanager
 
 ## Screenshots
 
-![App Screenshot](https://play-lh.googleusercontent.com/CoomA1H2CdEEuXESlNFL5nJxVDNBt5j-dmfMZuO-2Cknr5U8UD-_uw3-hCVwIo7Yag=w1052-h592-rw)
+![App Screenshot](https://expenses-manager-app.webwizard.in/expenses%20manager%20app%20graphics/reduced/1.png)
 
-![App Screenshot](https://play-lh.googleusercontent.com/veoXUXcunEwmtUl6ShM-0Mr8XvYJpJ5-1um8XiQt0b2OtryRwJjdwcMFy-WqlJYkNw=w5120-h2880-rw)
+![App Screenshot](https://expenses-manager-app.webwizard.in/expenses%20manager%20app%20graphics/reduced/2.png)
 
-![App Screenshot](https://play-lh.googleusercontent.com/ZgBef_ycX6ZSFTAwcJ7zpbZdI61aEzExvzNpMB5zs8UfpzWrleiXbyUc9EYAkbHTBzQ=w1052-h592-rw)
+![App Screenshot](https://expenses-manager-app.webwizard.in/expenses%20manager%20app%20graphics/reduced/3.png)
 
-![App Screenshot](https://play-lh.googleusercontent.com/rUJ7VTArQNZStFytm1BF4NPciU3kjxmgRoPk7SQVPOKq3y6GDW3hGsr6PEEjVQlm3DBm=w1052-h592-rw)
+![App Screenshot](https://expenses-manager-app.webwizard.in/expenses%20manager%20app%20graphics/reduced/4.png)
 
-![App Screenshot](https://play-lh.googleusercontent.com/-s7S4VuSK7qRnUCfu_Q9ah_MqYEt8ROZxsnVjB2onKJASlpm1xkfcAzTliBHCeTMG2Mn=w1052-h592-rw)
+![App Screenshot](https://expenses-manager-app.webwizard.in/expenses%20manager%20app%20graphics/reduced/5.png)
 
-![App Screenshot](https://play-lh.googleusercontent.com/3nKUQd873tWrk28RUPAVVifIjABPlwgo1c3tSptPsU2dKvUdTGRObgjlj5-Hnb1rNXs=w1052-h592-rw)
+![App Screenshot](https://expenses-manager-app.webwizard.in/expenses%20manager%20app%20graphics/reduced/6.png)
 
-![App Screenshot](https://play-lh.googleusercontent.com/JhnnED6zCIzqAEcJ5YmrJorQzfd_RksDNEUyk30faFmsyKsKImc9dxPHy85LDF80eg=w1052-h592-rw)
+![App Screenshot](https://expenses-manager-app.webwizard.in/expenses%20manager%20app%20graphics/reduced/7.png)
 
-![App Screenshot](https://play-lh.googleusercontent.com/to-kOGuB68LKSpIYbOl3vwVgqzIUARJTn_WvCbpkHAb-2rTxBhumzunmFMJAZ1VLjiQ=w1052-h592-rw)
+![App Screenshot](https://expenses-manager-app.webwizard.in/expenses%20manager%20app%20graphics/reduced/8.png)
 
 
 ## Installation
@@ -295,7 +298,4 @@ contact me at &nbsp;&nbsp;    +91 9959907940
 [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/sunil-kumar-pasupuleti/)
 
 [![twitter](https://img.shields.io/badge/twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/sunil_webwizard)
-
-
-![Logo](https://expenses-manager-app.webwizard.in/expenses%20manager%20app%20graphics/EXPENSES%20MANAGER.jpg)
 
