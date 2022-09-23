@@ -16,6 +16,7 @@ import {
 } from '@react-native-google-signin/google-signin';
 import {BACKEND_URL, WEB_CLIENT_ID} from '../../../config';
 import useHttp from '../../hooks/use-http';
+import {Alert} from 'react-native';
 
 GoogleSignin.configure({
   webClientId: WEB_CLIENT_ID,
@@ -109,7 +110,7 @@ export const AuthenticationContextProvider = ({children}) => {
     dispatch(loaderActions.showLoader({backdrop: true}));
     try {
       const {idToken} = await GoogleSignin.signIn();
-      const getToken = await GoogleSignin.getTokens();
+      // const getToken = await GoogleSignin.getTokens();
       const googleCredentials = auth.GoogleAuthProvider.credential(idToken);
       if (!googleCredentials) {
         dispatch(loaderActions.hideLoader());
@@ -136,10 +137,14 @@ export const AuthenticationContextProvider = ({children}) => {
       } else if (error.code === statusCodes.IN_PROGRESS) {
         // operation (e.g. sign in) is in progress already
       } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+        Alert.alert(
+          'Google play services is not available ! Install and try again ',
+        );
         console.warn(
           'Google play services is not available ! Install and try again ',
         );
       } else {
+        console.log(error);
         // some other error happened
       }
     }
