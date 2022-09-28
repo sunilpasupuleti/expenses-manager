@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import React, {useEffect, useRef, useState} from 'react';
 import {useTheme} from 'styled-components/native';
@@ -28,7 +29,7 @@ export const SheetTrendsScreen = ({navigation, route}) => {
     backgroundGradientFromOpacity: 0,
     backgroundGradientToOpacity: 0,
     fillShadowGradientOpacity: 0.3,
-    color: (opacity = 1) => `rgba(0,0,0, ${opacity})`,
+    color: (opacity = 1) => `rgba(0,0,0,${opacity})`,
     strokeWidth: 2, // optional, default 3
     barPercentage: 2,
     useShadowColorFromDataset: true, // optional
@@ -312,7 +313,7 @@ export const SheetTrendsScreen = ({navigation, route}) => {
                         datasets: [
                           {
                             data: chartData.last14days.datasets,
-                            color: (opacity = 1) => `rgb(87,86,213 ,0.7)`, // optional
+                            color: (opacity = 1) => `rgba(87,86,213,0.7)`, // optional
                             strokeWidth: 2, // optional
                           },
                         ],
@@ -410,7 +411,7 @@ export const SheetTrendsScreen = ({navigation, route}) => {
                         datasets: [
                           {
                             data: chartData.last12months.datasets,
-                            color: (opacity = 1) => `rgb(87,86,213 ,0.7)`, // optional
+                            color: (opacity = 1) => `rgba(87,86,213,0.7)`, // optional
                             strokeWidth: 2, // optional
                           },
                         ],

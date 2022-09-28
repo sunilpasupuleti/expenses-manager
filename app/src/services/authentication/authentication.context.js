@@ -2,8 +2,6 @@ import React from 'react';
 import {createContext, useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {setChangesMade} from '../../store/service-slice';
-// import {Alert} from 'react-native';
-import TouchID from 'react-native-touch-id';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {notificationActions} from '../../store/notification-slice';
@@ -18,26 +16,17 @@ import {BACKEND_URL, WEB_CLIENT_ID} from '../../../config';
 import useHttp from '../../hooks/use-http';
 import {Alert} from 'react-native';
 
+import {
+  resetPinCodeInternalStates,
+  deleteUserPinCode,
+} from '@haskkor/react-native-pincode';
+
 GoogleSignin.configure({
   webClientId: WEB_CLIENT_ID,
 });
 
-const optionalConfigObject = {
-  title: 'Authentication Required', // Android
-  imageColor: '#5756d5', // Android
-  imageErrorColor: '#5756d5', // Android
-  sensorDescription: 'Touch sensor', // Android
-  sensorErrorDescription: 'Failed', // Android
-  cancelText: 'Cancel', // Android
-  fallbackLabel: 'Show Passcode', // iOS (if empty, then label is hidden)
-  unifiedErrors: false, // use unified error messages (default false)
-  passcodeFallback: false, // iOS - allows the device to fall back to using the passcode, if faceid/touch is not available. this does not mean that if touchid/faceid fails the first few times it will revert to passcode, rather that if the former are not enrolled, then it will use the passcode.
-};
-
 export const AuthenticationContext = createContext({
-  isLocalAuthenticated: false,
   userAdditionalDetails: null,
-  onLocalAuthenticate: () => null,
   onGoogleAuthentication: () => null,
   onSignInWithEmail: () => null,
   onSignUpWithEmail: () => null,
@@ -52,7 +41,6 @@ export const AuthenticationContext = createContext({
 });
 
 export const AuthenticationContextProvider = ({children}) => {
-  const [isLocalAuthenticated, setIsLocalAuthenticated] = useState('pending');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userData, setUserData] = useState(null);
   const [userAdditionalDetails, setUserAdditionalDetails] = useState(null);
@@ -72,14 +60,6 @@ export const AuthenticationContextProvider = ({children}) => {
       setUserData(user);
       if (user) {
         setIsAuthenticated(true);
-
-        onGetUserDetails(user.uid).then(details => {
-          if (details && details.applock) {
-            onLocalAuthenticate();
-          } else {
-            setIsLocalAuthenticated('success');
-          }
-        });
       } else {
         setIsAuthenticated(false);
       }
@@ -89,22 +69,6 @@ export const AuthenticationContextProvider = ({children}) => {
       unsubcribe();
     };
   }, []);
-
-  const onLocalAuthenticate = () => {
-    TouchID.authenticate(
-      'Authenticate to continue to the app.',
-      optionalConfigObject,
-    )
-      .then(success => {
-        // Success code
-        setIsLocalAuthenticated('success');
-      })
-      .catch(error => {
-        setIsLocalAuthenticated('failed');
-        console.log(error, 'error in biometric');
-        // Failure code
-      });
-  };
 
   const onGoogleAuthentication = async () => {
     dispatch(loaderActions.showLoader({backdrop: true}));
@@ -310,9 +274,10 @@ export const AuthenticationContextProvider = ({children}) => {
     auth()
       .signOut()
       .then(async () => {
+        await deleteUserPinCode('@expenses-manager-app-lock');
+        await resetPinCodeInternalStates();
         messaging().deleteToken();
         setIsAuthenticated(false);
-        setIsLocalAuthenticated('pending');
         dispatch(setChangesMade({status: false, loaded: true}));
       })
       .catch(err => {
@@ -403,8 +368,6 @@ export const AuthenticationContextProvider = ({children}) => {
   return (
     <AuthenticationContext.Provider
       value={{
-        isLocalAuthenticated,
-        onLocalAuthenticate,
         onGoogleAuthentication,
         isAuthenticated,
         userData,

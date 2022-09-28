@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -10,7 +11,6 @@ import {
   ToggleSwitch,
 } from '../../../components/styles';
 import {SafeArea} from '../../../components/utility/safe-area.component';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   ProfilePicture,
@@ -28,26 +28,24 @@ import {useTheme} from 'styled-components/native';
 import {SettingsCardContent} from '../components/settings.styles';
 import {Text} from '../../../components/typography/text.component';
 import {useDispatch, useSelector} from 'react-redux';
-import {
-  Alert,
-  Platform,
-  ScrollView,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Alert, Platform, ScrollView, TouchableOpacity} from 'react-native';
 import {SheetsContext} from '../../../services/sheets/sheets.context';
 import {fetchExchangeRates} from '../../../store/service-slice';
 import TouchID from 'react-native-touch-id';
 import moment from 'moment';
-import {Button, Card, Dialog, Portal, TextInput} from 'react-native-paper';
+import {Button, Dialog, Portal, TextInput} from 'react-native-paper';
 import {notificationActions} from '../../../store/notification-slice';
+import {
+  resetPinCodeInternalStates,
+  deleteUserPinCode,
+} from '@haskkor/react-native-pincode';
+import {applockActions} from '../../../store/applock-slice';
 
 export const SettingsScreen = ({navigation}) => {
-  const {onLogout, userData, userAdditionalDetails, onUpdateUserDetails} =
-    useContext(AuthenticationContext);
-  const [isAppLockEnabled, setIsAppLockEnabled] = useState(
-    userAdditionalDetails?.applock ? userAdditionalDetails.applock : null,
+  const {onLogout, userData, userAdditionalDetails} = useContext(
+    AuthenticationContext,
   );
+  const isAppLockEnabled = useSelector(state => state.applock.enabled);
 
   const [isDailyBackUpEnabled, setIsDailyBackUpEnabled] = useState(
     userAdditionalDetails?.dailyBackup
@@ -107,47 +105,50 @@ export const SettingsScreen = ({navigation}) => {
   }, []);
 
   const onSetScreenLock = async () => {
-    TouchID.authenticate('Authenticate to enable / disable app lock.', {})
-      .then(async success => {
-        // Success code
-        onUpdateUserDetails({
-          applock: !isAppLockEnabled ? true : null,
-        });
-        setIsAppLockEnabled(!isAppLockEnabled);
-      })
-      .catch(error => {
-        Alert.alert('Sorry, error in enabling app lock');
-        console.log(error, 'error in biometric settings screen');
-        // Failure code
+    if (isAppLockEnabled) {
+      await deleteUserPinCode('@expenses-manager-app-lock');
+      await resetPinCodeInternalStates();
+      dispatch(
+        applockActions.setEnabledStatus({
+          enabled: false,
+        }),
+      );
+      dispatch(
+        notificationActions.showToast({
+          status: 'success',
+          message: 'App Lock Disabled',
+        }),
+      );
+    } else {
+      dispatch(
+        applockActions.showChoosePinLock({status: 'choose', show: true}),
+      );
+      navigation.navigate('Applock', {
+        callback: () => {
+          navigation.goBack();
+          dispatch(
+            notificationActions.showToast({
+              status: 'success',
+              message: 'App Lock enabled successfully',
+            }),
+          );
+        },
       });
+    }
   };
 
   const onRevealSecretKey = async () => {
-    let result = false;
-    await TouchID.isSupported()
-      .then(r => {
-        result = true;
-      })
-      .catch(err => {});
-    if (result && isAppLockEnabled) {
-      TouchID.authenticate(
-        'Authenticate to reveal your account secret key.',
-        {},
-      )
-        .then(async success => {
+    if (isAppLockEnabled) {
+      dispatch(applockActions.showChoosePinLock({status: 'enter', show: true}));
+      navigation.navigate('Applock', {
+        callback: () => {
+          navigation.goBack();
           Alert.alert(
             userData.uid,
             `This is the secrey key of your account in order to contact with admin in case of any issues with your account. Please, do Not share this ID with anyone.`,
           );
-        })
-        .catch(error => {
-          console.log(
-            error,
-            'from settings screen reveal secret key - ',
-            userData.uid,
-          );
-          // Failure code
-        });
+        },
+      });
     } else {
       Alert.alert(
         userData.uid,
@@ -537,7 +538,7 @@ export const SettingsScreen = ({navigation}) => {
                       <Ionicons name="ios-key-outline" size={20} color="#fff" />
                     </SettingIconWrapper>
 
-                    <SettingTitle>Reveal you account key</SettingTitle>
+                    <SettingTitle>Reveal your account key</SettingTitle>
                   </FlexRow>
                 </Setting>
               </SettingsCardContent>

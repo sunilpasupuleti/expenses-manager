@@ -8,6 +8,7 @@ import {SheetsContextProvider} from '../../services/sheets/sheets.context';
 import {SyncContextProvider} from '../../services/sync/sync.context';
 import {SettingsNavigator} from './settings.navigator';
 import {SheetsNavigator} from './sheets.navigator';
+import {AppLockScreen} from '../../features/applock/screens/applock.screen';
 
 const Stack = createStackNavigator();
 
@@ -30,6 +31,8 @@ export const AppNavigator = () => {
               name="Settings"
               component={SettingsNavigator}
             />
+
+            <Stack.Screen name="Applock" component={AppLockScreen} />
           </Stack.Navigator>
         </SyncContextProvider>
       </SheetsContextProvider>

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState} from 'react';
 import 'react-native-gesture-handler';
 import {ThemeProvider} from 'styled-components/native';
@@ -39,6 +40,7 @@ const App = () => {
     dispatch(fetchTheme());
     dispatch(fetchChangesMade());
     dispatch(fetchExchangeRates({}));
+
     SplashScreen.hide();
   }, []);
 
