@@ -35,6 +35,12 @@ expenses-manager.json
 
 # ignor in ui
 config.js
+GoogleService-Info.plist
+google-services.json
+
+
+#ignore in backend
+expensesmanager.json
 
 # node.js
 #
