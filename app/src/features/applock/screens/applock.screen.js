@@ -7,7 +7,6 @@ import {SafeArea} from '../../../components/utility/safe-area.component';
 import {useDispatch, useSelector} from 'react-redux';
 import {applockActions} from '../../../store/applock-slice';
 
-import {notificationActions} from '../../../store/notification-slice';
 import {useTheme} from 'styled-components/native';
 
 export const AppLockScreen = ({navigation, route}) => {
@@ -38,7 +37,7 @@ export const AppLockScreen = ({navigation, route}) => {
           status={status}
           finishProcess={onSuccess}
           maxAttempts={5}
-          timeLocked={60000 * 0.5}
+          timeLocked={60000 * 1}
           delayBetweenAttempts={1000}
           pinCodeKeychainName="@expenses-manager-app-lock"
           colorCircleButtons={theme.colors.brand.primary}
