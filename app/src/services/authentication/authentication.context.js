@@ -15,7 +15,7 @@ import {
 import {BACKEND_URL, WEB_CLIENT_ID} from '../../../config';
 import useHttp from '../../hooks/use-http';
 import {Alert} from 'react-native';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   resetPinCodeInternalStates,
   deleteUserPinCode,
@@ -38,12 +38,15 @@ export const AuthenticationContext = createContext({
   onLogout: () => null,
   onUpdateUserDetails: () => null,
   onSetUserAdditionalDetails: data => null,
+  onGetUserDetails: () => null,
+  fetchedUserDetails: false,
 });
 
 export const AuthenticationContextProvider = ({children}) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userData, setUserData] = useState(null);
   const [userAdditionalDetails, setUserAdditionalDetails] = useState(null);
+
   const dispatch = useDispatch();
 
   const {sendRequest} = useHttp();
@@ -51,15 +54,15 @@ export const AuthenticationContextProvider = ({children}) => {
   const onSetUserAdditionalDetails = data => {
     setUserAdditionalDetails(data);
   };
-  // for push notifications
-
-  const [expoPushToken, setExpoPushToken] = useState('');
 
   useEffect(() => {
     const unsubcribe = auth().onAuthStateChanged(async user => {
       setUserData(user);
       if (user) {
-        setIsAuthenticated(true);
+        onGetUserDetails(user.uid).then(async () => {
+          await AsyncStorage.setItem('@expenses-manager-user-uid', user.uid);
+          setIsAuthenticated(true);
+        });
       } else {
         setIsAuthenticated(false);
       }
@@ -276,6 +279,8 @@ export const AuthenticationContextProvider = ({children}) => {
       .then(async () => {
         await deleteUserPinCode('@expenses-manager-app-lock');
         await resetPinCodeInternalStates();
+        await AsyncStorage.removeItem('@expenses-manager-user-uid');
+
         messaging().deleteToken();
         setIsAuthenticated(false);
         dispatch(setChangesMade({status: false, loaded: true}));
@@ -380,6 +385,7 @@ export const AuthenticationContextProvider = ({children}) => {
         onUpdateUserDetails,
         onSetUserAdditionalDetails,
         userAdditionalDetails,
+        onGetUserDetails,
       }}>
       {children}
     </AuthenticationContext.Provider>

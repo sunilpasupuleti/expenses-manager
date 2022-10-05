@@ -1,1 +1,2 @@
 ${PODS_ROOT}/Target Support Files/Pods-expensesmanager-expensesmanagerTests/Pods-expensesmanager-expensesmanagerTests-frameworks.sh
+${PODS_XCFRAMEWORKS_BUILD_DIR}/hermes-engine/hermes.framework/hermes

@@ -9,12 +9,14 @@ import {applockActions} from '../../../store/applock-slice';
 
 import {useTheme} from 'styled-components/native';
 
-export const AppLockScreen = ({navigation, route}) => {
+export const AppLockScreen = ({navigation, route, callback = () => null}) => {
   const theme = useTheme();
   const dispatch = useDispatch();
 
+  const {type} = useSelector(state => state.applock);
+
   const onSuccess = pin => {
-    if (status === 'choose') {
+    if (type === 'choose') {
       dispatch(
         applockActions.setEnabledStatus({
           enabled: true,
@@ -22,29 +24,27 @@ export const AppLockScreen = ({navigation, route}) => {
       );
     }
     dispatch(applockActions.finishProcess());
-    if (route?.params?.callback) {
-      let callback = route.params.callback;
+    let callbackFunction = route?.params?.callback;
+    if (callbackFunction) {
+      callbackFunction();
+    } else {
       callback();
     }
   };
 
-  const {show, status} = useSelector(state => state.applock);
-
   return (
     <SafeArea>
-      {show && (
-        <PINCode
-          status={status}
-          finishProcess={onSuccess}
-          maxAttempts={5}
-          timeLocked={60000 * 1}
-          delayBetweenAttempts={1000}
-          pinCodeKeychainName="@expenses-manager-app-lock"
-          colorCircleButtons={theme.colors.brand.primary}
-          colorPassword={theme.colors.brand.primary}
-          numbersButtonOverlayColor={theme.colors.brand.secondary}
-        />
-      )}
+      <PINCode
+        status={type}
+        finishProcess={onSuccess}
+        maxAttempts={5}
+        timeLocked={60000 * 1}
+        delayBetweenAttempts={1000}
+        pinCodeKeychainName="@expenses-manager-app-lock"
+        colorCircleButtons={theme.colors.brand.primary}
+        colorPassword={theme.colors.brand.primary}
+        numbersButtonOverlayColor={theme.colors.brand.secondary}
+      />
     </SafeArea>
   );
 };

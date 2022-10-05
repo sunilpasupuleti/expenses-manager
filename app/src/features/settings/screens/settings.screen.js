@@ -120,9 +120,7 @@ export const SettingsScreen = ({navigation}) => {
         }),
       );
     } else {
-      dispatch(
-        applockActions.showChoosePinLock({status: 'choose', show: true}),
-      );
+      dispatch(applockActions.showChoosePinLock({type: 'choose'}));
       navigation.navigate('Applock', {
         callback: () => {
           navigation.goBack();
@@ -139,7 +137,7 @@ export const SettingsScreen = ({navigation}) => {
 
   const onRevealSecretKey = async () => {
     if (isAppLockEnabled) {
-      dispatch(applockActions.showChoosePinLock({status: 'enter', show: true}));
+      dispatch(applockActions.showChoosePinLock({type: 'enter'}));
       navigation.navigate('Applock', {
         callback: () => {
           navigation.goBack();

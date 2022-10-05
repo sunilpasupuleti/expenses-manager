@@ -12,6 +12,7 @@ import loader from '../../../assets/lottie/loader.json';
 import pdf from '../../../assets/lottie/pdf.json';
 import restore from '../../../assets/lottie/restore.json';
 import scanning from '../../../assets/lottie/scanning.json';
+import security from '../../../assets/lottie/security.json';
 
 const LoaderContainer = styled.View`
   position: absolute;
@@ -61,10 +62,13 @@ export const Loader = () => {
         setAnimatedJson(restore);
         // setAnimatedJson(require('../../../assets/lottie/restore.json'));
       }
+      if (loaderType === 'security') {
+        setAnimatedJson(security);
+        // setAnimatedJson(require('../../../assets/lottie/scanning.json'));
+      }
 
       if (loaderType === 'scanning') {
         setAnimatedJson(scanning);
-
         // setAnimatedJson(require('../../../assets/lottie/scanning.json'));
       }
 
@@ -82,7 +86,6 @@ export const Loader = () => {
 
       if (loaderType === 'image_upload') {
         setAnimatedJson(image_upload);
-
         // setAnimatedJson(require('../../../assets/lottie/image_upload.json'));
       }
     } else {

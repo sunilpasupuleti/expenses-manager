@@ -6,6 +6,7 @@ import notifee, {
   RepeatFrequency,
   TimeUnit,
 } from '@notifee/react-native';
+import CryptoJS from 'react-native-crypto-js';
 import {colors} from '../../infrastructure/theme/colors';
 import messaging from '@react-native-firebase/messaging';
 import firestore from '@react-native-firebase/firestore';
@@ -107,7 +108,8 @@ If not 😕 do it now.`;
 
     showNotification(title, body, 'daily-backup', true);
     let value = await AsyncStorage.getItem(`@expenses-manager-data-${uid}`);
-    value = JSON.parse(value);
+    // Encrypt
+    value = CryptoJS.AES.encrypt(value, uid).toString();
     if (!value) {
       cancelNotification('daily-backup');
       showNotification(
@@ -160,7 +162,9 @@ If not 😕 do it now.`;
     await firestore()
       .collection(uid)
       .doc(moment().format('DD MMM YYYY hh:mm:ss a'))
-      .set(value)
+      .set({
+        encryptedData: value,
+      })
       .then(ref => {
         cancelNotification('daily-backup');
         showNotification(

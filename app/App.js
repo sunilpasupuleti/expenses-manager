@@ -18,6 +18,7 @@ import {
 import moment from 'moment';
 import SplashScreen from 'react-native-splash-screen';
 import './src/components/fcm/FCMService';
+import {fetchAppLock} from './src/store/applock-slice';
 
 moment.suppressDeprecationWarnings = true;
 if (Platform.OS === 'android') {
@@ -37,10 +38,10 @@ const App = () => {
 
   useEffect(() => {
     //  call all slices
+    dispatch(fetchAppLock());
     dispatch(fetchTheme());
     dispatch(fetchChangesMade());
     dispatch(fetchExchangeRates({}));
-
     SplashScreen.hide();
   }, []);
 
