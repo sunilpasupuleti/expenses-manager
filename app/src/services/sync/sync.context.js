@@ -20,13 +20,6 @@ export const SyncContext = createContext({
   restoreData: () => null,
   backUpAndRestore: () => null,
   onGetRestoreDates: () => null,
-  dataSecurity: {
-    show: Boolean,
-    value: String,
-    type: String,
-    callback: () => null,
-  },
-  setDataSecurity: null,
 });
 
 export const SyncContextProvider = ({children}) => {
@@ -41,7 +34,7 @@ export const SyncContextProvider = ({children}) => {
     if (userData) {
       if (changesMade.loaded) {
         if (changesMade.status === false) {
-          restoreData();
+          restoreData(null, true);
         }
       }
     }
@@ -129,7 +122,7 @@ export const SyncContextProvider = ({children}) => {
     }
   };
 
-  const restoreData = async (docId = null) => {
+  const restoreData = async (docId = null, initialRestore = false) => {
     dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'restore'}));
     try {
       if (docId) {
@@ -168,12 +161,14 @@ export const SyncContextProvider = ({children}) => {
               }
             } else {
               dispatch(loaderActions.hideLoader());
-              dispatch(
-                notificationActions.showToast({
-                  status: 'warning',
-                  message: 'There is no data to restore.',
-                }),
-              );
+              if (!initialRestore) {
+                dispatch(
+                  notificationActions.showToast({
+                    status: 'warning',
+                    message: 'There is no data to restore.',
+                  }),
+                );
+              }
             }
           });
       } else {
@@ -232,12 +227,14 @@ export const SyncContextProvider = ({children}) => {
               }
             } else {
               dispatch(loaderActions.hideLoader());
-              dispatch(
-                notificationActions.showToast({
-                  status: 'warning',
-                  message: 'There is no data to restore.',
-                }),
-              );
+              if (!initialRestore) {
+                dispatch(
+                  notificationActions.showToast({
+                    status: 'warning',
+                    message: 'There is no data to restore.',
+                  }),
+                );
+              }
             }
           });
       }

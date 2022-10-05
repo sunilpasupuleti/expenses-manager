@@ -38,6 +38,7 @@ const applockSlice = createSlice({
 
     setEnabledStatus(state, action) {
       state.enabled = action.payload.enabled;
+      state.appAuthStatus = true;
     },
 
     setAppAuthStatus(state, action) {

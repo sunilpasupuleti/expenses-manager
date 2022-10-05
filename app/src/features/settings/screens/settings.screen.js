@@ -122,15 +122,7 @@ export const SettingsScreen = ({navigation}) => {
     } else {
       dispatch(applockActions.showChoosePinLock({type: 'choose'}));
       navigation.navigate('Applock', {
-        callback: () => {
-          navigation.goBack();
-          dispatch(
-            notificationActions.showToast({
-              status: 'success',
-              message: 'App Lock enabled successfully',
-            }),
-          );
-        },
+        purpose: 'setpin',
       });
     }
   };
@@ -139,13 +131,7 @@ export const SettingsScreen = ({navigation}) => {
     if (isAppLockEnabled) {
       dispatch(applockActions.showChoosePinLock({type: 'enter'}));
       navigation.navigate('Applock', {
-        callback: () => {
-          navigation.goBack();
-          Alert.alert(
-            userData.uid,
-            `This is the secrey key of your account in order to contact with admin in case of any issues with your account. Please, do Not share this ID with anyone.`,
-          );
-        },
+        purpose: 'secretKey',
       });
     } else {
       Alert.alert(

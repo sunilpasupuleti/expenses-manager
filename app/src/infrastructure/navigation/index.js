@@ -9,9 +9,7 @@ import {Loader} from '../../components/utility/Loader';
 import {useEffect} from 'react';
 import {navigationRef} from './rootnavigation';
 import {useDispatch, useSelector} from 'react-redux';
-import {useState} from 'react';
 import {AppLockScreen} from '../../features/applock/screens/applock.screen';
-import {applockActions} from '../../store/applock-slice';
 
 export const Navigation = () => {
   // const theme = useTheme();
@@ -21,16 +19,11 @@ export const Navigation = () => {
     state => state.applock,
   );
 
-  const appLockSuccessCallback = () => {
-    dispatch(applockActions.setAppAuthStatus());
-    // setSuccessAuth(true);
-  };
-
   return (
     <>
       <NavigationContainer ref={navigationRef}>
         {isAppLockEnabled && !appAuthStatus ? (
-          <AppLockScreen callback={appLockSuccessCallback} />
+          <AppLockScreen purpose={'secureapp'} />
         ) : isAuthenticated ? (
           <>
             <AppNavigator />

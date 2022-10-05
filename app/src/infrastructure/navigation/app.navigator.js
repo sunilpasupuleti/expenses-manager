@@ -2,7 +2,6 @@ import React from 'react';
 
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {Dimensions} from 'react-native';
-import {Loader} from '../../components/utility/Loader';
 import {Notification} from '../../components/utility/Notification';
 import {SheetsContextProvider} from '../../services/sheets/sheets.context';
 import {SyncContextProvider} from '../../services/sync/sync.context';
