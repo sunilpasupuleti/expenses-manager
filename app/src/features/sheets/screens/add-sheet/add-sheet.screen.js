@@ -84,7 +84,7 @@ export const AddSheetScreen = ({navigation, route}) => {
   const onSave = () => {
     const sheet = {
       id: Date.now().toString(36) + Math.random().toString(36).substring(2),
-      name: sheetName.charAt(0).toUpperCase() + sheetName.slice(1),
+      name: (sheetName.charAt(0).toUpperCase() + sheetName.slice(1)).trim(),
       showTotalBalance: showTotalBalance,
       totalBalance: 0,
       updatedAt: Date.now(),
@@ -103,7 +103,7 @@ export const AddSheetScreen = ({navigation, route}) => {
   const onEdit = () => {
     const sheet = {
       id: editSheet.id,
-      name: sheetName.charAt(0).toUpperCase() + sheetName.slice(1),
+      name: (sheetName.charAt(0).toUpperCase() + sheetName.slice(1)).trim(),
       showTotalBalance: showTotalBalance,
       totalBalance: editSheet.totalBalance,
       updatedAt: Date.now(),

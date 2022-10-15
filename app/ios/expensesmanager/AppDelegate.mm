@@ -61,7 +61,7 @@
 
 
   NSDictionary *initProps = [self prepareInitialProps];
-  UIView *rootView = RCTAppSetupDefaultRootView(bridge, @"RnDiffApp", initProps);
+  UIView *rootView = RCTAppSetupDefaultRootView(bridge, @"expensesmanager", initProps);
 
   if (@available(iOS 13.0, *)) {
     rootView.backgroundColor = [UIColor systemBackgroundColor];
