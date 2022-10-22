@@ -14,6 +14,7 @@ import {
   fetchChangesMade,
   fetchExchangeRates,
   fetchTheme,
+  loadAppStatus,
 } from './src/store/service-slice';
 import moment from 'moment';
 import SplashScreen from 'react-native-splash-screen';
@@ -35,15 +36,22 @@ const App = () => {
   const themeType = useColorScheme();
   const appTheme = useSelector(state => state.service.theme);
   const dispatch = useDispatch();
+  const appStatus = useSelector(state => state.service.appStatus);
 
   useEffect(() => {
     //  call all slices
     dispatch(fetchAppLock());
     dispatch(fetchTheme());
+    dispatch(loadAppStatus());
     dispatch(fetchChangesMade());
     dispatch(fetchExchangeRates({}));
-    SplashScreen.hide();
   }, []);
+
+  useEffect(() => {
+    if (appStatus && appStatus.hideSplashScreen) {
+      SplashScreen.hide();
+    }
+  }, [appStatus]);
 
   return (
     <>
@@ -69,9 +77,11 @@ const App = () => {
                   ? {...DefaultTheme}
                   : {...DarkTheme}
               }>
-              <AuthenticationContextProvider>
-                <Navigation />
-              </AuthenticationContextProvider>
+              {appStatus && appStatus.hideSplashScreen && (
+                <AuthenticationContextProvider>
+                  <Navigation />
+                </AuthenticationContextProvider>
+              )}
             </Provider>
           </MenuProvider>
         </ActionSheetProvider>

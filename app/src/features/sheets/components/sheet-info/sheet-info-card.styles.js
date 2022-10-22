@@ -15,7 +15,16 @@ export const TotalBalance = styled(Text).attrs({
   fontfamily: 'headingBold',
   // font-family: ${props => props.theme.fonts.bodyBold};
 })`
-  ${props => (props.archived ? `color : #aaa` : ` color: #7a8a8d`)}
+  ${props => (props.archived ? `color : #aaa` : ` color: #ccc`)}
+  letter-spacing: 1px;
+  font-size: 13px;
+`;
+
+export const AvailableBalance = styled(Text).attrs({
+  fontfamily: 'headingBold',
+  // font-family: ${props => props.theme.fonts.bodyBold};
+})`
+  color: #8a8a8d;
   letter-spacing: 1px;
   font-size: 13px;
 `;
@@ -24,7 +33,14 @@ export const UpdatedTime = styled(Text).attrs({
   fontfamily: 'heading',
   fontsize: '13px',
 })`
-  ${props => props.showTotalBalance && `margin-left : 20px`};
+  ${props => (props.archived ? `color : #aaa` : ` color: #8a8a8d`)}
+`;
+
+export const TransactionsCount = styled(Text).attrs({
+  fontfamily: 'heading',
+  fontsize: '13px',
+})`
+  margin-left: 8px;
   ${props => (props.archived ? `color : #aaa` : ` color: #8a8a8d`)}
 `;
 

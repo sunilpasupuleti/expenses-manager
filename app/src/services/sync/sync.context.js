@@ -259,32 +259,42 @@ export const SyncContextProvider = ({children}) => {
       .then(data => {
         let docNames = [];
         let dupDocNames = [];
-        data.docs.map(doc => {
+        data.docs.reverse().map(doc => {
           if (doc.id !== 'user-data') {
-            docNames.push(doc.id);
-            dupDocNames.push(moment(doc.id).format('YYYY-MM-DD A hh:mm:ss'));
+            let dateRegEx = /\d{2} [a-zA-z]{3} \d{4}/g;
+            let TimeRegEx = /\d{2}:\d{2}:\d{2} (am|pm)/g;
+            let date = doc.id.match(dateRegEx);
+            let time = doc.id.match(TimeRegEx);
+            docNames.push({
+              id: doc.id,
+              date: date[0].toUpperCase(),
+              time: time[0].toUpperCase(),
+            });
+            // docNames.push(doc.id)
+            // dupDocNames.push(moment(doc.id).format('YYYY-MM-DD A hh:mm:ss'));
           }
         });
-        let sortedDocs = [];
-        dupDocNames.sort().reverse();
+        // let sortedDocs = [];
+        // dupDocNames.sort().reverse();
 
-        for (let i = 0; i < dupDocNames.length; i++) {
-          let index = docNames.findIndex(
-            d => moment(d).format('YYYY-MM-DD A hh:mm:ss') === dupDocNames[i],
-          );
-          sortedDocs.push(docNames[index]);
-        }
+        // for (let i = 0; i < dupDocNames.length; i++) {
+        //   let index = docNames.findIndex(
+        //     d => moment(d).format('YYYY-MM-DD A hh:mm:ss') === dupDocNames[i],
+        //   );
+        //   sortedDocs.push(docNames[index]);
+        // }
+        // dispatch(loaderActions.hideLoader());
+        // if (docNames.length === 0) {
+        //   dispatch(
+        //     notificationActions.showToast({
+        //       status: 'warning',
+        //       message:
+        //         'You have no backups to show your previous backup files.',
+        //     }),
+        //   );
+        // }
         dispatch(loaderActions.hideLoader());
-        if (docNames.length === 0) {
-          dispatch(
-            notificationActions.showToast({
-              status: 'warning',
-              message:
-                'You have no backups to show your previous backup files.',
-            }),
-          );
-        }
-        return sortedDocs;
+        return docNames;
       })
       .catch(err => {
         dispatch(loaderActions.hideLoader());

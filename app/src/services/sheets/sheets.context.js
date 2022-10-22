@@ -13,11 +13,7 @@ import DocumentPicker from 'react-native-document-picker';
 import RNFetchBlob from 'rn-fetch-blob';
 import RNFS from 'react-native-fs';
 import useHttp from '../../hooks/use-http';
-import {
-  BACKEND_URL,
-  GOOGLE_API_KEY,
-  GOOGLE_CLOUD_VISION_API_URL,
-} from '../../../config';
+
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import _, {result} from 'lodash';
 import matchWords from '../../components/utility/category-match-words.json';
@@ -28,6 +24,7 @@ import moment from 'moment';
 import {zip} from 'react-native-zip-archive';
 import auth from '@react-native-firebase/auth';
 import messaging from '@react-native-firebase/messaging';
+import remoteConfig from '@react-native-firebase/remote-config';
 
 import {
   GetCurrencyLocalString,
@@ -154,6 +151,13 @@ export const SheetsContextProvider = ({children}) => {
   const dispatch = useDispatch();
   const theme = useTheme();
 
+  const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
+  const GOOGLE_API_KEY = remoteConfig().getValue('GOOGLE_API_KEY').asString();
+  const GOOGLE_CLOUD_VISION_API_URL = remoteConfig()
+    .getValue('GOOGLE_CLOUD_VISION_API_URL')
+    .asString();
+
+  GOOGLE_CLOUD_VISION_API_URL;
   useEffect(() => {
     if (userData) {
       retrieveExpensesData();

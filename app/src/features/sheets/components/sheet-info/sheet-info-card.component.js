@@ -1,9 +1,11 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {
+  AvailableBalance,
   BorderLine,
   SheetInfoWrapper,
   SheetName,
   TotalBalance,
+  TransactionsCount,
   UpdatedTime,
 } from './sheet-info-card.styles';
 import moment from 'moment';
@@ -23,32 +25,56 @@ export const SheetInfoCard = ({sheet = {}, currentLength, index}) => {
     <>
       <FlexRow justifyContent="space-between">
         <SheetInfoWrapper>
-          <SheetName archived={sheet.archived}>{sheet.name}</SheetName>
-          <Spacer size={'medium'}>
-            <FlexRow>
-              {sheet.showTotalBalance && (
-                <TotalBalance archived={sheet.archived}>
-                  {GetCurrencySymbol(sheet.currency)}{' '}
-                  {GetCurrencyLocalString(sheet.totalBalance)}
-                </TotalBalance>
-              )}
+          <FlexRow>
+            <SheetName archived={sheet.archived} fontsize="16px">
+              {sheet.name}
+            </SheetName>
 
-              <UpdatedTime
-                archived={sheet.archived}
-                showTotalBalance={sheet.showTotalBalance}>
-                {moment(sheet.updatedAt).calendar()}
-              </UpdatedTime>
-            </FlexRow>
+            <TransactionsCount>
+              ({sheet.details ? sheet.details.length : '0'})
+            </TransactionsCount>
+          </FlexRow>
+
+          <Spacer size={'medium'}>
+            <UpdatedTime
+              archived={sheet.archived}
+              showTotalBalance={sheet.showTotalBalance}>
+              Last Updated : {moment(sheet.updatedAt).calendar()}
+            </UpdatedTime>
           </Spacer>
         </SheetInfoWrapper>
-        <View>
+        <View style={{marginRight: 10}}>
           <FlexRow>
+            {sheet.showTotalBalance && (
+              <View style={{marginRight: 10}}>
+                <Spacer>
+                  <AvailableBalance>Avl Bal </AvailableBalance>
+                  <Spacer size={'medium'} />
+                  <TotalBalance archived={sheet.archived}>
+                    {GetCurrencySymbol(sheet.currency)}{' '}
+                    {GetCurrencyLocalString(sheet.totalBalance)}
+                  </TotalBalance>
+                </Spacer>
+              </View>
+            )}
+
+            <Ionicons name="chevron-forward-outline" size={30} color="#ccc" />
+          </FlexRow>
+
+          {/* <FlexRow>
             <Text fontsize="12px" color="#aaa">
               {sheet.details ? sheet.details.length : '0'}
             </Text>
-            <Ionicons name="chevron-forward-outline" size={30} color="#ccc" />
-          </FlexRow>
+            <Ionicons name="chevron-forward-outline" size={20} color="#ccc" />
+          </FlexRow> */}
         </View>
+
+        {/* <FlexRow>
+          <Text fontsize="12px" color="#aaa">
+            {sheet.details ? sheet.details.length : '0'}
+          </Text>
+          <Ionicons name="chevron-forward-outline" size={20} color="#ccc" />
+        </FlexRow> */}
       </FlexRow>
       {currentLength > 0 && currentLength - 1 !== index && <BorderLine />}
     </>

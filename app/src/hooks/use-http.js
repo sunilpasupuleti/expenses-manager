@@ -1,8 +1,5 @@
 import axios from 'axios';
 import {useCallback, useEffect, useState} from 'react';
-import {useDispatch} from 'react-redux';
-import {loaderActions} from '../store/loader-slice';
-import {notificationActions} from '../store/notification-slice';
 
 const useHttp = () => {
   const [isLoading, setIsLoading] = useState({

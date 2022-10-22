@@ -3,7 +3,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch} from 'react-redux';
 import {Alert} from 'react-native';
 import {loaderActions} from './loader-slice';
-
+import remoteConfig from '@react-native-firebase/remote-config';
+import {
+  BACKEND_URL,
+  GOOGLE_API_KEY,
+  GOOGLE_CLOUD_VISION_API_URL,
+  WEB_CLIENT_ID,
+} from '../../config';
 export const fetchChangesMade = createAsyncThunk(
   'service/fetchChangesMade',
   async () => {
@@ -107,6 +113,39 @@ export const setTheme = createAsyncThunk(
   },
 );
 
+export const loadAppStatus = createAsyncThunk(
+  'service/loadAppStatus',
+  async () => {
+    await remoteConfig().setDefaults({
+      BACKEND_URL: BACKEND_URL,
+      WEB_CLIENT_ID: WEB_CLIENT_ID,
+      GOOGLE_API_KEY: GOOGLE_API_KEY,
+      GOOGLE_CLOUD_VISION_API_URL: GOOGLE_CLOUD_VISION_API_URL,
+    });
+    const logged = await AsyncStorage.getItem(`@expenses-manager-logged`).then(
+      d => {
+        return JSON.parse(d);
+      },
+    );
+
+    let fetchedRemotely = await remoteConfig().fetchAndActivate();
+    if (fetchedRemotely) {
+      console.log('Configs were retrieved from the backend and activated.');
+    } else {
+      console.log(
+        'No configs were fetched from the backend, and the local configs were already activated',
+      );
+    }
+    let data = {
+      hideSplashScreen: true,
+      authenticated: false,
+    };
+    if (logged) data.authenticated = true;
+
+    return data;
+  },
+);
+
 const serviceSlice = createSlice({
   name: 'service',
   initialState: {
@@ -116,8 +155,19 @@ const serviceSlice = createSlice({
     },
     theme: 'automatic',
     exchangeRates: null,
+    appStatus: {
+      hideSplashScreen: false,
+      authenticated: false,
+    },
   },
-  reducers: {},
+  reducers: {
+    setAppStatus(state, action) {
+      state.appStatus = {
+        ...state.appStatus,
+        ...action.payload,
+      };
+    },
+  },
   extraReducers: builder => {
     builder.addCase(fetchChangesMade.fulfilled, (state, action) => {
       state.changesMade = {
@@ -143,6 +193,12 @@ const serviceSlice = createSlice({
     builder.addCase(fetchExchangeRates.fulfilled, (state, action) => {
       if (action.payload) {
         state.exchangeRates = action.payload;
+      }
+    });
+
+    builder.addCase(loadAppStatus.fulfilled, (state, action) => {
+      if (action.payload) {
+        state.appStatus = action.payload;
       }
     });
   },

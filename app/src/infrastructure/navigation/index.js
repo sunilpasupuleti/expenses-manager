@@ -12,19 +12,19 @@ import {useDispatch, useSelector} from 'react-redux';
 import {AppLockScreen} from '../../features/applock/screens/applock.screen';
 
 export const Navigation = () => {
-  // const theme = useTheme();
-  const {isAuthenticated} = useContext(AuthenticationContext);
   const dispatch = useDispatch();
   const {enabled: isAppLockEnabled, appAuthStatus} = useSelector(
     state => state.applock,
   );
+
+  const appStatus = useSelector(state => state.service.appStatus);
 
   return (
     <>
       <NavigationContainer ref={navigationRef}>
         {isAppLockEnabled && !appAuthStatus ? (
           <AppLockScreen purpose={'secureapp'} />
-        ) : isAuthenticated ? (
+        ) : appStatus.authenticated ? (
           <>
             <AppNavigator />
           </>

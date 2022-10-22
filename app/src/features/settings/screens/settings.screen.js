@@ -263,13 +263,15 @@ export const SettingsScreen = ({navigation}) => {
                             </TouchableOpacity>
                           )}
 
-                          {showPicker && (
+                          {(showPicker || Platform.OS === 'ios') && (
                             <DateTimePicker
-                              style={{
-                                width: '100%',
-                                position: 'absolute',
-                                right: 0,
-                              }}
+                              style={
+                                {
+                                  // width: '100%',
+                                  // position: 'absolute',
+                                  // right: 0,
+                                }
+                              }
                               mode="time"
                               value={isDailyReminderEnabled.time}
                               onChange={(e, t) => {

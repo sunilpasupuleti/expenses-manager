@@ -177,22 +177,18 @@ export const SyncScreen = ({navigation, route}) => {
                 maxHeight: '80%',
               }}>
               <ScrollView>
-                {restoreDates.map(d => {
+                {restoreDates.map((doc, i) => {
                   return (
                     <TouchableHighlightWithColor
-                      key={d}
+                      key={i}
                       onPress={() => {
                         setShowModal(false);
-                        restoreData(d);
+                        restoreData(doc.id);
                       }}>
                       <View>
                         <FlexRow justifyContent="space-between">
-                          <Text style={{padding: 5}}>
-                            {moment(d).format('DD MMM YYYY')}
-                          </Text>
-                          <Text style={{padding: 5}}>
-                            {moment(d).format('hh:mm:ss A')}
-                          </Text>
+                          <Text style={{padding: 5}}>{doc.date}</Text>
+                          <Text style={{padding: 5}}>{doc.time}</Text>
                         </FlexRow>
                         <Divider />
                       </View>

@@ -1,18 +1,17 @@
 import React from 'react';
 import {createContext, useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
-import {setChangesMade} from '../../store/service-slice';
+import {serviceActions, setChangesMade} from '../../store/service-slice';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {notificationActions} from '../../store/notification-slice';
 import messaging from '@react-native-firebase/messaging';
 import {loaderActions} from '../../store/loader-slice';
-
+import remoteConfig from '@react-native-firebase/remote-config';
 import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
-import {BACKEND_URL, WEB_CLIENT_ID} from '../../../config';
 import useHttp from '../../hooks/use-http';
 import {Alert} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -22,7 +21,7 @@ import {
 } from '@haskkor/react-native-pincode';
 
 GoogleSignin.configure({
-  webClientId: WEB_CLIENT_ID,
+  webClientId: remoteConfig().getValue('WEB_CLIENT_ID').asString(),
 });
 
 export const AuthenticationContext = createContext({
@@ -33,7 +32,6 @@ export const AuthenticationContext = createContext({
   onSignInWithMobile: () => null,
   onSetUserData: () => null,
   onResetPassword: () => null,
-  isAuthenticated: false,
   userData: null,
   onLogout: () => null,
   onUpdateUserDetails: () => null,
@@ -43,9 +41,10 @@ export const AuthenticationContext = createContext({
 });
 
 export const AuthenticationContextProvider = ({children}) => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userData, setUserData] = useState(null);
   const [userAdditionalDetails, setUserAdditionalDetails] = useState(null);
+  const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
+  const WEB_CLIENT_ID = remoteConfig().getValue('WEB_CLIENT_ID').asString();
 
   const dispatch = useDispatch();
 
@@ -57,14 +56,21 @@ export const AuthenticationContextProvider = ({children}) => {
 
   useEffect(() => {
     const unsubcribe = auth().onAuthStateChanged(async user => {
+      // console.log(JSON.stringify(user, null, 2));
+
       setUserData(user);
       if (user) {
+        await AsyncStorage.setItem(
+          '@expenses-manager-logged',
+          JSON.stringify(true),
+        );
+
         onGetUserDetails(user.uid).then(async () => {
           await AsyncStorage.setItem('@expenses-manager-user-uid', user.uid);
-          setIsAuthenticated(true);
+          dispatch(serviceActions.setAppStatus({authenticated: true}));
         });
       } else {
-        setIsAuthenticated(false);
+        dispatch(serviceActions.setAppStatus({authenticated: false}));
       }
     });
 
@@ -77,6 +83,7 @@ export const AuthenticationContextProvider = ({children}) => {
     dispatch(loaderActions.showLoader({backdrop: true}));
     try {
       const {idToken} = await GoogleSignin.signIn();
+
       // const getToken = await GoogleSignin.getTokens();
       const googleCredentials = auth.GoogleAuthProvider.credential(idToken);
       if (!googleCredentials) {
@@ -280,9 +287,10 @@ export const AuthenticationContextProvider = ({children}) => {
         await deleteUserPinCode('@expenses-manager-app-lock');
         await resetPinCodeInternalStates();
         await AsyncStorage.removeItem('@expenses-manager-user-uid');
+        await AsyncStorage.removeItem('@expenses-manager-logged');
 
         messaging().deleteToken();
-        setIsAuthenticated(false);
+        dispatch(serviceActions.setAppStatus({authenticated: false}));
         dispatch(setChangesMade({status: false, loaded: true}));
       })
       .catch(err => {
@@ -374,7 +382,6 @@ export const AuthenticationContextProvider = ({children}) => {
     <AuthenticationContext.Provider
       value={{
         onGoogleAuthentication,
-        isAuthenticated,
         userData,
         onLogout,
         onSignInWithEmail,
