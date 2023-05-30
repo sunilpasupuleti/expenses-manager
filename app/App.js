@@ -20,7 +20,7 @@ import moment from 'moment';
 import SplashScreen from 'react-native-splash-screen';
 import './src/components/fcm/FCMService';
 import {fetchAppLock} from './src/store/applock-slice';
-
+import firestore from '@react-native-firebase/firestore';
 moment.suppressDeprecationWarnings = true;
 if (Platform.OS === 'android') {
   require('intl');

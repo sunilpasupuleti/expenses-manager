@@ -127,15 +127,14 @@ export const loadAppStatus = createAsyncThunk(
         return JSON.parse(d);
       },
     );
-
-    let fetchedRemotely = await remoteConfig().fetchAndActivate();
-    if (fetchedRemotely) {
-      console.log('Configs were retrieved from the backend and activated.');
-    } else {
-      console.log(
-        'No configs were fetched from the backend, and the local configs were already activated',
-      );
-    }
+    // let fetchedRemotely = await remoteConfig().fetchAndActivate();
+    // if (fetchedRemotely) {
+    //   console.log('Configs were retrieved from the backend and activated.');
+    // } else {
+    //   console.log(
+    //     'No configs were fetched from the backend, and the local configs were already activated',
+    //   );
+    // }
     let data = {
       hideSplashScreen: true,
       authenticated: false,

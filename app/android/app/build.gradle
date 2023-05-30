@@ -279,6 +279,12 @@ android {
 
         }
     }
+
+     packagingOptions {
+        pickFirst '**/libc++_shared.so'
+        pickFirst '**/libfbjni.so'
+    }
+    
 }
 
 dependencies {

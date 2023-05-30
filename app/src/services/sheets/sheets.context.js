@@ -193,8 +193,8 @@ export const SheetsContextProvider = ({children}) => {
       {
         successCallback: res => {
           callback();
-          if (res.userDetails) {
-            onSetUserAdditionalDetails(res.userDetails);
+          if (res.user) {
+            onSetUserAdditionalDetails(res.user);
           } else {
             onSetUserAdditionalDetails(p => ({
               ...p,
@@ -248,8 +248,8 @@ export const SheetsContextProvider = ({children}) => {
       {
         successCallback: res => {
           callback();
-          if (res.userDetails) {
-            onSetUserAdditionalDetails(res.userDetails);
+          if (res.user) {
+            onSetUserAdditionalDetails(res.user);
           } else {
             onSetUserAdditionalDetails(p => ({
               ...p,

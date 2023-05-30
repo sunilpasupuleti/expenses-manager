@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
 import {createContext, useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
@@ -42,6 +43,7 @@ export const AuthenticationContext = createContext({
 
 export const AuthenticationContextProvider = ({children}) => {
   const [userData, setUserData] = useState(null);
+
   const [userAdditionalDetails, setUserAdditionalDetails] = useState(null);
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
   const WEB_CLIENT_ID = remoteConfig().getValue('WEB_CLIENT_ID').asString();
@@ -56,16 +58,14 @@ export const AuthenticationContextProvider = ({children}) => {
 
   useEffect(() => {
     const unsubcribe = auth().onAuthStateChanged(async user => {
-      // console.log(JSON.stringify(user, null, 2));
-
-      setUserData(user);
-      if (user) {
+      // setUserData(user);
+      if (auth().currentUser) {
         await AsyncStorage.setItem(
           '@expenses-manager-logged',
           JSON.stringify(true),
         );
 
-        onGetUserDetails(user.uid).then(async () => {
+        onGetUserDetails(async () => {
           await AsyncStorage.setItem('@expenses-manager-user-uid', user.uid);
           dispatch(serviceActions.setAppStatus({authenticated: true}));
         });
@@ -83,9 +83,9 @@ export const AuthenticationContextProvider = ({children}) => {
     dispatch(loaderActions.showLoader({backdrop: true}));
     try {
       const {idToken} = await GoogleSignin.signIn();
-
       // const getToken = await GoogleSignin.getTokens();
       const googleCredentials = auth.GoogleAuthProvider.credential(idToken);
+
       if (!googleCredentials) {
         dispatch(loaderActions.hideLoader());
         throw 'Something went wrong obtaining access token';
@@ -99,7 +99,10 @@ export const AuthenticationContextProvider = ({children}) => {
           dispatch(loaderActions.hideLoader());
           console.log('error in google sign in ', err);
           dispatch(
-            notificationActions.showToast({status: 'error', message: err}),
+            notificationActions.showToast({
+              status: 'error',
+              message: err.toString(),
+            }),
           );
         });
     } catch (error) {
@@ -118,7 +121,7 @@ export const AuthenticationContextProvider = ({children}) => {
           'Google play services is not available ! Install and try again ',
         );
       } else {
-        console.log(error);
+        console.log('Error in signin huff', error);
         // some other error happened
       }
     }
@@ -231,6 +234,7 @@ export const AuthenticationContextProvider = ({children}) => {
   };
 
   const onSetUserData = async data => {
+    let jwtToken = await auth().currentUser.getIdToken();
     let token = null;
     await messaging()
       .getToken()
@@ -250,35 +254,36 @@ export const AuthenticationContextProvider = ({children}) => {
       fcmToken: token,
       active: true,
     };
-    onStoreUserDataToFirebase(transformedData)
-      .then(async () => {
-        // for enabling notifications
-        let jwtToken = await auth().currentUser.getIdToken();
-        sendRequest({
-          type: 'POST',
-          url: BACKEND_URL + '/notification/enable-notifications/',
-          data: {},
-          headers: {
-            authorization: 'Bearer ' + jwtToken,
-          },
-        });
-        dispatch(loaderActions.hideLoader());
-      })
-      .catch(err => {
-        dispatch(loaderActions.hideLoader());
-        console.log(err, ' error while storing user details to backend.');
-      });
-  };
-
-  const onStoreUserDataToFirebase = async userData => {
-    return firestore()
-      .collection(userData.uid)
-      .doc('user-data')
-      .set(userData, {merge: true});
+    sendRequest(
+      {
+        type: 'POST',
+        url: BACKEND_URL + '/user',
+        data: transformedData,
+        headers: {
+          authorization: 'Bearer ' + jwtToken,
+        },
+      },
+      {
+        successCallback: async () => {
+          sendRequest({
+            type: 'POST',
+            url: BACKEND_URL + '/notification/enable-notifications/',
+            data: {},
+            headers: {
+              authorization: 'Bearer ' + jwtToken,
+            },
+          });
+          dispatch(loaderActions.hideLoader());
+        },
+        errorCallback: err => {
+          dispatch(loaderActions.hideLoader());
+          console.log(err, ' error while storing user details to backend.');
+        },
+      },
+    );
   };
 
   const onLogout = async () => {
-    let uid = userData.uid;
     let jwtToken = await auth().currentUser.getIdToken();
 
     auth()
@@ -309,20 +314,22 @@ export const AuthenticationContextProvider = ({children}) => {
       },
     });
 
-    firestore()
-      .collection(uid)
-      .doc('user-data')
-      .update({
+    sendRequest({
+      type: 'POST',
+      url: BACKEND_URL + '/user/',
+      data: {
         active: false,
         fcmToken: null,
-      })
-      .then(() => {})
-      .catch(err => {
-        console.log(err, 'In setting logout value to false');
-      });
+      },
+      headers: {
+        authorization: 'Bearer ' + jwtToken,
+      },
+    });
   };
 
   const onUpdateUserDetails = async details => {
+    let jwtToken = await auth().currentUser.getIdToken();
+
     let token = null;
     await messaging()
       .getToken()
@@ -331,16 +338,22 @@ export const AuthenticationContextProvider = ({children}) => {
       })
       .catch(err => {});
     dispatch(loaderActions.showLoader({backdrop: true}));
-    firestore()
-      .collection(userData.uid)
-      .doc('user-data')
-      .update({
-        ...details,
-        fcmToken: token,
-      })
-      .then(() => {
-        onGetUserDetails(userData.uid)
-          .then(() => {
+
+    sendRequest(
+      {
+        type: 'POST',
+        url: BACKEND_URL + '/user/',
+        data: {
+          fcmToken: token,
+          ...details,
+        },
+        headers: {
+          authorization: 'Bearer ' + jwtToken,
+        },
+      },
+      {
+        successCallback: () => {
+          onGetUserDetails(() => {
             dispatch(loaderActions.hideLoader());
             dispatch(
               notificationActions.showToast({
@@ -348,34 +361,36 @@ export const AuthenticationContextProvider = ({children}) => {
                 message: 'Updated successfully',
               }),
             );
-          })
-          .catch(err => {
-            dispatch(loaderActions.hideLoader());
           });
-      })
-      .catch(err => {
-        dispatch(loaderActions.hideLoader());
-        dispatch(
-          notificationActions.showToast({
-            status: 'error',
-            message: 'Error in updating the details!',
-          }),
-        );
-        console.log(err, 'Error while updating the user details');
-      });
+        },
+        errorCallback: () => {
+          dispatch(loaderActions.hideLoader());
+        },
+      },
+    );
   };
 
-  const onGetUserDetails = async uid => {
-    return firestore()
-      .collection(uid)
-      .doc('user-data')
-      .get()
-      .then(doc => {
-        if (doc.exists) {
-          setUserAdditionalDetails(doc.data());
-        }
-        return doc.data();
-      });
+  const onGetUserDetails = async (successCallBack = () => {}) => {
+    let jwtToken = await auth().currentUser.getIdToken();
+    sendRequest(
+      {
+        type: 'GET',
+        url: BACKEND_URL + '/user/',
+        headers: {
+          authorization: 'Bearer ' + jwtToken,
+        },
+      },
+      {
+        successCallback: data => {
+          setUserAdditionalDetails(data.user);
+          setUserData(data.user);
+          successCallBack();
+        },
+        errorCallback: () => {
+          dispatch(loaderActions.hideLoader());
+        },
+      },
+    );
   };
 
   return (
