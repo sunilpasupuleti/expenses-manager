@@ -16,7 +16,7 @@ module.exports = {
     const { fcmToken, active } = req.body;
     if (!user) {
       return sendResponse(res, httpCodes.NOT_FOUND, {
-        message: " NO User found",
+        message: "No User found",
       });
     }
 
@@ -29,7 +29,6 @@ module.exports = {
       fcmToken: fcmToken,
       active: active,
     };
-    console.log(data);
     Users.updateOne(
       {
         uid: user.uid,

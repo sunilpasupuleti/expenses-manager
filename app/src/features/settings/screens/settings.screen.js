@@ -459,11 +459,10 @@ export const SettingsScreen = ({navigation}) => {
             <SettingsCard>
               <Spacer size={'large'}>
                 <SettingHint marginLeft="10px">
-                  If you have this exported JSON file, in the future simply you
-                  can import all the data from the exported JSON File. You can
-                  use this file inorder to read the data in another device or
-                  you can send the file to other user who are using this app
-                  also
+                  If you have this exported JSON file, you can easily import all
+                  the data from it in the future. You may transfer this file to
+                  a user who is also using this app or use it to read the data
+                  on another device.
                 </SettingHint>
               </Spacer>
               <SettingsCardContent onPress={onExportData}>
@@ -547,7 +546,7 @@ export const SettingsScreen = ({navigation}) => {
                 </Setting>
               </SettingsCardContent>
               <SettingHint>
-                Your data will be automatically backed up during sign out.
+                When you sign out, your data will be immediately backed up.
               </SettingHint>
             </SettingsCard>
           </Spacer>
@@ -559,9 +558,10 @@ export const SettingsScreen = ({navigation}) => {
                   <Text fontsize="12px" color="red">
                     CURRENCY RATES :
                   </Text>{' '}
-                  You can get the latest updated currency rates only every two
-                  hours. If you click on the fetch latest button in between this
-                  time, it will show you the last fetch currency rates.
+                  The most recent currency exchange rates are only available
+                  every two hours. The most recent exchange rates will be
+                  displayed if you click the fetch latest button between now and
+                  then.
                 </SettingHint>
               </SettingsCardContent>
             </SettingsCard>

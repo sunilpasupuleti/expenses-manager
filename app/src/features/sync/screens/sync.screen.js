@@ -3,7 +3,7 @@ import moment from 'moment';
 import React, {useContext, useEffect, useState} from 'react';
 import {Alert, ScrollView, StyleSheet, View} from 'react-native';
 import {Divider, Modal, Portal} from 'react-native-paper';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {useTheme} from 'styled-components/native';
 import {Spacer} from '../../../components/spacer/spacer.component';
 import {
@@ -22,6 +22,7 @@ import {
   SettingTitle,
 } from '../../settings/components/settings.styles';
 import {SettingsCardContent} from '../../settings/components/settings.styles';
+import {loaderActions} from '../../../store/loader-slice';
 
 export const SyncScreen = ({navigation, route}) => {
   const theme = useTheme();
@@ -31,6 +32,7 @@ export const SyncScreen = ({navigation, route}) => {
   const [restoreDates, setRestoreDates] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const changesMade = useSelector(state => state.service.changesMade.status);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     navigation.setOptions({
@@ -98,8 +100,9 @@ export const SyncScreen = ({navigation, route}) => {
   };
 
   const onPressGetRestoreDates = async () => {
-    onGetRestoreDates().then(dates => {
-      setRestoreDates(dates);
+    onGetRestoreDates(async result => {
+      dispatch(loaderActions.hideLoader());
+      setRestoreDates(result.backups);
       setShowModal(true);
     });
   };
@@ -156,15 +159,14 @@ export const SyncScreen = ({navigation, route}) => {
           backed up.
         </Text>
         <Text variant="caption" style={styles.hint}>
-          <Text style={styles.hintHeading}> RESTORE :</Text> Your last backed up
-          data will be restored. Please backup if you have any new changes made
-          inorder to prevent data loss,
+          <Text style={styles.hintHeading}> RESTORE :</Text> Data from your most
+          recent backup will be recovered. If you make any new changes, please
+          create a backup in order to prevent data loss.
         </Text>
 
         <Text variant="caption" style={styles.hint}>
           <Text style={styles.hintHeading}>RESTORE FROM SPECIFIC DATE :</Text>{' '}
-          You have the ability to restore your data , from last 10 previous
-          backups.
+          You have the option to recover your data from the past 10 backups.
         </Text>
         {restoreDates && restoreDates.length > 0 && (
           <Portal>
@@ -177,18 +179,18 @@ export const SyncScreen = ({navigation, route}) => {
                 maxHeight: '80%',
               }}>
               <ScrollView>
-                {restoreDates.map((doc, i) => {
+                {restoreDates.map((backup, i) => {
                   return (
                     <TouchableHighlightWithColor
                       key={i}
                       onPress={() => {
                         setShowModal(false);
-                        restoreData(doc.id);
+                        restoreData(backup._id);
                       }}>
                       <View>
                         <FlexRow justifyContent="space-between">
-                          <Text style={{padding: 5}}>{doc.date}</Text>
-                          <Text style={{padding: 5}}>{doc.time}</Text>
+                          <Text style={{padding: 5}}>{backup.date}</Text>
+                          <Text style={{padding: 5}}>{backup.time}</Text>
                         </FlexRow>
                         <Divider />
                       </View>

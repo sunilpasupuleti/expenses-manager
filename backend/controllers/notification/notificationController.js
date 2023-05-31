@@ -14,7 +14,6 @@ module.exports = {
   async updateDailyReminder(req, res) {
     const { time, fcmToken, enable, update, disable } = req.body;
 
-    console.log(req.body);
     let { uid } = req.user;
     if (!uid || !time || !fcmToken) {
       return sendResponse(res, httpCodes.BAD_REQUEST, {
@@ -165,8 +164,10 @@ module.exports = {
         let jobsLength = Object.keys(jobs).length;
         function scheduleFunction() {
           var rule = new schedule.RecurrenceRule();
-          rule.hour = 00;
-          rule.minute = 01;
+          let hour = 00;
+          let minute = 01;
+          rule.hour = hour;
+          rule.minute = minute;
           rule.dayOfWeek = new schedule.Range(0, 6);
           let jobId = `${uid}-daily-backup`;
           Users.findOneAndUpdate(
@@ -185,7 +186,9 @@ module.exports = {
           )
             .then((response) => {
               let returnData = response;
-              logger.info(`Enabling daily backup for ${data.displayName} `);
+              logger.info(
+                `Enabling daily backup for ${data.displayName} at ${hour}:${minute}`
+              );
 
               logger.info("-----------------------------------");
               schedule.scheduleJob(jobId, rule, function () {
@@ -360,8 +363,10 @@ module.exports = {
         if (dailyBackup && returnData.active) {
           var rule = new schedule.RecurrenceRule();
           // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
-          rule.hour = 00;
-          rule.minute = 01;
+          let hour = 00;
+          let minute = 01;
+          rule.hour = hour;
+          rule.minute = minute;
           rule.dayOfWeek = new schedule.Range(0, 6);
           let jobId = `${uid}-daily-backup`;
 
@@ -370,7 +375,9 @@ module.exports = {
             jobFoundDailyBackup.cancel();
           }
 
-          logger.info(`Enabling daily backup for ${returnData.displayName} `);
+          logger.info(
+            `Enabling daily backup for ${returnData.displayName} at ${hour}:${minute}`
+          );
 
           schedule.scheduleJob(jobId, rule, function () {
             sendDailyBackupNotification(returnData);

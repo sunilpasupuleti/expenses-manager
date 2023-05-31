@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { String, Number, Boolean, Date, ObjectId } = mongoose.SchemaTypes;
 
 const backUpsSchema = mongoose.Schema(
   {},
@@ -9,6 +8,4 @@ const backUpsSchema = mongoose.Schema(
   }
 );
 
-const Backups = mongoose.model("Backups", backUpsSchema);
-
-module.exports = Backups;
+module.exports = mongoose.model("Backups", backUpsSchema);

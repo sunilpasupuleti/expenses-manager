@@ -1,10 +1,7 @@
 import notifee, {
   AndroidImportance,
   AndroidNotificationSetting,
-  TriggerType,
   EventType,
-  RepeatFrequency,
-  TimeUnit,
 } from '@notifee/react-native';
 import CryptoJS from 'react-native-crypto-js';
 import {colors} from '../../infrastructure/theme/colors';
@@ -12,6 +9,9 @@ import messaging from '@react-native-firebase/messaging';
 import firestore from '@react-native-firebase/firestore';
 import moment from 'moment';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import auth from '@react-native-firebase/auth';
+import axios from 'axios';
+import {BACKEND_URL} from '../../../config';
 
 notifee.onForegroundEvent(event => {
   //   console.log('Foreground event', event);
@@ -108,8 +108,8 @@ If not 😕 do it now.`;
 
     showNotification(title, body, 'daily-backup', true);
     let value = await AsyncStorage.getItem(`@expenses-manager-data-${uid}`);
+    value = JSON.parse(value);
     // Encrypt
-    value = CryptoJS.AES.encrypt(value, uid).toString();
     if (!value) {
       cancelNotification('daily-backup');
       showNotification(
@@ -121,49 +121,13 @@ If not 😕 do it now.`;
       return;
     }
 
-    await firestore()
-      .collection(uid)
-      .get()
-      .then(async data => {
-        if (data.docs && data.docs.length > 0) {
-          let initialLength = 10;
-          // let presentLength = data.docs.length;
-          let docs = [];
-          data.docs.filter(d => {
-            if (d.id !== 'user-data') {
-              docs.push(moment(d.id).format('YYYY-MM-DD A hh:mm:ss'));
-            }
-          });
-          docs.sort();
-          let toDeleteLength = Math.abs(initialLength - docs.length);
-          if (docs.length > initialLength) {
-            for (let i = 0; i < toDeleteLength; i++) {
-              let doc;
-              data.docs.filter(d => {
-                if (docs[i] === moment(d.id).format('YYYY-MM-DD A hh:mm:ss')) {
-                  doc = d;
-                }
-              });
-              await doc.ref.delete();
-            }
-          }
-        }
-      })
-      .catch(err => {
-        showNotification(failedTitle, failedBody, 'daily-backup-failed', false);
-        cancelNotification('daily-backup');
+    let jwtToken = await auth().currentUser.getIdToken();
 
-        console.log(
-          'error in deleting previous documents - from daily backup',
-          err,
-        );
-      });
-
-    await firestore()
-      .collection(uid)
-      .doc(moment().format('DD MMM YYYY hh:mm:ss a'))
-      .set({
-        encryptedData: value,
+    axios
+      .post(BACKEND_URL + '/backup', value, {
+        headers: {
+          authorization: 'Bearer ' + jwtToken,
+        },
       })
       .then(ref => {
         cancelNotification('daily-backup');

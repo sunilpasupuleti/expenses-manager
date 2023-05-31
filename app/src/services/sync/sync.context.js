@@ -4,16 +4,14 @@
 import React, {useState} from 'react';
 import {createContext, useContext, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
-import firestore from '@react-native-firebase/firestore';
 import {loaderActions} from '../../store/loader-slice';
 import {notificationActions} from '../../store/notification-slice';
 import {setChangesMade} from '../../store/service-slice';
 import {AuthenticationContext} from '../authentication/authentication.context';
 import {SheetsContext} from '../sheets/sheets.context';
-import moment from 'moment';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import CryptoJS from 'react-native-crypto-js';
-import {Alert} from 'react-native';
+import useHttp from '../../hooks/use-http';
+import auth from '@react-native-firebase/auth';
+import remoteConfig from '@react-native-firebase/remote-config';
 
 export const SyncContext = createContext({
   backUpData: () => null,
@@ -26,9 +24,13 @@ export const SyncContextProvider = ({children}) => {
   const {userData, onGetUserDetails, userAdditionalDetails} = useContext(
     AuthenticationContext,
   );
-  const {expensesData, onSaveExpensesData} = useContext(SheetsContext);
+  const {expensesData, onSaveExpensesData, categories} =
+    useContext(SheetsContext);
   const changesMade = useSelector(state => state.service.changesMade);
   const dispatch = useDispatch();
+  const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
+
+  let {sendRequest} = useHttp();
 
   useEffect(() => {
     if (userData) {
@@ -55,61 +57,42 @@ export const SyncContextProvider = ({children}) => {
       dispatch(
         loaderActions.showLoader({backdrop: true, loaderType: 'backup'}),
       );
-
-      // Encrypt
-      let encryptedData = CryptoJS.AES.encrypt(
-        JSON.stringify(expensesData),
-        userData.uid,
-      ).toString();
-
-      await firestore()
-        .collection(userData.uid)
-        .get()
-        .then(async data => {
-          if (data.docs && data.docs.length > 0) {
-            let initialLength = 10;
-            // let presentLength = data.docs.length;
-            let docs = [];
-            data.docs.filter(d => {
-              if (d.id !== 'user-data') {
-                docs.push(moment(d.id).format('YYYY-MM-DD A hh:mm:ss'));
-              }
-            });
-            docs.sort();
-            let toDeleteLength = Math.abs(initialLength - docs.length);
+      let jwtToken = await auth().currentUser.getIdToken();
+      sendRequest(
+        {
+          type: 'POST',
+          url: BACKEND_URL + '/backup',
+          data: {
+            ...expensesData,
+            categories: categories,
+          },
+          headers: {
+            authorization: 'Bearer ' + jwtToken,
+          },
+        },
+        {
+          successCallback: async () => {
             dispatch(loaderActions.hideLoader());
-            if (docs.length > initialLength) {
-              for (let i = 0; i < toDeleteLength; i++) {
-                let doc;
-                data.docs.filter(d => {
-                  if (
-                    docs[i] === moment(d.id).format('YYYY-MM-DD A hh:mm:ss')
-                  ) {
-                    doc = d;
-                  }
-                });
-                await doc.ref.delete();
-              }
-            }
-          }
-        });
-
-      await firestore()
-        .collection(userData.uid)
-        .doc(moment().format('DD MMM YYYY hh:mm:ss a'))
-        .set({
-          encryptedData,
-        })
-        .then(ref => {
-          dispatch(loaderActions.hideLoader());
-          dispatch(
-            notificationActions.showToast({
-              status: 'success',
-              message: 'Your data backed up safely.',
-            }),
-          );
-          dispatch(setChangesMade({status: false}));
-        });
+            dispatch(
+              notificationActions.showToast({
+                status: 'success',
+                message: 'Your data backed up safely.',
+              }),
+            );
+            dispatch(setChangesMade({status: false}));
+          },
+          errorCallback: err => {
+            dispatch(loaderActions.hideLoader());
+            dispatch(
+              notificationActions.showToast({
+                status: 'error',
+                message: 'Error in backing up your data.',
+              }),
+            );
+            console.log(err, 'error in backup');
+          },
+        },
+      );
     } catch (e) {
       dispatch(loaderActions.hideLoader());
       dispatch(
@@ -122,122 +105,45 @@ export const SyncContextProvider = ({children}) => {
     }
   };
 
-  const restoreData = async (docId = null, initialRestore = false) => {
+  const restoreData = async (backupId = null, initialRestore = false) => {
+    let jwtToken = await auth().currentUser.getIdToken();
     dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'restore'}));
     try {
-      if (docId) {
-        await firestore()
-          .collection(userData.uid)
-          .doc(docId)
-          .get()
-          .then(async doc => {
-            if (doc.exists) {
-              let docData = doc.data();
-              // if data is encrypted decrypt it and load
-              try {
-                if (docData.encryptedData) {
-                  // Decrypt
-                  let bytes = CryptoJS.AES.decrypt(
-                    docData.encryptedData,
-                    userData.uid,
-                  );
-                  docData = bytes.toString(CryptoJS.enc.Utf8);
-                  docData = JSON.parse(docData);
-                }
-                onSaveExpensesData(docData);
-                dispatch(loaderActions.hideLoader());
-                dispatch(
-                  notificationActions.showToast({
-                    status: 'success',
-                    message: 'Data restored successfully.',
-                  }),
-                );
-              } catch (e) {
-                console.log(e);
-                Alert.alert(
-                  'Restore error',
-                  'Error occured, in encrypting your data.',
-                );
-              }
-            } else {
-              dispatch(loaderActions.hideLoader());
-              if (!initialRestore) {
-                dispatch(
-                  notificationActions.showToast({
-                    status: 'warning',
-                    message: 'There is no data to restore.',
-                  }),
-                );
-              }
-            }
-          });
-      } else {
-        await firestore()
-          .collection(userData.uid)
-          .get()
-          .then(async data => {
-            let docs = [];
-            data.docs.filter(d => {
-              if (d.id !== 'user-data') {
-                docs.push(moment(d.id).format('YYYY-MM-DD A hh:mm:ss'));
-              }
-            });
-            docs.sort();
-            let latestDocName = docs[docs.length - 1];
-            let doc;
-            data.docs.filter(d => {
-              if (
-                moment(d.id).format('YYYY-MM-DD A hh:mm:ss') === latestDocName
-              ) {
-                doc = d;
-              }
-            });
-            dispatch(loaderActions.hideLoader());
-
-            // let doc = data.docs[data.docs.length - 1];
-            if (doc && doc.exists) {
-              let docData = doc.data();
-
-              try {
-                // if data is encrypted decrypt it and load
-                if (docData.encryptedData) {
-                  // Decrypt
-                  let bytes = CryptoJS.AES.decrypt(
-                    docData.encryptedData,
-                    userData.uid,
-                  );
-                  docData = bytes.toString(CryptoJS.enc.Utf8);
-                  docData = JSON.parse(docData);
-                }
-                onSaveExpensesData(docData);
-                dispatch(setChangesMade({status: false}));
-                dispatch(loaderActions.hideLoader());
-                dispatch(
-                  notificationActions.showToast({
-                    status: 'success',
-                    message: 'Data restored successfully.',
-                  }),
-                );
-              } catch (e) {
-                console.log(e);
-                Alert.alert(
-                  'Restore error',
-                  'Error occured, in encrypting your data.',
-                );
-              }
-            } else {
-              dispatch(loaderActions.hideLoader());
-              if (!initialRestore) {
-                dispatch(
-                  notificationActions.showToast({
-                    status: 'warning',
-                    message: 'There is no data to restore.',
-                  }),
-                );
-              }
-            }
-          });
+      let url = BACKEND_URL + '/backup';
+      if (backupId) {
+        url += '?id=' + backupId;
       }
+      sendRequest(
+        {
+          type: 'GET',
+          url: url,
+          headers: {
+            authorization: 'Bearer ' + jwtToken,
+          },
+        },
+        {
+          successCallback: async result => {
+            onSaveExpensesData(result.backup);
+            dispatch(loaderActions.hideLoader());
+            dispatch(
+              notificationActions.showToast({
+                status: 'success',
+                message: 'Data restored successfully.',
+              }),
+            );
+          },
+          errorCallback: err => {
+            dispatch(loaderActions.hideLoader());
+            dispatch(
+              notificationActions.showToast({
+                status: 'error',
+                message: 'Error in restoring up your data.',
+              }),
+            );
+            console.log(err, 'error in restore');
+          },
+        },
+      );
     } catch (e) {
       dispatch(loaderActions.hideLoader());
       dispatch(
@@ -250,62 +156,31 @@ export const SyncContextProvider = ({children}) => {
     }
   };
 
-  const onGetRestoreDates = async () => {
+  const onGetRestoreDates = async (successCallBack = () => {}) => {
     dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'restore'}));
-
-    return await firestore()
-      .collection(userData.uid)
-      .get()
-      .then(data => {
-        let docNames = [];
-        let dupDocNames = [];
-        data.docs.reverse().map(doc => {
-          if (doc.id !== 'user-data') {
-            let dateRegEx = /\d{2} [a-zA-z]{3} \d{4}/g;
-            let TimeRegEx = /\d{2}:\d{2}:\d{2} (am|pm)/g;
-            let date = doc.id.match(dateRegEx);
-            let time = doc.id.match(TimeRegEx);
-            docNames.push({
-              id: doc.id,
-              date: date[0].toUpperCase(),
-              time: time[0].toUpperCase(),
-            });
-            // docNames.push(doc.id)
-            // dupDocNames.push(moment(doc.id).format('YYYY-MM-DD A hh:mm:ss'));
-          }
-        });
-        // let sortedDocs = [];
-        // dupDocNames.sort().reverse();
-
-        // for (let i = 0; i < dupDocNames.length; i++) {
-        //   let index = docNames.findIndex(
-        //     d => moment(d).format('YYYY-MM-DD A hh:mm:ss') === dupDocNames[i],
-        //   );
-        //   sortedDocs.push(docNames[index]);
-        // }
-        // dispatch(loaderActions.hideLoader());
-        // if (docNames.length === 0) {
-        //   dispatch(
-        //     notificationActions.showToast({
-        //       status: 'warning',
-        //       message:
-        //         'You have no backups to show your previous backup files.',
-        //     }),
-        //   );
-        // }
-        dispatch(loaderActions.hideLoader());
-        return docNames;
-      })
-      .catch(err => {
-        dispatch(loaderActions.hideLoader());
-        dispatch(
-          notificationActions.showToast({
-            status: 'error',
-            message: 'Something error occured while fetching restore dates.',
-          }),
-        );
-        console.log('error in fetching restore dates', err);
-      });
+    let jwtToken = await auth().currentUser.getIdToken();
+    sendRequest(
+      {
+        type: 'GET',
+        url: BACKEND_URL + '/backup/all',
+        headers: {
+          authorization: 'Bearer ' + jwtToken,
+        },
+      },
+      {
+        successCallback: successCallBack,
+        errorCallback: err => {
+          dispatch(loaderActions.hideLoader());
+          dispatch(
+            notificationActions.showToast({
+              status: 'error',
+              message: 'Something error occured while fetching restore dates.',
+            }),
+          );
+          console.log('error in fetching restore dates', err);
+        },
+      },
+    );
   };
 
   const backUpAndRestore = async () => {

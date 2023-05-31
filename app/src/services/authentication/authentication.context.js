@@ -4,7 +4,6 @@ import {createContext, useEffect, useState} from 'react';
 import {useDispatch} from 'react-redux';
 import {serviceActions, setChangesMade} from '../../store/service-slice';
 import auth from '@react-native-firebase/auth';
-import firestore from '@react-native-firebase/firestore';
 import {notificationActions} from '../../store/notification-slice';
 import messaging from '@react-native-firebase/messaging';
 import {loaderActions} from '../../store/loader-slice';
@@ -47,7 +46,6 @@ export const AuthenticationContextProvider = ({children}) => {
   const [userAdditionalDetails, setUserAdditionalDetails] = useState(null);
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
   const WEB_CLIENT_ID = remoteConfig().getValue('WEB_CLIENT_ID').asString();
-
   const dispatch = useDispatch();
 
   const {sendRequest} = useHttp();

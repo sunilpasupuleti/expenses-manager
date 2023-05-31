@@ -11,8 +11,8 @@ const {
 
 router.post("/", VerifyToken, createBackup);
 
-router.get("/", VerifyToken, getBackups);
+router.get("/all", VerifyToken, getBackups);
 
-router.get("/:id", VerifyToken, validateParamsObjectId(), getBackup);
+router.get("/", VerifyToken, getBackup);
 
 module.exports = router;
