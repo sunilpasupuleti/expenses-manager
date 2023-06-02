@@ -13,7 +13,7 @@ jobs:
       - name: 📂 Deploy in EC2 Instance
         uses: easingthemes/ssh-deploy/@main
         env:
-          PEM_KEY: ${{secrets.AWS_PEM_KEY}}
+          SSH_PRIVATE_KEY: ${{secrets.AWS_PEM_KEY}}
           SOURCE: "./"
           REMOTE_HOST: ${{secrets.HOST_NAME}}
           REMOTE_USER: ${{secrets.USER_NAME}}
