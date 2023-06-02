@@ -23,7 +23,7 @@ jobs:
         with:
           name : BACKEND_ENV
           path : ./backend/config/.env
-        with:
+
           name : EXPENSES_MANAGER_JSON
           path : ./backend/config/expensesmanager.json
 
