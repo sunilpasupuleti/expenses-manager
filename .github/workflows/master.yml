@@ -19,7 +19,7 @@ jobs:
           REMOTE_USER: ${{secrets.USER_NAME}}
           TARGET: "/home/ubuntu/expenses-manager/"
       - name: Executing commands in AWS
-        uses: appleboy/ssh-action@main
+        uses: appleboy/ssh-action@master
         with:
           host: ${{secrets.HOST_NAME}}
           username: ${{secrets.USER_NAME}}
