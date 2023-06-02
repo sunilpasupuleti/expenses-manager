@@ -29,7 +29,8 @@ jobs:
           script: |
             sudo ln -s "/home/ubuntu/.nvm/versions/node/v18.16.0/bin/node" "/usr/local/bin/node"
             sudo ln -s "/home/ubuntu/.nvm/versions/node/v18.16.0/bin/npm" "/usr/local/bin/npm"
-            npm install -g pm2
+            rm -rf /home/ubuntu/.nvm/versions/node/v18.16.0/libe/node_modules/pm2
+            npm install pm2 -g
             sudo ln -s "/home/ubuntu/.nvm/versions/node/v18.16.0/bin/pm2" "/usr/local/bin/pm2"
             cd /home/ubuntu/expenses-manager/backend/
             npm install -f
