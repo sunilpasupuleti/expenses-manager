@@ -9,6 +9,8 @@ const usersSchema = mongoose.Schema(
       time: { type: String },
     },
 
+    dailyBackup: { type: Boolean, default: true },
+
     email: { type: String },
     uid: { type: String },
     fcmToken: { type: String, default: null },
