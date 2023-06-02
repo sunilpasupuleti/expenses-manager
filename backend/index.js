@@ -91,7 +91,7 @@ const http = require("http").Server(app);
 http.listen(process.env.PORT || 8080, async () => {
   logger.info(`server started on port number ${process.env.PORT}`);
 
-  // n case if server restarts reschedule all the jobs with which user have dialy reminder and abckup enabled
+  // In case if server restarts reschedule all the jobs with which user have dialy reminder and abckup enabled
 
   let jobs = schedule.scheduledJobs;
 
