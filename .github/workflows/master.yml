@@ -19,6 +19,6 @@ jobs:
           REMOTE_HOST: ${{secrets.HOST_NAME}}
           REMOTE_USER: ${{secrets.USER_NAME}}
           TARGET: "/home/ubuntu/expenses-manager/"
-          SCRIPT_AFTER: |
-            cd /home/ubuntu/expenses-manager/backend
-            npm install -f
+        SCRIPT_AFTER: |
+          cd /home/ubuntu/expenses-manager/backend
+          npm install -f
