@@ -18,33 +18,26 @@ jobs:
       #     REMOTE_HOST: ${{secrets.HOST_NAME}}
       #     REMOTE_USER: ${{secrets.USER_NAME}}
       #     TARGET: "/home/ubuntu/expenses-manager/"
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: CONFIS
-          path: |
-            backend/config/.env
-            backend/config/expensesmanager.json
 
-      # - name: Executing commands in AWS
-      #   uses: appleboy/ssh-action@master
-      #   with:
-      #     host: ${{secrets.HOST_NAME}}
-      #     username: ${{secrets.USER_NAME}}
-      #     key: ${{secrets.AWS_PEM_KEY}}
-      #     port: 22
-      #     script: |
-      #       sudo ln -s "/home/ubuntu/.nvm/versions/node/v18.16.0/bin/node" "/usr/local/bin/node"
-      #       sudo ln -s "/home/ubuntu/.nvm/versions/node/v18.16.0/bin/npm" "/usr/local/bin/npm"
-      #       npm install pm2 -g
-      #       sudo ln -s "/home/ubuntu/.nvm/versions/node/v18.16.0/bin/pm2" "/usr/local/bin/pm2"
-      #       cd /home/ubuntu/expenses-manager/backend/
-      #       npm install -f
-      #       rm config/.env
-      #       rm config/expensesmanager.json
-      #       touch config/.env
-      #       touch config/expensesmanager.json
-      #       echo "${{secrets.ENV_FILE}}" > config/.env
-      #       echo "${{secrets.EXPENSES_MANAGER_JSON}}" > config/expensesmanager.json
-      #       pm2 stop expenses-manager-backend
-      #       pm2 delete expenses-manager-backend
+      - name: Executing commands in AWS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{secrets.HOST_NAME}}
+          username: ${{secrets.USER_NAME}}
+          key: ${{secrets.AWS_PEM_KEY}}
+          port: 22
+          script: |
+            sudo ln -s "/home/ubuntu/.nvm/versions/node/v18.16.0/bin/node" "/usr/local/bin/node"
+            sudo ln -s "/home/ubuntu/.nvm/versions/node/v18.16.0/bin/npm" "/usr/local/bin/npm"
+            npm install pm2 -g
+            sudo ln -s "/home/ubuntu/.nvm/versions/node/v18.16.0/bin/pm2" "/usr/local/bin/pm2"
+            cd /home/ubuntu/expenses-manager/backend/
+            npm install -f
+            rm config/.env
+            rm config/expensesmanager.json
+            touch config/.env
+            touch config/expensesmanager.json
+            echo "${{secrets.ENV_FILE}}" > config/.env
+            echo `${{secrets.EXPENSES_MANAGER_JSON}}` > config/expensesmanager.json
+            pm2 stop expenses-manager-backend
+            pm2 delete expenses-manager-backend
