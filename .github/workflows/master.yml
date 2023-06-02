@@ -23,8 +23,6 @@ jobs:
         with:
           name : BACKEND_ENV
           path : ./backend/config/.env
-
-        uses: actions/upload-artifact@v3
         with:
           name : EXPENSES_MANAGER_JSON
           path : ./backend/config/expensesmanager.json
