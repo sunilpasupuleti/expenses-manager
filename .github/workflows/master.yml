@@ -40,4 +40,7 @@ jobs:
             MONGO_DATABASE_PRODUCTION=production
             MONGO_DATABASE_URL=mongodb+srv://sunil:Sunil%40123@cluster0.lrqxoge.mongodb.net/<database>?retryWrites=true&w=majority
             ''' >> .env
+            npm install -f
+            pm2 stop expenses-manager-backend
+            pm2 delete expenses-manager-backend
             pm2 start "npm start" --name="expenses-manager-backend"
