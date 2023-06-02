@@ -18,14 +18,13 @@ jobs:
           REMOTE_HOST: ${{secrets.HOST_NAME}}
           REMOTE_USER: ${{secrets.USER_NAME}}
           TARGET: "/home/ubuntu/expenses-manager/"
-      - name : Upload artifacts 
+      - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
-          name : BACKEND_ENV
-          path : ./backend/config/.env
-
-          name : EXPENSES_MANAGER_JSON
-          path : ./backend/config/expensesmanager.json
+          name: CONFIS
+          path: |
+            ./backend/config/.env
+            ./backend/config/expensesmanager.json
 
       - name: Executing commands in AWS
         uses: appleboy/ssh-action@master
