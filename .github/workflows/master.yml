@@ -26,7 +26,7 @@ jobs:
           key: ${{secrets.AWS_PEM_KEY}}
           port: 22
           script: |
-            sudo /home/ubuntu/test.txt
+            touch /home/ubuntu/test.txt
             cd /home/ubuntu/expenses-manager/backend
             npm install -f
             whoami
