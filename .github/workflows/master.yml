@@ -10,17 +10,22 @@ jobs:
     steps:
       - name: 🚚 Get latest code
         uses: actions/checkout@v3
-
       - name: 📂 Deploy in EC2 Instance
         uses: easingthemes/ssh-deploy/@main
         env:
-          SSH_PRIVATE_KEY: ${{secrets.AWS_PEM_KEY}}
+          PEM_KEY: ${{secrets.AWS_PEM_KEY}}
           SOURCE: "./"
           REMOTE_HOST: ${{secrets.HOST_NAME}}
           REMOTE_USER: ${{secrets.USER_NAME}}
           TARGET: "/home/ubuntu/expenses-manager/"
-          SCRIPT_AFTER: |
-            whoami
+      - name: Executing commands in AWS
+        uses: appleboy/ssh-action@main
+        with:
+          host: ${{secrets.HOST_NAME}}
+          username: ${{secrets.USER_NAME}}
+          key: ${{secrets.AWS_PEM_KEY}}
+          port: 22
+          script: |
             cd /home/ubuntu/expenses-manager/backend
             npm install -f
-            echo $RSYNC_STDOUT
+            whoami
