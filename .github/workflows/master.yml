@@ -11,7 +11,7 @@ jobs:
       - name: 🚚 Get latest code
         uses: actions/checkout@v3
 
-      - name: 📂 Deploy in EC2 Webwizard
+      - name: 📂 Deploy in EC2
         uses: easingthemes/ssh-deploy/@v2.1.5
         env:
           SSH_PRIVATE_KEY: ${{secrets.AWS_PRIVATE_KEY}}
