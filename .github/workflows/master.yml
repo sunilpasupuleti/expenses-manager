@@ -34,15 +34,8 @@ jobs:
             npm install -f
             touch config/.env
             touch config/expensesmanager.json
-            echo -e '''PORT=3000
-            FIREBASE_DATABASE_URL=https://expensesmanager-da065-default-rtdb.firebaseio.com/
-            FIREBASE_STORAGE_BUCKET=expensesmanager-da065.appspot.com
-            LOGPATH=logs
-            MONGO_DATABASE_DEV=development
-            MONGO_DATABASE_PRODUCTION=production
-            MONGO_DATABASE_URL=mongodb+srv://sunil:Sunil%40123@cluster0.lrqxoge.mongodb.net/<database>?retryWrites=true&w=majority
-            ''' >> config/.env
-            echo ${{secrets.EXPENSES_MANAGER_JSON}} >> config/expensesmanager.json
+            echo -e ${{secrets.ENV_FILE}} >> config/.env
+            echo -e ${{secrets.EXPENSES_MANAGER_JSON}} >> config/expensesmanager.json
             pm2 stop expenses-manager-backend
             pm2 delete expenses-manager-backend
             pm2 start "npm start" --name="expenses-manager-backend"
