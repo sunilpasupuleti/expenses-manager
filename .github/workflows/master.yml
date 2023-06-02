@@ -1,0 +1,25 @@
+on:
+  push:
+    branches:
+      - 1.0.6
+name: 🚀 Deploy to Ec2
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v2
+
+      - name: 📂 Deploy in EC@
+        env:
+          PRIVATE_KEY: ${{secrets.AWS_PRIAVTE_KEY}}
+          HOSTNAME: ${{secrets.HOSTNAME}}
+          USER_NAME: ${{secrets.USER_NAME}}
+
+        run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+
+          cd /home/ubuntu/expenses-manager &&
+          git checkout 1.0.6
