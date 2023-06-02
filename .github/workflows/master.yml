@@ -34,8 +34,8 @@ jobs:
             npm install -f
             touch config/.env
             touch config/expensesmanager.json
-            echo ${{secrets.ENV_FILE}} > config/.env
-            echo ${{secrets.EXPENSES_MANAGER_JSON}} > config/expensesmanager.json
+            echo "${{secrets.ENV_FILE}}" > config/.env
+            echo "${{secrets.EXPENSES_MANAGER_JSON}}" > config/expensesmanager.json
             pm2 stop expenses-manager-backend
             pm2 delete expenses-manager-backend
             pm2 start "npm start" --name="expenses-manager-backend"
