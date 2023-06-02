@@ -18,14 +18,6 @@ jobs:
       #     REMOTE_HOST: ${{secrets.HOST_NAME}}
       #     REMOTE_USER: ${{secrets.USER_NAME}}
       #     TARGET: "/home/ubuntu/expenses-manager/"
-      - name: Copy Configs to server
-        uses: garygrossgarten/github-action-scp@release
-        with:
-          local: backend/config/.env
-          remote: /home/ubuntu/expenses-manager/backend/config/.env
-          host: ${{secrets.HOST_NAME}}
-          user: ${{secrets.USER_NAME}}
-          key: ${{secrets.AWS_PEM_KEY}}
 
       - name: Executing commands in AWS
         uses: appleboy/ssh-action@master
@@ -46,6 +38,6 @@ jobs:
             touch config/.env
             touch config/expensesmanager.json
             echo "${{secrets.ENV_FILE}}" > config/.env
-            echo "${{secrets.EXPENSES_MANAGER_JSON}}" > config/expensesmanager.json
+            echo "${{secrets.EXPENSES_MANAGER_JSON}}" | base64 --decode > config/expensesmanager.json
             pm2 stop expenses-manager-backend
             pm2 delete expenses-manager-backend
