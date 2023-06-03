@@ -28,8 +28,6 @@ jobs:
           port: 22
           script: |
             source ~/.bashrc
-            sudo ln -s "/home/ubuntu/.nvm/versions/node/v18.16.0/bin/node" "/usr/local/bin/node"
-            sudo ln -s "/home/ubuntu/.nvm/versions/node/v18.16.0/bin/npm" "/usr/local/bin/npm"
             cd /home/ubuntu/expenses-manager/backend/
             npm install -f
             rm config/.env
@@ -38,6 +36,5 @@ jobs:
             touch config/expensesmanager.json
             echo "${{secrets.ENV_FILE}}" | base64 --decode > config/.env
             echo "${{secrets.EXPENSES_MANAGER_JSON}}" | base64 --decode > config/expensesmanager.json
-            pm2 stop expenses-manager-backend
-            pm2 delete expenses-manager-backend
-            pm2 start "npm run start" --name="expenses-manager-backend"
+            docker build -t sunil/expenses-manager-backend .
+            docker container run -d --name expenses-manager-backend -p 3000:3000 sunil/expenses-manager-backend

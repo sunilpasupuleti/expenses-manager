@@ -5,4 +5,3 @@ npm-debug.log
 .git
 yarn-error.log
 package-lock.json
-.env
