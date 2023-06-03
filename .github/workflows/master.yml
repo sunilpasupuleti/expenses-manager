@@ -36,5 +36,8 @@ jobs:
             touch config/expensesmanager.json
             echo "${{secrets.ENV_FILE}}" | base64 --decode > config/.env
             echo "${{secrets.EXPENSES_MANAGER_JSON}}" | base64 --decode > config/expensesmanager.json
-            docker build -t sunil/expenses-manager-backend .
-            docker container run -d --name expenses-manager-backend -p 3000:3000 sunil/expenses-manager-backend
+            docker stop expenses-manager-backend
+            docker rm  expenses-manager-backend
+            docker rmi expenses-manager/backend
+            docker build -t expenses-manager/backend .
+            docker container run -d --name expenses-manager-backend -p 3000:3000 expenses-manager/backend
