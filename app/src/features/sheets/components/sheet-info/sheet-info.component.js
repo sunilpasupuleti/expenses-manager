@@ -195,7 +195,9 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
           {pinnedSheets && pinnedSheets.length > 0 && (
             <Spacer size={'xlarge'}>
               <FlexRow justifyContent="space-between">
-                <Text fontfamily="bodyMedium">Pinned</Text>
+                <Text fontfamily="bodyMedium">
+                  Pinned ({pinnedSheets.length})
+                </Text>
                 <Ionicons
                   onPress={() => {
                     Haptics.trigger('impactMedium', {
@@ -276,7 +278,9 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
               (sheets.filter(s => s.pinned).length > 0 ||
                 sheets.filter(s => s.archived).length > 0) ? (
                 <Spacer position={'bottom'} size="medium">
-                  <Text fontfamily="bodyMedium">Accounts</Text>
+                  <Text fontfamily="bodyMedium">
+                    Accounts ({dupSheets?.length})
+                  </Text>
                 </Spacer>
               ) : null}
               <Card theme={{roundness: 15}}>
@@ -331,7 +335,9 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
           {archivedSheets && archivedSheets.length > 0 && (
             <Spacer size={'xlarge'}>
               <FlexRow justifyContent="space-between">
-                <Text fontfamily="bodyMedium">Archive</Text>
+                <Text fontfamily="bodyMedium">
+                  Archive ({archivedSheets.length})
+                </Text>
                 <Ionicons
                   onPress={() => {
                     Haptics.trigger('impactMedium', {

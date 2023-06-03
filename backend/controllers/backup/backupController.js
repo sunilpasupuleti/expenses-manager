@@ -23,14 +23,16 @@ module.exports = {
       .then((data) => {
         let result = data;
         let backups = [];
-        result.backups.forEach((b) => {
-          let backup = {
-            _id: b._id,
-            date: moment(b.createdAt).format("DD MMM YYYY"),
-            time: moment(b.createdAt).format("hh:mm:ss A"),
-          };
-          backups.push(backup);
-        });
+        if (result.backups && result.backups.length > 0) {
+          result.backups.forEach((b) => {
+            let backup = {
+              _id: b._id,
+              date: moment(b.createdAt).format("DD MMM YYYY"),
+              time: moment(b.createdAt).format("hh:mm:ss A"),
+            };
+            backups.push(backup);
+          });
+        }
         return sendResponse(res, httpCodes.OK, {
           message: "Backups fetched successfully",
           backups: backups.reverse(),
@@ -206,7 +208,15 @@ module.exports = {
       let userData = await Users.findOne({
         uid: uid,
       }).populate("backups");
-      backupId = userData.backups[userData.backups.length - 1]._id;
+      let backUp = userData.backups[userData.backups.length - 1];
+      if (backUp) {
+        backupId = backUp._id;
+      }
+
+      return sendResponse(res, httpCodes.OK, {
+        message: "Backup fetched successfully",
+        backup: null,
+      });
     } else {
       if (!ObjectId.isValid(backupId)) {
         return sendResponse(res, httpCodes.BAD_REQUEST, {

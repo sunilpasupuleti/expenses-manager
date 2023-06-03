@@ -36,7 +36,7 @@ export const SyncContextProvider = ({children}) => {
     if (userData) {
       if (changesMade.loaded) {
         if (changesMade.status === false) {
-          restoreData(null, true);
+          restoreData(null);
         }
       }
     }
@@ -105,7 +105,7 @@ export const SyncContextProvider = ({children}) => {
     }
   };
 
-  const restoreData = async (backupId = null, initialRestore = false) => {
+  const restoreData = async (backupId = null) => {
     let jwtToken = await auth().currentUser.getIdToken();
     dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'restore'}));
     try {
@@ -123,14 +123,18 @@ export const SyncContextProvider = ({children}) => {
         },
         {
           successCallback: async result => {
-            onSaveExpensesData(result.backup);
-            dispatch(loaderActions.hideLoader());
-            dispatch(
-              notificationActions.showToast({
-                status: 'success',
-                message: 'Data restored successfully.',
-              }),
-            );
+            if (result.backup) {
+              onSaveExpensesData(result.backup);
+              dispatch(loaderActions.hideLoader());
+              dispatch(
+                notificationActions.showToast({
+                  status: 'success',
+                  message: 'Data restored successfully.',
+                }),
+              );
+            } else {
+              dispatch(loaderActions.hideLoader());
+            }
           },
           errorCallback: err => {
             dispatch(loaderActions.hideLoader());

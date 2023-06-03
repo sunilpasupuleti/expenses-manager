@@ -15,9 +15,8 @@ import RNFS from 'react-native-fs';
 import useHttp from '../../hooks/use-http';
 
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
-import _, {result} from 'lodash';
+import _ from 'lodash';
 import matchWords from '../../components/utility/category-match-words.json';
-import test from '../../components/utility/gcp-vision-responses.json';
 import storage from '@react-native-firebase/storage';
 import XLSX from 'xlsx';
 import moment from 'moment';
@@ -168,6 +167,7 @@ export const SheetsContextProvider = ({children}) => {
     dailyReminder,
     callback = () => null,
   ) => {
+    let data = {...dailyReminder};
     dispatch(loaderActions.showLoader({backdrop: true}));
     let jwtToken = await auth().currentUser.getIdToken();
     let fcmToken = null;
@@ -183,7 +183,7 @@ export const SheetsContextProvider = ({children}) => {
         type: 'POST',
         url: BACKEND_URL + '/notification/update-daily-reminder/',
         data: {
-          ...dailyReminder,
+          ...data,
           fcmToken: fcmToken,
         },
         headers: {

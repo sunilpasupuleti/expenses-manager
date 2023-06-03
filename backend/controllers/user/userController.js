@@ -29,7 +29,7 @@ module.exports = {
       fcmToken: fcmToken,
       active: active,
     };
-    Users.updateOne(
+    Users.findOneAndUpdate(
       {
         uid: user.uid,
       },
@@ -38,11 +38,13 @@ module.exports = {
       },
       {
         upsert: true,
+        new: true,
       }
     )
       .then((result) => {
         return sendResponse(res, httpCodes.OK, {
           message: "Login Successfull",
+          user: result,
         });
       })
       .catch((err) => {

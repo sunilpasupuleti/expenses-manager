@@ -47,8 +47,9 @@ export const AuthenticationContextProvider = ({children}) => {
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
   const WEB_CLIENT_ID = remoteConfig().getValue('WEB_CLIENT_ID').asString();
   const dispatch = useDispatch();
-
   const {sendRequest} = useHttp();
+
+  var authFlag = true;
 
   const onSetUserAdditionalDetails = data => {
     setUserAdditionalDetails(data);
@@ -56,17 +57,31 @@ export const AuthenticationContextProvider = ({children}) => {
 
   useEffect(() => {
     const unsubcribe = auth().onAuthStateChanged(async user => {
-      // setUserData(user);
-      if (auth().currentUser) {
-        await AsyncStorage.setItem(
-          '@expenses-manager-logged',
-          JSON.stringify(true),
-        );
-
-        onGetUserDetails(async () => {
+      if (user) {
+        let loggedIn = await AsyncStorage.getItem('@expenses-manager-logged');
+        loggedIn = JSON.parse(loggedIn);
+        // auth flag is used to prevent calling auth change state multiple times
+        if (authFlag) {
+          authFlag = false;
+          if (loggedIn) {
+            onGetUserDetails();
+          }
+          await AsyncStorage.setItem(
+            '@expenses-manager-logged',
+            JSON.stringify(true),
+          );
           await AsyncStorage.setItem('@expenses-manager-user-uid', user.uid);
           dispatch(serviceActions.setAppStatus({authenticated: true}));
-        });
+        }
+
+        // if (authFlag) {
+        //   console.log(user);
+        //   authFlag = false;
+        //   onGetUserDetails(async () => {
+        //     await AsyncStorage.setItem('@expenses-manager-user-uid', user.uid);
+        //     dispatch(serviceActions.setAppStatus({authenticated: true}));
+        //   });
+        // }
       } else {
         dispatch(serviceActions.setAppStatus({authenticated: false}));
       }
@@ -262,7 +277,11 @@ export const AuthenticationContextProvider = ({children}) => {
         },
       },
       {
-        successCallback: async () => {
+        successCallback: async result => {
+          if (result.user) {
+            setUserData(result.user);
+            setUserAdditionalDetails(result.user);
+          }
           sendRequest({
             type: 'POST',
             url: BACKEND_URL + '/notification/enable-notifications/',
@@ -283,6 +302,7 @@ export const AuthenticationContextProvider = ({children}) => {
 
   const onLogout = async () => {
     let jwtToken = await auth().currentUser.getIdToken();
+    authFlag = true;
 
     auth()
       .signOut()

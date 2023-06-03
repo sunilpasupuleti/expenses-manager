@@ -34,7 +34,7 @@ var accessLogStream = rfs.createStream("api.log", {
   path: path.join(process.env.LOGPATH),
 });
 
-// app.use(morgan("dev", {}));
+app.use(morgan("dev", {}));
 
 app.use(morgan("combined", { stream: accessLogStream }));
 
