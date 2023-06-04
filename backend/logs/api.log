@@ -345,3 +345,4 @@
 ::ffff:192.168.29.84 - - [03/Jun/2023:02:25:47 +0000] "GET /user/ HTTP/1.1" 200 689 "-" "okhttp/4.9.2"
 ::ffff:192.168.29.84 - - [03/Jun/2023:02:25:47 +0000] "GET /backup HTTP/1.1" 200 55 "-" "okhttp/4.9.2"
 ::ffff:192.168.29.84 - - [03/Jun/2023:02:26:02 +0000] "GET /user/ HTTP/1.1" 304 - "-" "okhttp/4.9.2"
+::1 - - [04/Jun/2023:05:45:11 +0000] "GET / HTTP/1.1" 404 139 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"

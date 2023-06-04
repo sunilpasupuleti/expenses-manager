@@ -15,6 +15,7 @@ const notification = require("./routes/notificationRoutes");
 const user = require("./routes/userRoutes");
 const backup = require("./routes/backupRoutes");
 const Users = require("./models/Users");
+const httpProxy = require("http-proxy");
 const {
   sendDailyReminderNotification,
   sendDailyBackupNotification,
