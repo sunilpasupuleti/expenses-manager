@@ -86,9 +86,17 @@ process.on("unhandledRejection", (reason, promise) => {
 /**
  * Create Server
  */
-const http = require("http").Server(app);
 
-http.listen(process.env.PORT || 8080, async () => {
+// This line is from the Node.js HTTPS documentation.
+var options = {
+  key: fs.readFileSync("config/ssl/server.key"),
+  cert: fs.readFileSync("config/ssl/server.cert"),
+};
+
+const http = require("http").Server(app);
+const https = require("https").Server(app);
+
+https.listen(process.env.PORT || 8080, async () => {
   logger.info(`server started on port number ${process.env.PORT}`);
 
   // In case if server restarts reschedule all the jobs with which user have dialy reminder and abckup enabled

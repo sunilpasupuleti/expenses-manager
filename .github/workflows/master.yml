@@ -29,7 +29,6 @@ jobs:
           script: |
             source ~/.bashrc
             cd /home/ubuntu/expenses-manager/backend/
-            npm install -f
             rm config/.env
             rm config/expensesmanager.json
             touch config/.env
