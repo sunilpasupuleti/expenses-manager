@@ -14,6 +14,8 @@ module.exports = {
   async updateDailyReminder(req, res) {
     const { time, fcmToken, enable, update, disable } = req.body;
 
+    logger.info(req.body);
+
     let { uid } = req.user;
     if (!uid || !time || !fcmToken) {
       return sendResponse(res, httpCodes.BAD_REQUEST, {
