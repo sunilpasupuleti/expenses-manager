@@ -87,16 +87,9 @@ process.on("unhandledRejection", (reason, promise) => {
  * Create Server
  */
 
-// This line is from the Node.js HTTPS documentation.
-var options = {
-  key: fs.readFileSync("config/ssl/server.key"),
-  cert: fs.readFileSync("config/ssl/server.cert"),
-};
-
 const http = require("http").Server(app);
-const https = require("https").Server(app);
 
-https.listen(process.env.PORT || 8080, async () => {
+http.listen(process.env.PORT || 8080, async () => {
   logger.info(`server started on port number ${process.env.PORT}`);
 
   // In case if server restarts reschedule all the jobs with which user have dialy reminder and abckup enabled
@@ -105,66 +98,70 @@ https.listen(process.env.PORT || 8080, async () => {
 
   let users = await Users.find().populate("backups");
 
-  users.forEach((d) => {
-    let userData = d;
-    let jobDailyReminderId = `${userData.uid}-daily-reminder`;
-    let jobKeyDailyReminderFound = Object.keys(jobs).filter(
-      (key) => key === jobDailyReminderId
-    )[0];
-    let jobFoundDailyReminder = jobs[jobKeyDailyReminderFound];
+  function activateNotifications() {
+    users.forEach((d) => {
+      let userData = d;
+      let jobDailyReminderId = `${userData.uid}-daily-reminder`;
+      let jobKeyDailyReminderFound = Object.keys(jobs).filter(
+        (key) => key === jobDailyReminderId
+      )[0];
+      let jobFoundDailyReminder = jobs[jobKeyDailyReminderFound];
 
-    let jobDailyBackupId = `${userData.uid}-daily-backup`;
-    let jobKeyDailyBackupFound = Object.keys(jobs).filter(
-      (key) => key === jobDailyBackupId
-    )[0];
-    let jobFoundDailyBackup = jobs[jobKeyDailyBackupFound];
-    if (
-      !jobFoundDailyReminder &&
-      userData.dailyReminder &&
-      userData.active &&
-      userData.dailyReminder.enabled &&
-      userData.dailyReminder.time &&
-      userData.fcmToken
-    ) {
-      let dailyReminder = userData.dailyReminder;
-      let hr = dailyReminder.time.split(":")[0];
-      let min = dailyReminder.time.split(":")[1];
-      var rule = new schedule.RecurrenceRule();
-      rule.hour = hr;
-      rule.minute = min;
-      rule.dayOfWeek = new schedule.Range(0, 6);
-      let jobId = `${userData.uid}-daily-reminder`;
-      logger.info(
-        `Enabling daily reminder for ${userData.displayName} at time - ${dailyReminder.time}`
-      );
+      let jobDailyBackupId = `${userData.uid}-daily-backup`;
+      let jobKeyDailyBackupFound = Object.keys(jobs).filter(
+        (key) => key === jobDailyBackupId
+      )[0];
+      let jobFoundDailyBackup = jobs[jobKeyDailyBackupFound];
+      if (
+        !jobFoundDailyReminder &&
+        userData.dailyReminder &&
+        userData.active &&
+        userData.dailyReminder.enabled &&
+        userData.dailyReminder.time &&
+        userData.fcmToken
+      ) {
+        let dailyReminder = userData.dailyReminder;
+        let hr = dailyReminder.time.split(":")[0];
+        let min = dailyReminder.time.split(":")[1];
+        var rule = new schedule.RecurrenceRule();
+        rule.hour = hr;
+        rule.minute = min;
+        rule.dayOfWeek = new schedule.Range(0, 6);
+        let jobId = `${userData.uid}-daily-reminder`;
+        logger.info(
+          `Enabling daily reminder for ${userData.displayName} at time - ${dailyReminder.time}`
+        );
 
-      schedule.scheduleJob(jobId, rule, function () {
-        sendDailyReminderNotification(userData);
-      });
-    }
+        schedule.scheduleJob(jobId, rule, function () {
+          sendDailyReminderNotification(userData);
+        });
+      }
 
-    if (
-      !jobFoundDailyBackup &&
-      userData.dailyBackup &&
-      userData.active &&
-      userData.fcmToken
-    ) {
-      var rule = new schedule.RecurrenceRule();
-      // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
-      let hour = 00;
-      let minute = 01;
-      rule.hour = hour;
-      rule.minute = minute;
-      rule.dayOfWeek = new schedule.Range(0, 6);
-      let jobId = `${userData.uid}-daily-backup`;
-      logger.info(`Enabling daily backup for ${userData.displayName} `);
+      if (
+        !jobFoundDailyBackup &&
+        userData.dailyBackup &&
+        userData.active &&
+        userData.fcmToken
+      ) {
+        var rule = new schedule.RecurrenceRule();
+        // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
+        let hour = 00;
+        let minute = 01;
+        rule.hour = hour;
+        rule.minute = minute;
+        rule.dayOfWeek = new schedule.Range(0, 6);
+        let jobId = `${userData.uid}-daily-backup`;
+        logger.info(`Enabling daily backup for ${userData.displayName} `);
 
-      logger.info("-----------------------------------");
-      schedule.scheduleJob(jobId, rule, function () {
-        sendDailyBackupNotification(userData);
-      });
-    }
-  });
+        logger.info("-----------------------------------");
+        schedule.scheduleJob(jobId, rule, function () {
+          sendDailyBackupNotification(userData);
+        });
+      }
+    });
+  }
+
+  // activateNotifications();
 });
 
 /**
