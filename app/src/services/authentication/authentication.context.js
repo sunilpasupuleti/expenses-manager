@@ -56,6 +56,7 @@ export const AuthenticationContextProvider = ({children}) => {
   };
 
   useEffect(() => {
+    console.log(BACKEND_URL);
     const unsubcribe = auth().onAuthStateChanged(async user => {
       if (user) {
         let loggedIn = await AsyncStorage.getItem('@expenses-manager-logged');

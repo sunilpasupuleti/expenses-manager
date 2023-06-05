@@ -10,6 +10,7 @@ import {
   GOOGLE_CLOUD_VISION_API_URL,
   WEB_CLIENT_ID,
 } from '../../config';
+
 export const fetchChangesMade = createAsyncThunk(
   'service/fetchChangesMade',
   async () => {
@@ -122,12 +123,14 @@ export const loadAppStatus = createAsyncThunk(
       GOOGLE_API_KEY: GOOGLE_API_KEY,
       GOOGLE_CLOUD_VISION_API_URL: GOOGLE_CLOUD_VISION_API_URL,
     });
+
     const logged = await AsyncStorage.getItem(`@expenses-manager-logged`).then(
       d => {
         return JSON.parse(d);
       },
     );
     let fetchedRemotely = await remoteConfig().fetchAndActivate();
+
     if (fetchedRemotely) {
       console.log('Configs were retrieved from the backend and activated.');
     } else {
