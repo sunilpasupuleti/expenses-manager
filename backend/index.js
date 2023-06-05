@@ -130,6 +130,8 @@ http.listen(process.env.PORT || 8080, async () => {
         var rule = new schedule.RecurrenceRule();
         rule.hour = hr;
         rule.minute = min;
+        rule.tz = "Asia/Calcutta";
+
         rule.dayOfWeek = new schedule.Range(0, 6);
         let jobId = `${userData.uid}-daily-reminder`;
         logger.info(
@@ -152,6 +154,8 @@ http.listen(process.env.PORT || 8080, async () => {
         let hour = 00;
         let minute = 01;
         rule.hour = hour;
+        rule.tz = "Asia/Calcutta";
+
         rule.minute = minute;
         rule.dayOfWeek = new schedule.Range(0, 6);
         let jobId = `${userData.uid}-daily-backup`;
