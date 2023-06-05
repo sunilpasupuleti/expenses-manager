@@ -211,7 +211,7 @@ export const SettingsScreen = ({navigation}) => {
                       <Ionicons name="alarm-outline" size={20} color="#fff" />
                     </SettingIconWrapper>
 
-                    <SettingTitle>Daily Reminder</SettingTitle>
+                    <SettingTitle>Daily Reminder </SettingTitle>
                   </FlexRow>
 
                   <ToggleSwitch
