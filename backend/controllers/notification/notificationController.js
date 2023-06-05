@@ -29,9 +29,13 @@ module.exports = {
       .then(async (data) => {
         let userData = data;
         function scheduleFunction() {
-          let formatedTime = moment(time).format("HH:mm");
-          let hr = moment(time).format("HH");
-          let min = moment(time).format("mm");
+          // let formatedTime = moment(time).format("HH:mm");
+          // let hr = moment(time).format("HH");
+          // let min = moment(time).format("mm");
+          let formatedTime = time;
+          let hr = time.split(":")[0];
+          let min = time.split(":")[1];
+
           var rule = new schedule.RecurrenceRule();
           // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
           rule.hour = hr;
