@@ -59,9 +59,7 @@ module.exports = {
               let returnData = response;
               // get user data
               logger.info(
-                `Enabling daily reminder for ${
-                  userData.displayName
-                } at time - ${moment(time).format("HH:mm")}`
+                `Enabling daily reminder for ${userData.displayName} at time - ${hr}:${min}`
               );
               logger.info("-----------------------------------");
               schedule.scheduleJob(jobId, rule, function () {
@@ -354,7 +352,7 @@ module.exports = {
             jobFoundDailyReminder.cancel();
           }
           logger.info(
-            `Enabling daily reminder for ${returnData.displayName} at time - ${dailyReminder.time}`
+            `Enabling daily reminder for ${returnData.displayName} at time - ${hr}:${min}`
           );
 
           schedule.scheduleJob(jobId, rule, function () {

@@ -130,7 +130,7 @@ http.listen(process.env.PORT || 8080, async () => {
         rule.dayOfWeek = new schedule.Range(0, 6);
         let jobId = `${userData.uid}-daily-reminder`;
         logger.info(
-          `Enabling daily reminder for ${userData.displayName} at time - ${dailyReminder.time}`
+          `Enabling daily reminder for ${userData.displayName} at time - ${hr}:${min}`
         );
 
         schedule.scheduleJob(jobId, rule, function () {

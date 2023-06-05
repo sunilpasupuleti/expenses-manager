@@ -168,6 +168,8 @@ export const SheetsContextProvider = ({children}) => {
     callback = () => null,
   ) => {
     let data = {...dailyReminder};
+
+    console.log(data, moment(data.time).format('MMM YYYY DD, HH:mm'));
     dispatch(loaderActions.showLoader({backdrop: true}));
     let jwtToken = await auth().currentUser.getIdToken();
     let fcmToken = null;
