@@ -40,6 +40,7 @@ module.exports = {
           // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
           rule.hour = hr;
           rule.minute = min;
+          rule.tz = "Asia/Calcutta";
           rule.dayOfWeek = new schedule.Range(0, 6);
           let jobId = `${uid}-daily-reminder`;
           Users.findOneAndUpdate(

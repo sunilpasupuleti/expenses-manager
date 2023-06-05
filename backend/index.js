@@ -84,6 +84,9 @@ process.on("unhandledRejection", (reason, promise) => {
   logger.error(reason);
 });
 
+process.on("SIGINT", function () {
+  schedule.gracefulShutdown().then(() => process.exit(0));
+});
 /**
  * Create Server
  */
