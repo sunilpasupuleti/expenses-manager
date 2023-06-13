@@ -1,0 +1,10108 @@
+{
+  "entertainment": [
+    {
+      "word": "amount",
+      "score": 4375800,
+      "tags": ["n"]
+    },
+    {
+      "word": "balance",
+      "score": 4375800,
+      "tags": ["n"]
+    },
+    {
+      "word": "amusement",
+      "score": 12955716,
+      "tags": ["syn", "n", "results_type:primary_rel"]
+    },
+    {
+      "word": "music",
+      "score": 6362549,
+      "tags": ["n"]
+    },
+    {
+      "word": "leisure",
+      "score": 6191297,
+      "tags": ["n"]
+    },
+    {
+      "word": "recreation",
+      "score": 5819952,
+      "tags": ["n"]
+    },
+    {
+      "word": "gaming",
+      "score": 5789479,
+      "tags": ["n"]
+    },
+    {
+      "word": "entertaining",
+      "score": 5722523,
+      "tags": ["adj"]
+    },
+    {
+      "word": "entertainer",
+      "score": 5692057,
+      "tags": ["n"]
+    },
+    {
+      "word": "spectacle",
+      "score": 5677006,
+      "tags": ["n"]
+    },
+    {
+      "word": "enjoyment",
+      "score": 5442830,
+      "tags": ["n"]
+    },
+    {
+      "word": "theater",
+      "score": 5286871,
+      "tags": ["n"]
+    },
+    {
+      "word": "hospitality",
+      "score": 5199038,
+      "tags": ["n"]
+    },
+    {
+      "word": "recreational",
+      "score": 4846647,
+      "tags": ["adj"]
+    },
+    {
+      "word": "fun",
+      "score": 4839265,
+      "tags": ["n"]
+    },
+    {
+      "word": "pastime",
+      "score": 4719917,
+      "tags": ["n"]
+    },
+    {
+      "word": "spectacles",
+      "score": 4636352,
+      "tags": ["n"]
+    },
+    {
+      "word": "concert",
+      "score": 4524122,
+      "tags": ["n"]
+    },
+    {
+      "word": "civic",
+      "score": 4506633,
+      "tags": ["adj"]
+    },
+    {
+      "word": "showmanship",
+      "score": 4496098,
+      "tags": ["n"]
+    },
+    {
+      "word": "pleasure",
+      "score": 4454159,
+      "tags": ["n"]
+    },
+    {
+      "word": "hobbies",
+      "score": 4413764,
+      "tags": ["n"]
+    },
+    {
+      "word": "animation",
+      "score": 4364359,
+      "tags": ["n"]
+    },
+    {
+      "word": "performance",
+      "score": 4323128,
+      "tags": ["n"]
+    },
+    {
+      "word": "attraction",
+      "score": 4292835,
+      "tags": ["n"]
+    },
+    {
+      "word": "distraction",
+      "score": 4285456,
+      "tags": ["n"]
+    },
+    {
+      "word": "relaxation",
+      "score": 4282096,
+      "tags": ["n"]
+    },
+    {
+      "word": "hobby",
+      "score": 4209505,
+      "tags": ["n"]
+    },
+    {
+      "word": "comfort",
+      "score": 4207740,
+      "tags": ["n"]
+    },
+    {
+      "word": "spectator",
+      "score": 4144736,
+      "tags": ["n"]
+    },
+    {
+      "word": "gig",
+      "score": 4075092,
+      "tags": ["n"]
+    },
+    {
+      "word": "entertain",
+      "score": 4049153,
+      "tags": ["v"]
+    },
+    {
+      "word": "receptions",
+      "score": 3875639,
+      "tags": ["n"]
+    },
+    {
+      "word": "reception",
+      "score": 3849930,
+      "tags": ["n"]
+    },
+    {
+      "word": "performing",
+      "score": 3838969,
+      "tags": ["n"]
+    },
+    {
+      "word": "conversation",
+      "score": 3837496,
+      "tags": ["n"]
+    },
+    {
+      "word": "pageant",
+      "score": 3816171,
+      "tags": ["n"]
+    },
+    {
+      "word": "playground",
+      "score": 3810072,
+      "tags": ["n"]
+    },
+    {
+      "word": "diversion",
+      "score": 3764292,
+      "tags": ["n"]
+    },
+    {
+      "word": "shows",
+      "score": 3694539,
+      "tags": ["n"]
+    },
+    {
+      "word": "show",
+      "score": 3680959,
+      "tags": ["n"]
+    },
+    {
+      "word": "artist",
+      "score": 3642168,
+      "tags": ["n"]
+    },
+    {
+      "word": "representation",
+      "score": 3627558,
+      "tags": ["n"]
+    },
+    {
+      "word": "respite",
+      "score": 3375022,
+      "tags": ["n"]
+    },
+    {
+      "word": "sight",
+      "score": 3278349,
+      "tags": ["n"]
+    },
+    {
+      "word": "play",
+      "score": 3243127,
+      "tags": ["n"]
+    },
+    {
+      "word": "representational",
+      "score": 3024154,
+      "tags": ["adj"]
+    },
+    {
+      "word": "maintenance",
+      "score": 3017797,
+      "tags": ["n"]
+    },
+    {
+      "word": "game",
+      "score": 2476722,
+      "tags": ["n"]
+    },
+    {
+      "word": "receipt",
+      "score": 2387816,
+      "tags": ["n"]
+    },
+    {
+      "word": "unsuitable",
+      "score": 2156351,
+      "tags": ["adj"]
+    },
+    {
+      "word": "détente",
+      "score": 1554291,
+      "tags": ["n"]
+    },
+    {
+      "word": "trigger",
+      "score": 922165,
+      "tags": ["n"]
+    },
+    {
+      "word": "edutainment",
+      "score": 51064,
+      "tags": ["n"]
+    },
+    {
+      "word": "infotainment",
+      "score": 51063,
+      "tags": ["n"]
+    },
+    {
+      "word": "multimedia",
+      "score": 51060,
+      "tags": ["n", "adj"]
+    },
+    {
+      "word": "nightlife",
+      "score": 51059,
+      "tags": ["n"]
+    },
+    {
+      "word": "karaoke",
+      "score": 51056,
+      "tags": ["n"]
+    },
+    {
+      "word": "television",
+      "score": 51054,
+      "tags": ["n"]
+    },
+    {
+      "word": "cinema",
+      "score": 51053,
+      "tags": ["n"]
+    },
+    {
+      "word": "videogame",
+      "score": 51052,
+      "tags": ["n"]
+    },
+    {
+      "word": "media",
+      "score": 51049,
+      "tags": ["n"]
+    },
+    {
+      "word": "showbiz",
+      "score": 51048,
+      "tags": ["n"]
+    },
+    {
+      "word": "comedy",
+      "score": 51047,
+      "tags": ["n"]
+    },
+    {
+      "word": "amusements",
+      "score": 51046,
+      "tags": ["n"]
+    },
+    {
+      "word": "performing arts",
+      "score": 51044,
+      "tags": ["n"]
+    },
+    {
+      "word": "audiovisual",
+      "score": 51043,
+      "tags": ["n", "adj"]
+    },
+    {
+      "word": "arts",
+      "score": 51042,
+      "tags": ["n"]
+    },
+    {
+      "word": "programming",
+      "score": 51041,
+      "tags": ["n"]
+    },
+    {
+      "word": "ballad opera",
+      "score": 51040,
+      "tags": ["n"]
+    },
+    {
+      "word": "sports",
+      "score": 51038,
+      "tags": ["n"]
+    },
+    {
+      "word": "entertainers",
+      "score": 51037,
+      "tags": ["n"]
+    },
+    {
+      "word": "dining",
+      "score": 51036,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "beverages",
+      "score": 51035,
+      "tags": ["n"]
+    },
+    {
+      "word": "escapism",
+      "score": 51034,
+      "tags": ["n"]
+    },
+    {
+      "word": "movies",
+      "score": 51033,
+      "tags": ["n"]
+    },
+    {
+      "word": "broadcasting",
+      "score": 51032,
+      "tags": ["n"]
+    },
+    {
+      "word": "theater ticket",
+      "score": 51031,
+      "tags": ["n"]
+    },
+    {
+      "word": "leisure time",
+      "score": 51030,
+      "tags": ["n"]
+    },
+    {
+      "word": "motorsports",
+      "score": 51029,
+      "tags": ["n"]
+    },
+    {
+      "word": "lusorious",
+      "score": 51028,
+      "tags": ["n"]
+    },
+    {
+      "word": "conflux",
+      "score": 51027,
+      "tags": ["n"]
+    },
+    {
+      "word": "television set",
+      "score": 51026,
+      "tags": ["n"]
+    },
+    {
+      "word": "kirmess",
+      "score": 51025,
+      "tags": ["n"]
+    },
+    {
+      "word": "storytelling",
+      "score": 51024,
+      "tags": ["n"]
+    },
+    {
+      "word": "theme park",
+      "score": 51023,
+      "tags": ["n"]
+    },
+    {
+      "word": "summer stock",
+      "score": 51022,
+      "tags": ["n"]
+    },
+    {
+      "word": "attractions",
+      "score": 51021,
+      "tags": ["n"]
+    },
+    {
+      "word": "extravaganza",
+      "score": 51020,
+      "tags": ["n"]
+    },
+    {
+      "word": "horse opera",
+      "score": 51019,
+      "tags": ["n"]
+    },
+    {
+      "word": "educational",
+      "score": 51018,
+      "tags": ["n"]
+    },
+    {
+      "word": "opry",
+      "score": 51017,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "kiddie",
+      "score": 51016,
+      "tags": ["n"]
+    },
+    {
+      "word": "ticket booth",
+      "score": 51015,
+      "tags": ["n"]
+    },
+    {
+      "word": "merchandising",
+      "score": 51014,
+      "tags": ["n"]
+    },
+    {
+      "word": "smorgasbord",
+      "score": 51013,
+      "tags": ["n"]
+    },
+    {
+      "word": "television program",
+      "score": 51012,
+      "tags": ["n"]
+    },
+    {
+      "word": "digital",
+      "score": 51011,
+      "tags": ["n"]
+    },
+    {
+      "word": "roman holiday",
+      "score": 51010,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "social event",
+      "score": 51009,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "catering",
+      "score": 51007,
+      "tags": ["n"]
+    },
+    {
+      "word": "vaudeville",
+      "score": 51006,
+      "tags": ["n"]
+    },
+    {
+      "word": "fine",
+      "score": 10653037,
+      "tags": ["syn", "adj", "results_type:primary_rel"]
+    },
+    {
+      "word": "seats",
+      "score": 5652353,
+      "tags": ["n"]
+    },
+    {
+      "word": "fares",
+      "score": 5321931,
+      "tags": ["n"]
+    },
+    {
+      "word": "bookings",
+      "score": 5008746,
+      "tags": ["n"]
+    },
+    {
+      "word": "receipts",
+      "score": 4996710,
+      "tags": ["n"]
+    },
+    {
+      "word": "invitations",
+      "score": 4808667,
+      "tags": ["n"]
+    },
+    {
+      "word": "lotteries",
+      "score": 4770821,
+      "tags": ["n"]
+    },
+    {
+      "word": "coupons",
+      "score": 4757007,
+      "tags": ["n"]
+    },
+    {
+      "word": "votes",
+      "score": 4693304,
+      "tags": ["n"]
+    },
+    {
+      "word": "flights",
+      "score": 4679679,
+      "tags": ["n"]
+    },
+    {
+      "word": "vouchers",
+      "score": 4620541,
+      "tags": ["n"]
+    },
+    {
+      "word": "cards",
+      "score": 4538386,
+      "tags": ["n"]
+    },
+    {
+      "word": "fare",
+      "score": 4514932,
+      "tags": ["n"]
+    },
+    {
+      "word": "ballots",
+      "score": 4431048,
+      "tags": ["n"]
+    },
+    {
+      "word": "plane",
+      "score": 4312466,
+      "tags": ["n"]
+    },
+    {
+      "word": "stamps",
+      "score": 4196305,
+      "tags": ["n"]
+    },
+    {
+      "word": "passes",
+      "score": 4187346,
+      "tags": ["n"]
+    },
+    {
+      "word": "airfares",
+      "score": 4185605,
+      "tags": ["n"]
+    },
+    {
+      "word": "journeys",
+      "score": 4143770,
+      "tags": ["n"]
+    },
+    {
+      "word": "certificates",
+      "score": 4131315,
+      "tags": ["n"]
+    },
+    {
+      "word": "spots",
+      "score": 4093785,
+      "tags": ["n"]
+    },
+    {
+      "word": "concessions",
+      "score": 4053106,
+      "tags": ["n"]
+    },
+    {
+      "word": "theatre",
+      "score": 4050672,
+      "tags": ["n"]
+    },
+    {
+      "word": "bills",
+      "score": 4043118,
+      "tags": ["n"]
+    },
+    {
+      "word": "summonses",
+      "score": 4035909,
+      "tags": ["n"]
+    },
+    {
+      "word": "fines",
+      "score": 3925003,
+      "tags": ["n"]
+    },
+    {
+      "word": "places",
+      "score": 3789538,
+      "tags": ["n"]
+    },
+    {
+      "word": "titles",
+      "score": 3715911,
+      "tags": ["n"]
+    },
+    {
+      "word": "maps",
+      "score": 3652945,
+      "tags": ["n"]
+    },
+    {
+      "word": "entries",
+      "score": 3631296,
+      "tags": ["n"]
+    },
+    {
+      "word": "securities",
+      "score": 3605754,
+      "tags": ["n"]
+    },
+    {
+      "word": "notices",
+      "score": 3600378,
+      "tags": ["n"]
+    },
+    {
+      "word": "ones",
+      "score": 3583756,
+      "tags": ["n"]
+    },
+    {
+      "word": "vote",
+      "score": 3518436,
+      "tags": ["n"]
+    },
+    {
+      "word": "bond",
+      "score": 3510077,
+      "tags": ["n"]
+    },
+    {
+      "word": "chits",
+      "score": 3504330,
+      "tags": ["n"]
+    },
+    {
+      "word": "excerpts",
+      "score": 3463302,
+      "tags": ["n"]
+    },
+    {
+      "word": "summons",
+      "score": 3422673,
+      "tags": ["n"]
+    },
+    {
+      "word": "entrances",
+      "score": 3404666,
+      "tags": ["n"]
+    },
+    {
+      "word": "spaces",
+      "score": 3399907,
+      "tags": ["n"]
+    },
+    {
+      "word": "plots",
+      "score": 3357256,
+      "tags": ["n"]
+    },
+    {
+      "word": "notifications",
+      "score": 3352424,
+      "tags": ["n"]
+    },
+    {
+      "word": "flags",
+      "score": 3309467,
+      "tags": ["n"]
+    },
+    {
+      "word": "banknotes",
+      "score": 3282436,
+      "tags": ["n"]
+    },
+    {
+      "word": "bucks",
+      "score": 3251526,
+      "tags": ["n"]
+    },
+    {
+      "word": "inputs",
+      "score": 3170004,
+      "tags": ["n"]
+    },
+    {
+      "word": "currency",
+      "score": 3155585,
+      "tags": ["n"]
+    },
+    {
+      "word": "tags",
+      "score": 3124352,
+      "tags": ["n"]
+    },
+    {
+      "word": "notes",
+      "score": 2976369,
+      "tags": ["n"]
+    },
+    {
+      "word": "sheets",
+      "score": 2936529,
+      "tags": ["n"]
+    },
+    {
+      "word": "banknote",
+      "score": 2927000,
+      "tags": ["n"]
+    },
+    {
+      "word": "passages",
+      "score": 2919500,
+      "tags": ["n"]
+    },
+    {
+      "word": "entry",
+      "score": 2905983,
+      "tags": ["n"]
+    },
+    {
+      "word": "notice",
+      "score": 2901064,
+      "tags": ["n"]
+    },
+    {
+      "word": "citations",
+      "score": 2884761,
+      "tags": ["n"]
+    },
+    {
+      "word": "denominations",
+      "score": 2874848,
+      "tags": ["n"]
+    },
+    {
+      "word": "squares",
+      "score": 2841570,
+      "tags": ["n"]
+    },
+    {
+      "word": "billet",
+      "score": 2721502,
+      "tags": ["n"]
+    },
+    {
+      "word": "input",
+      "score": 2710549,
+      "tags": ["n"]
+    },
+    {
+      "word": "billets",
+      "score": 2701812,
+      "tags": ["n"]
+    },
+    {
+      "word": "wordings",
+      "score": 2600838,
+      "tags": ["n"]
+    },
+    {
+      "word": "extracts",
+      "score": 2481607,
+      "tags": ["n"]
+    },
+    {
+      "word": "valleys",
+      "score": 2282500,
+      "tags": ["n"]
+    },
+    {
+      "word": "misdemeanours",
+      "score": 2194581,
+      "tags": ["n"]
+    },
+    {
+      "word": "inflows",
+      "score": 1964735,
+      "tags": ["n"]
+    },
+    {
+      "word": "grand",
+      "score": 1922446,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "contraventions",
+      "score": 1753031,
+      "tags": ["n"]
+    },
+    {
+      "word": "note",
+      "score": 1401406,
+      "tags": ["n"]
+    },
+    {
+      "word": "glens",
+      "score": 1129232,
+      "tags": ["n"]
+    },
+    {
+      "word": "inlets",
+      "score": 1039676,
+      "tags": ["n"]
+    },
+    {
+      "word": "tix",
+      "score": 50934,
+      "tags": ["n"]
+    },
+    {
+      "word": "ducats",
+      "score": 50933,
+      "tags": ["n"]
+    },
+    {
+      "word": "ticket stub",
+      "score": 50932,
+      "tags": ["n"]
+    },
+    {
+      "word": "ticket holder",
+      "score": 50931,
+      "tags": ["n"]
+    },
+    {
+      "word": "scalper",
+      "score": 50930,
+      "tags": ["n"]
+    },
+    {
+      "word": "seating",
+      "score": 50929,
+      "tags": ["n"]
+    },
+    {
+      "word": "wristband",
+      "score": 50928,
+      "tags": ["n"]
+    },
+    {
+      "word": "scalping",
+      "score": 50927,
+      "tags": ["n", "adj", "v"]
+    },
+    {
+      "word": "walkup",
+      "score": 50925,
+      "tags": ["n"]
+    },
+    {
+      "word": "airfare",
+      "score": 50924,
+      "tags": ["n"]
+    },
+    {
+      "word": "memberships",
+      "score": 50923,
+      "tags": ["n"]
+    },
+    {
+      "word": "admission",
+      "score": 50922,
+      "tags": ["n"]
+    },
+    {
+      "word": "booking",
+      "score": 50921,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "souvenirs",
+      "score": 50919,
+      "tags": ["n"]
+    },
+    {
+      "word": "matinee",
+      "score": 50918,
+      "tags": ["n"]
+    },
+    {
+      "word": "merchandise",
+      "score": 50917,
+      "tags": ["n"]
+    },
+    {
+      "word": "general admission",
+      "score": 50916,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "reservations",
+      "score": 50914,
+      "tags": ["n"]
+    },
+    {
+      "word": "refunds",
+      "score": 50913,
+      "tags": ["n"]
+    },
+    {
+      "word": "ticket window",
+      "score": 50912,
+      "tags": ["n"]
+    },
+    {
+      "word": "fans",
+      "score": 50911,
+      "tags": ["n"]
+    },
+    {
+      "word": "rsvp",
+      "score": 50910,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "visas",
+      "score": 50909,
+      "tags": ["n"]
+    },
+    {
+      "word": "concerts",
+      "score": 50908,
+      "tags": ["n"]
+    },
+    {
+      "word": "roundtrip",
+      "score": 50907,
+      "tags": ["n", "adj"]
+    },
+    {
+      "word": "autographs",
+      "score": 50906,
+      "tags": ["n"]
+    },
+    {
+      "word": "jerseys",
+      "score": 50905,
+      "tags": ["n"]
+    },
+    {
+      "word": "showtime",
+      "score": 50904,
+      "tags": ["n"]
+    },
+    {
+      "word": "attendance",
+      "score": 50903,
+      "tags": ["n"]
+    },
+    {
+      "word": "tokens",
+      "score": 50902,
+      "tags": ["n"]
+    }
+  ],
+  "home": [
+    {
+      "word": "amount",
+      "score": 4375800,
+      "tags": ["n"]
+    },
+    {
+      "word": "balance",
+      "score": 4375800,
+      "tags": ["n"]
+    },
+    {
+      "word": "mak",
+      "score": 12800,
+      "tags": [
+        "results_type:backfill_gloss",
+        "n",
+        "v",
+        "results_type:primary_external"
+      ]
+    },
+    {
+      "word": "make",
+      "score": 12800,
+      "tags": ["v"]
+    },
+    {
+      "word": "tool",
+      "score": 12787,
+      "tags": ["n"]
+    },
+    {
+      "word": "gas",
+      "score": 12558,
+      "tags": ["n"]
+    },
+    {
+      "word": "pet",
+      "score": 12558,
+      "tags": ["n"]
+    },
+    {
+      "word": "pole",
+      "score": 12558,
+      "tags": ["n"]
+    },
+    {
+      "word": "dryer",
+      "score": 12497,
+      "tags": ["n"]
+    },
+    {
+      "word": "rot",
+      "score": 12497,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "sewer",
+      "score": 12497,
+      "tags": ["n"]
+    },
+    {
+      "word": "advantage",
+      "score": 11908,
+      "tags": ["n"]
+    },
+    {
+      "word": "bus company",
+      "score": 11908,
+      "tags": ["n"]
+    },
+    {
+      "word": "bus service",
+      "score": 11908,
+      "tags": ["n"]
+    },
+    {
+      "word": "defect",
+      "score": 11908,
+      "tags": ["n"]
+    },
+    {
+      "word": "facility",
+      "score": 11908,
+      "tags": ["n"]
+    },
+    {
+      "word": "heat",
+      "score": 11908,
+      "tags": ["n"]
+    },
+    {
+      "word": "heating",
+      "score": 11908,
+      "tags": ["n"]
+    },
+    {
+      "word": "heating plant",
+      "score": 11908,
+      "tags": ["n"]
+    },
+    {
+      "word": "heating system",
+      "score": 11908,
+      "tags": ["n"]
+    },
+    {
+      "word": "main",
+      "score": 11908,
+      "tags": ["adj"]
+    },
+    {
+      "word": "profit",
+      "score": 11908,
+      "tags": ["n"]
+    },
+    {
+      "word": "profits",
+      "score": 11908,
+      "tags": ["n"]
+    },
+    {
+      "word": "right-of-way",
+      "score": 11908,
+      "tags": ["n"]
+    },
+    {
+      "word": "serve",
+      "score": 11908,
+      "tags": ["v"]
+    },
+    {
+      "word": "service",
+      "score": 11908,
+      "tags": ["n"]
+    },
+    {
+      "word": "strength",
+      "score": 11908,
+      "tags": ["n"]
+    },
+    {
+      "word": "wealth",
+      "score": 11908,
+      "tags": ["n"]
+    },
+    {
+      "word": "het",
+      "score": 11679,
+      "tags": ["n"]
+    },
+    {
+      "word": "marginal utility",
+      "score": 11679,
+      "tags": ["n"]
+    },
+    {
+      "word": "therm",
+      "score": 11679,
+      "tags": ["n"]
+    },
+    {
+      "word": "user",
+      "score": 11679,
+      "tags": ["n"]
+    },
+    {
+      "word": "utile",
+      "score": 11679,
+      "tags": ["n"]
+    },
+    {
+      "word": "annex",
+      "score": 11666,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "effectiveness",
+      "score": 11666,
+      "tags": ["n"]
+    },
+    {
+      "word": "efficiency",
+      "score": 11666,
+      "tags": ["n"]
+    },
+    {
+      "word": "functionalism",
+      "score": 11666,
+      "tags": ["n"]
+    },
+    {
+      "word": "fungible",
+      "score": 11666,
+      "tags": ["adj"]
+    },
+    {
+      "word": "note",
+      "score": 11666,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "plumbing",
+      "score": 11666,
+      "tags": ["n"]
+    },
+    {
+      "word": "services",
+      "score": 11666,
+      "tags": ["n"]
+    },
+    {
+      "word": "tariff",
+      "score": 11666,
+      "tags": ["n"]
+    },
+    {
+      "word": "value",
+      "score": 11666,
+      "tags": ["n"]
+    },
+    {
+      "word": "values",
+      "score": 11666,
+      "tags": ["n"]
+    },
+    {
+      "word": "administration",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "administrative",
+      "score": 11571,
+      "tags": ["adj"]
+    },
+    {
+      "word": "aerator",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "appliance",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "bank",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "base",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "basis",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "bed",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "bring",
+      "score": 11571,
+      "tags": ["v"]
+    },
+    {
+      "word": "bringing",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "burlesque",
+      "score": 11571,
+      "tags": ["adj", "n"]
+    },
+    {
+      "word": "call",
+      "score": 11571,
+      "tags": ["v", "n"]
+    },
+    {
+      "word": "care",
+      "score": 11571,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "chapel",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "clinic",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "close",
+      "score": 11571,
+      "tags": ["adv", "adj"]
+    },
+    {
+      "word": "cocooning",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "comfortable",
+      "score": 11571,
+      "tags": ["adj"]
+    },
+    {
+      "word": "cottage industry",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "dall",
+      "score": 11571,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "day school",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "desert",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "desk",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "direct",
+      "score": 11571,
+      "tags": ["adj"]
+    },
+    {
+      "word": "domesticate",
+      "score": 11571,
+      "tags": ["v"]
+    },
+    {
+      "word": "drive",
+      "score": 11571,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "dublin",
+      "score": 11571,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "edge",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "ell",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "establishment",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "excise",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "expatriate",
+      "score": 11571,
+      "tags": ["adj", "n"]
+    },
+    {
+      "word": "fall",
+      "score": 11571,
+      "tags": ["v", "n"]
+    },
+    {
+      "word": "falls",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "fir",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "for",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "force",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "free",
+      "score": 11571,
+      "tags": ["adj"]
+    },
+    {
+      "word": "frenchman",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "garage",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "genoa",
+      "score": 11571,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "granada",
+      "score": 11571,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "head",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "hospice",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "hotel",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "house",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "household",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "housework",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "hub",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "indoor",
+      "score": 11571,
+      "tags": ["adj"]
+    },
+    {
+      "word": "insane",
+      "score": 11571,
+      "tags": ["adj"]
+    },
+    {
+      "word": "land",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "loan",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "localize",
+      "score": 11571,
+      "tags": ["v"]
+    },
+    {
+      "word": "lodge",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "lot",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "mains",
+      "score": 11571,
+      "tags": ["n"]
+    },
+    {
+      "word": "marlborough",
+      "score": 11571,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "house",
+      "score": 15909048,
+      "tags": ["syn", "n", "results_type:primary_rel"]
+    },
+    {
+      "word": "family",
+      "score": 14908943,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "dwelling",
+      "score": 14333911,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "household",
+      "score": 13981305,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "abode",
+      "score": 13820354,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "place",
+      "score": 13646046,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "domestic",
+      "score": 13527252,
+      "tags": ["syn", "adj"]
+    },
+    {
+      "word": "base",
+      "score": 13451337,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "domicile",
+      "score": 13424891,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "interior",
+      "score": 13118534,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "national",
+      "score": 13083987,
+      "tags": ["syn", "n", "prop"]
+    },
+    {
+      "word": "habitation",
+      "score": 12960564,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "central",
+      "score": 12653009,
+      "tags": ["syn", "n", "prop"]
+    },
+    {
+      "word": "plate",
+      "score": 12646100,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "dwelling house",
+      "score": 12447270,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "nursing home",
+      "score": 12058718,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "internal",
+      "score": 11828340,
+      "tags": ["syn", "adj"]
+    },
+    {
+      "word": "home plate",
+      "score": 9420978,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "menage",
+      "score": 9420978,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "rest home",
+      "score": 9420978,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "residence",
+      "score": 8527728,
+      "tags": ["n"]
+    },
+    {
+      "word": "apartment",
+      "score": 8289810,
+      "tags": ["n"]
+    },
+    {
+      "word": "cottage",
+      "score": 8261009,
+      "tags": ["n"]
+    },
+    {
+      "word": "hometown",
+      "score": 8241900,
+      "tags": ["n"]
+    },
+    {
+      "word": "headquarters",
+      "score": 8147347,
+      "tags": ["n"]
+    },
+    {
+      "word": "mansion",
+      "score": 8080423,
+      "tags": ["n"]
+    },
+    {
+      "word": "backyard",
+      "score": 7995646,
+      "tags": ["n"]
+    },
+    {
+      "word": "residences",
+      "score": 7987787,
+      "tags": ["n"]
+    },
+    {
+      "word": "mother",
+      "score": 7986657,
+      "tags": ["n"]
+    },
+    {
+      "word": "residential",
+      "score": 7909935,
+      "tags": ["adj"]
+    },
+    {
+      "word": "houses",
+      "score": 7843201,
+      "tags": ["n"]
+    },
+    {
+      "word": "hearth",
+      "score": 7789456,
+      "tags": ["n"]
+    },
+    {
+      "word": "homeland",
+      "score": 7769005,
+      "tags": ["n"]
+    },
+    {
+      "word": "property",
+      "score": 7680727,
+      "tags": ["n"]
+    },
+    {
+      "word": "back",
+      "score": 7666890,
+      "tags": ["adv", "n", "adj"]
+    },
+    {
+      "word": "comfort",
+      "score": 7660769,
+      "tags": ["n"]
+    },
+    {
+      "word": "townhouse",
+      "score": 7619899,
+      "tags": ["n"]
+    },
+    {
+      "word": "families",
+      "score": 7575326,
+      "tags": ["n"]
+    },
+    {
+      "word": "doorstep",
+      "score": 7573723,
+      "tags": ["n"]
+    },
+    {
+      "word": "birthplace",
+      "score": 7552756,
+      "tags": ["n"]
+    },
+    {
+      "word": "hospital",
+      "score": 7550809,
+      "tags": ["n"]
+    },
+    {
+      "word": "returning",
+      "score": 7453264,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "inside",
+      "score": 7429696,
+      "tags": ["n"]
+    },
+    {
+      "word": "owner",
+      "score": 7412243,
+      "tags": ["n"]
+    },
+    {
+      "word": "building",
+      "score": 7399295,
+      "tags": ["n"]
+    },
+    {
+      "word": "returned",
+      "score": 7379537,
+      "tags": ["adj", "v"]
+    },
+    {
+      "word": "living",
+      "score": 7349962,
+      "tags": ["n"]
+    },
+    {
+      "word": "own",
+      "score": 7345817,
+      "tags": ["adj", "v"]
+    },
+    {
+      "word": "destination",
+      "score": 7345210,
+      "tags": ["n"]
+    },
+    {
+      "word": "country",
+      "score": 7343105,
+      "tags": ["n"]
+    },
+    {
+      "word": "mortgage",
+      "score": 7342502,
+      "tags": ["n"]
+    },
+    {
+      "word": "return",
+      "score": 7321845,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "estate",
+      "score": 7303627,
+      "tags": ["n"]
+    },
+    {
+      "word": "care",
+      "score": 7278983,
+      "tags": ["n"]
+    },
+    {
+      "word": "location",
+      "score": 7274278,
+      "tags": ["n"]
+    },
+    {
+      "word": "host",
+      "score": 7259618,
+      "tags": ["n"]
+    },
+    {
+      "word": "roof",
+      "score": 7178625,
+      "tags": ["n"]
+    },
+    {
+      "word": "hospice",
+      "score": 7174421,
+      "tags": ["n"]
+    },
+    {
+      "word": "resident",
+      "score": 7171716,
+      "tags": ["n"]
+    },
+    {
+      "word": "barn",
+      "score": 7169885,
+      "tags": ["n"]
+    },
+    {
+      "word": "personal",
+      "score": 7149104,
+      "tags": ["adj"]
+    },
+    {
+      "word": "dwellings",
+      "score": 7139110,
+      "tags": ["n"]
+    },
+    {
+      "word": "owners",
+      "score": 7125505,
+      "tags": ["n"]
+    },
+    {
+      "word": "hosted",
+      "score": 7122930,
+      "tags": ["v"]
+    },
+    {
+      "word": "hosting",
+      "score": 7117441,
+      "tags": ["n"]
+    },
+    {
+      "word": "refuge",
+      "score": 7097305,
+      "tags": ["n"]
+    },
+    {
+      "word": "housing",
+      "score": 7078449,
+      "tags": ["n"]
+    },
+    {
+      "word": "sanctuary",
+      "score": 7065684,
+      "tags": ["n"]
+    },
+    {
+      "word": "shelter",
+      "score": 7051545,
+      "tags": ["n"]
+    },
+    {
+      "word": "fireplace",
+      "score": 7030964,
+      "tags": ["n"]
+    },
+    {
+      "word": "original",
+      "score": 6995751,
+      "tags": ["adj"]
+    },
+    {
+      "word": "orphanage",
+      "score": 6978020,
+      "tags": ["n"]
+    },
+    {
+      "word": "homemade",
+      "score": 6977127,
+      "tags": ["adj"]
+    },
+    {
+      "word": "arrival",
+      "score": 6970197,
+      "tags": ["n"]
+    },
+    {
+      "word": "district",
+      "score": 6949281,
+      "tags": ["n"]
+    },
+    {
+      "word": "native",
+      "score": 6948027,
+      "tags": ["n"]
+    },
+    {
+      "word": "housekeeper",
+      "score": 6943907,
+      "tags": ["n"]
+    },
+    {
+      "word": "indoor",
+      "score": 6938414,
+      "tags": ["adj"]
+    },
+    {
+      "word": "homepage",
+      "score": 6932182,
+      "tags": ["n"]
+    },
+    {
+      "word": "shack",
+      "score": 6895559,
+      "tags": ["n"]
+    },
+    {
+      "word": "motherland",
+      "score": 6892559,
+      "tags": ["n"]
+    },
+    {
+      "word": "door",
+      "score": 6892241,
+      "tags": ["n"]
+    },
+    {
+      "word": "seat",
+      "score": 6862633,
+      "tags": ["n"]
+    },
+    {
+      "word": "parent",
+      "score": 6851540,
+      "tags": ["n"]
+    },
+    {
+      "word": "cradle",
+      "score": 6831042,
+      "tags": ["n"]
+    },
+    {
+      "word": "dormitory",
+      "score": 6823533,
+      "tags": ["n"]
+    },
+    {
+      "word": "hostel",
+      "score": 6799987,
+      "tags": ["n"]
+    },
+    {
+      "word": "condo",
+      "score": 6755461,
+      "tags": ["n"]
+    },
+    {
+      "word": "caring",
+      "score": 6735034,
+      "tags": ["n"]
+    },
+    {
+      "word": "clubhouse",
+      "score": 6731731,
+      "tags": ["n"]
+    },
+    {
+      "word": "lodging",
+      "score": 6719951,
+      "tags": ["n"]
+    },
+    {
+      "word": "dorm",
+      "score": 6719640,
+      "tags": ["n"]
+    },
+    {
+      "word": "households",
+      "score": 6719499,
+      "tags": ["n"]
+    },
+    {
+      "word": "primary",
+      "score": 6712616,
+      "tags": ["adj"]
+    },
+    {
+      "word": "local",
+      "score": 6711508,
+      "tags": ["adj"]
+    },
+    {
+      "word": "rooftop",
+      "score": 6690296,
+      "tags": ["n"]
+    },
+    {
+      "word": "unit",
+      "score": 6684872,
+      "tags": ["n"]
+    },
+    {
+      "word": "main",
+      "score": 6681883,
+      "tags": ["adj"]
+    },
+    {
+      "word": "casa",
+      "score": 6674439,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "inland",
+      "score": 6671140,
+      "tags": ["n"]
+    }
+  ],
+  "utility": [
+    {
+      "word": "amount",
+      "score": 4375800,
+      "tags": ["n"]
+    },
+    {
+      "word": "balance",
+      "score": 4375800,
+      "tags": ["n"]
+    },
+    {
+      "word": "usefulness",
+      "score": 17211090,
+      "tags": ["syn", "n", "results_type:primary_rel"]
+    },
+    {
+      "word": "substitute",
+      "score": 13927673,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "secondary",
+      "score": 13900503,
+      "tags": ["syn", "adj"]
+    },
+    {
+      "word": "inferior",
+      "score": 13059687,
+      "tags": ["syn", "adj"]
+    },
+    {
+      "word": "public-service corporation",
+      "score": 10920231,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "public utility",
+      "score": 10920231,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "service program",
+      "score": 10920231,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "utility-grade",
+      "score": 10920231,
+      "tags": ["syn", "adj"]
+    },
+    {
+      "word": "utility program",
+      "score": 10920231,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "efficiency",
+      "score": 9717434,
+      "tags": ["n"]
+    },
+    {
+      "word": "electric",
+      "score": 9358774,
+      "tags": ["n", "adj"]
+    },
+    {
+      "word": "effectiveness",
+      "score": 9186303,
+      "tags": ["n"]
+    },
+    {
+      "word": "electricity",
+      "score": 9043957,
+      "tags": ["n"]
+    },
+    {
+      "word": "value",
+      "score": 8983124,
+      "tags": ["n"]
+    },
+    {
+      "word": "functionality",
+      "score": 8969829,
+      "tags": ["n"]
+    },
+    {
+      "word": "practicality",
+      "score": 8922440,
+      "tags": ["n"]
+    },
+    {
+      "word": "tool",
+      "score": 8856897,
+      "tags": ["n"]
+    },
+    {
+      "word": "desirability",
+      "score": 8689603,
+      "tags": ["n"]
+    },
+    {
+      "word": "service",
+      "score": 8672425,
+      "tags": ["n"]
+    },
+    {
+      "word": "relevance",
+      "score": 8630653,
+      "tags": ["n"]
+    },
+    {
+      "word": "applicability",
+      "score": 8626273,
+      "tags": ["n"]
+    },
+    {
+      "word": "efficacy",
+      "score": 8568786,
+      "tags": ["n"]
+    },
+    {
+      "word": "commercial",
+      "score": 8509697,
+      "tags": ["adj"]
+    },
+    {
+      "word": "validity",
+      "score": 8497922,
+      "tags": ["n"]
+    },
+    {
+      "word": "importance",
+      "score": 8481627,
+      "tags": ["n"]
+    },
+    {
+      "word": "significance",
+      "score": 8477947,
+      "tags": ["n"]
+    },
+    {
+      "word": "convenience",
+      "score": 8452226,
+      "tags": ["n"]
+    },
+    {
+      "word": "appropriateness",
+      "score": 8409977,
+      "tags": ["n"]
+    },
+    {
+      "word": "helpfulness",
+      "score": 8355042,
+      "tags": ["n"]
+    },
+    {
+      "word": "feasibility",
+      "score": 8337279,
+      "tags": ["n"]
+    },
+    {
+      "word": "electrical",
+      "score": 8328488,
+      "tags": ["adj"]
+    },
+    {
+      "word": "usability",
+      "score": 8326491,
+      "tags": ["n"]
+    },
+    {
+      "word": "purpose",
+      "score": 8294466,
+      "tags": ["n"]
+    },
+    {
+      "word": "distribution",
+      "score": 8284415,
+      "tags": ["n"]
+    },
+    {
+      "word": "tools",
+      "score": 8224562,
+      "tags": ["n"]
+    },
+    {
+      "word": "multipurpose",
+      "score": 8182118,
+      "tags": ["adj"]
+    },
+    {
+      "word": "maximization",
+      "score": 8130829,
+      "tags": ["n"]
+    },
+    {
+      "word": "interest",
+      "score": 8129608,
+      "tags": ["n"]
+    },
+    {
+      "word": "expediency",
+      "score": 8092686,
+      "tags": ["n"]
+    },
+    {
+      "word": "duty",
+      "score": 8087372,
+      "tags": ["n"]
+    },
+    {
+      "word": "benefit",
+      "score": 8055064,
+      "tags": ["n"]
+    },
+    {
+      "word": "facility",
+      "score": 8033243,
+      "tags": ["n"]
+    },
+    {
+      "word": "merit",
+      "score": 7994978,
+      "tags": ["n"]
+    },
+    {
+      "word": "services",
+      "score": 7956680,
+      "tags": ["n"]
+    },
+    {
+      "word": "facilities",
+      "score": 7954761,
+      "tags": ["n"]
+    },
+    {
+      "word": "suitability",
+      "score": 7904265,
+      "tags": ["n"]
+    },
+    {
+      "word": "benefits",
+      "score": 7898128,
+      "tags": ["n"]
+    },
+    {
+      "word": "profit",
+      "score": 7883581,
+      "tags": ["n"]
+    },
+    {
+      "word": "gadget",
+      "score": 7868334,
+      "tags": ["n"]
+    },
+    {
+      "word": "use",
+      "score": 7864795,
+      "tags": ["n"]
+    },
+    {
+      "word": "meaningfulness",
+      "score": 7854642,
+      "tags": ["n"]
+    },
+    {
+      "word": "maximizing",
+      "score": 7840208,
+      "tags": ["adj", "v"]
+    },
+    {
+      "word": "advantage",
+      "score": 7786196,
+      "tags": ["n"]
+    },
+    {
+      "word": "relevancy",
+      "score": 7755032,
+      "tags": ["n"]
+    },
+    {
+      "word": "useful",
+      "score": 7727647,
+      "tags": ["adj"]
+    },
+    {
+      "word": "role",
+      "score": 7708453,
+      "tags": ["n"]
+    },
+    {
+      "word": "timeliness",
+      "score": 7692461,
+      "tags": ["n"]
+    },
+    {
+      "word": "versatile",
+      "score": 7670094,
+      "tags": ["adj"]
+    },
+    {
+      "word": "hydropower",
+      "score": 7607675,
+      "tags": ["n"]
+    },
+    {
+      "word": "communal",
+      "score": 7484118,
+      "tags": ["adj"]
+    },
+    {
+      "word": "uses",
+      "score": 7469150,
+      "tags": ["n"]
+    },
+    {
+      "word": "need",
+      "score": 7452659,
+      "tags": ["n"]
+    },
+    {
+      "word": "advisability",
+      "score": 7439948,
+      "tags": ["n"]
+    },
+    {
+      "word": "career",
+      "score": 7412251,
+      "tags": ["n"]
+    },
+    {
+      "word": "coefficient",
+      "score": 7386924,
+      "tags": ["n"]
+    },
+    {
+      "word": "contribution",
+      "score": 7356182,
+      "tags": ["n"]
+    },
+    {
+      "word": "assistance",
+      "score": 7348823,
+      "tags": ["n"]
+    },
+    {
+      "word": "adequacy",
+      "score": 7291980,
+      "tags": ["n"]
+    },
+    {
+      "word": "undertaking",
+      "score": 7248693,
+      "tags": ["n"]
+    },
+    {
+      "word": "productiveness",
+      "score": 7189643,
+      "tags": ["n"]
+    },
+    {
+      "word": "easement",
+      "score": 7187852,
+      "tags": ["n"]
+    },
+    {
+      "word": "worth",
+      "score": 7153465,
+      "tags": ["n"]
+    },
+    {
+      "word": "public",
+      "score": 7007004,
+      "tags": ["n", "adj"]
+    },
+    {
+      "word": "boiler",
+      "score": 6973636,
+      "tags": ["n"]
+    },
+    {
+      "word": "undertakings",
+      "score": 6962515,
+      "tags": ["n"]
+    },
+    {
+      "word": "cause",
+      "score": 6826016,
+      "tags": ["n"]
+    },
+    {
+      "word": "avail",
+      "score": 6534094,
+      "tags": ["n"]
+    },
+    {
+      "word": "point",
+      "score": 6442656,
+      "tags": ["n"]
+    },
+    {
+      "word": "stead",
+      "score": 6385150,
+      "tags": ["n"]
+    },
+    {
+      "word": "helpful",
+      "score": 6299058,
+      "tags": ["adj"]
+    },
+    {
+      "word": "manoeuvre",
+      "score": 6261964,
+      "tags": ["n"]
+    },
+    {
+      "word": "polyvalent",
+      "score": 5793962,
+      "tags": ["adj"]
+    },
+    {
+      "word": "uti",
+      "score": 5769201,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "servitude",
+      "score": 5748664,
+      "tags": ["n"]
+    },
+    {
+      "word": "help",
+      "score": 5551581,
+      "tags": ["n"]
+    },
+    {
+      "word": "annex",
+      "score": 5514165,
+      "tags": ["n"]
+    },
+    {
+      "word": "add-on",
+      "score": 4121375,
+      "tags": ["n"]
+    },
+    {
+      "word": "maximizers",
+      "score": 4121375,
+      "tags": ["n"]
+    },
+    {
+      "word": "multi-purpose",
+      "score": 4121375,
+      "tags": ["adj"]
+    },
+    {
+      "word": "power",
+      "score": 4121372,
+      "tags": ["n"]
+    },
+    {
+      "word": "sewer",
+      "score": 4121371,
+      "tags": ["n"]
+    },
+    {
+      "word": "energy",
+      "score": 4121370,
+      "tags": ["n"]
+    },
+    {
+      "word": "wastewater",
+      "score": 4121369,
+      "tags": ["n"]
+    },
+    {
+      "word": "sewerage",
+      "score": 4121368,
+      "tags": ["n"]
+    },
+    {
+      "word": "maintenance",
+      "score": 4121366,
+      "tags": ["n"]
+    },
+    {
+      "word": "storage",
+      "score": 4121365,
+      "tags": ["n"]
+    },
+    {
+      "word": "backup",
+      "score": 4121364,
+      "tags": ["n"]
+    },
+    {
+      "word": "telephone company",
+      "score": 4121363,
+      "tags": ["n"]
+    },
+    {
+      "word": "ratepayers",
+      "score": 4121362,
+      "tags": ["n"]
+    },
+    {
+      "word": "municipalize",
+      "score": 4121361,
+      "tags": ["n"]
+    }
+  ],
+  "transportation": [
+    {
+      "word": "amount",
+      "score": 4375800,
+      "tags": ["n"]
+    },
+    {
+      "word": "balance",
+      "score": 4375800,
+      "tags": ["n"]
+    },
+    {
+      "word": "travel",
+      "score": 14087498,
+      "tags": ["syn", "n", "v", "results_type:primary_rel"]
+    },
+    {
+      "word": "voyage",
+      "score": 7606279,
+      "tags": ["n"]
+    },
+    {
+      "word": "trip",
+      "score": 7385972,
+      "tags": ["n"]
+    },
+    {
+      "word": "quest",
+      "score": 6453353,
+      "tags": ["n"]
+    },
+    {
+      "word": "adventure",
+      "score": 6348358,
+      "tags": ["n"]
+    },
+    {
+      "word": "travels",
+      "score": 6328734,
+      "tags": ["n"]
+    },
+    {
+      "word": "voyages",
+      "score": 6048249,
+      "tags": ["n"]
+    },
+    {
+      "word": "adventures",
+      "score": 6023953,
+      "tags": ["n"]
+    },
+    {
+      "word": "trips",
+      "score": 5824632,
+      "tags": ["n"]
+    },
+    {
+      "word": "destination",
+      "score": 5816338,
+      "tags": ["n"]
+    },
+    {
+      "word": "excursion",
+      "score": 5795882,
+      "tags": ["n"]
+    },
+    {
+      "word": "expedition",
+      "score": 5746936,
+      "tags": ["n"]
+    },
+    {
+      "word": "itinerary",
+      "score": 5655487,
+      "tags": ["n"]
+    },
+    {
+      "word": "travelling",
+      "score": 5612421,
+      "tags": ["n"]
+    },
+    {
+      "word": "route",
+      "score": 5611661,
+      "tags": ["n"]
+    },
+    {
+      "word": "departure",
+      "score": 5449564,
+      "tags": ["n"]
+    },
+    {
+      "word": "path",
+      "score": 5436214,
+      "tags": ["n"]
+    },
+    {
+      "word": "traveller",
+      "score": 5391703,
+      "tags": ["n"]
+    },
+    {
+      "word": "mission",
+      "score": 5372569,
+      "tags": ["n"]
+    },
+    {
+      "word": "travelled",
+      "score": 5335450,
+      "tags": ["adj", "v"]
+    },
+    {
+      "word": "traveling",
+      "score": 5288006,
+      "tags": ["n"]
+    },
+
+    {
+      "word": "tour",
+      "score": 5164173,
+      "tags": ["n"]
+    },
+    {
+      "word": "saga",
+      "score": 5152114,
+      "tags": ["n"]
+    },
+    {
+      "word": "exploration",
+      "score": 5136245,
+      "tags": ["n"]
+    },
+    {
+      "word": "ride",
+      "score": 5130924,
+      "tags": ["n"]
+    },
+    {
+      "word": "flight",
+      "score": 5083535,
+      "tags": ["n"]
+    },
+    {
+      "word": "trajectory",
+      "score": 4898378,
+      "tags": ["n"]
+    },
+    {
+      "word": "travellers",
+      "score": 4825396,
+      "tags": ["n"]
+    },
+    {
+      "word": "career",
+      "score": 4823478,
+      "tags": ["n"]
+    },
+
+    {
+      "word": "passage",
+      "score": 4776677,
+      "tags": ["n"]
+    },
+    {
+      "word": "epic",
+      "score": 4742612,
+      "tags": ["n", "adj"]
+    },
+    {
+      "word": "paths",
+      "score": 4677761,
+      "tags": ["n"]
+    },
+    {
+      "word": "distance",
+      "score": 4675904,
+      "tags": ["n"]
+    },
+    {
+      "word": "venture",
+      "score": 4598080,
+      "tags": ["n"]
+    },
+    {
+      "word": "haul",
+      "score": 4573784,
+      "tags": ["n"]
+    },
+    {
+      "word": "traverse",
+      "score": 4570821,
+      "tags": ["n"]
+    },
+    {
+      "word": "trail",
+      "score": 4562507,
+      "tags": ["n"]
+    },
+    {
+      "word": "walk",
+      "score": 4537139,
+      "tags": ["n"]
+    },
+    {
+      "word": "progress",
+      "score": 4528720,
+      "tags": ["n"]
+    },
+    {
+      "word": "routes",
+      "score": 4522934,
+      "tags": ["n"]
+    },
+    {
+      "word": "awakening",
+      "score": 4499217,
+      "tags": ["n"]
+    },
+    {
+      "word": "sailing",
+      "score": 4490287,
+      "tags": ["n"]
+    },
+    {
+      "word": "transport",
+      "score": 4466172,
+      "tags": ["n"]
+    },
+    {
+      "word": "crossing",
+      "score": 4459167,
+      "tags": ["n"]
+    },
+    {
+      "word": "hike",
+      "score": 4447246,
+      "tags": ["n"]
+    },
+    {
+      "word": "cruise",
+      "score": 4445234,
+      "tags": ["n"]
+    },
+    {
+      "word": "vacation",
+      "score": 4424466,
+      "tags": ["n"]
+    },
+    {
+      "word": "migration",
+      "score": 4420238,
+      "tags": ["n"]
+    },
+    {
+      "word": "leg",
+      "score": 4418045,
+      "tags": ["n"]
+    },
+    {
+      "word": "honeymoon",
+      "score": 4403316,
+      "tags": ["n"]
+    },
+    {
+      "word": "step",
+      "score": 4362975,
+      "tags": ["n"]
+    },
+    {
+      "word": "transportation",
+      "score": 4341967,
+      "tags": ["n"]
+    },
+    {
+      "word": "pathway",
+      "score": 4320587,
+      "tags": ["n"]
+    },
+    {
+      "word": "way",
+      "score": 4305927,
+      "tags": ["n"]
+    },
+    {
+      "word": "direction",
+      "score": 4292132,
+      "tags": ["n"]
+    },
+    {
+      "word": "progression",
+      "score": 4269355,
+      "tags": ["n"]
+    },
+    {
+      "word": "transit",
+      "score": 4268906,
+      "tags": ["n"]
+    },
+    {
+      "word": "return",
+      "score": 4260013,
+      "tags": ["n"]
+    },
+    {
+      "word": "approach",
+      "score": 4259080,
+      "tags": ["n"]
+    },
+    {
+      "word": "rides",
+      "score": 4254785,
+      "tags": ["n"]
+    },
+    {
+      "word": "transition",
+      "score": 4253056,
+      "tags": ["n"]
+    },
+    {
+      "word": "holiday",
+      "score": 4243019,
+      "tags": ["n"]
+    },
+    {
+      "word": "day",
+      "score": 4237766,
+      "tags": ["n"]
+    },
+    {
+      "word": "madness",
+      "score": 4163238,
+      "tags": ["n"]
+    },
+    {
+      "word": "affair",
+      "score": 4140842,
+      "tags": ["n"]
+    },
+    {
+      "word": "shipment",
+      "score": 4100745,
+      "tags": ["n"]
+    },
+    {
+      "word": "race",
+      "score": 4095045,
+      "tags": ["n"]
+    },
+    {
+      "word": "movement",
+      "score": 4087905,
+      "tags": ["n"]
+    },
+
+    {
+      "word": "commute",
+      "score": 4073852,
+      "tags": ["n"]
+    },
+    {
+      "word": "drive",
+      "score": 4045985,
+      "tags": ["n"]
+    },
+    {
+      "word": "sea",
+      "score": 4014397,
+      "tags": ["n"]
+    },
+    {
+      "word": "course",
+      "score": 3999270,
+      "tags": ["n"]
+    },
+    {
+      "word": "stretch",
+      "score": 3918804,
+      "tags": ["n"]
+    },
+    {
+      "word": "highway",
+      "score": 3902879,
+      "tags": ["n"]
+    },
+    {
+      "word": "odyssey",
+      "score": 3893811,
+      "tags": ["n"]
+    },
+    {
+      "word": "history",
+      "score": 3879431,
+      "tags": ["n"]
+    },
+    {
+      "word": "town",
+      "score": 3864234,
+      "tags": ["n"]
+    },
+    {
+      "word": "mother",
+      "score": 3862955,
+      "tags": ["n"]
+    },
+    {
+      "word": "touring",
+      "score": 3862390,
+      "tags": ["n"]
+    },
+    {
+      "word": "carriage",
+      "score": 3831170,
+      "tags": ["n"]
+    },
+    {
+      "word": "aventure",
+      "score": 3795802,
+      "tags": ["n"]
+    },
+    {
+      "word": "pathways",
+      "score": 3760208,
+      "tags": ["n"]
+    },
+    {
+      "word": "driving",
+      "score": 3712130,
+      "tags": ["n"]
+    },
+    {
+      "word": "relocation",
+      "score": 3613698,
+      "tags": ["n"]
+    },
+    {
+      "word": "hospitality",
+      "score": 3594845,
+      "tags": ["n"]
+    },
+    {
+      "word": "hiking",
+      "score": 3584538,
+      "tags": ["n"]
+    },
+    {
+      "word": "accommodation",
+      "score": 3561025,
+      "tags": ["n"]
+    },
+    {
+      "word": "run",
+      "score": 3515057,
+      "tags": ["n"]
+    },
+    {
+      "word": "track",
+      "score": 3482107,
+      "tags": ["n"]
+    },
+    {
+      "word": "move",
+      "score": 3440544,
+      "tags": ["n"]
+    },
+    {
+      "word": "flow",
+      "score": 3320081,
+      "tags": ["n"]
+    },
+    {
+      "word": "breath",
+      "score": 3304140,
+      "tags": ["n"]
+    },
+    {
+      "word": "trek",
+      "score": 3258356,
+      "tags": ["n"]
+    },
+    {
+      "word": "routing",
+      "score": 3230440,
+      "tags": ["n"]
+    },
+    {
+      "word": "dispatch",
+      "score": 3229038,
+      "tags": ["n"]
+    },
+    {
+      "word": "roadway",
+      "score": 3173968,
+      "tags": ["n"]
+    },
+    {
+      "word": "traffic",
+      "score": 3086435,
+      "tags": ["n"]
+    },
+    {
+      "word": "transportation",
+      "score": 17061793,
+      "tags": ["syn", "n", "results_type:primary_rel"]
+    },
+    {
+      "word": "conveyance",
+      "score": 14584676,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "shipping",
+      "score": 14507757,
+      "tags": ["syn", "n", "v"]
+    },
+    {
+      "word": "transfer",
+      "score": 14483890,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "ship",
+      "score": 14143341,
+      "tags": ["syn", "n", "v"]
+    },
+    {
+      "word": "carry",
+      "score": 13548343,
+      "tags": ["syn", "v"]
+    },
+    {
+      "word": "send",
+      "score": 13226725,
+      "tags": ["syn", "v"]
+    },
+    {
+      "word": "channel",
+      "score": 13082077,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "transmit",
+      "score": 12472711,
+      "tags": ["syn", "v"]
+    },
+    {
+      "word": "ecstasy",
+      "score": 11834523,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "rapture",
+      "score": 11661721,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "delight",
+      "score": 11635983,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "exaltation",
+      "score": 11386297,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "ravish",
+      "score": 11192875,
+      "tags": ["syn", "v"]
+    },
+    {
+      "word": "enchant",
+      "score": 10955745,
+      "tags": ["syn", "v"]
+    },
+    {
+      "word": "enthrall",
+      "score": 10911296,
+      "tags": ["syn", "v"]
+    },
+    {
+      "word": "channelize",
+      "score": 9455327,
+      "tags": ["syn", "v"]
+    },
+    {
+      "word": "enrapture",
+      "score": 9455327,
+      "tags": ["syn", "v"]
+    },
+    {
+      "word": "enthral",
+      "score": 9455327,
+      "tags": ["syn", "v"]
+    },
+    {
+      "word": "tape drive",
+      "score": 9455327,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "tape transport",
+      "score": 9455327,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "rail",
+      "score": 7487164,
+      "tags": ["n"]
+    },
+    {
+      "word": "cargo",
+      "score": 7408664,
+      "tags": ["n"]
+    },
+    {
+      "word": "freight",
+      "score": 7346690,
+      "tags": ["n"]
+    },
+    {
+      "word": "transit",
+      "score": 7343130,
+      "tags": ["n"]
+    },
+    {
+      "word": "travel",
+      "score": 7193611,
+      "tags": ["n"]
+    },
+
+    {
+      "word": "transportations",
+      "score": 6982150,
+      "tags": ["n"]
+    },
+    {
+      "word": "transporters",
+      "score": 6943544,
+      "tags": ["n"]
+    },
+    {
+      "word": "communication",
+      "score": 6911943,
+      "tags": ["n"]
+    },
+    {
+      "word": "supply",
+      "score": 6893922,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "bus",
+      "score": 6737987,
+      "tags": ["n"]
+    },
+    {
+      "word": "communications",
+      "score": 6727135,
+      "tags": ["n"]
+    },
+    {
+      "word": "carriage",
+      "score": 6701412,
+      "tags": ["n"]
+    },
+    {
+      "word": "mobility",
+      "score": 6683144,
+      "tags": ["n"]
+    },
+    {
+      "word": "passenger",
+      "score": 6641574,
+      "tags": ["n"]
+    },
+    {
+      "word": "vehicles",
+      "score": 6599282,
+      "tags": ["n"]
+    },
+    {
+      "word": "journeys",
+      "score": 6597281,
+      "tags": ["n"]
+    },
+    {
+      "word": "goods",
+      "score": 6589745,
+      "tags": ["n"]
+    },
+    {
+      "word": "travelling",
+      "score": 6520220,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "carrier",
+      "score": 6490636,
+      "tags": ["n"]
+    },
+    {
+      "word": "airlift",
+      "score": 6425143,
+      "tags": ["n"]
+    },
+    {
+      "word": "traffic",
+      "score": 6419807,
+      "tags": ["n"]
+    },
+    {
+      "word": "carrying",
+      "score": 6413652,
+      "tags": ["n"]
+    },
+    {
+      "word": "haul",
+      "score": 6403692,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "transfers",
+      "score": 6400279,
+      "tags": ["n"]
+    },
+    {
+      "word": "carriers",
+      "score": 6379497,
+      "tags": ["n"]
+    },
+    {
+      "word": "haulage",
+      "score": 6339828,
+      "tags": ["n"]
+    },
+    {
+      "word": "trucking",
+      "score": 6335321,
+      "tags": ["n"]
+    },
+    {
+      "word": "railway",
+      "score": 6314543,
+      "tags": ["n"]
+    },
+    {
+      "word": "vehicle",
+      "score": 6292602,
+      "tags": ["n"]
+    },
+    {
+      "word": "shipment",
+      "score": 6278515,
+      "tags": ["n"]
+    },
+    {
+      "word": "air",
+      "score": 6268842,
+      "tags": ["n"]
+    },
+    {
+      "word": "journey",
+      "score": 6264239,
+      "tags": ["n"]
+    },
+    {
+      "word": "ride",
+      "score": 6257026,
+      "tags": ["n"]
+    },
+    {
+      "word": "services",
+      "score": 6257011,
+      "tags": ["n"]
+    },
+    {
+      "word": "convoy",
+      "score": 6244503,
+      "tags": ["n"]
+    },
+    {
+      "word": "road",
+      "score": 6199281,
+      "tags": ["n", "adj"]
+    },
+
+    {
+      "word": "vehicular",
+      "score": 6081399,
+      "tags": ["adj"]
+    },
+    {
+      "word": "hauling",
+      "score": 6052339,
+      "tags": ["n"]
+    },
+    {
+      "word": "shuttle",
+      "score": 6024121,
+      "tags": ["n"]
+    },
+    {
+      "word": "trafficking",
+      "score": 6008604,
+      "tags": ["n"]
+    },
+    {
+      "word": "mode",
+      "score": 5918081,
+      "tags": ["n"]
+    },
+    {
+      "word": "teleportation",
+      "score": 5883990,
+      "tags": ["n"]
+    },
+    {
+      "word": "flow",
+      "score": 5867745,
+      "tags": ["n"]
+    },
+    {
+      "word": "transmission",
+      "score": 5829295,
+      "tags": ["n"]
+    },
+    {
+      "word": "translocation",
+      "score": 5796499,
+      "tags": ["n"]
+    },
+    {
+      "word": "forwarding",
+      "score": 5787735,
+      "tags": ["n"]
+    },
+    {
+      "word": "sector",
+      "score": 5763654,
+      "tags": ["n"]
+    },
+    {
+      "word": "lift",
+      "score": 5762424,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "conveying",
+      "score": 5734398,
+      "tags": ["n"]
+    },
+    {
+      "word": "commuter",
+      "score": 5729009,
+      "tags": ["n"]
+    },
+    {
+      "word": "shipments",
+      "score": 5692864,
+      "tags": ["n"]
+    },
+    {
+      "word": "sickness",
+      "score": 5678732,
+      "tags": ["n"]
+    },
+    {
+      "word": "commuting",
+      "score": 5673674,
+      "tags": ["n"]
+    },
+    {
+      "word": "transferring",
+      "score": 5665247,
+      "tags": ["n"]
+    },
+    {
+      "word": "moving",
+      "score": 5583296,
+      "tags": ["n"]
+    },
+    {
+      "word": "conveyances",
+      "score": 5576055,
+      "tags": ["n"]
+    },
+    {
+      "word": "move",
+      "score": 5558994,
+      "tags": ["n"]
+    },
+    {
+      "word": "movement",
+      "score": 5557514,
+      "tags": ["n"]
+    },
+    {
+      "word": "carried",
+      "score": 5555346,
+      "tags": ["v"]
+    },
+    {
+      "word": "navigation",
+      "score": 5516789,
+      "tags": ["n"]
+    },
+    {
+      "word": "relocation",
+      "score": 5473062,
+      "tags": ["n"]
+    },
+    {
+      "word": "consignment",
+      "score": 5461751,
+      "tags": ["n"]
+    },
+    {
+      "word": "motoring",
+      "score": 5458969,
+      "tags": ["n"]
+    },
+    {
+      "word": "handover",
+      "score": 5456315,
+      "tags": ["n"]
+    },
+    {
+      "word": "circulation",
+      "score": 5419059,
+      "tags": ["n"]
+    },
+    {
+      "word": "trading",
+      "score": 5370094,
+      "tags": ["n"]
+    },
+    {
+      "word": "propagation",
+      "score": 5370092,
+      "tags": ["n"]
+    },
+    {
+      "word": "relocate",
+      "score": 5292757,
+      "tags": ["v"]
+    },
+    {
+      "word": "turnover",
+      "score": 5291064,
+      "tags": ["n"]
+    },
+    {
+      "word": "hauled",
+      "score": 5277964,
+      "tags": ["v"]
+    },
+    {
+      "word": "removal",
+      "score": 5268172,
+      "tags": ["n"]
+    },
+    {
+      "word": "displacement",
+      "score": 5264096,
+      "tags": ["n"]
+    },
+    {
+      "word": "transferred",
+      "score": 5253984,
+      "tags": ["v"]
+    },
+    {
+      "word": "refrigerated",
+      "score": 5218023,
+      "tags": ["adj"]
+    },
+    {
+      "word": "bring",
+      "score": 5213394,
+      "tags": ["v"]
+    },
+    {
+      "word": "convey",
+      "score": 5134081,
+      "tags": ["v"]
+    },
+    {
+      "word": "movements",
+      "score": 5116570,
+      "tags": ["n"]
+    },
+    {
+      "word": "petrol",
+      "score": 5116570,
+      "tags": ["n"]
+    },
+    {
+      "word": "diesel",
+      "score": 5116570,
+      "tags": ["n"]
+    },
+    {
+      "word": "gas",
+      "score": 5116570,
+      "tags": ["n"]
+    },
+    {
+      "word": "parking",
+      "score": 5116570,
+      "tags": ["n"]
+    },
+    {
+      "word": "toll",
+      "score": 5116570,
+      "tags": ["n"]
+    }
+  ],
+  "medical": [
+    {
+      "word": "amount",
+      "score": 4375800,
+      "tags": ["n"]
+    },
+    {
+      "word": "balance",
+      "score": 4375800,
+      "tags": ["n"]
+    },
+    {
+      "word": "checkup",
+      "score": 17079119,
+      "tags": ["syn", "n", "results_type:primary_rel"]
+    },
+    {
+      "word": "aesculapian",
+      "score": 13138764,
+      "tags": ["syn", "adj"]
+    },
+    {
+      "word": "health check",
+      "score": 13138764,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "medical checkup",
+      "score": 13138764,
+      "tags": ["syn", "n", "prop"]
+    },
+    {
+      "word": "medical exam",
+      "score": 13138764,
+      "tags": ["syn", "n", "adj", "prop"]
+    },
+    {
+      "word": "medical examination",
+      "score": 13138764,
+      "tags": ["syn", "n", "adj", "prop"]
+    },
+    {
+      "word": "medicine",
+      "score": 13138763,
+      "tags": ["n"]
+    },
+    {
+      "word": "biomedical",
+      "score": 12933041,
+      "tags": ["adj", "n", "prop"]
+    },
+    {
+      "word": "surgical",
+      "score": 12625845,
+      "tags": ["adj", "n", "ant"]
+    },
+    {
+      "word": "doctor",
+      "score": 12551088,
+      "tags": ["n"]
+    },
+    {
+      "word": "clinical",
+      "score": 12515826,
+      "tags": ["adj"]
+    },
+    {
+      "word": "doctors",
+      "score": 12356463,
+      "tags": ["n"]
+    },
+    {
+      "word": "healthcare",
+      "score": 12332824,
+      "tags": ["n"]
+    },
+    {
+      "word": "pharmaceutical",
+      "score": 12278782,
+      "tags": ["adj", "n", "prop"]
+    },
+    {
+      "word": "paramedical",
+      "score": 12274805,
+      "tags": ["adj"]
+    },
+    {
+      "word": "physician",
+      "score": 12144348,
+      "tags": ["n"]
+    },
+    {
+      "word": "hospital",
+      "score": 12010176,
+      "tags": ["n"]
+    },
+    {
+      "word": "physicians",
+      "score": 11872326,
+      "tags": ["n"]
+    },
+    {
+      "word": "medicinal",
+      "score": 11710543,
+      "tags": ["adj"]
+    },
+    {
+      "word": "forensic",
+      "score": 11588161,
+      "tags": ["adj"]
+    },
+    {
+      "word": "medics",
+      "score": 11469686,
+      "tags": ["n"]
+    },
+    {
+      "word": "therapeutic",
+      "score": 11417395,
+      "tags": ["adj"]
+    },
+    {
+      "word": "patient",
+      "score": 11404163,
+      "tags": ["n"]
+    },
+    {
+      "word": "medial",
+      "score": 11345162,
+      "tags": ["adj"]
+    },
+    {
+      "word": "treatment",
+      "score": 11345043,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "medic",
+      "score": 11309975,
+      "tags": ["n"]
+    },
+    {
+      "word": "medicines",
+      "score": 11306778,
+      "tags": ["n"]
+    },
+    {
+      "word": "care",
+      "score": 11170891,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "pharmaceuticals",
+      "score": 11125068,
+      "tags": ["n"]
+    },
+    {
+      "word": "sickness",
+      "score": 11021882,
+      "tags": ["n"]
+    },
+    {
+      "word": "med",
+      "score": 11009487,
+      "tags": ["n", "v", "prop"]
+    },
+    {
+      "word": "medication",
+      "score": 10941429,
+      "tags": ["n"]
+    },
+    {
+      "word": "sanitary",
+      "score": 10930731,
+      "tags": ["adj"]
+    },
+    {
+      "word": "physical",
+      "score": 10804128,
+      "tags": ["adj", "n"]
+    },
+    {
+      "word": "practitioner",
+      "score": 10804003,
+      "tags": ["n"]
+    },
+    {
+      "word": "medico",
+      "score": 10803228,
+      "tags": ["n", "adj"]
+    },
+    {
+      "word": "clinics",
+      "score": 10730723,
+      "tags": ["n"]
+    },
+    {
+      "word": "illness",
+      "score": 10706496,
+      "tags": ["n"]
+    },
+    {
+      "word": "medecine",
+      "score": 10696274,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "clinicians",
+      "score": 10633428,
+      "tags": ["n"]
+    },
+    {
+      "word": "practice",
+      "score": 10593652,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "pathological",
+      "score": 10546659,
+      "tags": ["adj"]
+    },
+    {
+      "word": "disease",
+      "score": 10492702,
+      "tags": ["n"]
+    },
+    {
+      "word": "sick",
+      "score": 10472058,
+      "tags": ["adj"]
+    },
+    {
+      "word": "practitioners",
+      "score": 10433361,
+      "tags": ["n"]
+    },
+    {
+      "word": "provider",
+      "score": 10404822,
+      "tags": ["n"]
+    },
+    {
+      "word": "drugs",
+      "score": 10401083,
+      "tags": ["n"]
+    },
+    {
+      "word": "bodily",
+      "score": 10380588,
+      "tags": ["n"]
+    },
+    {
+      "word": "devices",
+      "score": 10305414,
+      "tags": ["n"]
+    },
+    {
+      "word": "medevac",
+      "score": 10304866,
+      "tags": ["n", "adj"]
+    },
+    {
+      "word": "health",
+      "score": 10281500,
+      "tags": ["n"]
+    },
+    {
+      "word": "sanitation",
+      "score": 10220667,
+      "tags": ["n"]
+    },
+    {
+      "word": "fitness",
+      "score": 10213174,
+      "tags": ["n"]
+    },
+    {
+      "word": "healers",
+      "score": 10212764,
+      "tags": ["n"]
+    },
+    {
+      "word": "curative",
+      "score": 10202128,
+      "tags": ["adj"]
+    },
+    {
+      "word": "clinician",
+      "score": 10143314,
+      "tags": ["n"]
+    },
+    {
+      "word": "body",
+      "score": 10127666,
+      "tags": ["n"]
+    },
+    {
+      "word": "pathologic",
+      "score": 10087200,
+      "tags": ["adj"]
+    },
+    {
+      "word": "apparatus",
+      "score": 10082099,
+      "tags": ["n"]
+    },
+    {
+      "word": "healthy",
+      "score": 9800951,
+      "tags": ["adj"]
+    },
+    {
+      "word": "gynaecologist",
+      "score": 9695212,
+      "tags": ["n"]
+    },
+    {
+      "word": "hygienist",
+      "score": 9676003,
+      "tags": ["n"]
+    },
+    {
+      "word": "appliances",
+      "score": 9604901,
+      "tags": ["n"]
+    },
+    {
+      "word": "medicare",
+      "score": 9597872,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "medicina",
+      "score": 9515143,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "physio",
+      "score": 9263343,
+      "tags": ["n"]
+    },
+    {
+      "word": "medicaid",
+      "score": 9213505,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "infirmary",
+      "score": 9115321,
+      "tags": ["n"]
+    },
+    {
+      "word": "medica",
+      "score": 9083686,
+      "tags": ["n"]
+    },
+    {
+      "word": "pharma",
+      "score": 8968169,
+      "tags": ["n"]
+    },
+    {
+      "word": "yee",
+      "score": 8638133,
+      "tags": ["n"]
+    },
+    {
+      "word": "salud",
+      "score": 8475382,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "pcp",
+      "score": 8469989,
+      "tags": ["n"]
+    },
+    {
+      "word": "drug",
+      "score": 8305135,
+      "tags": ["n"]
+    },
+    {
+      "word": "heath",
+      "score": 8183683,
+      "tags": ["n"]
+    },
+    {
+      "word": "medici",
+      "score": 8136201,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "cheers",
+      "score": 7266556,
+      "tags": ["n"]
+    },
+    {
+      "word": "health-care",
+      "score": 6338412,
+      "tags": ["adj"]
+    },
+    {
+      "word": "iatric",
+      "score": 6338412,
+      "tags": ["adj"]
+    },
+    {
+      "word": "in-patient",
+      "score": 6338412,
+      "tags": ["n"]
+    },
+    {
+      "word": "pre-med",
+      "score": 6338412,
+      "tags": ["n"]
+    },
+    {
+      "word": "veterinary",
+      "score": 6338411,
+      "tags": ["adj", "n", "prop"]
+    },
+    {
+      "word": "orthopedic",
+      "score": 6338409,
+      "tags": ["adj"]
+    },
+    {
+      "word": "outpatient",
+      "score": 6338408,
+      "tags": ["adj"]
+    },
+    {
+      "word": "psychiatric",
+      "score": 6338407,
+      "tags": ["adj", "n"]
+    },
+    {
+      "word": "dental",
+      "score": 6338405,
+      "tags": ["adj", "n"]
+    },
+    {
+      "word": "pediatric",
+      "score": 6338404,
+      "tags": ["adj"]
+    },
+    {
+      "word": "diagnostic",
+      "score": 6338402,
+      "tags": ["adj"]
+    },
+    {
+      "word": "gynecological",
+      "score": 6338400,
+      "tags": ["adj"]
+    },
+    {
+      "word": "podiatric",
+      "score": 6338399,
+      "tags": ["adj", "prop"]
+    },
+    {
+      "word": "inpatient",
+      "score": 6338398,
+      "tags": ["adj"]
+    },
+    {
+      "word": "orthopaedic",
+      "score": 6338395,
+      "tags": ["adj", "prop"]
+    },
+    {
+      "word": "medicable",
+      "score": 6338394,
+      "tags": ["adj"]
+    },
+    {
+      "word": "iatro",
+      "score": 6338393,
+      "tags": ["adj"]
+    },
+    {
+      "word": "medical science",
+      "score": 6338391,
+      "tags": ["adj", "prop"]
+    },
+    {
+      "word": "group practice",
+      "score": 6338390,
+      "tags": ["adj"]
+    },
+    {
+      "word": "medical student",
+      "score": 6338389,
+      "tags": ["adj", "prop"]
+    },
+    {
+      "word": "health professional",
+      "score": 6338388,
+      "tags": ["adj"]
+    },
+    {
+      "word": "ophthalmologic",
+      "score": 6338387,
+      "tags": ["adj"]
+    },
+    {
+      "word": "nonmedical",
+      "score": 6338386,
+      "tags": ["adj"]
+    },
+    {
+      "word": "dentistry",
+      "score": 7663501,
+      "tags": ["n", "results_type:primary_rel"]
+    },
+    {
+      "word": "dentists",
+      "score": 6565424,
+      "tags": ["n"]
+    },
+    {
+      "word": "dentist",
+      "score": 6488198,
+      "tags": ["n"]
+    },
+    {
+      "word": "tooth",
+      "score": 5902604,
+      "tags": ["n"]
+    },
+    {
+      "word": "teeth",
+      "score": 5607314,
+      "tags": ["n"]
+    },
+    {
+      "word": "buccal",
+      "score": 4711066,
+      "tags": ["adj"]
+    },
+    {
+      "word": "oral",
+      "score": 4340236,
+      "tags": ["adj", "n"]
+    },
+    {
+      "word": "prosthesis",
+      "score": 4035952,
+      "tags": ["n"]
+    },
+    {
+      "word": "prosthetic",
+      "score": 3911522,
+      "tags": ["adj"]
+    },
+    {
+      "word": "prosthetics",
+      "score": 3825333,
+      "tags": ["n"]
+    },
+    {
+      "word": "prostheses",
+      "score": 3670223,
+      "tags": ["n"]
+    },
+    {
+      "word": "toxicology",
+      "score": 3143543,
+      "tags": ["n"]
+    },
+    {
+      "word": "benefits",
+      "score": 3040391,
+      "tags": ["n"]
+    },
+    {
+      "word": "medico",
+      "score": 2456685,
+      "tags": ["n"]
+    },
+    {
+      "word": "dumb",
+      "score": 2247694,
+      "tags": ["adj"]
+    },
+    {
+      "word": "silent",
+      "score": 2147603,
+      "tags": ["adj"]
+    },
+    {
+      "word": "dent",
+      "score": 1726692,
+      "tags": ["n"]
+    },
+    {
+      "word": "mute",
+      "score": 1533979,
+      "tags": ["adj"]
+    },
+    {
+      "word": "sunni",
+      "score": 1384778,
+      "tags": ["adj", "prop"]
+    },
+    {
+      "word": "acci",
+      "score": 1360780,
+      "tags": ["adj"]
+    },
+    {
+      "word": "labio",
+      "score": 50971,
+      "tags": ["adj"]
+    },
+    {
+      "word": "orthodontic",
+      "score": 50970,
+      "tags": ["adj"]
+    },
+    {
+      "word": "endodontic",
+      "score": 50969,
+      "tags": ["adj"]
+    },
+    {
+      "word": "periodontal",
+      "score": 50968,
+      "tags": ["adj"]
+    },
+    {
+      "word": "chiropractic",
+      "score": 50967,
+      "tags": ["adj"]
+    },
+    {
+      "word": "medical",
+      "score": 50966,
+      "tags": ["adj", "n"]
+    },
+    {
+      "word": "maxillofacial",
+      "score": 50965,
+      "tags": ["adj", "prop"]
+    },
+    {
+      "word": "optometric",
+      "score": 50964,
+      "tags": ["adj", "prop"]
+    },
+    {
+      "word": "surgical",
+      "score": 50963,
+      "tags": ["adj"]
+    },
+    {
+      "word": "veterinary",
+      "score": 50962,
+      "tags": ["adj", "prop"]
+    },
+    {
+      "word": "orthopedic",
+      "score": 50961,
+      "tags": ["adj"]
+    },
+    {
+      "word": "cosmetic",
+      "score": 50960,
+      "tags": ["adj"]
+    },
+    {
+      "word": "craniofacial",
+      "score": 50959,
+      "tags": ["adj"]
+    },
+    {
+      "word": "pediatric",
+      "score": 50958,
+      "tags": ["adj"]
+    },
+    {
+      "word": "interdental",
+      "score": 50957,
+      "tags": ["adj"]
+    },
+    {
+      "word": "occlusal",
+      "score": 50956,
+      "tags": ["adj"]
+    },
+    {
+      "word": "orthopaedic",
+      "score": 50955,
+      "tags": ["adj", "prop"]
+    },
+    {
+      "word": "reconstructive",
+      "score": 50954,
+      "tags": ["adj"]
+    },
+    {
+      "word": "restorative",
+      "score": 50953,
+      "tags": ["adj"]
+    },
+    {
+      "word": "dentistic",
+      "score": 50952,
+      "tags": ["adj"]
+    },
+    {
+      "word": "bidental",
+      "score": 50951,
+      "tags": ["adj"]
+    },
+    {
+      "word": "cosmetic dentistry",
+      "score": 50950,
+      "tags": ["adj"]
+    },
+    {
+      "word": "prosthodontic",
+      "score": 50949,
+      "tags": ["adj"]
+    },
+    {
+      "word": "dental hygienist",
+      "score": 50948,
+      "tags": ["adj"]
+    },
+    {
+      "word": "radiodontia",
+      "score": 50947,
+      "tags": ["adj"]
+    },
+    {
+      "word": "dentile",
+      "score": 50946,
+      "tags": ["adj"]
+    },
+    {
+      "word": "dentoid",
+      "score": 50945,
+      "tags": ["adj"]
+    },
+    {
+      "word": "podiatric",
+      "score": 50944,
+      "tags": ["adj", "prop"]
+    },
+    {
+      "word": "ophthalmological",
+      "score": 50943,
+      "tags": ["adj"]
+    },
+    {
+      "word": "monophyodont",
+      "score": 50942,
+      "tags": ["adj"]
+    },
+    {
+      "word": "ophthalmic",
+      "score": 50941,
+      "tags": ["adj"]
+    },
+    {
+      "word": "back tooth",
+      "score": 50940,
+      "tags": ["adj"]
+    },
+    {
+      "word": "dentilave",
+      "score": 50939,
+      "tags": ["adj"]
+    },
+    {
+      "word": "primary tooth",
+      "score": 50938,
+      "tags": ["adj"]
+    },
+    {
+      "word": "dermatological",
+      "score": 50937,
+      "tags": ["adj"]
+    },
+    {
+      "word": "pulp cavity",
+      "score": 50936,
+      "tags": ["adj"]
+    },
+    {
+      "word": "edentulous",
+      "score": 50935,
+      "tags": ["adj"]
+    },
+    {
+      "word": "opthalmic",
+      "score": 50934,
+      "tags": ["adj"]
+    },
+    {
+      "word": "milk tooth",
+      "score": 50933,
+      "tags": ["adj"]
+    },
+    {
+      "word": "dentiscalp",
+      "score": 50932,
+      "tags": ["adj"]
+    },
+    {
+      "word": "gagtooth",
+      "score": 50931,
+      "tags": ["adj"]
+    },
+    {
+      "word": "dentiferous",
+      "score": 50930,
+      "tags": ["adj"]
+    },
+    {
+      "word": "dental appliance",
+      "score": 50929,
+      "tags": ["adj"]
+    },
+    {
+      "word": "dentiphone",
+      "score": 50928,
+      "tags": ["adj"]
+    },
+    {
+      "word": "diagnostic",
+      "score": 50927,
+      "tags": ["adj"]
+    },
+    {
+      "word": "obstetric",
+      "score": 50926,
+      "tags": ["adj"]
+    },
+    {
+      "word": "dentiloquy",
+      "score": 50925,
+      "tags": ["adj"]
+    },
+    {
+      "word": "uninsured",
+      "score": 50924,
+      "tags": ["adj"]
+    },
+    {
+      "word": "outpatient",
+      "score": 50923,
+      "tags": ["adj"]
+    },
+    {
+      "word": "osteopathic",
+      "score": 50922,
+      "tags": ["adj", "prop"]
+    },
+    {
+      "word": "refractive",
+      "score": 50921,
+      "tags": ["adj"]
+    },
+    {
+      "word": "dental surgery",
+      "score": 50920,
+      "tags": ["adj"]
+    },
+    {
+      "word": "gynecological",
+      "score": 50919,
+      "tags": ["adj"]
+    },
+    {
+      "word": "obstetrical",
+      "score": 50918,
+      "tags": ["adj"]
+    },
+    {
+      "word": "diphyodont",
+      "score": 50917,
+      "tags": ["adj"]
+    },
+    {
+      "word": "nonmedical",
+      "score": 50916,
+      "tags": ["adj"]
+    },
+    {
+      "word": "laniariform",
+      "score": 50915,
+      "tags": ["adj"]
+    },
+    {
+      "word": "tooth powder",
+      "score": 50914,
+      "tags": ["adj"]
+    },
+    {
+      "word": "health maintenance organization",
+      "score": 50913,
+      "tags": ["adj"]
+    },
+    {
+      "word": "nonsurgical",
+      "score": 50912,
+      "tags": ["adj"]
+    },
+    {
+      "word": "medical science",
+      "score": 50911,
+      "tags": ["adj", "prop"]
+    },
+    {
+      "word": "dedentition",
+      "score": 50910,
+      "tags": ["adj"]
+    },
+    {
+      "word": "selenodont",
+      "score": 50908,
+      "tags": ["adj"]
+    },
+    {
+      "word": "paramedical",
+      "score": 50907,
+      "tags": ["adj"]
+    },
+    {
+      "word": "tooth socket",
+      "score": 50906,
+      "tags": ["adj"]
+    },
+    {
+      "word": "odontogeny",
+      "score": 50905,
+      "tags": ["adj"]
+    },
+    {
+      "word": "eye doctor",
+      "score": 50904,
+      "tags": ["adj"]
+    },
+    {
+      "word": "medicable",
+      "score": 50903,
+      "tags": ["adj"]
+    },
+    {
+      "word": "underinsured",
+      "score": 50902,
+      "tags": ["adj"]
+    },
+    {
+      "word": "occupational",
+      "score": 50901,
+      "tags": ["adj"]
+    },
+    {
+      "word": "gomphiasis",
+      "score": 50900,
+      "tags": ["adj"]
+    },
+    {
+      "word": "group practice",
+      "score": 50899,
+      "tags": ["adj"]
+    },
+    {
+      "word": "dry socket",
+      "score": 50898,
+      "tags": ["adj"]
+    },
+    {
+      "word": "quadridentate",
+      "score": 50897,
+      "tags": ["adj"]
+    },
+    {
+      "word": "operate on",
+      "score": 50896,
+      "tags": ["adj"]
+    },
+    {
+      "word": "laniary",
+      "score": 50895,
+      "tags": ["adj"]
+    },
+    {
+      "word": "ortho",
+      "score": 50894,
+      "tags": ["adj"]
+    },
+    {
+      "word": "iatro",
+      "score": 50893,
+      "tags": ["adj"]
+    },
+    {
+      "word": "glossohyal",
+      "score": 50892,
+      "tags": ["adj"]
+    },
+    {
+      "word": "preventive",
+      "score": 50891,
+      "tags": ["adj"]
+    },
+    {
+      "word": "prescription drug",
+      "score": 19270375,
+      "tags": ["syn", "n", "results_type:primary_rel"]
+    },
+    {
+      "word": "ethical drug",
+      "score": 14315851,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "medications",
+      "score": 11732122,
+      "tags": ["n"]
+    },
+    {
+      "word": "medicines",
+      "score": 11663389,
+      "tags": ["n"]
+    },
+    {
+      "word": "drugs",
+      "score": 10961323,
+      "tags": ["n"]
+    },
+    {
+      "word": "precepts",
+      "score": 10960086,
+      "tags": ["n"]
+    },
+    {
+      "word": "remedies",
+      "score": 10436768,
+      "tags": ["n"]
+    },
+    {
+      "word": "orders",
+      "score": 10406851,
+      "tags": ["n"]
+    },
+    {
+      "word": "recommendations",
+      "score": 10264101,
+      "tags": ["n"]
+    },
+    {
+      "word": "directions",
+      "score": 10249989,
+      "tags": ["n"]
+    },
+    {
+      "word": "regulations",
+      "score": 10131937,
+      "tags": ["n"]
+    },
+    {
+      "word": "formulas",
+      "score": 10020189,
+      "tags": ["n"]
+    },
+    {
+      "word": "solutions",
+      "score": 10013876,
+      "tags": ["n"]
+    },
+    {
+      "word": "guidelines",
+      "score": 9992063,
+      "tags": ["n"]
+    },
+    {
+      "word": "cures",
+      "score": 9965984,
+      "tags": ["n"]
+    },
+    {
+      "word": "norms",
+      "score": 9951127,
+      "tags": ["n"]
+    },
+    {
+      "word": "obligations",
+      "score": 9937063,
+      "tags": ["n"]
+    },
+    {
+      "word": "recipes",
+      "score": 9901189,
+      "tags": ["n"]
+    },
+    {
+      "word": "formulae",
+      "score": 9894413,
+      "tags": ["n"]
+    },
+    {
+      "word": "stipulations",
+      "score": 9847010,
+      "tags": ["n"]
+    },
+    {
+      "word": "indications",
+      "score": 9838285,
+      "tags": ["n"]
+    },
+    {
+      "word": "provisions",
+      "score": 9803238,
+      "tags": ["n"]
+    },
+    {
+      "word": "instructions",
+      "score": 9797388,
+      "tags": ["n"]
+    },
+    {
+      "word": "rules",
+      "score": 9787810,
+      "tags": ["n"]
+    },
+    {
+      "word": "injunctions",
+      "score": 9728068,
+      "tags": ["n"]
+    },
+    {
+      "word": "requirements",
+      "score": 9596672,
+      "tags": ["n"]
+    },
+    {
+      "word": "revenues",
+      "score": 9571201,
+      "tags": ["n"]
+    },
+    {
+      "word": "order",
+      "score": 9488339,
+      "tags": ["n"]
+    },
+    {
+      "word": "ordinances",
+      "score": 9307637,
+      "tags": ["n"]
+    },
+    {
+      "word": "specifications",
+      "score": 9244040,
+      "tags": ["n"]
+    },
+    {
+      "word": "requirement",
+      "score": 8934177,
+      "tags": ["n"]
+    },
+    {
+      "word": "writs",
+      "score": 8899270,
+      "tags": ["n"]
+    },
+    {
+      "word": "subpoenas",
+      "score": 8797798,
+      "tags": ["n"]
+    },
+    {
+      "word": "limitations",
+      "score": 8795279,
+      "tags": ["n"]
+    },
+    {
+      "word": "standards",
+      "score": 8686543,
+      "tags": ["n"]
+    },
+    {
+      "word": "prescription medicine",
+      "score": 5858807,
+      "tags": ["n"]
+    },
+    {
+      "word": "prescribed",
+      "score": 5858805,
+      "tags": ["adj"]
+    },
+    {
+      "word": "prescribing",
+      "score": 5858803,
+      "tags": ["v"]
+    },
+    {
+      "word": "pharmaceutical",
+      "score": 5858802,
+      "tags": ["n", "adj", "prop"]
+    },
+    {
+      "word": "pharmaceuticals",
+      "score": 5858801,
+      "tags": ["n"]
+    },
+    {
+      "word": "pharmacies",
+      "score": 5858800,
+      "tags": ["n"]
+    },
+    {
+      "word": "medication",
+      "score": 5858799,
+      "tags": ["n"]
+    },
+    {
+      "word": "prescribe",
+      "score": 5858798,
+      "tags": ["v"]
+    },
+    {
+      "word": "medicaments",
+      "score": 5858797,
+      "tags": ["n"]
+    },
+    {
+      "word": "pharmacy",
+      "score": 5858796,
+      "tags": ["n"]
+    },
+    {
+      "word": "painkillers",
+      "score": 5858795,
+      "tags": ["n"]
+    },
+    {
+      "word": "prescribes",
+      "score": 5858794,
+      "tags": ["v"]
+    },
+    {
+      "word": "medicament",
+      "score": 5858793,
+      "tags": ["n"]
+    },
+    {
+      "word": "pharmacologic",
+      "score": 5858792,
+      "tags": ["adj"]
+    },
+    {
+      "word": "pharmaceutic",
+      "score": 5858791,
+      "tags": ["adj"]
+    },
+    {
+      "word": "pharmacotherapy",
+      "score": 5858790,
+      "tags": ["n"]
+    },
+    {
+      "word": "pills",
+      "score": 5858789,
+      "tags": ["n"]
+    },
+    {
+      "word": "medicine",
+      "score": 5858788,
+      "tags": ["n"]
+    },
+    {
+      "word": "nonprescription",
+      "score": 5858787,
+      "tags": ["n", "ant"]
+    },
+    {
+      "word": "pharmacological",
+      "score": 5858786,
+      "tags": ["adj"]
+    },
+    {
+      "word": "pharmacists",
+      "score": 5858785,
+      "tags": ["n"]
+    },
+    {
+      "word": "prescriber",
+      "score": 5858784,
+      "tags": ["n"]
+    },
+    {
+      "word": "pain pill",
+      "score": 5858783,
+      "tags": ["n"]
+    },
+    {
+      "word": "pharmacopoeia",
+      "score": 5858782,
+      "tags": ["n"]
+    },
+    {
+      "word": "pharmaceutically",
+      "score": 5858781,
+      "tags": ["adv"]
+    },
+    {
+      "word": "giving medication",
+      "score": 5858780,
+      "tags": ["n"]
+    },
+    {
+      "word": "pharmacist",
+      "score": 5858779,
+      "tags": ["n"]
+    },
+    {
+      "word": "medicate",
+      "score": 5858778,
+      "tags": ["adj"]
+    },
+    {
+      "word": "analgesics",
+      "score": 5858777,
+      "tags": ["n"]
+    },
+    {
+      "word": "drug store",
+      "score": 5858776,
+      "tags": ["n"]
+    },
+    {
+      "word": "formulary",
+      "score": 5858775,
+      "tags": ["n"]
+    },
+    {
+      "word": "medicinals",
+      "score": 5858774,
+      "tags": ["n"]
+    },
+    {
+      "word": "medicinal",
+      "score": 5858773,
+      "tags": ["adj"]
+    },
+    {
+      "word": "pharmacologically",
+      "score": 5858772,
+      "tags": ["adv"]
+    },
+    {
+      "word": "druggist",
+      "score": 5858771,
+      "tags": ["n"]
+    },
+    {
+      "word": "oxycodone",
+      "score": 5858770,
+      "tags": ["n"]
+    },
+    {
+      "word": "pharmaceutics",
+      "score": 5858769,
+      "tags": ["n"]
+    },
+    {
+      "word": "pharming",
+      "score": 5858768,
+      "tags": ["n"]
+    },
+    {
+      "word": "pharmacology",
+      "score": 5858767,
+      "tags": ["n"]
+    },
+    {
+      "word": "medecine",
+      "score": 5858766,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "medical care",
+      "score": 5858765,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "polypharmacy",
+      "score": 5858764,
+      "tags": ["n"]
+    },
+    {
+      "word": "pharmacopeia",
+      "score": 5858763,
+      "tags": ["n"]
+    },
+    {
+      "word": "hydrocodone",
+      "score": 5858762,
+      "tags": ["n"]
+    },
+    {
+      "word": "painkiller",
+      "score": 5858761,
+      "tags": ["n"]
+    },
+    {
+      "word": "physician",
+      "score": 5858760,
+      "tags": ["n", "adj"]
+    },
+    {
+      "word": "antidepressants",
+      "score": 5858759,
+      "tags": ["n"]
+    },
+    {
+      "word": "medicinally",
+      "score": 5858758,
+      "tags": ["adv"]
+    },
+    {
+      "word": "medicin",
+      "score": 5858757,
+      "tags": ["n"]
+    },
+    {
+      "word": "opioids",
+      "score": 5858756,
+      "tags": ["n"]
+    },
+    {
+      "word": "pain killer",
+      "score": 5858755,
+      "tags": ["n"]
+    },
+    {
+      "word": "aspirins",
+      "score": 5858754,
+      "tags": ["n"]
+    },
+    {
+      "word": "psychopharmacological",
+      "score": 5858753,
+      "tags": ["adj"]
+    },
+    {
+      "word": "physicians",
+      "score": 5858752,
+      "tags": ["n"]
+    },
+    {
+      "word": "overmedication",
+      "score": 5858751,
+      "tags": ["n"]
+    },
+    {
+      "word": "healthcare",
+      "score": 5858750,
+      "tags": ["n"]
+    },
+    {
+      "word": "antibiotics",
+      "score": 5858749,
+      "tags": ["n"]
+    },
+    {
+      "word": "narcotics",
+      "score": 5858748,
+      "tags": ["n"]
+    },
+    {
+      "word": "antipsychotics",
+      "score": 5858747,
+      "tags": ["n"]
+    },
+    {
+      "word": "drugstore",
+      "score": 5858746,
+      "tags": ["n"]
+    },
+    {
+      "word": "generic drug",
+      "score": 5858745,
+      "tags": ["n"]
+    },
+    {
+      "word": "doctors",
+      "score": 5858744,
+      "tags": ["n"]
+    },
+    {
+      "word": "patients",
+      "score": 5858743,
+      "tags": ["n"]
+    },
+    {
+      "word": "medical",
+      "score": 5858742,
+      "tags": ["n", "adj"]
+    },
+    {
+      "word": "pharm",
+      "score": 5858741,
+      "tags": ["n"]
+    }
+  ],
+  "savings": [
+    {
+      "word": "bank account",
+      "score": 54637,
+      "tags": ["n", "results_type:primary_rel_multi"]
+    },
+    {
+      "word": "savings bank",
+      "score": 54636,
+      "tags": ["n"]
+    },
+    {
+      "word": "cash account",
+      "score": 54635,
+      "tags": ["n"]
+    },
+    {
+      "word": "deposit account",
+      "score": 54634,
+      "tags": ["n"]
+    },
+    {
+      "word": "checking account",
+      "score": 54633,
+      "tags": ["n"]
+    },
+    {
+      "word": "allowance account",
+      "score": 54632,
+      "tags": ["n"]
+    },
+    {
+      "word": "current account",
+      "score": 54631,
+      "tags": ["n"]
+    },
+    {
+      "word": "bank statement",
+      "score": 54630,
+      "tags": ["n"]
+    },
+    {
+      "word": "piggy bank",
+      "score": 54629,
+      "tags": ["n"]
+    },
+    {
+      "word": "bank card",
+      "score": 54628,
+      "tags": ["n"]
+    },
+    {
+      "word": "index fund",
+      "score": 54627,
+      "tags": ["n"]
+    },
+    {
+      "word": "bank discount",
+      "score": 54626,
+      "tags": ["n"]
+    },
+    {
+      "word": "money market",
+      "score": 54625,
+      "tags": ["n"]
+    },
+    {
+      "word": "bankbook",
+      "score": 54624,
+      "tags": ["n"]
+    },
+    {
+      "word": "banking",
+      "score": 54623,
+      "tags": ["n"]
+    },
+    {
+      "word": "nest egg",
+      "score": 54622,
+      "tags": ["n"]
+    },
+    {
+      "word": "state bank",
+      "score": 54621,
+      "tags": ["n"]
+    },
+    {
+      "word": "bankcard",
+      "score": 54620,
+      "tags": ["n"]
+    },
+    {
+      "word": "credit union",
+      "score": 54619,
+      "tags": ["n"]
+    },
+    {
+      "word": "investments",
+      "score": 54618,
+      "tags": ["n"]
+    },
+    {
+      "word": "finances",
+      "score": 54617,
+      "tags": ["n"]
+    },
+    {
+      "word": "pension fund",
+      "score": 54616,
+      "tags": ["n"]
+    },
+    {
+      "word": "simple interest",
+      "score": 54615,
+      "tags": ["n"]
+    },
+    {
+      "word": "financial",
+      "score": 54614,
+      "tags": ["adj"]
+    },
+    {
+      "word": "vault cash",
+      "score": 54613,
+      "tags": ["n"]
+    },
+    {
+      "word": "pension plan",
+      "score": 54612,
+      "tags": ["n"]
+    },
+    {
+      "word": "member bank",
+      "score": 54611,
+      "tags": ["n"]
+    },
+    {
+      "word": "cash machine",
+      "score": 54610,
+      "tags": ["n"]
+    },
+    {
+      "word": "financial institution",
+      "score": 54609,
+      "tags": ["n"]
+    },
+    {
+      "word": "pocket money",
+      "score": 54608,
+      "tags": ["n"]
+    },
+    {
+      "word": "account payable",
+      "score": 54607,
+      "tags": ["n"]
+    },
+    {
+      "word": "sinking fund",
+      "score": 54606,
+      "tags": ["n"]
+    },
+    {
+      "word": "bank vault",
+      "score": 54605,
+      "tags": ["n"]
+    },
+    {
+      "word": "investment",
+      "score": 54604,
+      "tags": ["n"]
+    },
+    {
+      "word": "reserve fund",
+      "score": 54603,
+      "tags": ["n"]
+    },
+    {
+      "word": "debit card",
+      "score": 54602,
+      "tags": ["n"]
+    },
+    {
+      "word": "capital account",
+      "score": 54601,
+      "tags": ["n"]
+    },
+    {
+      "word": "banking company",
+      "score": 54600,
+      "tags": ["n"]
+    },
+    {
+      "word": "expense account",
+      "score": 54599,
+      "tags": ["n"]
+    },
+    {
+      "word": "superannuation",
+      "score": 54598,
+      "tags": ["n"]
+    },
+    {
+      "word": "bank note",
+      "score": 54597,
+      "tags": ["n"]
+    },
+    {
+      "word": "pocket book",
+      "score": 54596,
+      "tags": ["n"]
+    },
+    {
+      "word": "investing",
+      "score": 54595,
+      "tags": ["n"]
+    },
+    {
+      "word": "escrow account",
+      "score": 54594,
+      "tags": ["n"]
+    },
+    {
+      "word": "commercial bank",
+      "score": 54593,
+      "tags": ["n"]
+    },
+    {
+      "word": "cashpoint",
+      "score": 54592,
+      "tags": ["n"]
+    },
+    {
+      "word": "national bank",
+      "score": 54591,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "deposits",
+      "score": 54590,
+      "tags": ["n"]
+    },
+    {
+      "word": "cloud bank",
+      "score": 54589,
+      "tags": ["n"]
+    },
+    {
+      "word": "down payment",
+      "score": 54588,
+      "tags": ["n"]
+    },
+    {
+      "word": "annuitization",
+      "score": 54587,
+      "tags": ["n"]
+    },
+    {
+      "word": "direct deposit",
+      "score": 54586,
+      "tags": ["n"]
+    },
+    {
+      "word": "save up",
+      "score": 54585,
+      "tags": ["n"]
+    },
+    {
+      "word": "accrued interest",
+      "score": 54584,
+      "tags": ["n"]
+    },
+    {
+      "word": "bank draft",
+      "score": 54583,
+      "tags": ["n"]
+    },
+    {
+      "word": "bank rate",
+      "score": 54582,
+      "tags": ["n"]
+    },
+    {
+      "word": "personal loan",
+      "score": 54581,
+      "tags": ["n"]
+    },
+    {
+      "word": "contingency fund",
+      "score": 54580,
+      "tags": ["n"]
+    },
+    {
+      "word": "monetary",
+      "score": 54579,
+      "tags": ["n"]
+    },
+    {
+      "word": "discretionary account",
+      "score": 54578,
+      "tags": ["n"]
+    },
+    {
+      "word": "banknote",
+      "score": 54577,
+      "tags": ["n"]
+    },
+    {
+      "word": "account book",
+      "score": 54576,
+      "tags": ["n"]
+    },
+    {
+      "word": "credit card",
+      "score": 54575,
+      "tags": ["n"]
+    },
+    {
+      "word": "interest bearing",
+      "score": 54574,
+      "tags": ["n"]
+    },
+    {
+      "word": "saving",
+      "score": 54573,
+      "tags": ["n"]
+    },
+    {
+      "word": "silver certificate",
+      "score": 54572,
+      "tags": ["n"]
+    },
+    {
+      "word": "monetary standard",
+      "score": 54571,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "treasury bond",
+      "score": 54570,
+      "tags": ["n"]
+    },
+    {
+      "word": "budgeting",
+      "score": 54569,
+      "tags": ["n"]
+    },
+    {
+      "word": "bank clerk",
+      "score": 54568,
+      "tags": ["n"]
+    },
+    {
+      "word": "central bank",
+      "score": 54567,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "building society",
+      "score": 54566,
+      "tags": ["n"]
+    },
+    {
+      "word": "creditcard",
+      "score": 54565,
+      "tags": ["n"]
+    },
+    {
+      "word": "pocketbook",
+      "score": 54564,
+      "tags": ["n"]
+    },
+    {
+      "word": "investment bank",
+      "score": 54563,
+      "tags": ["n"]
+    },
+    {
+      "word": "banknotes",
+      "score": 54562,
+      "tags": ["n"]
+    },
+    {
+      "word": "downpayment",
+      "score": 54561,
+      "tags": ["n"]
+    },
+    {
+      "word": "tax deduction",
+      "score": 54560,
+      "tags": ["n"]
+    },
+    {
+      "word": "secured loan",
+      "score": 54559,
+      "tags": ["n"]
+    },
+    {
+      "word": "cold storage",
+      "score": 54558,
+      "tags": ["n"]
+    },
+    {
+      "word": "depositor",
+      "score": 54557,
+      "tags": ["n"]
+    },
+    {
+      "word": "social security",
+      "score": 54556,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "retirement",
+      "score": 54555,
+      "tags": ["n"]
+    },
+    {
+      "word": "endowment fund",
+      "score": 54554,
+      "tags": ["n"]
+    },
+    {
+      "word": "banking industry",
+      "score": 54553,
+      "tags": ["n"]
+    },
+    {
+      "word": "home loan",
+      "score": 54552,
+      "tags": ["n"]
+    },
+    {
+      "word": "wire transfer",
+      "score": 54551,
+      "tags": ["n"]
+    },
+    {
+      "word": "fiat money",
+      "score": 54550,
+      "tags": ["n"]
+    },
+    {
+      "word": "income tax",
+      "score": 54549,
+      "tags": ["n"]
+    },
+    {
+      "word": "financially",
+      "score": 54548,
+      "tags": ["adv"]
+    },
+    {
+      "word": "liquid assets",
+      "score": 54547,
+      "tags": ["n"]
+    },
+    {
+      "word": "compound interest",
+      "score": 54546,
+      "tags": ["n"]
+    },
+    {
+      "word": "direct debit",
+      "score": 54545,
+      "tags": ["n"]
+    },
+    {
+      "word": "payroll check",
+      "score": 54544,
+      "tags": ["n"]
+    },
+    {
+      "word": "money supply",
+      "score": 54543,
+      "tags": ["n"]
+    },
+    {
+      "word": "financial aid",
+      "score": 54542,
+      "tags": ["n"]
+    },
+    {
+      "word": "treasury bill",
+      "score": 54541,
+      "tags": ["n"]
+    },
+    {
+      "word": "safekeeping",
+      "score": 54540,
+      "tags": ["n"]
+    },
+    {
+      "word": "reserve bank",
+      "score": 54539,
+      "tags": ["n"]
+    },
+    {
+      "word": "citibank",
+      "score": 54538,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "investment",
+      "score": 14232577,
+      "tags": ["syn", "n", "results_type:primary_rel"]
+    },
+    {
+      "word": "investments",
+      "score": 6879397,
+      "tags": ["n"]
+    },
+    {
+      "word": "reinvesting",
+      "score": 6239217,
+      "tags": ["v"]
+    },
+    {
+      "word": "investors",
+      "score": 5734723,
+      "tags": ["n"]
+    },
+    {
+      "word": "spending",
+      "score": 5440838,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "devoting",
+      "score": 4983766,
+      "tags": ["v"]
+    },
+    {
+      "word": "capital",
+      "score": 4745041,
+      "tags": ["n"]
+    },
+    {
+      "word": "reinvestment",
+      "score": 4678036,
+      "tags": ["n"]
+    },
+    {
+      "word": "funding",
+      "score": 4388665,
+      "tags": ["n"]
+    },
+    {
+      "word": "pouring",
+      "score": 4339918,
+      "tags": ["adj", "n"]
+    },
+    {
+      "word": "putting",
+      "score": 4317619,
+      "tags": ["n"]
+    },
+    {
+      "word": "capitalizing",
+      "score": 4015923,
+      "tags": ["v"]
+    },
+    {
+      "word": "placing",
+      "score": 3877025,
+      "tags": ["n"]
+    },
+    {
+      "word": "reversing",
+      "score": 3748705,
+      "tags": ["n"]
+    },
+    {
+      "word": "vesting",
+      "score": 3353258,
+      "tags": ["n"]
+    },
+    {
+      "word": "reversal",
+      "score": 2867149,
+      "tags": ["n"]
+    },
+    {
+      "word": "put",
+      "score": 2819809,
+      "tags": ["v"]
+    },
+    {
+      "word": "reversed",
+      "score": 2556677,
+      "tags": ["adj"]
+    },
+    {
+      "word": "reverse",
+      "score": 2451464,
+      "tags": ["v"]
+    },
+    {
+      "word": "placement",
+      "score": 2316818,
+      "tags": ["n"]
+    },
+    {
+      "word": "investissement",
+      "score": 51008,
+      "tags": ["n"]
+    },
+    {
+      "word": "invest in",
+      "score": 51005,
+      "tags": ["n"]
+    },
+    {
+      "word": "investible",
+      "score": 51001,
+      "tags": ["adj"]
+    },
+    {
+      "word": "reinvest",
+      "score": 50996,
+      "tags": ["v"]
+    },
+    {
+      "word": "index fund",
+      "score": 50995,
+      "tags": ["n"]
+    },
+    {
+      "word": "reinvested",
+      "score": 50994,
+      "tags": ["v"]
+    },
+    {
+      "word": "investment company",
+      "score": 50993,
+      "tags": ["n"]
+    },
+    {
+      "word": "stockmarket",
+      "score": 50992,
+      "tags": ["n"]
+    },
+    {
+      "word": "stock market",
+      "score": 50991,
+      "tags": ["n"]
+    },
+    {
+      "word": "equities",
+      "score": 50990,
+      "tags": ["n"]
+    },
+    {
+      "word": "financial",
+      "score": 50989,
+      "tags": ["adj"]
+    },
+    {
+      "word": "stocks",
+      "score": 50988,
+      "tags": ["n"]
+    },
+    {
+      "word": "capital investment",
+      "score": 50987,
+      "tags": ["n"]
+    },
+    {
+      "word": "holdings",
+      "score": 50986,
+      "tags": ["n"]
+    },
+    {
+      "word": "securities",
+      "score": 50985,
+      "tags": ["n"]
+    },
+    {
+      "word": "equity capital",
+      "score": 50984,
+      "tags": ["n"]
+    },
+    {
+      "word": "savings",
+      "score": 50983,
+      "tags": ["n"]
+    },
+    {
+      "word": "venture capital",
+      "score": 50982,
+      "tags": ["n"]
+    },
+    {
+      "word": "equity",
+      "score": 50981,
+      "tags": ["n"]
+    },
+    {
+      "word": "profit",
+      "score": 50980,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "dividends",
+      "score": 50979,
+      "tags": ["n"]
+    },
+    {
+      "word": "valuations",
+      "score": 50978,
+      "tags": ["n"]
+    },
+    {
+      "word": "financing",
+      "score": 50977,
+      "tags": ["n"]
+    },
+    {
+      "word": "capital market",
+      "score": 50976,
+      "tags": ["n"]
+    },
+    {
+      "word": "buy into",
+      "score": 50975,
+      "tags": ["n"]
+    },
+    {
+      "word": "purchasing",
+      "score": 50974,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "finance",
+      "score": 50973,
+      "tags": ["n"]
+    },
+    {
+      "word": "buying",
+      "score": 50972,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "trading",
+      "score": 50971,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "profitability",
+      "score": 50970,
+      "tags": ["n"]
+    },
+    {
+      "word": "valuation",
+      "score": 50969,
+      "tags": ["n"]
+    },
+    {
+      "word": "profits",
+      "score": 50968,
+      "tags": ["n"]
+    },
+    {
+      "word": "seed money",
+      "score": 50967,
+      "tags": ["n"]
+    },
+    {
+      "word": "investment bank",
+      "score": 50966,
+      "tags": ["n"]
+    },
+    {
+      "word": "finances",
+      "score": 50965,
+      "tags": ["n"]
+    },
+    {
+      "word": "brokerage",
+      "score": 50964,
+      "tags": ["n"]
+    },
+    {
+      "word": "financial risk",
+      "score": 50963,
+      "tags": ["n"]
+    },
+    {
+      "word": "speculator",
+      "score": 50962,
+      "tags": ["n"]
+    },
+    {
+      "word": "diversify",
+      "score": 50961,
+      "tags": ["v"]
+    },
+    {
+      "word": "dividend",
+      "score": 50960,
+      "tags": ["n"]
+    },
+    {
+      "word": "shareholding",
+      "score": 50959,
+      "tags": ["n"]
+    },
+    {
+      "word": "funds",
+      "score": 50958,
+      "tags": ["n"]
+    },
+    {
+      "word": "economic",
+      "score": 50957,
+      "tags": ["n"]
+    },
+    {
+      "word": "betting",
+      "score": 50956,
+      "tags": ["v"]
+    },
+    {
+      "word": "capital gain",
+      "score": 50955,
+      "tags": ["n"]
+    },
+    {
+      "word": "share capital",
+      "score": 50954,
+      "tags": ["n"]
+    },
+    {
+      "word": "buy in",
+      "score": 50953,
+      "tags": ["n"]
+    },
+    {
+      "word": "diversification",
+      "score": 50952,
+      "tags": ["n"]
+    },
+    {
+      "word": "hedge fund",
+      "score": 50951,
+      "tags": ["n"]
+    },
+    {
+      "word": "shares",
+      "score": 50950,
+      "tags": ["n"]
+    },
+    {
+      "word": "entrepreneurship",
+      "score": 50949,
+      "tags": ["n"]
+    },
+    {
+      "word": "earning",
+      "score": 50948,
+      "tags": ["v"]
+    },
+    {
+      "word": "moneymaking",
+      "score": 50947,
+      "tags": ["n"]
+    },
+    {
+      "word": "financially",
+      "score": 50946,
+      "tags": ["adv"]
+    },
+    {
+      "word": "market",
+      "score": 50945,
+      "tags": ["n"]
+    },
+    {
+      "word": "smart money",
+      "score": 50944,
+      "tags": ["n"]
+    },
+    {
+      "word": "bull market",
+      "score": 50943,
+      "tags": ["n"]
+    },
+    {
+      "word": "stockbroking",
+      "score": 50942,
+      "tags": ["n"]
+    },
+    {
+      "word": "private placement",
+      "score": 50941,
+      "tags": ["n"]
+    },
+    {
+      "word": "liquid assets",
+      "score": 50940,
+      "tags": ["n"]
+    },
+    {
+      "word": "staking",
+      "score": 50939,
+      "tags": ["v"]
+    },
+    {
+      "word": "markets",
+      "score": 50937,
+      "tags": ["n"]
+    },
+    {
+      "word": "make money",
+      "score": 50936,
+      "tags": ["n"]
+    },
+    {
+      "word": "profit sharing",
+      "score": 50935,
+      "tags": ["n"]
+    },
+    {
+      "word": "profitable",
+      "score": 50934,
+      "tags": ["adj"]
+    },
+    {
+      "word": "compound interest",
+      "score": 50933,
+      "tags": ["n"]
+    },
+    {
+      "word": "financials",
+      "score": 50932,
+      "tags": ["n"]
+    },
+    {
+      "word": "entrepreneurial",
+      "score": 50931,
+      "tags": ["adj"]
+    },
+    {
+      "word": "purchase",
+      "score": 50930,
+      "tags": ["n"]
+    },
+    {
+      "word": "accumulating",
+      "score": 50929,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "monetary",
+      "score": 50928,
+      "tags": ["n"]
+    },
+    {
+      "word": "savings account",
+      "score": 50927,
+      "tags": ["n"]
+    },
+    {
+      "word": "nest egg",
+      "score": 50926,
+      "tags": ["n"]
+    },
+    {
+      "word": "money",
+      "score": 50925,
+      "tags": ["n"]
+    },
+    {
+      "word": "profiting",
+      "score": 50924,
+      "tags": ["v"]
+    },
+    {
+      "word": "mutual fund",
+      "score": 50923,
+      "tags": ["n"]
+    },
+    {
+      "word": "liquidity",
+      "score": 50922,
+      "tags": ["n"]
+    },
+    {
+      "word": "asset management",
+      "score": 50921,
+      "tags": ["n"]
+    },
+    {
+      "word": "profitably",
+      "score": 50920,
+      "tags": ["adv"]
+    },
+    {
+      "word": "leveraging",
+      "score": 50919,
+      "tags": ["n"]
+    },
+    {
+      "word": "indebtedness",
+      "score": 7513638,
+      "tags": ["n", "results_type:primary_rel"]
+    },
+    {
+      "word": "repayment",
+      "score": 6502195,
+      "tags": ["n"]
+    },
+    {
+      "word": "loans",
+      "score": 5802793,
+      "tags": ["n"]
+    },
+    {
+      "word": "liabilities",
+      "score": 5729191,
+      "tags": ["n"]
+    },
+    {
+      "word": "debtor",
+      "score": 5616057,
+      "tags": ["n"]
+    },
+    {
+      "word": "borrowings",
+      "score": 5590141,
+      "tags": ["n"]
+    },
+    {
+      "word": "obligations",
+      "score": 5575787,
+      "tags": ["n"]
+    },
+    {
+      "word": "creditor",
+      "score": 5551675,
+      "tags": ["n"]
+    },
+    {
+      "word": "borrowing",
+      "score": 5539774,
+      "tags": ["n"]
+    },
+    {
+      "word": "arrears",
+      "score": 5525787,
+      "tags": ["n"]
+    },
+    {
+      "word": "obligation",
+      "score": 5482841,
+      "tags": ["n"]
+    },
+    {
+      "word": "owed",
+      "score": 5371481,
+      "tags": ["adj", "v"]
+    },
+    {
+      "word": "deficit",
+      "score": 5360898,
+      "tags": ["n"]
+    },
+    {
+      "word": "mortgage",
+      "score": 5326498,
+      "tags": ["n"]
+    },
+    {
+      "word": "indebted",
+      "score": 5032725,
+      "tags": ["adj"]
+    },
+    {
+      "word": "loan",
+      "score": 5014282,
+      "tags": ["n"]
+    },
+    {
+      "word": "forgiveness",
+      "score": 4940211,
+      "tags": ["n"]
+    },
+    {
+      "word": "liability",
+      "score": 4880318,
+      "tags": ["n"]
+    },
+    {
+      "word": "securities",
+      "score": 4626955,
+      "tags": ["n"]
+    },
+    {
+      "word": "receivables",
+      "score": 4570905,
+      "tags": ["n"]
+    },
+    {
+      "word": "bond",
+      "score": 4551495,
+      "tags": ["n"]
+    },
+    {
+      "word": "servitude",
+      "score": 4537576,
+      "tags": ["n"]
+    },
+    {
+      "word": "guilt",
+      "score": 4499756,
+      "tags": ["n"]
+    },
+    {
+      "word": "burden",
+      "score": 4412439,
+      "tags": ["n"]
+    },
+    {
+      "word": "bondage",
+      "score": 4376740,
+      "tags": ["n"]
+    },
+    {
+      "word": "amount",
+      "score": 4375800,
+      "tags": ["n"]
+    },
+    {
+      "word": "credit",
+      "score": 4355266,
+      "tags": ["n"]
+    },
+    {
+      "word": "relief",
+      "score": 4185991,
+      "tags": ["n"]
+    },
+    {
+      "word": "lending",
+      "score": 4181670,
+      "tags": ["n"]
+    },
+    {
+      "word": "hipc",
+      "score": 4075916,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "shortfall",
+      "score": 4042902,
+      "tags": ["n"]
+    },
+    {
+      "word": "stock",
+      "score": 4017767,
+      "tags": ["n"]
+    },
+    {
+      "word": "school",
+      "score": 3959407,
+      "tags": ["n"]
+    },
+    {
+      "word": "culpability",
+      "score": 3917340,
+      "tags": ["n"]
+    },
+    {
+      "word": "dette",
+      "score": 3709971,
+      "tags": ["n"]
+    },
+    {
+      "word": "notes",
+      "score": 3707418,
+      "tags": ["n"]
+    },
+    {
+      "word": "duty",
+      "score": 3650300,
+      "tags": ["n"]
+    },
+    {
+      "word": "serfdom",
+      "score": 3630219,
+      "tags": ["n"]
+    },
+    {
+      "word": "financed",
+      "score": 3566229,
+      "tags": ["adj", "v"]
+    },
+    {
+      "word": "receivable",
+      "score": 3558937,
+      "tags": ["n"]
+    },
+    {
+      "word": "scholar",
+      "score": 3433845,
+      "tags": ["n"]
+    },
+    {
+      "word": "borrow",
+      "score": 3420925,
+      "tags": ["v"]
+    },
+    {
+      "word": "debit",
+      "score": 3415693,
+      "tags": ["n"]
+    },
+    {
+      "word": "balance",
+      "score": 3336104,
+      "tags": ["n"]
+    },
+    {
+      "word": "leverage",
+      "score": 3312767,
+      "tags": ["n"]
+    },
+    {
+      "word": "claims",
+      "score": 3277579,
+      "tags": ["n"]
+    },
+    {
+      "word": "heavily",
+      "score": 3259452,
+      "tags": ["adv"]
+    },
+    {
+      "word": "titles",
+      "score": 3098956,
+      "tags": ["n"]
+    },
+    {
+      "word": "clergyman",
+      "score": 3025954,
+      "tags": ["n"]
+    },
+    {
+      "word": "headings",
+      "score": 2976009,
+      "tags": ["n"]
+    },
+    {
+      "word": "clergymen",
+      "score": 2968878,
+      "tags": ["n"]
+    },
+    {
+      "word": "faith",
+      "score": 2920810,
+      "tags": ["n"]
+    },
+    {
+      "word": "claim",
+      "score": 2902029,
+      "tags": ["n"]
+    },
+    {
+      "word": "religion",
+      "score": 2888550,
+      "tags": ["n"]
+    },
+    {
+      "word": "cleric",
+      "score": 2811851,
+      "tags": ["n"]
+    },
+    {
+      "word": "blame",
+      "score": 2627065,
+      "tags": ["n"]
+    },
+    {
+      "word": "fault",
+      "score": 2615321,
+      "tags": ["n"]
+    },
+    {
+      "word": "religious",
+      "score": 2507755,
+      "tags": ["adj"]
+    },
+    {
+      "word": "dion",
+      "score": 2472400,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "obligating",
+      "score": 2459623,
+      "tags": ["v"]
+    },
+    {
+      "word": "dean",
+      "score": 2367427,
+      "tags": ["n"]
+    },
+    {
+      "word": "din",
+      "score": 2334951,
+      "tags": ["n"]
+    },
+    {
+      "word": "credence",
+      "score": 2328541,
+      "tags": ["n"]
+    },
+    {
+      "word": "said",
+      "score": 2254652,
+      "tags": ["n"]
+    },
+    {
+      "word": "ulema",
+      "score": 2069166,
+      "tags": ["n"]
+    },
+    {
+      "word": "dept",
+      "score": 2066600,
+      "tags": ["n"]
+    },
+    {
+      "word": "passive",
+      "score": 1862391,
+      "tags": ["adj"]
+    },
+    {
+      "word": "title",
+      "score": 1846817,
+      "tags": ["n"]
+    },
+    {
+      "word": "eldin",
+      "score": 1811053,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "dine",
+      "score": 1593023,
+      "tags": ["v"]
+    },
+    {
+      "word": "deen",
+      "score": 1102009,
+      "tags": ["n"]
+    },
+    {
+      "word": "uddin",
+      "score": 1008489,
+      "tags": ["n"]
+    },
+    {
+      "word": "aldin",
+      "score": 438204,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "vig",
+      "score": 190494,
+      "tags": ["n"]
+    },
+    {
+      "word": "addin",
+      "score": 50979,
+      "tags": ["n"]
+    },
+    {
+      "word": "cadtm",
+      "score": 50979,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "equity",
+      "score": 50974,
+      "tags": ["n"]
+    },
+    {
+      "word": "bankruptcy",
+      "score": 50973,
+      "tags": ["n"]
+    },
+    {
+      "word": "insolvency",
+      "score": 50972,
+      "tags": ["n"]
+    },
+    {
+      "word": "prepayment penalty",
+      "score": 50970,
+      "tags": ["n"]
+    },
+    {
+      "word": "unsecured debt",
+      "score": 50969,
+      "tags": ["n"]
+    },
+    {
+      "word": "promissory note",
+      "score": 50968,
+      "tags": ["n"]
+    },
+    {
+      "word": "refinancing",
+      "score": 50966,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "subordinated debt",
+      "score": 50965,
+      "tags": ["n"]
+    },
+    {
+      "word": "balance sheet",
+      "score": 50963,
+      "tags": ["n"]
+    },
+    {
+      "word": "debtee",
+      "score": 50962,
+      "tags": ["n"]
+    },
+    {
+      "word": "bonds",
+      "score": 50961,
+      "tags": ["n"]
+    },
+    {
+      "word": "liquidity",
+      "score": 50959,
+      "tags": ["n"]
+    },
+    {
+      "word": "creditors",
+      "score": 50958,
+      "tags": ["n"]
+    },
+    {
+      "word": "defaults",
+      "score": 50957,
+      "tags": ["n"]
+    },
+    {
+      "word": "finances",
+      "score": 50956,
+      "tags": ["n"]
+    },
+    {
+      "word": "lenders",
+      "score": 50955,
+      "tags": ["n"]
+    },
+    {
+      "word": "debtors",
+      "score": 50954,
+      "tags": ["n"]
+    },
+    {
+      "word": "mortgages",
+      "score": 50953,
+      "tags": ["n"]
+    },
+    {
+      "word": "cash flow",
+      "score": 50952,
+      "tags": ["n"]
+    },
+    {
+      "word": "bondholders",
+      "score": 50951,
+      "tags": ["n"]
+    },
+    {
+      "word": "revolving credit",
+      "score": 50950,
+      "tags": ["n"]
+    },
+    {
+      "word": "maturities",
+      "score": 50949,
+      "tags": ["n"]
+    },
+    {
+      "word": "credit side",
+      "score": 50948,
+      "tags": ["n"]
+    },
+    {
+      "word": "financial obligation",
+      "score": 50947,
+      "tags": ["n"]
+    }
+  ],
+  "Memberships": [
+    {
+      "word": "rank",
+      "score": 11781502,
+      "tags": ["syn", "n", "results_type:primary_rel"]
+    },
+    {
+      "word": "subscriptions",
+      "score": 6168316,
+      "tags": ["n"]
+    },
+    {
+      "word": "dues",
+      "score": 5833582,
+      "tags": ["n"]
+    },
+    {
+      "word": "members",
+      "score": 5764110,
+      "tags": ["n"]
+    },
+    {
+      "word": "associations",
+      "score": 5237249,
+      "tags": ["n"]
+    },
+    {
+      "word": "affiliations",
+      "score": 5228999,
+      "tags": ["n"]
+    },
+    {
+      "word": "affiliation",
+      "score": 5147629,
+      "tags": ["n"]
+    },
+    {
+      "word": "member",
+      "score": 5071987,
+      "tags": ["n"]
+    },
+    {
+      "word": "allegiances",
+      "score": 4707209,
+      "tags": ["n"]
+    },
+    {
+      "word": "positions",
+      "score": 4197401,
+      "tags": ["n"]
+    },
+    {
+      "word": "participation",
+      "score": 4138844,
+      "tags": ["n"]
+    },
+    {
+      "word": "premiums",
+      "score": 4032821,
+      "tags": ["n"]
+    },
+    {
+      "word": "partnerships",
+      "score": 3814976,
+      "tags": ["n"]
+    },
+    {
+      "word": "fee",
+      "score": 3765290,
+      "tags": ["n"]
+    },
+    {
+      "word": "contributions",
+      "score": 3683382,
+      "tags": ["n"]
+    },
+    {
+      "word": "posts",
+      "score": 3652693,
+      "tags": ["n"]
+    },
+    {
+      "word": "possessions",
+      "score": 3594084,
+      "tags": ["n"]
+    },
+    {
+      "word": "shareholdings",
+      "score": 3519394,
+      "tags": ["n"]
+    },
+    {
+      "word": "belonging",
+      "score": 3439826,
+      "tags": ["n"]
+    },
+    {
+      "word": "belongings",
+      "score": 3397879,
+      "tags": ["n"]
+    },
+    {
+      "word": "participations",
+      "score": 3334558,
+      "tags": ["n"]
+    },
+    {
+      "word": "accession",
+      "score": 3180974,
+      "tags": ["n"]
+    },
+    {
+      "word": "accessions",
+      "score": 2965590,
+      "tags": ["n"]
+    },
+    {
+      "word": "compositions",
+      "score": 2911226,
+      "tags": ["n"]
+    },
+    {
+      "word": "adherence",
+      "score": 2449088,
+      "tags": ["n"]
+    },
+    {
+      "word": "composites",
+      "score": 2401989,
+      "tags": ["n"]
+    },
+    {
+      "word": "composition",
+      "score": 2301812,
+      "tags": ["n"]
+    },
+    {
+      "word": "represented",
+      "score": 2280141,
+      "tags": ["adj"]
+    },
+    {
+      "word": "adhesion",
+      "score": 2041851,
+      "tags": ["n"]
+    },
+    {
+      "word": "adhesions",
+      "score": 1932583,
+      "tags": ["n"]
+    },
+    {
+      "word": "trainsets",
+      "score": 1882002,
+      "tags": ["n"]
+    },
+    {
+      "word": "states",
+      "score": 1646466,
+      "tags": ["n"]
+    },
+    {
+      "word": "adherences",
+      "score": 51226,
+      "tags": ["n"]
+    },
+    {
+      "word": "subscription",
+      "score": 51222,
+      "tags": ["n"]
+    },
+    {
+      "word": "subscribers",
+      "score": 51221,
+      "tags": ["n"]
+    },
+    {
+      "word": "organizations",
+      "score": 51220,
+      "tags": ["n"]
+    },
+    {
+      "word": "registrants",
+      "score": 51219,
+      "tags": ["n"]
+    },
+    {
+      "word": "associateships",
+      "score": 51218,
+      "tags": ["n"]
+    },
+    {
+      "word": "service club",
+      "score": 51217,
+      "tags": ["n"]
+    },
+    {
+      "word": "organisations",
+      "score": 51216,
+      "tags": ["n"]
+    },
+    {
+      "word": "cardholders",
+      "score": 51215,
+      "tags": ["n"]
+    },
+    {
+      "word": "clubs",
+      "score": 51214,
+      "tags": ["n"]
+    },
+    {
+      "word": "founder member",
+      "score": 51213,
+      "tags": ["n"]
+    },
+    {
+      "word": "sponsors",
+      "score": 51212,
+      "tags": ["n"]
+    },
+    {
+      "word": "subscriber",
+      "score": 51211,
+      "tags": ["n"]
+    },
+    {
+      "word": "tickets",
+      "score": 51210,
+      "tags": ["n"]
+    },
+    {
+      "word": "season ticket",
+      "score": 51208,
+      "tags": ["n"]
+    },
+    {
+      "word": "joining",
+      "score": 51207,
+      "tags": ["v"]
+    },
+    {
+      "word": "renewals",
+      "score": 51206,
+      "tags": ["n"]
+    },
+    {
+      "word": "organisation",
+      "score": 51204,
+      "tags": ["n"]
+    },
+    {
+      "word": "sponsoring",
+      "score": 51203,
+      "tags": ["v"]
+    },
+    {
+      "word": "sponsorship",
+      "score": 51202,
+      "tags": ["n"]
+    },
+    {
+      "word": "attendance",
+      "score": 51201,
+      "tags": ["n"]
+    },
+    {
+      "word": "accounts",
+      "score": 51200,
+      "tags": ["n"]
+    },
+    {
+      "word": "customer base",
+      "score": 51198,
+      "tags": ["n"]
+    },
+    {
+      "word": "enrollees",
+      "score": 51197,
+      "tags": ["n"]
+    },
+    {
+      "word": "purchases",
+      "score": 51196,
+      "tags": ["n"]
+    },
+    {
+      "word": "meetings",
+      "score": 51195,
+      "tags": ["n"]
+    },
+    {
+      "word": "affiliates",
+      "score": 51194,
+      "tags": ["n"]
+    },
+    {
+      "word": "enrollment",
+      "score": 51193,
+      "tags": ["n"]
+    },
+    {
+      "word": "guilds",
+      "score": 51191,
+      "tags": ["n"]
+    },
+    {
+      "word": "insurances",
+      "score": 51190,
+      "tags": ["n"]
+    },
+    {
+      "word": "member bank",
+      "score": 51189,
+      "tags": ["n"]
+    },
+    {
+      "word": "services",
+      "score": 51188,
+      "tags": ["n"]
+    },
+    {
+      "word": "monthly",
+      "score": 51187,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "societies",
+      "score": 51186,
+      "tags": ["n"]
+    },
+    {
+      "word": "alliances",
+      "score": 51185,
+      "tags": ["n"]
+    },
+    {
+      "word": "participants",
+      "score": 51184,
+      "tags": ["n"]
+    },
+    {
+      "word": "registries",
+      "score": 51183,
+      "tags": ["n"]
+    },
+    {
+      "word": "organization",
+      "score": 51182,
+      "tags": ["n"]
+    },
+    {
+      "word": "registration",
+      "score": 51181,
+      "tags": ["n"]
+    },
+    {
+      "word": "contracts",
+      "score": 51180,
+      "tags": ["n"]
+    },
+    {
+      "word": "associateship",
+      "score": 51179,
+      "tags": ["n"]
+    },
+    {
+      "word": "ownership",
+      "score": 51178,
+      "tags": ["n"]
+    },
+    {
+      "word": "enrolment",
+      "score": 51177,
+      "tags": ["n"]
+    },
+    {
+      "word": "sponsor",
+      "score": 51176,
+      "tags": ["n"]
+    },
+    {
+      "word": "association",
+      "score": 51175,
+      "tags": ["n"]
+    },
+    {
+      "word": "logins",
+      "score": 51174,
+      "tags": ["n"]
+    },
+    {
+      "word": "payments",
+      "score": 51173,
+      "tags": ["n"]
+    },
+    {
+      "word": "attendances",
+      "score": 51172,
+      "tags": ["n"]
+    },
+    {
+      "word": "corporations",
+      "score": 51171,
+      "tags": ["n"]
+    },
+    {
+      "word": "social organization",
+      "score": 51170,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "discounts",
+      "score": 51169,
+      "tags": ["n"]
+    },
+    {
+      "word": "secret society",
+      "score": 51168,
+      "tags": ["n"]
+    },
+    {
+      "word": "businesses",
+      "score": 51167,
+      "tags": ["n"]
+    },
+    {
+      "word": "leagues",
+      "score": 51166,
+      "tags": ["n"]
+    },
+    {
+      "word": "franchises",
+      "score": 51165,
+      "tags": ["n"]
+    },
+    {
+      "word": "health insurance",
+      "score": 51164,
+      "tags": ["n"]
+    },
+    {
+      "word": "loyalty card",
+      "score": 51163,
+      "tags": ["n"]
+    },
+    {
+      "word": "federations",
+      "score": 51162,
+      "tags": ["n"]
+    },
+    {
+      "word": "rosters",
+      "score": 51161,
+      "tags": ["n"]
+    },
+    {
+      "word": "frequenters",
+      "score": 51160,
+      "tags": ["n"]
+    },
+    {
+      "word": "subscribes",
+      "score": 51159,
+      "tags": ["v"]
+    },
+    {
+      "word": "ticketing",
+      "score": 51158,
+      "tags": ["n"]
+    },
+    {
+      "word": "joined",
+      "score": 51156,
+      "tags": ["v"]
+    },
+    {
+      "word": "promotions",
+      "score": 51155,
+      "tags": ["n"]
+    },
+    {
+      "word": "associates",
+      "score": 51154,
+      "tags": ["n"]
+    },
+    {
+      "word": "activations",
+      "score": 51153,
+      "tags": ["n"]
+    },
+    {
+      "word": "cover charge",
+      "score": 51152,
+      "tags": ["n"]
+    },
+    {
+      "word": "societary",
+      "score": 51151,
+      "tags": ["adj"]
+    }
+  ],
+  "shopping": [
+    {
+      "word": "amount",
+      "score": 4375800,
+      "tags": ["n"]
+    },
+    {
+      "word": "balance",
+      "score": 4375800,
+      "tags": ["n"]
+    },
+    {
+      "word": "apparel",
+      "score": 16655652,
+      "tags": ["syn", "n", "results_type:primary_rel"]
+    },
+    {
+      "word": "wear",
+      "score": 13892006,
+      "tags": ["syn", "n", "v", "adv", "adj"]
+    },
+    {
+      "word": "vesture",
+      "score": 13082207,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "wearing apparel",
+      "score": 8736428,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "garments",
+      "score": 7806051,
+      "tags": ["n"]
+    },
+    {
+      "word": "underwear",
+      "score": 6761198,
+      "tags": ["n"]
+    },
+    {
+      "word": "garment",
+      "score": 6644832,
+      "tags": ["n"]
+    },
+    {
+      "word": "attire",
+      "score": 6574820,
+      "tags": ["n"]
+    },
+    {
+      "word": "dress",
+      "score": 6529962,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "textiles",
+      "score": 6297762,
+      "tags": ["n"]
+    },
+    {
+      "word": "costume",
+      "score": 6178226,
+      "tags": ["n"]
+    },
+    {
+      "word": "sportswear",
+      "score": 6165162,
+      "tags": ["n"]
+    },
+    {
+      "word": "outerwear",
+      "score": 6107967,
+      "tags": ["n"]
+    },
+    {
+      "word": "dresses",
+      "score": 6014760,
+      "tags": ["n"]
+    },
+    {
+      "word": "outfits",
+      "score": 5988563,
+      "tags": ["n"]
+    },
+    {
+      "word": "wardrobe",
+      "score": 5968844,
+      "tags": ["n"]
+    },
+    {
+      "word": "fashion",
+      "score": 5922934,
+      "tags": ["n"]
+    },
+    {
+      "word": "costumes",
+      "score": 5912006,
+      "tags": ["n"]
+    },
+    {
+      "word": "shirt",
+      "score": 5707879,
+      "tags": ["n"]
+    },
+    {
+      "word": "outfit",
+      "score": 5632682,
+      "tags": ["n"]
+    },
+    {
+      "word": "linen",
+      "score": 5489245,
+      "tags": ["n"]
+    },
+    {
+      "word": "lingerie",
+      "score": 5462916,
+      "tags": ["n"]
+    },
+    {
+      "word": "fabric",
+      "score": 5400773,
+      "tags": ["n"]
+    },
+    {
+      "word": "textile",
+      "score": 5307724,
+      "tags": ["n"]
+    },
+    {
+      "word": "gear",
+      "score": 5204149,
+      "tags": ["n"]
+    },
+    {
+      "word": "robes",
+      "score": 5089587,
+      "tags": ["n"]
+    },
+    {
+      "word": "coat",
+      "score": 5054889,
+      "tags": ["n"]
+    },
+    {
+      "word": "dressing",
+      "score": 5001979,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "robe",
+      "score": 4910249,
+      "tags": ["n"]
+    },
+    {
+      "word": "suits",
+      "score": 4737590,
+      "tags": ["n"]
+    },
+    {
+      "word": "laundry",
+      "score": 4675528,
+      "tags": ["n"]
+    },
+    {
+      "word": "sleepwear",
+      "score": 4675237,
+      "tags": ["n"]
+    },
+    {
+      "word": "wears",
+      "score": 4622185,
+      "tags": ["v"]
+    },
+    {
+      "word": "tailoring",
+      "score": 4562866,
+      "tags": ["n"]
+    },
+    {
+      "word": "suit",
+      "score": 4239705,
+      "tags": ["n"]
+    },
+    {
+      "word": "dressmaking",
+      "score": 4235929,
+      "tags": ["n"]
+    },
+    {
+      "word": "uniform",
+      "score": 4217628,
+      "tags": ["n"]
+    },
+    {
+      "word": "children",
+      "score": 4153250,
+      "tags": ["n"]
+    },
+    {
+      "word": "manufacture",
+      "score": 4133527,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "stuff",
+      "score": 4125817,
+      "tags": ["n"]
+    },
+    {
+      "word": "spacesuit",
+      "score": 3928229,
+      "tags": ["n"]
+    },
+    {
+      "word": "lifejacket",
+      "score": 3539202,
+      "tags": ["n"]
+    },
+    {
+      "word": "claws",
+      "score": 3284676,
+      "tags": ["n"]
+    },
+    {
+      "word": "inflatable",
+      "score": 3207499,
+      "tags": ["adj"]
+    },
+    {
+      "word": "duds",
+      "score": 3196292,
+      "tags": ["n"]
+    },
+    {
+      "word": "woodworking",
+      "score": 3061098,
+      "tags": ["n"]
+    },
+    {
+      "word": "confection",
+      "score": 2898578,
+      "tags": ["n"]
+    },
+    {
+      "word": "lap",
+      "score": 2539750,
+      "tags": ["n"]
+    },
+    {
+      "word": "oil",
+      "score": 2162064,
+      "tags": ["n"]
+    },
+    {
+      "word": "plugins",
+      "score": 2052155,
+      "tags": ["n"]
+    },
+    {
+      "word": "held",
+      "score": 1776812,
+      "tags": ["adj"]
+    },
+    {
+      "word": "add-ins",
+      "score": 50805,
+      "tags": ["n"]
+    },
+    {
+      "word": "add-ons",
+      "score": 50805,
+      "tags": ["n"]
+    },
+    {
+      "word": "plug-ins",
+      "score": 50805,
+      "tags": ["n"]
+    },
+    {
+      "word": "apparels",
+      "score": 50793,
+      "tags": ["n"]
+    },
+    {
+      "word": "fashions",
+      "score": 50791,
+      "tags": ["n"]
+    },
+    {
+      "word": "shirting",
+      "score": 50789,
+      "tags": ["n"]
+    },
+    {
+      "word": "underclothing",
+      "score": 50787,
+      "tags": ["n"]
+    },
+    {
+      "word": "fabrics",
+      "score": 50786,
+      "tags": ["n"]
+    },
+    {
+      "word": "attires",
+      "score": 50785,
+      "tags": ["n"]
+    },
+    {
+      "word": "in fashion",
+      "score": 50783,
+      "tags": ["n"]
+    },
+    {
+      "word": "clothier",
+      "score": 50781,
+      "tags": ["n"]
+    },
+    {
+      "word": "shirts",
+      "score": 50780,
+      "tags": ["n"]
+    },
+    {
+      "word": "formalwear",
+      "score": 50779,
+      "tags": ["n"]
+    },
+    {
+      "word": "street clothes",
+      "score": 50778,
+      "tags": ["n"]
+    },
+    {
+      "word": "activewear",
+      "score": 50777,
+      "tags": ["n"]
+    },
+    {
+      "word": "sartorial",
+      "score": 50775,
+      "tags": ["adj"]
+    },
+    {
+      "word": "wearing",
+      "score": 50774,
+      "tags": ["v"]
+    },
+    {
+      "word": "soft goods",
+      "score": 50772,
+      "tags": ["n"]
+    },
+    {
+      "word": "knitwear",
+      "score": 50769,
+      "tags": ["n"]
+    },
+    {
+      "word": "fashionable",
+      "score": 50768,
+      "tags": ["adj"]
+    },
+    {
+      "word": "clothiers",
+      "score": 50767,
+      "tags": ["n"]
+    },
+    {
+      "word": "underclothes",
+      "score": 50766,
+      "tags": ["n"]
+    },
+    {
+      "word": "womenswear",
+      "score": 50765,
+      "tags": ["n"]
+    },
+    {
+      "word": "raiment",
+      "score": 50763,
+      "tags": ["n"]
+    },
+    {
+      "word": "menswear",
+      "score": 50762,
+      "tags": ["n"]
+    },
+    {
+      "word": "uniforms",
+      "score": 50761,
+      "tags": ["n"]
+    },
+    {
+      "word": "dressed",
+      "score": 50759,
+      "tags": ["v"]
+    },
+    {
+      "word": "clothes peg",
+      "score": 50758,
+      "tags": ["n"]
+    },
+    {
+      "word": "foundation garment",
+      "score": 50757,
+      "tags": ["n"]
+    },
+    {
+      "word": "polyester",
+      "score": 50756,
+      "tags": ["n"]
+    },
+    {
+      "word": "clothes pin",
+      "score": 50755,
+      "tags": ["n"]
+    },
+    {
+      "word": "rainwear",
+      "score": 50754,
+      "tags": ["n"]
+    },
+    {
+      "word": "neckwear",
+      "score": 50753,
+      "tags": ["n"]
+    },
+    {
+      "word": "jacket",
+      "score": 50750,
+      "tags": ["n"]
+    },
+    {
+      "word": "costumery",
+      "score": 50749,
+      "tags": ["n"]
+    },
+    {
+      "word": "dress code",
+      "score": 50748,
+      "tags": ["n"]
+    },
+    {
+      "word": "clothespress",
+      "score": 50747,
+      "tags": ["n"]
+    },
+    {
+      "word": "hoodies",
+      "score": 50746,
+      "tags": ["n"]
+    },
+    {
+      "word": "pants",
+      "score": 50745,
+      "tags": ["n"]
+    },
+    {
+      "word": "trousers",
+      "score": 50744,
+      "tags": ["n"]
+    },
+    {
+      "word": "hoodie",
+      "score": 50743,
+      "tags": ["n"]
+    },
+    {
+      "word": "raiments",
+      "score": 50742,
+      "tags": ["n"]
+    },
+    {
+      "word": "sweatshirt",
+      "score": 50741,
+      "tags": ["n"]
+    },
+    {
+      "word": "blouses",
+      "score": 50740,
+      "tags": ["n"]
+    },
+    {
+      "word": "overshirt",
+      "score": 50739,
+      "tags": ["n"]
+    },
+    {
+      "word": "garmented",
+      "score": 50738,
+      "tags": ["adj"]
+    },
+    {
+      "word": "undergarment",
+      "score": 50736,
+      "tags": ["n"]
+    },
+    {
+      "word": "tee shirt",
+      "score": 50734,
+      "tags": ["n"]
+    },
+    {
+      "word": "jackets",
+      "score": 50733,
+      "tags": ["n"]
+    },
+    {
+      "word": "place",
+      "score": 11266972,
+      "tags": ["syn", "n", "results_type:primary_rel"]
+    },
+    {
+      "word": "footwear",
+      "score": 7948006,
+      "tags": ["n"]
+    },
+    {
+      "word": "sneakers",
+      "score": 7923257,
+      "tags": ["n"]
+    },
+    {
+      "word": "boots",
+      "score": 7745804,
+      "tags": ["n"]
+    },
+    {
+      "word": "sandals",
+      "score": 7270631,
+      "tags": ["n"]
+    },
+    {
+      "word": "slippers",
+      "score": 7218219,
+      "tags": ["n"]
+    },
+    {
+      "word": "soles",
+      "score": 6538343,
+      "tags": ["n"]
+    },
+    {
+      "word": "socks",
+      "score": 6466335,
+      "tags": ["n"]
+    },
+    {
+      "word": "laces",
+      "score": 6204362,
+      "tags": ["n"]
+    },
+    {
+      "word": "heels",
+      "score": 5849519,
+      "tags": ["n"]
+    },
+    {
+      "word": "stockings",
+      "score": 5668060,
+      "tags": ["n"]
+    },
+    {
+      "word": "feet",
+      "score": 5623948,
+      "tags": ["n"]
+    },
+    {
+      "word": "brogues",
+      "score": 5554931,
+      "tags": ["n"]
+    },
+    {
+      "word": "shoelaces",
+      "score": 5450532,
+      "tags": ["n"]
+    },
+    {
+      "word": "booties",
+      "score": 5441413,
+      "tags": ["n"]
+    },
+    {
+      "word": "boot",
+      "score": 5436000,
+      "tags": ["n"]
+    },
+    {
+      "word": "clogs",
+      "score": 5055703,
+      "tags": ["n"]
+    },
+    {
+      "word": "trainers",
+      "score": 5030776,
+      "tags": ["n"]
+    },
+    {
+      "word": "knickers",
+      "score": 4971683,
+      "tags": ["n"]
+    },
+    {
+      "word": "hooves",
+      "score": 4725495,
+      "tags": ["n"]
+    },
+    {
+      "word": "wedges",
+      "score": 4696362,
+      "tags": ["n"]
+    },
+    {
+      "word": "bottoms",
+      "score": 4594711,
+      "tags": ["n"]
+    },
+    {
+      "word": "pumps",
+      "score": 4583848,
+      "tags": ["n"]
+    },
+    {
+      "word": "baskets",
+      "score": 4529181,
+      "tags": ["n"]
+    },
+    {
+      "word": "liners",
+      "score": 4340403,
+      "tags": ["n"]
+    },
+    {
+      "word": "irons",
+      "score": 4089285,
+      "tags": ["n"]
+    },
+    {
+      "word": "skins",
+      "score": 4062983,
+      "tags": ["n"]
+    },
+    {
+      "word": "corsets",
+      "score": 4061231,
+      "tags": ["n"]
+    },
+    {
+      "word": "shackles",
+      "score": 3881151,
+      "tags": ["n"]
+    },
+    {
+      "word": "hoofs",
+      "score": 3766764,
+      "tags": ["n"]
+    },
+    {
+      "word": "sleepers",
+      "score": 3595609,
+      "tags": ["n"]
+    },
+    {
+      "word": "kicks",
+      "score": 3516843,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "needles",
+      "score": 3445237,
+      "tags": ["n"]
+    },
+    {
+      "word": "footings",
+      "score": 3367122,
+      "tags": ["n"]
+    },
+    {
+      "word": "fetters",
+      "score": 3137387,
+      "tags": ["n"]
+    },
+    {
+      "word": "pushups",
+      "score": 2955313,
+      "tags": ["n"]
+    },
+    {
+      "word": "purchased",
+      "score": 2898938,
+      "tags": ["v"]
+    },
+    {
+      "word": "sneaks",
+      "score": 2820532,
+      "tags": ["n"]
+    },
+    {
+      "word": "traces",
+      "score": 2657251,
+      "tags": ["n"]
+    },
+    {
+      "word": "stubs",
+      "score": 2585262,
+      "tags": ["n"]
+    },
+    {
+      "word": "crunches",
+      "score": 2165178,
+      "tags": ["n"]
+    },
+    {
+      "word": "trace",
+      "score": 1947040,
+      "tags": ["n"]
+    },
+    {
+      "word": "zapata",
+      "score": 1905426,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "rooks",
+      "score": 1652042,
+      "tags": ["n"]
+    },
+    {
+      "word": "crt",
+      "score": 1461902,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "botas",
+      "score": 50755,
+      "tags": ["n"]
+    },
+    {
+      "word": "chaussures",
+      "score": 50755,
+      "tags": ["n"]
+    },
+    {
+      "word": "push-ups",
+      "score": 50755,
+      "tags": ["n"]
+    },
+    {
+      "word": "soulier",
+      "score": 50755,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "swampers",
+      "score": 50755,
+      "tags": ["n"]
+    },
+    {
+      "word": "nikes",
+      "score": 50749,
+      "tags": ["n"]
+    },
+    {
+      "word": "loafers",
+      "score": 50748,
+      "tags": ["n"]
+    },
+    {
+      "word": "clothes",
+      "score": 50747,
+      "tags": ["n"]
+    },
+    {
+      "word": "cleats",
+      "score": 50746,
+      "tags": ["n"]
+    },
+    {
+      "word": "jeans",
+      "score": 50745,
+      "tags": ["n"]
+    },
+    {
+      "word": "insoles",
+      "score": 50742,
+      "tags": ["n"]
+    },
+    {
+      "word": "stilettos",
+      "score": 50741,
+      "tags": ["n"]
+    },
+    {
+      "word": "pants",
+      "score": 50740,
+      "tags": ["n"]
+    },
+    {
+      "word": "plimsolls",
+      "score": 50739,
+      "tags": ["n"]
+    },
+    {
+      "word": "underwear",
+      "score": 50738,
+      "tags": ["n"]
+    },
+    {
+      "word": "oxfords",
+      "score": 50736,
+      "tags": ["n"]
+    },
+    {
+      "word": "tights",
+      "score": 50735,
+      "tags": ["n"]
+    },
+    {
+      "word": "slingbacks",
+      "score": 50734,
+      "tags": ["n"]
+    },
+    {
+      "word": "cowboy boots",
+      "score": 50733,
+      "tags": ["n"]
+    },
+    {
+      "word": "trousers",
+      "score": 50732,
+      "tags": ["n"]
+    },
+    {
+      "word": "wellington boots",
+      "score": 50730,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "underpants",
+      "score": 50729,
+      "tags": ["n"]
+    },
+    {
+      "word": "keds",
+      "score": 50728,
+      "tags": ["n"]
+    },
+    {
+      "word": "wellies",
+      "score": 50726,
+      "tags": ["n"]
+    },
+    {
+      "word": "overshoes",
+      "score": 50725,
+      "tags": ["n"]
+    },
+    {
+      "word": "underclothing",
+      "score": 50724,
+      "tags": ["n"]
+    },
+    {
+      "word": "wellingtons",
+      "score": 50722,
+      "tags": ["n"]
+    },
+    {
+      "word": "galoshes",
+      "score": 50721,
+      "tags": ["n"]
+    },
+    {
+      "word": "undergarments",
+      "score": 50720,
+      "tags": ["n"]
+    },
+    {
+      "word": "pajamas",
+      "score": 50719,
+      "tags": ["n"]
+    },
+    {
+      "word": "resole",
+      "score": 50718,
+      "tags": ["n"]
+    },
+    {
+      "word": "sunglasses",
+      "score": 50717,
+      "tags": ["n"]
+    },
+    {
+      "word": "espadrille",
+      "score": 50716,
+      "tags": ["n"]
+    },
+    {
+      "word": "moccasins",
+      "score": 50715,
+      "tags": ["n"]
+    },
+    {
+      "word": "underclothes",
+      "score": 50714,
+      "tags": ["n"]
+    },
+    {
+      "word": "garments",
+      "score": 50713,
+      "tags": ["n"]
+    },
+    {
+      "word": "clodhoppers",
+      "score": 50712,
+      "tags": ["n"]
+    },
+    {
+      "word": "handbags",
+      "score": 50711,
+      "tags": ["n"]
+    },
+    {
+      "word": "mary janes",
+      "score": 50710,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "gloves",
+      "score": 50709,
+      "tags": ["n"]
+    },
+    {
+      "word": "skates",
+      "score": 50708,
+      "tags": ["n"]
+    },
+    {
+      "word": "blue jean",
+      "score": 50707,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "sweatpants",
+      "score": 50706,
+      "tags": ["n"]
+    },
+    {
+      "word": "wingtips",
+      "score": 50705,
+      "tags": ["n"]
+    },
+    {
+      "word": "undies",
+      "score": 50704,
+      "tags": ["n"]
+    },
+    {
+      "word": "snowshoes",
+      "score": 50703,
+      "tags": ["n"]
+    },
+    {
+      "word": "coats",
+      "score": 50702,
+      "tags": ["n"]
+    },
+    {
+      "word": "nighties",
+      "score": 50701,
+      "tags": ["n"]
+    },
+    {
+      "word": "pjs",
+      "score": 50700,
+      "tags": ["n"]
+    },
+    {
+      "word": "patent leather",
+      "score": 50699,
+      "tags": ["n"]
+    },
+    {
+      "word": "brogans",
+      "score": 50698,
+      "tags": ["n"]
+    },
+    {
+      "word": "pantyhose",
+      "score": 50697,
+      "tags": ["n"]
+    },
+    {
+      "word": "leggings",
+      "score": 50696,
+      "tags": ["n"]
+    },
+    {
+      "word": "badminton racquet",
+      "score": 50695,
+      "tags": ["n"]
+    },
+    {
+      "word": "slacks",
+      "score": 50694,
+      "tags": ["n"]
+    }
+  ],
+  "food": [
+    {
+      "word": "amount",
+      "score": 4375800,
+      "tags": ["n"]
+    },
+    {
+      "word": "balance",
+      "score": 4375800,
+      "tags": ["n"]
+    },
+    {
+      "word": "nutrient",
+      "score": 8744976,
+      "tags": ["syn", "n", "results_type:primary_rel"]
+    },
+    {
+      "word": "comestibles",
+      "score": 5438228,
+      "tags": ["n"]
+    },
+    {
+      "word": "foodborne",
+      "score": 5243961,
+      "tags": ["adj"]
+    },
+    {
+      "word": "foodstuffs",
+      "score": 5216318,
+      "tags": ["n"]
+    },
+    {
+      "word": "foodstuff",
+      "score": 5187893,
+      "tags": ["n"]
+    },
+    {
+      "word": "nutrition",
+      "score": 4987666,
+      "tags": ["n"]
+    },
+    {
+      "word": "alimentary",
+      "score": 4802699,
+      "tags": ["adj"]
+    },
+    {
+      "word": "eating",
+      "score": 4724320,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "nutritious",
+      "score": 4718335,
+      "tags": ["adj"]
+    },
+    {
+      "word": "meals",
+      "score": 4711858,
+      "tags": ["n"]
+    },
+    {
+      "word": "alimentation",
+      "score": 4695336,
+      "tags": ["n"]
+    },
+    {
+      "word": "aliments",
+      "score": 4673722,
+      "tags": ["n"]
+    },
+    {
+      "word": "gourmet",
+      "score": 4616422,
+      "tags": ["n"]
+    },
+    {
+      "word": "edible",
+      "score": 4577287,
+      "tags": ["adj"]
+    },
+    {
+      "word": "cooking",
+      "score": 4510891,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "malnutrition",
+      "score": 4420389,
+      "tags": ["n"]
+    },
+    {
+      "word": "nutritional",
+      "score": 4402991,
+      "tags": ["adj"]
+    },
+    {
+      "word": "culinary",
+      "score": 4290965,
+      "tags": ["adj"]
+    },
+    {
+      "word": "foodservice",
+      "score": 4249993,
+      "tags": ["n"]
+    },
+    {
+      "word": "alimentaire",
+      "score": 4224615,
+      "tags": ["n"]
+    },
+    {
+      "word": "meat",
+      "score": 4209216,
+      "tags": ["n"]
+    },
+    {
+      "word": "nourishment",
+      "score": 4086928,
+      "tags": ["n"]
+    },
+    {
+      "word": "meal",
+      "score": 4061434,
+      "tags": ["n"]
+    },
+    {
+      "word": "rations",
+      "score": 4056390,
+      "tags": ["n"]
+    },
+    {
+      "word": "restaurants",
+      "score": 4003884,
+      "tags": ["n"]
+    },
+    {
+      "word": "gastronomic",
+      "score": 3961587,
+      "tags": ["adj"]
+    },
+    {
+      "word": "consumption",
+      "score": 3939366,
+      "tags": ["n"]
+    },
+    {
+      "word": "dietary",
+      "score": 3931066,
+      "tags": ["adj"]
+    },
+    {
+      "word": "hunger",
+      "score": 3902422,
+      "tags": ["n"]
+    },
+    {
+      "word": "agriculture",
+      "score": 3865509,
+      "tags": ["n", "adv"]
+    },
+    {
+      "word": "kitchen",
+      "score": 3849590,
+      "tags": ["n"]
+    },
+    {
+      "word": "subsistence",
+      "score": 3841627,
+      "tags": ["n"]
+    },
+    {
+      "word": "dining",
+      "score": 3827264,
+      "tags": ["n"]
+    },
+    {
+      "word": "cuisine",
+      "score": 3810234,
+      "tags": ["n"]
+    },
+    {
+      "word": "eater",
+      "score": 3802770,
+      "tags": ["n", "adv"]
+    },
+    {
+      "word": "sustenance",
+      "score": 3795816,
+      "tags": ["n"]
+    },
+    {
+      "word": "gastronomy",
+      "score": 3793169,
+      "tags": ["n"]
+    },
+    {
+      "word": "catering",
+      "score": 3784609,
+      "tags": ["n"]
+    },
+    {
+      "word": "agricultural",
+      "score": 3763786,
+      "tags": ["n"]
+    },
+    {
+      "word": "restaurant",
+      "score": 3710627,
+      "tags": ["n"]
+    },
+    {
+      "word": "buffet",
+      "score": 3683583,
+      "tags": ["n"]
+    },
+    {
+      "word": "eat",
+      "score": 3665955,
+      "tags": ["v"]
+    },
+    {
+      "word": "starvation",
+      "score": 3588855,
+      "tags": ["n"]
+    },
+    {
+      "word": "products",
+      "score": 3586870,
+      "tags": ["n"]
+    },
+    {
+      "word": "cereal",
+      "score": 3585886,
+      "tags": ["n"]
+    },
+    {
+      "word": "feeding",
+      "score": 3585733,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "groceries",
+      "score": 3582708,
+      "tags": ["n"]
+    },
+    {
+      "word": "rice",
+      "score": 3569324,
+      "tags": ["n"]
+    },
+    {
+      "word": "hungry",
+      "score": 3553690,
+      "tags": ["adj"]
+    },
+    {
+      "word": "diet",
+      "score": 3546782,
+      "tags": ["n"]
+    },
+    {
+      "word": "snack",
+      "score": 3539032,
+      "tags": ["n"]
+    },
+    {
+      "word": "potable",
+      "score": 3522561,
+      "tags": ["n"]
+    },
+    {
+      "word": "grub",
+      "score": 3485626,
+      "tags": ["n"]
+    },
+    {
+      "word": "eats",
+      "score": 3469399,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "bread",
+      "score": 3458333,
+      "tags": ["n"]
+    },
+    {
+      "word": "commodity",
+      "score": 3447192,
+      "tags": ["n"]
+    },
+    {
+      "word": "foraging",
+      "score": 3395746,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "livelihoods",
+      "score": 3375141,
+      "tags": ["n"]
+    },
+    {
+      "word": "supper",
+      "score": 3368054,
+      "tags": ["n"]
+    },
+    {
+      "word": "intake",
+      "score": 3302115,
+      "tags": ["n"]
+    },
+    {
+      "word": "provisions",
+      "score": 3286024,
+      "tags": ["n"]
+    },
+    {
+      "word": "consuming",
+      "score": 3279085,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "fresh",
+      "score": 3265283,
+      "tags": ["adj"]
+    },
+    {
+      "word": "drinking",
+      "score": 3249605,
+      "tags": ["n"]
+    },
+    {
+      "word": "feed",
+      "score": 3240879,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "feeds",
+      "score": 3216556,
+      "tags": ["v"]
+    },
+    {
+      "word": "dish",
+      "score": 3198557,
+      "tags": ["n"]
+    },
+    {
+      "word": "staple",
+      "score": 3145447,
+      "tags": ["n", "adj"]
+    },
+    {
+      "word": "ration",
+      "score": 3143940,
+      "tags": ["n"]
+    },
+    {
+      "word": "wfp",
+      "score": 3134959,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "fodder",
+      "score": 3119057,
+      "tags": ["n"]
+    },
+    {
+      "word": "grocery",
+      "score": 3110981,
+      "tags": ["n"]
+    },
+    {
+      "word": "livelihood",
+      "score": 3107983,
+      "tags": ["n"]
+    },
+    {
+      "word": "dinner",
+      "score": 3068687,
+      "tags": ["n"]
+    },
+    {
+      "word": "forage",
+      "score": 3040992,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "fao",
+      "score": 3003163,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "production",
+      "score": 2985235,
+      "tags": ["n"]
+    },
+    {
+      "word": "prey",
+      "score": 2983192,
+      "tags": ["n"]
+    },
+    {
+      "word": "dieting",
+      "score": 2929293,
+      "tags": ["n"]
+    },
+    {
+      "word": "lunch",
+      "score": 2894293,
+      "tags": ["n"]
+    },
+    {
+      "word": "provision",
+      "score": 2891579,
+      "tags": ["n"]
+    },
+    {
+      "word": "living",
+      "score": 2847828,
+      "tags": ["n"]
+    },
+    {
+      "word": "feedstock",
+      "score": 2836543,
+      "tags": ["n"]
+    },
+    {
+      "word": "supply",
+      "score": 2833786,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "trophic",
+      "score": 2829193,
+      "tags": ["adj"]
+    },
+    {
+      "word": "fuel",
+      "score": 2826302,
+      "tags": ["n"]
+    },
+    {
+      "word": "diner",
+      "score": 2824668,
+      "tags": ["n"]
+    },
+    {
+      "word": "crop",
+      "score": 2753808,
+      "tags": ["n"]
+    },
+    {
+      "word": "substance",
+      "score": 2742759,
+      "tags": ["n"]
+    },
+    {
+      "word": "feeder",
+      "score": 2740705,
+      "tags": ["n"]
+    },
+    {
+      "word": "grain",
+      "score": 2735970,
+      "tags": ["n"]
+    },
+    {
+      "word": "fed",
+      "score": 2724280,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "fuels",
+      "score": 2713152,
+      "tags": ["n"]
+    },
+    {
+      "word": "gmf",
+      "score": 2671854,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "refreshment",
+      "score": 2574322,
+      "tags": ["n"]
+    },
+    {
+      "word": "power",
+      "score": 2543591,
+      "tags": ["n"]
+    },
+    {
+      "word": "product",
+      "score": 2411251,
+      "tags": ["n"]
+    },
+    {
+      "word": "mess",
+      "score": 2395085,
+      "tags": ["n"]
+    },
+    {
+      "word": "security",
+      "score": 2380423,
+      "tags": ["n"]
+    },
+    {
+      "word": "supplying",
+      "score": 2338289,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "beverage",
+      "score": 15066885,
+      "tags": ["syn", "n", "results_type:primary_rel"]
+    },
+    {
+      "word": "booze",
+      "score": 14081131,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "alcohol",
+      "score": 14080234,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "imbibe",
+      "score": 13681684,
+      "tags": ["syn", "v"]
+    },
+    {
+      "word": "drinkable",
+      "score": 13659115,
+      "tags": ["syn", "adj"]
+    },
+    {
+      "word": "drunkenness",
+      "score": 13294041,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "intoxicant",
+      "score": 13088321,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "potable",
+      "score": 12746861,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "swallow",
+      "score": 12595314,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "toast",
+      "score": 12425593,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "boozing",
+      "score": 12272663,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "salute",
+      "score": 11848299,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "pledge",
+      "score": 11431989,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "fuddle",
+      "score": 11056234,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "tope",
+      "score": 9624783,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "alcoholic beverage",
+      "score": 8069336,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "crapulence",
+      "score": 8069336,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "deglutition",
+      "score": 8069336,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "drink in",
+      "score": 8069336,
+      "tags": ["syn", "v"]
+    },
+    {
+      "word": "inebriant",
+      "score": 8069336,
+      "tags": ["syn", "n"]
+    },
+    {
+      "word": "beverages",
+      "score": 7892431,
+      "tags": ["n"]
+    },
+    {
+      "word": "cocktails",
+      "score": 6711220,
+      "tags": ["n"]
+    },
+    {
+      "word": "sodas",
+      "score": 6672229,
+      "tags": ["n"]
+    },
+    {
+      "word": "beers",
+      "score": 6610078,
+      "tags": ["n"]
+    },
+    {
+      "word": "refreshments",
+      "score": 6064196,
+      "tags": ["n"]
+    },
+    {
+      "word": "liquors",
+      "score": 5812158,
+      "tags": ["n"]
+    },
+    {
+      "word": "margaritas",
+      "score": 5594200,
+      "tags": ["n"]
+    },
+    {
+      "word": "glasses",
+      "score": 5580313,
+      "tags": ["n"]
+    },
+    {
+      "word": "mojitos",
+      "score": 5554138,
+      "tags": ["n"]
+    },
+    {
+      "word": "cups",
+      "score": 5394436,
+      "tags": ["n"]
+    },
+    {
+      "word": "eats",
+      "score": 5348118,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "spirits",
+      "score": 5337046,
+      "tags": ["n"]
+    },
+    {
+      "word": "appetizers",
+      "score": 5247688,
+      "tags": ["n"]
+    },
+    {
+      "word": "goblets",
+      "score": 5050049,
+      "tags": ["n"]
+    },
+    {
+      "word": "products",
+      "score": 4749363,
+      "tags": ["n"]
+    },
+    {
+      "word": "glass",
+      "score": 4606218,
+      "tags": ["n"]
+    },
+    {
+      "word": "alcohols",
+      "score": 4506240,
+      "tags": ["n"]
+    },
+    {
+      "word": "patrons",
+      "score": 4462163,
+      "tags": ["n"]
+    },
+    {
+      "word": "mixers",
+      "score": 4328237,
+      "tags": ["n"]
+    },
+    {
+      "word": "establishments",
+      "score": 4311316,
+      "tags": ["n"]
+    },
+    {
+      "word": "jars",
+      "score": 4256911,
+      "tags": ["n"]
+    },
+    {
+      "word": "intoxicating",
+      "score": 4246575,
+      "tags": ["adj", "v"]
+    },
+    {
+      "word": "coolers",
+      "score": 4235027,
+      "tags": ["n"]
+    },
+    {
+      "word": "shots",
+      "score": 4194038,
+      "tags": ["n"]
+    },
+    {
+      "word": "kegs",
+      "score": 4133426,
+      "tags": ["n"]
+    },
+    {
+      "word": "consumes",
+      "score": 4110012,
+      "tags": ["v"]
+    },
+    {
+      "word": "glassware",
+      "score": 4081472,
+      "tags": ["n"]
+    },
+    {
+      "word": "intakes",
+      "score": 3749460,
+      "tags": ["n"]
+    },
+    {
+      "word": "pots",
+      "score": 3638613,
+      "tags": ["n"]
+    },
+    {
+      "word": "lenses",
+      "score": 3422251,
+      "tags": ["n"]
+    },
+    {
+      "word": "shooters",
+      "score": 3354438,
+      "tags": ["n"]
+    },
+    {
+      "word": "eyeglasses",
+      "score": 3282305,
+      "tags": ["n"]
+    },
+    {
+      "word": "spectacle",
+      "score": 3107025,
+      "tags": ["n"]
+    },
+    {
+      "word": "hired",
+      "score": 2987998,
+      "tags": ["adj"]
+    },
+    {
+      "word": "refrigerants",
+      "score": 2550479,
+      "tags": ["n"]
+    },
+    {
+      "word": "coolants",
+      "score": 2409535,
+      "tags": ["n"]
+    },
+    {
+      "word": "colas",
+      "score": 1983772,
+      "tags": ["n"]
+    },
+    {
+      "word": "quaffs",
+      "score": 50523,
+      "tags": ["v"]
+    },
+    {
+      "word": "soda",
+      "score": 50520,
+      "tags": ["n"]
+    },
+    {
+      "word": "snacks",
+      "score": 50519,
+      "tags": ["n"]
+    },
+    {
+      "word": "soft drink",
+      "score": 50517,
+      "tags": ["n"]
+    },
+    {
+      "word": "libations",
+      "score": 50516,
+      "tags": ["n"]
+    },
+    {
+      "word": "vodka",
+      "score": 50515,
+      "tags": ["n"]
+    },
+    {
+      "word": "cokes",
+      "score": 50514,
+      "tags": ["n"]
+    },
+    {
+      "word": "smoothies",
+      "score": 50513,
+      "tags": ["n"]
+    },
+    {
+      "word": "lager",
+      "score": 50511,
+      "tags": ["n"]
+    },
+    {
+      "word": "martinis",
+      "score": 50509,
+      "tags": ["n"]
+    },
+    {
+      "word": "bottled water",
+      "score": 50508,
+      "tags": ["n"]
+    },
+    {
+      "word": "cola",
+      "score": 50507,
+      "tags": ["n"]
+    },
+    {
+      "word": "milkshakes",
+      "score": 50506,
+      "tags": ["n"]
+    },
+    {
+      "word": "refreshment",
+      "score": 50505,
+      "tags": ["n"]
+    },
+    {
+      "word": "bottles",
+      "score": 50504,
+      "tags": ["n"]
+    },
+    {
+      "word": "caffeine",
+      "score": 50503,
+      "tags": ["n", "adj"]
+    },
+    {
+      "word": "pints",
+      "score": 50502,
+      "tags": ["n"]
+    },
+    {
+      "word": "iced tea",
+      "score": 50501,
+      "tags": ["n"]
+    },
+    {
+      "word": "shandy",
+      "score": 50500,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "brewskis",
+      "score": 50499,
+      "tags": ["n"]
+    },
+    {
+      "word": "sips",
+      "score": 50498,
+      "tags": ["n"]
+    },
+    {
+      "word": "fruit juice",
+      "score": 50496,
+      "tags": ["n"]
+    },
+    {
+      "word": "drinkers",
+      "score": 50495,
+      "tags": ["n"]
+    },
+    {
+      "word": "sangria",
+      "score": 50494,
+      "tags": ["n"]
+    },
+    {
+      "word": "orange juice",
+      "score": 50493,
+      "tags": ["n"]
+    },
+    {
+      "word": "soda pop",
+      "score": 50492,
+      "tags": ["n"]
+    },
+    {
+      "word": "spirituous",
+      "score": 50491,
+      "tags": ["n", "adj"]
+    },
+    {
+      "word": "orangeade",
+      "score": 50489,
+      "tags": ["n"]
+    },
+    {
+      "word": "tipples",
+      "score": 50486,
+      "tags": ["n"]
+    },
+    {
+      "word": "tequila",
+      "score": 50485,
+      "tags": ["n"]
+    },
+    {
+      "word": "juice",
+      "score": 50484,
+      "tags": ["n"]
+    },
+    {
+      "word": "coffee",
+      "score": 50483,
+      "tags": ["n"]
+    },
+    {
+      "word": "lemonades",
+      "score": 50482,
+      "tags": ["n"]
+    },
+    {
+      "word": "pina colada",
+      "score": 50481,
+      "tags": ["n"]
+    },
+    {
+      "word": "brews",
+      "score": 50480,
+      "tags": ["n"]
+    },
+    {
+      "word": "tonics",
+      "score": 50479,
+      "tags": ["n"]
+    },
+    {
+      "word": "camomile tea",
+      "score": 50478,
+      "tags": ["n"]
+    },
+    {
+      "word": "glassful",
+      "score": 50477,
+      "tags": ["n"]
+    },
+    {
+      "word": "meals",
+      "score": 50476,
+      "tags": ["n"]
+    },
+    {
+      "word": "apple juice",
+      "score": 50475,
+      "tags": ["n"]
+    },
+    {
+      "word": "strawberry daiquiri",
+      "score": 50474,
+      "tags": ["n"]
+    },
+    {
+      "word": "kvass",
+      "score": 50473,
+      "tags": ["n"]
+    },
+    {
+      "word": "whiskey",
+      "score": 50472,
+      "tags": ["n"]
+    },
+    {
+      "word": "restaurant",
+      "score": 6341765,
+      "tags": ["n", "adj", "results_type:primary_rel"]
+    },
+    {
+      "word": "dinner",
+      "score": 5897641,
+      "tags": ["n"]
+    },
+    {
+      "word": "eating",
+      "score": 5875499,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "meal",
+      "score": 5871413,
+      "tags": ["n"]
+    },
+    {
+      "word": "kitchen",
+      "score": 5742589,
+      "tags": ["n"]
+    },
+    {
+      "word": "catering",
+      "score": 5558118,
+      "tags": ["n"]
+    },
+    {
+      "word": "gourmet",
+      "score": 5471364,
+      "tags": ["n", "adj"]
+    },
+    {
+      "word": "cooking",
+      "score": 5384026,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "diner",
+      "score": 5375368,
+      "tags": ["n"]
+    },
+    {
+      "word": "culinary",
+      "score": 5171413,
+      "tags": ["adj"]
+    },
+    {
+      "word": "supper",
+      "score": 5136540,
+      "tags": ["n"]
+    },
+    {
+      "word": "cuisine",
+      "score": 4998980,
+      "tags": ["n"]
+    },
+    {
+      "word": "lunch",
+      "score": 4714705,
+      "tags": ["n"]
+    },
+    {
+      "word": "cafe",
+      "score": 4677763,
+      "tags": ["n"]
+    },
+    {
+      "word": "luncheon",
+      "score": 4464269,
+      "tags": ["n"]
+    },
+    {
+      "word": "foodservice",
+      "score": 4301234,
+      "tags": ["n"]
+    },
+    {
+      "word": "canteen",
+      "score": 4227139,
+      "tags": ["n"]
+    },
+    {
+      "word": "feast",
+      "score": 4227035,
+      "tags": ["n"]
+    },
+    {
+      "word": "dietary",
+      "score": 3963128,
+      "tags": ["adj"]
+    },
+    {
+      "word": "lunchroom",
+      "score": 3866873,
+      "tags": ["n"]
+    },
+    {
+      "word": "food",
+      "score": 3827409,
+      "tags": ["n"]
+    },
+    {
+      "word": "feeding",
+      "score": 3810722,
+      "tags": ["n"]
+    },
+    {
+      "word": "dinnertime",
+      "score": 3778623,
+      "tags": ["n"]
+    },
+    {
+      "word": "eat",
+      "score": 3677415,
+      "tags": ["v"]
+    },
+    {
+      "word": "mess",
+      "score": 3404642,
+      "tags": ["n"]
+    },
+    {
+      "word": "diet",
+      "score": 3221124,
+      "tags": ["n"]
+    },
+    {
+      "word": "rice",
+      "score": 2986622,
+      "tags": ["n"]
+    },
+    {
+      "word": "restoration",
+      "score": 2637590,
+      "tags": ["n"]
+    },
+    {
+      "word": "hunger",
+      "score": 2612757,
+      "tags": ["n"]
+    },
+    {
+      "word": "reclamation",
+      "score": 2076021,
+      "tags": ["n"]
+    },
+    {
+      "word": "restauration",
+      "score": 2039474,
+      "tags": ["n"]
+    },
+    {
+      "word": "remediation",
+      "score": 1824082,
+      "tags": ["n"]
+    },
+    {
+      "word": "dining-room",
+      "score": 51018,
+      "tags": ["n"]
+    },
+    {
+      "word": "bistro",
+      "score": 51017,
+      "tags": ["n"]
+    },
+    {
+      "word": "restaurants",
+      "score": 51015,
+      "tags": ["n"]
+    },
+    {
+      "word": "dining room",
+      "score": 51014,
+      "tags": ["n"]
+    },
+    {
+      "word": "eateries",
+      "score": 51013,
+      "tags": ["n"]
+    },
+    {
+      "word": "brasserie",
+      "score": 51012,
+      "tags": ["n"]
+    },
+    {
+      "word": "diners",
+      "score": 51011,
+      "tags": ["n"]
+    },
+    {
+      "word": "chophouse",
+      "score": 51010,
+      "tags": ["n"]
+    },
+    {
+      "word": "buffet",
+      "score": 51009,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "nightlife",
+      "score": 51007,
+      "tags": ["n"]
+    },
+    {
+      "word": "tapas",
+      "score": 51006,
+      "tags": ["n"]
+    },
+    {
+      "word": "steakhouse",
+      "score": 51005,
+      "tags": ["n"]
+    },
+    {
+      "word": "scampo",
+      "score": 51004,
+      "tags": ["n"]
+    },
+    {
+      "word": "epicurean",
+      "score": 51003,
+      "tags": ["n"]
+    },
+    {
+      "word": "sushi bar",
+      "score": 51002,
+      "tags": ["n"]
+    },
+    {
+      "word": "cocktail lounge",
+      "score": 51001,
+      "tags": ["n"]
+    },
+    {
+      "word": "decor",
+      "score": 51000,
+      "tags": ["n"]
+    },
+    {
+      "word": "sushi",
+      "score": 50999,
+      "tags": ["n"]
+    },
+    {
+      "word": "brunch",
+      "score": 50998,
+      "tags": ["n"]
+    },
+    {
+      "word": "ristorante",
+      "score": 50996,
+      "tags": ["n"]
+    },
+    {
+      "word": "gastropub",
+      "score": 50995,
+      "tags": ["n"]
+    },
+    {
+      "word": "prix fixe",
+      "score": 50994,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "lounge",
+      "score": 50993,
+      "tags": ["n"]
+    },
+    {
+      "word": "hibachi",
+      "score": 50992,
+      "tags": ["n"]
+    },
+    {
+      "word": "haute cuisine",
+      "score": 50991,
+      "tags": ["n"]
+    },
+    {
+      "word": "degustation",
+      "score": 50990,
+      "tags": ["n"]
+    },
+    {
+      "word": "trattoria",
+      "score": 50989,
+      "tags": ["n"]
+    },
+    {
+      "word": "spa",
+      "score": 50987,
+      "tags": ["n"]
+    },
+    {
+      "word": "amenities",
+      "score": 50986,
+      "tags": ["n"]
+    },
+    {
+      "word": "ambiance",
+      "score": 50985,
+      "tags": ["n"]
+    },
+    {
+      "word": "aperitivo",
+      "score": 50984,
+      "tags": ["n"]
+    },
+    {
+      "word": "dim sum",
+      "score": 50983,
+      "tags": ["n"]
+    },
+    {
+      "word": "churrascaria",
+      "score": 50982,
+      "tags": ["n"]
+    },
+    {
+      "word": "foodie",
+      "score": 50981,
+      "tags": ["n"]
+    },
+    {
+      "word": "noshes",
+      "score": 50980,
+      "tags": ["n"]
+    },
+    {
+      "word": "banquette",
+      "score": 50979,
+      "tags": ["n"]
+    },
+    {
+      "word": "kitchens",
+      "score": 50978,
+      "tags": ["n"]
+    },
+    {
+      "word": "saucebox",
+      "score": 50977,
+      "tags": ["n"]
+    },
+    {
+      "word": "kabob",
+      "score": 50976,
+      "tags": ["n"]
+    },
+    {
+      "word": "repasts",
+      "score": 50975,
+      "tags": ["n"]
+    },
+    {
+      "word": "dcor",
+      "score": 50974,
+      "tags": ["n"]
+    },
+    {
+      "word": "accommodations",
+      "score": 50973,
+      "tags": ["n"]
+    },
+    {
+      "word": "gastronome",
+      "score": 50972,
+      "tags": ["n"]
+    },
+    {
+      "word": "patio",
+      "score": 50971,
+      "tags": ["n"]
+    },
+    {
+      "word": "menu",
+      "score": 50970,
+      "tags": ["n"]
+    },
+    {
+      "word": "appetizers",
+      "score": 50969,
+      "tags": ["n"]
+    },
+    {
+      "word": "bistrot",
+      "score": 50968,
+      "tags": ["n"]
+    },
+    {
+      "word": "hospitality",
+      "score": 50967,
+      "tags": ["n"]
+    },
+    {
+      "word": "chef",
+      "score": 50966,
+      "tags": ["n"]
+    },
+    {
+      "word": "noshery",
+      "score": 50964,
+      "tags": ["n"]
+    },
+    {
+      "word": "entrees",
+      "score": 50963,
+      "tags": ["n"]
+    },
+    {
+      "word": "carvery",
+      "score": 50962,
+      "tags": ["n"]
+    },
+    {
+      "word": "ambience",
+      "score": 50961,
+      "tags": ["n"]
+    },
+    {
+      "word": "fondue",
+      "score": 50960,
+      "tags": ["n"]
+    },
+    {
+      "word": "wine tasting",
+      "score": 50959,
+      "tags": ["n"]
+    },
+    {
+      "word": "buffett",
+      "score": 50958,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "waitstaff",
+      "score": 50957,
+      "tags": ["n"]
+    },
+    {
+      "word": "roast lamb",
+      "score": 50955,
+      "tags": ["n"]
+    },
+    {
+      "word": "delicatessen",
+      "score": 50954,
+      "tags": ["n"]
+    },
+    {
+      "word": "meze",
+      "score": 50953,
+      "tags": ["n"]
+    },
+    {
+      "word": "barking frog",
+      "score": 50952,
+      "tags": ["n"]
+    },
+    {
+      "word": "antipasto",
+      "score": 50951,
+      "tags": ["n"]
+    },
+    {
+      "word": "gastronomy",
+      "score": 50950,
+      "tags": ["n"]
+    },
+    {
+      "word": "barbeque",
+      "score": 50949,
+      "tags": ["n"]
+    },
+    {
+      "word": "dessert",
+      "score": 50948,
+      "tags": ["n"]
+    },
+    {
+      "word": "entertainment",
+      "score": 50947,
+      "tags": ["n"]
+    },
+    {
+      "word": "spago",
+      "score": 50946,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "locanda",
+      "score": 50945,
+      "tags": ["n"]
+    }
+  ],
+  "groceries": [
+    {
+      "word": "amount",
+      "score": 4375800,
+      "tags": ["n"]
+    },
+    {
+      "word": "balance",
+      "score": 4375800,
+      "tags": ["n"]
+    },
+    {
+      "word": "grocers",
+      "score": 6032786,
+      "tags": ["n", "results_type:primary_rel"]
+    },
+    {
+      "word": "foodstuffs",
+      "score": 5820259,
+      "tags": ["n"]
+    },
+    {
+      "word": "stores",
+      "score": 5641373,
+      "tags": ["n"]
+    },
+    {
+      "word": "vegetables",
+      "score": 5613372,
+      "tags": ["n"]
+    },
+    {
+      "word": "shops",
+      "score": 5613223,
+      "tags": ["n"]
+    },
+    {
+      "word": "supplies",
+      "score": 5466604,
+      "tags": ["n"]
+    },
+    {
+      "word": "errands",
+      "score": 5299562,
+      "tags": ["n"]
+    },
+    {
+      "word": "foods",
+      "score": 5036469,
+      "tags": ["n"]
+    },
+    {
+      "word": "deli",
+      "score": 4394308,
+      "tags": ["n"]
+    },
+    {
+      "word": "dishes",
+      "score": 4387130,
+      "tags": ["n"]
+    },
+    {
+      "word": "packages",
+      "score": 4129164,
+      "tags": ["n"]
+    },
+    {
+      "word": "provisions",
+      "score": 4021400,
+      "tags": ["n"]
+    },
+    {
+      "word": "packs",
+      "score": 3905095,
+      "tags": ["n"]
+    },
+    {
+      "word": "ships",
+      "score": 3638869,
+      "tags": ["n"]
+    },
+    {
+      "word": "food",
+      "score": 3582943,
+      "tags": ["n"]
+    },
+    {
+      "word": "horses",
+      "score": 3324602,
+      "tags": ["n"]
+    },
+    {
+      "word": "courses",
+      "score": 3309439,
+      "tags": ["n"]
+    },
+    {
+      "word": "ponies",
+      "score": 3257821,
+      "tags": ["n"]
+    },
+    {
+      "word": "allowances",
+      "score": 3073259,
+      "tags": ["n"]
+    },
+    {
+      "word": "races",
+      "score": 3055346,
+      "tags": ["n"]
+    },
+    {
+      "word": "contests",
+      "score": 3049700,
+      "tags": ["n"]
+    },
+    {
+      "word": "runs",
+      "score": 2841622,
+      "tags": ["n"]
+    },
+    {
+      "word": "reserves",
+      "score": 2512802,
+      "tags": ["n"]
+    },
+    {
+      "word": "scrambles",
+      "score": 1732285,
+      "tags": ["n"]
+    },
+    {
+      "word": "grocery store",
+      "score": 51106,
+      "tags": ["n"]
+    },
+    {
+      "word": "supermarket",
+      "score": 51105,
+      "tags": ["n"]
+    },
+    {
+      "word": "supermarkets",
+      "score": 51104,
+      "tags": ["n"]
+    },
+    {
+      "word": "grocery list",
+      "score": 51102,
+      "tags": ["n"]
+    },
+    {
+      "word": "grocery bag",
+      "score": 51101,
+      "tags": ["n"]
+    },
+    {
+      "word": "grocer",
+      "score": 51100,
+      "tags": ["n"]
+    },
+    {
+      "word": "shopping",
+      "score": 51099,
+      "tags": ["n", "v"]
+    },
+    {
+      "word": "shopping list",
+      "score": 51098,
+      "tags": ["n"]
+    },
+    {
+      "word": "food shop",
+      "score": 51096,
+      "tags": ["n"]
+    },
+    {
+      "word": "shoppers",
+      "score": 51095,
+      "tags": ["n"]
+    },
+    {
+      "word": "dry goods",
+      "score": 51094,
+      "tags": ["n"]
+    },
+    {
+      "word": "greengrocer",
+      "score": 51093,
+      "tags": ["n"]
+    },
+    {
+      "word": "foodstuff",
+      "score": 51092,
+      "tags": ["n"]
+    },
+    {
+      "word": "shopping bag",
+      "score": 51091,
+      "tags": ["n"]
+    },
+    {
+      "word": "shop at",
+      "score": 51090,
+      "tags": ["n"]
+    },
+    {
+      "word": "greengrocery",
+      "score": 51089,
+      "tags": ["n"]
+    },
+    {
+      "word": "general store",
+      "score": 51088,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "shopping cart",
+      "score": 51087,
+      "tags": ["n"]
+    },
+    {
+      "word": "perishables",
+      "score": 51085,
+      "tags": ["n"]
+    },
+    {
+      "word": "walmart",
+      "score": 51084,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "pantry",
+      "score": 51083,
+      "tags": ["n"]
+    },
+    {
+      "word": "package store",
+      "score": 51081,
+      "tags": ["n"]
+    },
+    {
+      "word": "hypermarket",
+      "score": 51080,
+      "tags": ["n"]
+    },
+    {
+      "word": "deliveries",
+      "score": 51079,
+      "tags": ["n"]
+    },
+    {
+      "word": "victuals",
+      "score": 51078,
+      "tags": ["n"]
+    },
+    {
+      "word": "cashiers",
+      "score": 51077,
+      "tags": ["n"]
+    },
+    {
+      "word": "pantries",
+      "score": 51075,
+      "tags": ["n"]
+    },
+    {
+      "word": "pet food",
+      "score": 51074,
+      "tags": ["n"]
+    },
+    {
+      "word": "sundries",
+      "score": 51073,
+      "tags": ["n"]
+    },
+    {
+      "word": "shoppes",
+      "score": 51072,
+      "tags": ["n"]
+    },
+    {
+      "word": "chain store",
+      "score": 51071,
+      "tags": ["n"]
+    },
+    {
+      "word": "comestibles",
+      "score": 51070,
+      "tags": ["n"]
+    },
+    {
+      "word": "store",
+      "score": 51069,
+      "tags": ["n"]
+    },
+    {
+      "word": "superstore",
+      "score": 51068,
+      "tags": ["n"]
+    },
+    {
+      "word": "food stamp",
+      "score": 51067,
+      "tags": ["n"]
+    },
+    {
+      "word": "minimart",
+      "score": 51066,
+      "tags": ["n"]
+    },
+    {
+      "word": "health food",
+      "score": 51065,
+      "tags": ["n"]
+    },
+    {
+      "word": "liquor store",
+      "score": 51061,
+      "tags": ["n"]
+    },
+    {
+      "word": "discount store",
+      "score": 51060,
+      "tags": ["n"]
+    },
+    {
+      "word": "veggies",
+      "score": 51059,
+      "tags": ["n"]
+    },
+    {
+      "word": "food grain",
+      "score": 51058,
+      "tags": ["n"]
+    },
+    {
+      "word": "retailers",
+      "score": 51057,
+      "tags": ["n"]
+    },
+    {
+      "word": "couponing",
+      "score": 51056,
+      "tags": ["n"]
+    },
+    {
+      "word": "commodities",
+      "score": 51055,
+      "tags": ["n"]
+    },
+    {
+      "word": "variety store",
+      "score": 51054,
+      "tags": ["n"]
+    },
+    {
+      "word": "shelves",
+      "score": 51053,
+      "tags": ["n"]
+    },
+    {
+      "word": "aisles",
+      "score": 51052,
+      "tags": ["n"]
+    },
+    {
+      "word": "market basket",
+      "score": 51051,
+      "tags": ["n"]
+    },
+    {
+      "word": "hardware store",
+      "score": 51050,
+      "tags": ["n"]
+    },
+    {
+      "word": "sainsbury",
+      "score": 51049,
+      "tags": ["n", "prop"]
+    },
+    {
+      "word": "parcels",
+      "score": 51048,
+      "tags": ["n"]
+    },
+    {
+      "word": "cat food",
+      "score": 51047,
+      "tags": ["n"]
+    },
+    {
+      "word": "cashier",
+      "score": 51046,
+      "tags": ["n"]
+    },
+    {
+      "word": "purchases",
+      "score": 51045,
+      "tags": ["n"]
+    },
+    {
+      "word": "consumer goods",
+      "score": 51044,
+      "tags": ["n"]
+    },
+    {
+      "word": "convenience store",
+      "score": 51043,
+      "tags": ["n"]
+    },
+    {
+      "word": "cartons",
+      "score": 51042,
+      "tags": ["n"]
+    },
+    {
+      "word": "retail store",
+      "score": 51041,
+      "tags": ["n"]
+    },
+    {
+      "word": "eatables",
+      "score": 51040,
+      "tags": ["n"]
+    },
+    {
+      "word": "necessities",
+      "score": 51039,
+      "tags": ["n"]
+    },
+
+    {
+      "word": "carryout",
+      "score": 51037,
+      "tags": ["n"]
+    },
+    {
+      "word": "customers",
+      "score": 51036,
+      "tags": ["n"]
+    },
+    {
+      "word": "dog food",
+      "score": 51035,
+      "tags": ["n"]
+    },
+    {
+      "word": "junk food",
+      "score": 51034,
+      "tags": ["n"]
+    },
+    {
+      "word": "delivering",
+      "score": 51033,
+      "tags": ["v"]
+    },
+    {
+      "word": "meals",
+      "score": 51032,
+      "tags": ["n"]
+    },
+    {
+      "word": "fruits",
+      "score": 51031,
+      "tags": ["n"]
+    },
+    {
+      "word": "convenience food",
+      "score": 51030,
+      "tags": ["n"]
+    },
+    {
+      "word": "refrigerators",
+      "score": 51029,
+      "tags": ["n"]
+    },
+    {
+      "word": "bushels",
+      "score": 51028,
+      "tags": ["n"]
+    },
+    {
+      "word": "bakeries",
+      "score": 51027,
+      "tags": ["n"]
+    },
+    {
+      "word": "farming",
+      "score": 51026,
+      "tags": ["n"]
+    },
+    {
+      "word": "merchants",
+      "score": 51025,
+      "tags": ["n"]
+    },
+    {
+      "word": "baggies",
+      "score": 51024,
+      "tags": ["n"]
+    },
+    {
+      "word": "box lunch",
+      "score": 51023,
+      "tags": ["n"]
+    }
+  ]
+}
