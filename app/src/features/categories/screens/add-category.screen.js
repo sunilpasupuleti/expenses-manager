@@ -3,6 +3,7 @@ import {
   Alert,
   Dimensions,
   FlatList,
+  Platform,
   ScrollView,
   TouchableOpacity,
   VirtualizedList,
@@ -276,7 +277,9 @@ export const AddCategoryScreen = ({navigation, route}) => {
             maxLength={50}
           />
           <Spacer size={'xlarge'} />
-          <Card theme={{roundness: 15}} style={{paddingBottom: 20}}>
+          <Card
+            theme={{roundness: Platform.OS === 'ios' ? 5 : 15}}
+            style={{paddingBottom: 20}}>
             <FlexRow style={{flexWrap: 'wrap'}}>
               <TouchableOpacity onPress={() => setShowColorPicker(true)}>
                 <ColorPickerView
@@ -341,7 +344,7 @@ export const AddCategoryScreen = ({navigation, route}) => {
           />
           <Spacer size={'large'} />
           <Card
-            theme={{roundness: 15}}
+            theme={{roundness: Platform.OS === 'ios' ? 5 : 15}}
             style={{paddingBottom: 20, paddingTop: 20, marginBottom: 150}}>
             <Card.Title
               title="Select the category icon"

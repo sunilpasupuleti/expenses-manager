@@ -104,6 +104,7 @@ export const AuthenticationContextProvider = ({children}) => {
         dispatch(loaderActions.hideLoader());
         throw 'Something went wrong obtaining access token';
       }
+
       auth()
         .signInWithCredential(googleCredentials)
         .then(res => {

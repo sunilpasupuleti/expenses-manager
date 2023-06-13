@@ -14,6 +14,7 @@ import {
 import {GetCurrencySymbol} from '../../../components/symbol.currency';
 import {Text} from '../../../components/typography/text.component';
 import {SafeArea} from '../../../components/utility/safe-area.component';
+import {Platform} from 'react-native';
 
 export const CurrenciesScreen = ({navigation, route}) => {
   const theme = useTheme();
@@ -113,7 +114,7 @@ export const CurrenciesScreen = ({navigation, route}) => {
 
         {(currencies && selectedCurrency) || displayMode ? (
           <ScrollView showsVerticalScrollIndicator={false}>
-            <Card theme={{roundness: 20}}>
+            <Card theme={{roundness: Platform.OS === 'ios' ? 5 : 15}}>
               {Object.keys(currencies).map(key => {
                 let c = currencies[key];
                 let currency = GetCurrencySymbol(key);

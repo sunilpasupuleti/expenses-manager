@@ -1,6 +1,6 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import React, {useEffect} from 'react';
-import {TouchableOpacity} from 'react-native';
+import {Platform, TouchableOpacity} from 'react-native';
 import {Card, Divider} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import {useTheme} from 'styled-components/native';
@@ -41,7 +41,7 @@ export const AppearanceScreen = ({navigation}) => {
   return (
     <SafeArea>
       <MainWrapper>
-        <Card theme={{roundness: 20}}>
+        <Card theme={{roundness: Platform.OS === 'ios' ? 5 : 15}}>
           {modes.map(m => {
             return (
               <TouchableHighlightWithColor

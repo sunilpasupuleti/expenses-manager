@@ -18,8 +18,8 @@ export const InEx = styled.View`
 export const InExIcon = styled.View`
   background-color: #fff;
   border-radius: 20px;
-  margin-right : 13px
-  padding:2px;
+  margin-right: 13px;
+  padding: 2px;
 `;
 
 export const InExAmount = styled.View`

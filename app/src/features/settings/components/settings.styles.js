@@ -4,6 +4,7 @@ import styled from 'styled-components/native';
 import {FlexRow} from '../../../components/styles';
 import {Text} from '../../../components/typography/text.component';
 import {colors} from '../../../infrastructure/theme/colors';
+import {Platform} from 'react-native';
 export const Setting = styled(FlexRow)`
   ${props => props.gap && `margin-bottom : 25px`}
 `;
@@ -20,7 +21,7 @@ export const SettingTitle = styled(Text).attrs({})`
 
 export const SettingsCard = styled(Card).attrs({
   theme: {
-    roundness: 15,
+    roundness: Platform.OS === 'ios' ? 5 : 15,
   },
 })``;
 

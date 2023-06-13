@@ -8,7 +8,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import React, {useContext, useEffect, useState} from 'react';
 import {Card} from 'react-native-paper';
 
-import {Alert, ScrollView} from 'react-native';
+import {Alert, Platform, ScrollView} from 'react-native';
 import {useActionSheet} from '@expo/react-native-action-sheet';
 import Haptics from 'react-native-haptic-feedback';
 import {useTheme} from 'styled-components/native';
@@ -216,7 +216,10 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
               </FlexRow>
               {showPinned && (
                 <Spacer size={'medium'}>
-                  <Card theme={{roundness: 15}}>
+                  <Card
+                    theme={{
+                      roundness: Platform.OS === 'ios' ? 5 : 15,
+                    }}>
                     <FadeInView>
                       {pinnedSheets.map((item, index) => {
                         if (item)
@@ -283,7 +286,7 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
                   </Text>
                 </Spacer>
               ) : null}
-              <Card theme={{roundness: 15}}>
+              <Card theme={{roundness: Platform.OS === 'ios' ? 5 : 15}}>
                 <FadeInView>
                   {dupSheets.map((item, index) => {
                     return (
@@ -356,7 +359,7 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
               </FlexRow>
               <Spacer size={'medium'} />
               {showArchived && (
-                <Card theme={{roundness: 15}}>
+                <Card theme={{roundness: Platform.OS === 'ios' ? 5 : 15}}>
                   <FadeInView>
                     {archivedSheets.map((item, index) => {
                       return (
@@ -411,7 +414,8 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
       ) : (
         <NoSheets>
           <Text style={{textAlign: 'center'}}>
-            There are no accounts yet. Create a new account from below.
+            There are no accounts yet. Create a new account by clicking on plus
+            icon.
           </Text>
         </NoSheets>
       )}

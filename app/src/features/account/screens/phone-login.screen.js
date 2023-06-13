@@ -66,6 +66,7 @@ export const PhoneLoginScreen = ({navigation, route}) => {
     confirmCode
       .confirm(otp.value)
       .then(res => {
+        console.log(res);
         setShowLoader(false);
         onSetUserData(res);
       })
@@ -125,7 +126,6 @@ export const PhoneLoginScreen = ({navigation, route}) => {
     let number = '+' + phone.value;
     if (mode === 'phone') {
       result = await onSignInWithMobile(number);
-      console.log(result.status);
       if (result.status) {
         onChangeMode('otp');
         setSuccess(result);

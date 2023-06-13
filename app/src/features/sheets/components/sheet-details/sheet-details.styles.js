@@ -87,19 +87,13 @@ export const BottomIconsContainer = styled.View`
 `;
 
 export const SheetDetailsAddIcon = styled.View`
-  // position: absolute;
-  // bottom: 20px;
-  // right: 10px;
   background-color: ${({theme}) => theme.colors.brand.primary};
   border-radius: 50px;
   padding: 12px;
 `;
 
 export const CameraButton = styled.TouchableOpacity`
-  // position: absolute;
   background-color: ${colors.brand.primary};
-  // bottom: -20px;
-  // left: 10px;
   border-radius: 50px;
   top: 4px;
   padding: 12px;

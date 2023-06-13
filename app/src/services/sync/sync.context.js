@@ -36,7 +36,7 @@ export const SyncContextProvider = ({children}) => {
     if (userData) {
       if (changesMade.loaded) {
         if (changesMade.status === false) {
-          restoreData(null);
+          restoreData(null, true);
         }
       }
     }
@@ -105,7 +105,7 @@ export const SyncContextProvider = ({children}) => {
     }
   };
 
-  const restoreData = async (backupId = null) => {
+  const restoreData = async (backupId = null, initialRestore = false) => {
     let jwtToken = await auth().currentUser.getIdToken();
     dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'restore'}));
     try {
@@ -134,12 +134,14 @@ export const SyncContextProvider = ({children}) => {
               );
             } else {
               dispatch(loaderActions.hideLoader());
-              dispatch(
-                notificationActions.showToast({
-                  status: 'info',
-                  message: 'There is no data to restore.',
-                }),
-              );
+              if (!initialRestore) {
+                dispatch(
+                  notificationActions.showToast({
+                    status: 'info',
+                    message: 'There is no data to restore.',
+                  }),
+                );
+              }
             }
           },
           errorCallback: err => {

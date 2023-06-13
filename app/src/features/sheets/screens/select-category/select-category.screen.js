@@ -1,6 +1,6 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import React, {useContext, useEffect, useState} from 'react';
-import {ScrollView, TouchableOpacity} from 'react-native';
+import {Platform, ScrollView, TouchableOpacity} from 'react-native';
 import {Card, Divider, Searchbar} from 'react-native-paper';
 import {useTheme} from 'styled-components/native';
 import {
@@ -112,7 +112,9 @@ export const SelectCategoryScreen = ({navigation, route}) => {
         <Spacer size={'xlarge'}></Spacer>
 
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Card theme={{roundness: 20}} style={{marginBottom: 100}}>
+          <Card
+            theme={{roundness: Platform.OS === 'ios' ? 5 : 15}}
+            style={{marginBottom: 100}}>
             {categories.map(c => {
               return (
                 <TouchableHighlightWithColor

@@ -21,7 +21,7 @@
   [FIRApp configure];
 
     // added new line for react native splash screen to automatically show
-   [RNSplashScreen show];
+  //  [RNSplashScreen show];
 
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }

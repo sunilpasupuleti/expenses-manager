@@ -1,6 +1,6 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import React, {useContext, useEffect, useState} from 'react';
-import {ScrollView} from 'react-native';
+import {Platform, ScrollView} from 'react-native';
 import {Card, Divider} from 'react-native-paper';
 import {Spacer} from '../../../components/spacer/spacer.component';
 import {TouchableHighlightWithColor} from '../../../components/styles';
@@ -18,7 +18,7 @@ export const CategoriesDetails = ({
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <Spacer size={'large'}></Spacer>
-      <Card theme={{roundness: 20}}>
+      <Card theme={{roundness: Platform.OS === 'ios' ? 5 : 15}}>
         {details &&
           details.map(c => {
             return (

@@ -25,14 +25,14 @@ export const FlexRow = styled.View`
   flex-direction: row;
   align-items: center;
   ${props =>
-    props.justifyContent && `justify-content : ${props.justifyContent}`}
+    props.justifyContent && `justify-content : ${props.justifyContent};`}
 `;
 
 export const FlexColumn = styled.View`
   flex-direction: column;
   align-items: center;
   ${props =>
-    props.justifyContent && `justify-content : ${props.justifyContent}`};
+    props.justifyContent && `justify-content : ${props.justifyContent};`};
 `;
 
 export const NotLoggedInContainer = styled(SafeArea)`
@@ -47,9 +47,10 @@ export const ToggleSwitch = styled(Switch).attrs({
 export const TouchableHighlightWithColor = styled.TouchableHighlight.attrs({
   underlayColor: colors.touchable.highlight,
 })`
-  ${props => (props.padding ? `padding : ${props.padding}` : 'padding : 15px')}
+  ${props =>
+    props.padding ? `padding : ${props.padding};` : 'padding : 15px;'}
 
-  ${props => props.gap && `margin-bottom : ${props.gap}px`}
+  ${props => props.gap && `margin-bottom : ${props.gap}px;`}
 `;
 
 export const TopNavigationTitle = styled(Text)`
@@ -75,7 +76,7 @@ export const Tab = styled.TouchableOpacity`
 export const TabView = styled(Animated.View)`
   padding: 8px;
   border-radius: 10px;
-  ${props => props.active && `background-color : #605fd7`}
+  ${props => props.active && `background-color : #605fd7;`}
 `;
 
 export const TabText = styled(Text).attrs({

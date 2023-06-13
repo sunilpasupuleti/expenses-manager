@@ -531,7 +531,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
 
           <Spacer size={'large'} />
 
-          <Card theme={{roundness: 15}}>
+          <Card theme={{roundness: Platform.OS === 'ios' ? 5 : 15}}>
             <Card.Content>
               <FlexRow justifyContent="space-between">
                 <FlexRow>

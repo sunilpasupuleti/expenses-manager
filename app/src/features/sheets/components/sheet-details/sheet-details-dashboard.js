@@ -3,7 +3,13 @@ import {Text} from '../../../../components/typography/text.component';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
-import {Dimensions, ScrollView, TouchableOpacity, View} from 'react-native';
+import {
+  Dimensions,
+  Platform,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {
   FlexColumn,
   FlexRow,
@@ -265,7 +271,7 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                 return (
                   <Spacer size={'large'} key={key}>
                     <Card
-                      theme={{roundness: 10}}
+                      theme={{roundness: Platform.OS === 'ios' ? 5 : 10}}
                       elevation={2}
                       style={{position: 'relative'}}>
                       <TouchableHighlightWithColor

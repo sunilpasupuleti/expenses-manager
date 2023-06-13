@@ -144,7 +144,7 @@ export const AccountScreen = ({navigation}) => {
             width: 160,
             height: 160,
             borderRadius: 100,
-            // borderColor: '#ddd',
+            borderColor: '#ddd',
             borderWidth: 1,
           }}
           source={require('../../../../assets/login-screen.png')}
@@ -314,7 +314,7 @@ export const AccountScreen = ({navigation}) => {
               color="#e6eaf5"
               icon="phone"
               onPress={() => navigation.navigate('PhoneLogin')}>
-              Sign in using phone
+              SIGN IN USING PHONE
             </Button>
 
             <Spacer size={'xlarge'} />

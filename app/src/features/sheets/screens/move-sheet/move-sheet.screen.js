@@ -13,6 +13,7 @@ import {SafeArea} from '../../../../components/utility/safe-area.component';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {SheetInfoCard} from '../../components/sheet-info/sheet-info-card.component';
 import {SheetsList} from '../../components/sheets.styles';
+import {Platform} from 'react-native';
 export const MoveSheetScreen = ({navigation, route}) => {
   const [sheet, setSheet] = useState(null);
   const [sheetDetail, setSheetDetail] = useState(null);
@@ -75,7 +76,7 @@ export const MoveSheetScreen = ({navigation, route}) => {
   return (
     <SafeArea>
       <MainWrapper>
-        <Card theme={{roundness: 20}}>
+        <Card theme={{roundness: Platform.OS === 'ios' ? 5 : 15}}>
           {sheet && sheetDetail && (
             <FadeInView>
               <SheetsList
