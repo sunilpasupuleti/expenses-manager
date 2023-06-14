@@ -297,7 +297,6 @@ export const SettingsScreen = ({navigation}) => {
 
                       <Button
                         mode="contained"
-                        color="rgba(84,91,206,0.9)"
                         onPress={() => {
                           if (userAdditionalDetails?.dailyReminder?.enabled) {
                             onUpdateDailyReminder({

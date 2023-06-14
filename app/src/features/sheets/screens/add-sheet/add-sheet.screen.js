@@ -126,7 +126,7 @@ export const AddSheetScreen = ({navigation, route}) => {
           <Text variant="caption" color="#aaa" fontsize="14px">
             ADVANCED SETTINGS
           </Text>
-          <AdvancedSettings theme={{roundness: 10}}>
+          <AdvancedSettings theme={{roundness: 5}}>
             <AdvancedSettings.Content>
               <FlexRow justifyContent="space-between">
                 <Text>Show Total Balance</Text>

@@ -4,9 +4,19 @@ import 'react-native-gesture-handler';
 import {ThemeProvider} from 'styled-components/native';
 import {darkTheme, lightTheme} from './src/infrastructure/theme';
 import {Navigation} from './src/infrastructure/navigation';
-import {DarkTheme, DefaultTheme, Provider} from 'react-native-paper';
+import {
+  MD3DarkTheme,
+  MD3LightTheme,
+  Provider as PaperProvider,
+} from 'react-native-paper';
 import {AuthenticationContextProvider} from './src/services/authentication/authentication.context';
-import {LogBox, Platform, StatusBar, useColorScheme} from 'react-native';
+import {
+  AppState,
+  LogBox,
+  Platform,
+  StatusBar,
+  useColorScheme,
+} from 'react-native';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import {MenuProvider} from 'react-native-popup-menu';
 import {useDispatch, useSelector} from 'react-redux';
@@ -15,6 +25,7 @@ import {
   fetchExchangeRates,
   fetchTheme,
   loadAppStatus,
+  setAppState,
 } from './src/store/service-slice';
 import moment from 'moment';
 import SplashScreen from 'react-native-splash-screen';
@@ -38,12 +49,21 @@ const App = () => {
   const appStatus = useSelector(state => state.service.appStatus);
 
   useEffect(() => {
+    const appStateListener = AppState.addEventListener(
+      'change',
+      nextAppState => {
+        dispatch(setAppState({state: nextAppState}));
+      },
+    );
     //  call all slices
     dispatch(fetchAppLock());
     dispatch(fetchTheme());
     dispatch(loadAppStatus());
     dispatch(fetchChangesMade());
     dispatch(fetchExchangeRates({}));
+    return () => {
+      appStateListener?.remove();
+    };
   }, []);
 
   useEffect(() => {
@@ -66,22 +86,22 @@ const App = () => {
         }>
         <ActionSheetProvider>
           <MenuProvider>
-            <Provider
+            <PaperProvider
               theme={
                 appTheme === 'automatic'
                   ? themeType === 'light'
-                    ? {...DefaultTheme}
-                    : {...DarkTheme}
+                    ? MD3LightTheme
+                    : MD3DarkTheme
                   : appTheme === 'light'
-                  ? {...DefaultTheme}
-                  : {...DarkTheme}
+                  ? MD3LightTheme
+                  : MD3DarkTheme
               }>
               {appStatus && appStatus.hideSplashScreen && (
                 <AuthenticationContextProvider>
                   <Navigation />
                 </AuthenticationContextProvider>
               )}
-            </Provider>
+            </PaperProvider>
           </MenuProvider>
         </ActionSheetProvider>
       </ThemeProvider>

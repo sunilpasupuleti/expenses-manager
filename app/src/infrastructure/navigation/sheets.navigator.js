@@ -17,19 +17,23 @@ import {SheetStatsScreen} from '../../features/sheets/screens/sheet-stats/sheet-
 import {SheetTrendsScreen} from '../../features/sheets/screens/sheet-trends/sheet-trends.screen';
 import {SheetsScreen} from '../../features/sheets/screens/sheets.screen';
 import {SheetDetailsHome} from '../../features/sheets/screens/sheet-details/sheet-details-home.screen';
+import {useSelector} from 'react-redux';
 
 const SheetStack = createStackNavigator();
 
 export const SheetsNavigator = () => {
   const theme = useTheme();
+  const appState = useSelector(state => state.service.appState);
+
   const headerStyles = {
-    headerStyle: {
-      backgroundColor: theme.colors.ui.body,
-    },
     headerTintColor: theme.colors.headerTintColor,
     headerTitleAlign: 'center',
     headerShadowVisible: false,
   };
+
+  if (appState !== 'active') {
+    headerStyles.headerShown = false;
+  }
   return (
     <SheetStack.Navigator
       screenOptions={{

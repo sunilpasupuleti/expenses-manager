@@ -41,7 +41,7 @@ export const AppearanceScreen = ({navigation}) => {
   return (
     <SafeArea>
       <MainWrapper>
-        <Card theme={{roundness: Platform.OS === 'ios' ? 5 : 15}}>
+        <Card theme={{roundness: 5}}>
           {modes.map(m => {
             return (
               <TouchableHighlightWithColor

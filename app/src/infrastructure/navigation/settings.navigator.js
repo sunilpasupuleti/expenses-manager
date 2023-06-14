@@ -10,27 +10,29 @@ import {AppearanceScreen} from '../../features/appearance/screens/appearance.scr
 import {SettingsScreen} from '../../features/settings/screens/settings.screen';
 import {SyncScreen} from '../../features/sync/screens/sync.screen';
 import {CategoriesNavigator} from './categories.navigator';
+import {useSelector} from 'react-redux';
 
 const SettingsStack = createStackNavigator();
 
 export const SettingsNavigator = () => {
   const theme = useTheme();
+
+  const appState = useSelector(state => state.service.appState);
+
+  let headerShown = appState === 'active' ? true : false;
   return (
     <SettingsStack.Navigator
       screenOptions={{
-        headerShown: true,
+        headerShown: headerShown,
         headerMode: 'screen',
         headerTitleAlign: 'center',
-        headerStyle: {
-          backgroundColor: theme.colors.ui.body,
-        },
         headerTintColor: theme.colors.headerTintColor,
         headerShadowVisible: false,
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
       }}>
       <SettingsStack.Screen
         options={{
-          headerShown: true,
+          headerShown: headerShown,
         }}
         name=" "
         component={SettingsScreen}

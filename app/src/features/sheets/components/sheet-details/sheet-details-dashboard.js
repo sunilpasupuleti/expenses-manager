@@ -86,9 +86,9 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
     if (routeIsFocused) {
       navigation.setOptions({
         headerTitle: sheet.name,
-        headerStyle: {
-          backgroundColor: theme.colors.bg.primary,
-        },
+        // headerStyle: {
+        //   backgroundColor: theme.colors.bg.primary,
+        // },
         headerLeft: () => (
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <FlexRow>
@@ -271,7 +271,7 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                 return (
                   <Spacer size={'large'} key={key}>
                     <Card
-                      theme={{roundness: Platform.OS === 'ios' ? 5 : 10}}
+                      theme={{roundness: 5}}
                       elevation={2}
                       style={{position: 'relative'}}>
                       <TouchableHighlightWithColor

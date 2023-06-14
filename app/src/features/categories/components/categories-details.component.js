@@ -18,7 +18,7 @@ export const CategoriesDetails = ({
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <Spacer size={'large'}></Spacer>
-      <Card theme={{roundness: Platform.OS === 'ios' ? 5 : 15}}>
+      <Card theme={{roundness: 5}}>
         {details &&
           details.map(c => {
             return (

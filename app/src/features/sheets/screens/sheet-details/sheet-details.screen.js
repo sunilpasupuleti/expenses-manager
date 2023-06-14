@@ -202,9 +202,9 @@ export const SheetDetailsScreen = ({navigation, route}) => {
     if (routeIsFocused) {
       navigation.setOptions({
         headerTitle: sheet.name,
-        headerStyle: {
-          backgroundColor: theme.colors.bg.primary,
-        },
+        // headerStyle: {
+        //   backgroundColor: theme.colors.bg.primary,
+        // },
         headerLeft: () => (
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <FlexRow>

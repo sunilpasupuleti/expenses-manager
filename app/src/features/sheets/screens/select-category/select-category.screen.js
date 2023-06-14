@@ -112,9 +112,7 @@ export const SelectCategoryScreen = ({navigation, route}) => {
         <Spacer size={'xlarge'}></Spacer>
 
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Card
-            theme={{roundness: Platform.OS === 'ios' ? 5 : 15}}
-            style={{marginBottom: 100}}>
+          <Card theme={{roundness: 5}} style={{marginBottom: 100}}>
             {categories.map(c => {
               return (
                 <TouchableHighlightWithColor

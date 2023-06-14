@@ -21,7 +21,7 @@ export const SettingTitle = styled(Text).attrs({})`
 
 export const SettingsCard = styled(Card).attrs({
   theme: {
-    roundness: Platform.OS === 'ios' ? 5 : 15,
+    roundness: 5,
   },
 })``;
 

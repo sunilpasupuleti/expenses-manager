@@ -4,11 +4,14 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {SheetDetailsDashboard} from '../../components/sheet-details/sheet-details-dashboard';
 import {SheetDetailsScreen} from './sheet-details.screen';
+import {useSelector} from 'react-redux';
 
 const Tab = createBottomTabNavigator();
 
 export const SheetDetailsHome = ({navigation, route}) => {
   const theme = useTheme();
+  const appState = useSelector(state => state.service.appState);
+
   // const [sheet, setSheet] = useState(route.params.sheet);
 
   const SheetDetailsDashboardComponent = () => {
@@ -28,6 +31,7 @@ export const SheetDetailsHome = ({navigation, route}) => {
         tabBarStyle: {
           backgroundColor: theme.colors.bg.primary,
           paddingBottom: 10,
+          display: appState === 'active' ? 'flex' : 'none',
         },
       }}>
       <Tab.Screen

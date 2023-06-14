@@ -1,7 +1,7 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch} from 'react-redux';
-import {Alert} from 'react-native';
+import {Alert, AppState} from 'react-native';
 import {loaderActions} from './loader-slice';
 import remoteConfig from '@react-native-firebase/remote-config';
 import {
@@ -114,6 +114,13 @@ export const setTheme = createAsyncThunk(
   },
 );
 
+export const setAppState = createAsyncThunk(
+  'service/setAppState',
+  async ({state}) => {
+    return state;
+  },
+);
+
 export const loadAppStatus = createAsyncThunk(
   'service/loadAppStatus',
   async () => {
@@ -157,6 +164,7 @@ const serviceSlice = createSlice({
     },
     theme: 'automatic',
     exchangeRates: null,
+    appState: AppState.currentState,
     appStatus: {
       hideSplashScreen: false,
       authenticated: false,
@@ -190,6 +198,10 @@ const serviceSlice = createSlice({
 
     builder.addCase(setTheme.fulfilled, (state, action) => {
       state.theme = action.payload;
+    });
+
+    builder.addCase(setAppState.fulfilled, (state, action) => {
+      state.appState = action.payload;
     });
 
     builder.addCase(fetchExchangeRates.fulfilled, (state, action) => {
