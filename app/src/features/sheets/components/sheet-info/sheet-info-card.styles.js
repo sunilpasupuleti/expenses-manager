@@ -53,6 +53,6 @@ export const SwipeableView = styled.View`
 `;
 
 export const SheetInfoWrapper = styled.View`
-  max-width: 80%;
+  max-width: 60%;
   margin: 16px 0px 16px 16px;
 `;

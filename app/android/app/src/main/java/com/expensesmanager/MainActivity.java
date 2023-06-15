@@ -8,6 +8,15 @@ import com.facebook.react.defaults.DefaultReactActivityDelegate;
 import android.os.Bundle; // added this.
 import org.devio.rn.splashscreen.SplashScreen; // added this.
 
+// added for android app state
+import com.facebook.react.bridge.Arguments;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReactContextBaseJavaModule;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+
+
 public class MainActivity extends ReactActivity {
 
    // Added this method.
@@ -17,7 +26,27 @@ public class MainActivity extends ReactActivity {
        super.onCreate(savedInstanceState);
    }
 
-   
+  // added for android app state
+  @Override
+  public void onWindowFocusChanged(boolean hasFocus) {
+    ReactContext reactContext = getReactInstanceManager()
+      .getCurrentReactContext();
+    WritableMap params = Arguments.createMap();
+    if (hasFocus) {
+      params.putString("event", "active");
+    } else {
+      params.putString("event", "inactive");
+    }
+
+    if (reactContext != null) {
+      getReactInstanceManager()
+        .getCurrentReactContext()
+        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+        .emit("ActivityStateChange", params);
+    }
+  }
+
+
 
   /**
    * Returns the name of the main component registered from JavaScript. This is used to schedule

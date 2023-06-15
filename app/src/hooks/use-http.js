@@ -2,34 +2,9 @@ import axios from 'axios';
 import {useCallback, useEffect, useState} from 'react';
 
 const useHttp = () => {
-  const [isLoading, setIsLoading] = useState({
-    status: false,
-    loaderType: null,
-  });
+  const [isLoading, setIsLoading] = useState(false);
 
   const [error, setError] = useState(null);
-  // const dispatch = useDispatch();
-  // useEffect(() => {
-  //   if (isLoading.status) {
-  //     dispatch(loaderActions.showLoader({backdrop: true}));
-  //   } else {
-  //     dispatch(loaderActions.hideLoader());
-  //   }
-  // }, [isLoading]);
-
-  // useEffect(() => {
-  //   if (error) {
-  //     dispatch(loaderActions.hideLoader());
-  //     dispatch(
-  //       notificationActions.showToast({
-  //         status: 'error',
-  //         message: error,
-  //       }),
-  //     );
-  //   } else {
-  //     dispatch(loaderActions.hideLoader());
-  //   }
-  // }, [error]);
 
   const sendRequest = useCallback(
     async (
@@ -44,9 +19,7 @@ const useHttp = () => {
       let data = requestConfig.data;
       let headers = requestConfig.headers;
 
-      setIsLoading({
-        status: true,
-      });
+      setIsLoading(true);
       setError(null);
 
       try {
@@ -67,10 +40,7 @@ const useHttp = () => {
         }
         request
           .then(res => {
-            setIsLoading({
-              status: false,
-              loaderType: null,
-            });
+            setIsLoading(false);
             callbacks.successCallback(res.data);
             // if (res.data && res.data.message) {
             //   dispatch(

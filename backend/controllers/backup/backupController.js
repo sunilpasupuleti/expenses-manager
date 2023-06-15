@@ -212,11 +212,6 @@ module.exports = {
       if (backUp) {
         backupId = backUp._id;
       }
-
-      return sendResponse(res, httpCodes.OK, {
-        message: "Backup fetched successfully",
-        backup: null,
-      });
     } else {
       if (!ObjectId.isValid(backupId)) {
         return sendResponse(res, httpCodes.BAD_REQUEST, {

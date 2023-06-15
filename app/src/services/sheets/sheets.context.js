@@ -482,7 +482,7 @@ export const SheetsContextProvider = ({children}) => {
   };
 
   const retrieveExpensesData = async () => {
-    dispatch(loaderActions.showLoader({backdrop: true}));
+    // dispatch(loaderActions.showLoader({backdrop: true}));
     try {
       let value = await AsyncStorage.getItem(
         `@expenses-manager-data-${userData.uid}`,
@@ -503,7 +503,7 @@ export const SheetsContextProvider = ({children}) => {
           setCategories(value.categories);
         }
       }
-      dispatch(loaderActions.hideLoader());
+      // dispatch(loaderActions.hideLoader());
     } catch (e) {
       console.log('error retrieving expenses data - ', e);
       dispatch(loaderActions.hideLoader());

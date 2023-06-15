@@ -12,6 +12,7 @@ import {
 import {AuthenticationContextProvider} from './src/services/authentication/authentication.context';
 import {
   AppState,
+  DeviceEventEmitter,
   LogBox,
   Platform,
   StatusBar,
@@ -49,12 +50,22 @@ const App = () => {
   const appStatus = useSelector(state => state.service.appStatus);
 
   useEffect(() => {
-    const appStateListener = AppState.addEventListener(
-      'change',
-      nextAppState => {
+    let iosStateListener = null;
+    let androidStateListener = null;
+    if (Platform.OS === 'ios') {
+      iosStateListener = AppState.addEventListener('change', nextAppState => {
         dispatch(setAppState({state: nextAppState}));
-      },
-    );
+      });
+    }
+    if (Platform.OS === 'android') {
+      androidStateListener = DeviceEventEmitter.addListener(
+        'ActivityStateChange',
+        e => {
+          dispatch(setAppState({state: e.event}));
+        },
+      );
+    }
+
     //  call all slices
     dispatch(fetchAppLock());
     dispatch(fetchTheme());
@@ -62,7 +73,8 @@ const App = () => {
     dispatch(fetchChangesMade());
     dispatch(fetchExchangeRates({}));
     return () => {
-      appStateListener?.remove();
+      iosStateListener?.remove();
+      androidStateListener?.remove();
     };
   }, []);
 

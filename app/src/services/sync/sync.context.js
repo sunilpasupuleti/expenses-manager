@@ -35,7 +35,7 @@ export const SyncContextProvider = ({children}) => {
   useEffect(() => {
     if (userData) {
       if (changesMade.loaded) {
-        if (changesMade.status === false) {
+        if (!changesMade.status) {
           restoreData(null, true);
         }
       }

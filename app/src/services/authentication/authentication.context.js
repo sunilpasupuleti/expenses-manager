@@ -243,6 +243,8 @@ export const AuthenticationContextProvider = ({children}) => {
         case 'auth/network-request-failed':
           error = 'No Internet Connection!';
           break;
+        default:
+          error = 'An error occured , please try again later';
       }
       return {status: false, message: error};
     }

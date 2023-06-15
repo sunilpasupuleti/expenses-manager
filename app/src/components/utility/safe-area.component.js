@@ -15,10 +15,16 @@ export const SafeAreaStyled = styled.SafeAreaView`
     StatusBar.currentHeight &&
     `margin-top : ${StatusBar.currentHeight}px`};
   background-color: ${props => props.theme.colors.ui.body};
-  ${Platform.OS === 'android' &&
-  StatusBar.currentHeight &&
-  `margin-top : ${StatusBar.currentHeight}px;`};
+
+  ${props =>
+    Platform.OS === 'ios' &&
+    StatusBar.currentHeight &&
+    `margin-top : ${StatusBar.currentHeight.toString}px;`}
 `;
+
+// ${Platform.OS === 'android' &&
+// StatusBar.currentHeight &&
+// `margin-top : ${StatusBar.currentHeight}px;`};
 
 export const SafeArea = props => {
   const appState = useSelector(state => state.service.appState);
@@ -35,7 +41,7 @@ export const SafeArea = props => {
     <>
       <SafeAreaStyled {...props}>{props.children}</SafeAreaStyled>
 
-      {appState !== 'active' && (
+      {(appState === 'inactive' || appState === 'background') && (
         <BlurView
           blurType="extraDark"
           blurAmount={7}
