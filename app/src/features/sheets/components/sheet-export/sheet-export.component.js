@@ -1,19 +1,11 @@
 import {useState} from 'react';
-import {
-  Button,
-  Card,
-  Divider,
-  Modal,
-  Portal,
-  RadioButton,
-  Switch,
-} from 'react-native-paper';
+import {Button, Card, Divider, RadioButton, Switch} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Text} from '../../../../components/typography/text.component';
 import React from 'react';
 import {Platform, TouchableOpacity, View} from 'react-native';
 import {useTheme} from 'styled-components/native';
-import {FlexColumn, FlexRow} from '../../../../components/styles';
+import {ButtonText, FlexRow} from '../../../../components/styles';
 import {Spacer} from '../../../../components/spacer/spacer.component';
 import {useContext} from 'react';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
@@ -37,7 +29,8 @@ const onSetFromDate = () => {
   return date;
 };
 
-export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
+export const SheetExport = ({navigation, route}) => {
+  const [sheet, setSheet] = useState(null);
   const [type, setType] = useState(null);
   const [categoryType, setCategoryType] = useState(null);
   const dispatch = useDispatch();
@@ -46,14 +39,12 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
   const [dateFilter, setDateFilter] = useState(false);
 
   const [showPicker, setShowPicker] = useState({
-    from: Platform.OS === 'ios' ? true : false,
-    to: Platform.OS === 'ios' ? true : false,
+    from: false,
+    to: false,
   });
 
   const [fromDate, setFromDate] = useState(onSetFromDate());
   const [toDate, setToDate] = useState(new Date());
-
-  const [value, setValue] = useState(null);
 
   const [items, setItems] = useState([]);
   const [itemsColors, setItemColors] = useState([]);
@@ -64,9 +55,9 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
     onExportDataToPdf,
   } = useContext(SheetsContext);
   const theme = useTheme();
-  const onHideModal = () => {
-    setModalOpen(false);
-    onResetFilters();
+
+  const onCompleteExporting = () => {
+    navigation.goBack();
   };
 
   const onResetFilters = () => {
@@ -128,40 +119,39 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
 
     if (dateFilter) {
       //   for exact filter between dates
-      let from = new Date(fromDate); //minus one day
-      let to = new Date(toDate); //plus one day
+      // let from = new Date(fromDate); //minus one day
+      // let to = new Date(toDate); //plus one day
 
-      const fromDateDaysInMonth = moment(fromDate).daysInMonth();
-      const fromDateMonth = moment(fromDate).format('M');
-      const fromDateDay = moment(fromDate).format('D');
+      // const fromDateMonth = moment(fromDate).format('M');
+      // const fromDateDay = moment(fromDate).format('D');
 
-      const toDateDaysInMonth = moment(toDate).daysInMonth();
-      const toDateMonth = moment(toDate).format('M');
-      const toDateDay = moment(toDate).format('D');
+      // const toDateDaysInMonth = moment(toDate).daysInMonth();
+      // const toDateMonth = moment(toDate).format('M');
+      // const toDateDay = moment(toDate).format('D');
 
-      from.setDate(Number(fromDateDay) - 1);
-      Number(fromDateDay) === 1
-        ? from.setMonth(fromDate.getMonth() - 1)
-        : from.setMonth(fromDate.getMonth());
+      // from.setDate(Number(fromDateDay) - 1);
+      // Number(fromDateDay) === 1
+      //   ? from.setMonth(fromDate.getMonth() - 1)
+      //   : from.setMonth(fromDate.getMonth());
 
-      Number(fromDateMonth) === 1 && Number(fromDateDay) === 1
-        ? from.setFullYear(fromDate.getFullYear() - 1)
-        : from.setFullYear(fromDate.getFullYear());
+      // Number(fromDateMonth) === 1 && Number(fromDateDay) === 1
+      //   ? from.setFullYear(fromDate.getFullYear() - 1)
+      //   : from.setFullYear(fromDate.getFullYear());
 
-      from = moment(from).format('YYYY-MM-DD');
+      let from = moment(fromDate).format('YYYY-MM-DD');
 
-      to.setDate(Number(toDateDay) + 1);
+      // to.setDate(Number(toDateDay) + 1);
 
-      Number(toDateDay) >= Number(toDateDaysInMonth)
-        ? to.setMonth(toDate.getMonth() + 1)
-        : to.setMonth(toDate.getMonth());
+      // Number(toDateDay) >= Number(toDateDaysInMonth)
+      //   ? to.setMonth(toDate.getMonth() + 1)
+      //   : to.setMonth(toDate.getMonth());
 
-      Number(toDateMonth) === 12 &&
-      Number(toDateDay) >= Number(toDateDaysInMonth)
-        ? to.setFullYear(toDate.getFullYear() + 1)
-        : to.setFullYear(toDate.getFullYear());
+      // Number(toDateMonth) === 12 &&
+      // Number(toDateDay) >= Number(toDateDaysInMonth)
+      //   ? to.setFullYear(toDate.getFullYear() + 1)
+      //   : to.setFullYear(toDate.getFullYear());
 
-      to = moment(to).format('YYYY-MM-DD');
+      let to = moment(toDate).format('YYYY-MM-DD');
 
       let filteredDetails = [];
       sheetDetails.map(sd => {
@@ -267,12 +257,12 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
       wscols: [{wch: 5}, {wch: 40}, {wch: 40}, {wch: 25}, {wch: 25}],
       ...configData,
     };
-    onHideModal();
+    onCompleteExporting();
     onExportDataToExcel(config, structuredDetails);
   };
 
   const exportPdf = (configData, sheetDetails) => {
-    onHideModal();
+    onCompleteExporting();
     let finalSheet = {...sheet};
     finalSheet.details = sheetDetails;
     let config = {
@@ -286,142 +276,161 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
     padding: 3,
   };
 
+  useEffect(() => {
+    navigation.setOptions({
+      headerTitle: 'Export ' + sheet?.name,
+      headerLeft: () => (
+        <Button uppercase={false} onPress={() => navigation.goBack()}>
+          <ButtonText>Back</ButtonText>
+        </Button>
+      ),
+      headerRight: () => {},
+    });
+  }, [sheet]);
+
+  useEffect(() => {
+    if (route.params && route.params.sheet) {
+      let sh = route.params.sheet;
+      console.log(sh);
+
+      setSheet(sh);
+    }
+  }, [route.params]);
+
   return (
-    <Portal>
-      <Modal visible={modalOpen} onDismiss={onHideModal}>
-        <Card>
-          {/* <Card.Title title="Export options"></Card.Title> */}
-          <Card.Content>
-            <RadioButton.Group
-              onValueChange={newValue => setType(newValue)}
-              value={type}>
-              <FlexRow justifyContent="space-between">
-                <Text fontfamily="heading">Select Format * </Text>
-
-                <>
-                  <FlexRow>
-                    <RadioButton.Android
-                      color={theme.colors.brand.primary}
-                      value="pdf"
-                    />
-                    <Text>Pdf</Text>
-                  </FlexRow>
-                  <FlexRow>
-                    <RadioButton.Android
-                      color={theme.colors.brand.primary}
-                      value="excel"
-                    />
-                    <Text>Excel</Text>
-                  </FlexRow>
-                </>
-              </FlexRow>
-            </RadioButton.Group>
-            <Spacer size={'large'} />
-            <RadioButton.Group
-              onValueChange={newValue => setCategoryType(newValue)}
-              value={categoryType}>
-              <Text fontfamily="heading">Category Type (optional)</Text>
-              <Spacer />
-              <FlexRow justifyContent="space-between">
-                <FlexRow>
-                  <RadioButton.Android
-                    color={theme.colors.brand.primary}
-                    value="expense"
-                  />
-                  <Text>Expense</Text>
-                </FlexRow>
-                <FlexRow>
-                  <RadioButton.Android
-                    color={theme.colors.brand.primary}
-                    value="income"
-                  />
-                  <Text>Income</Text>
-                </FlexRow>
-              </FlexRow>
-            </RadioButton.Group>
-
-            {categoryType && (
-              <>
-                <Spacer size={'large'} />
-                <DropDownPicker
-                  placeholder="Select categories (optional)"
-                  style={{
-                    borderWidth: 0.2,
-                  }}
-                  open={openDropdownPicker}
-                  value={categories}
-                  items={items}
-                  setOpen={setOpenDropdownPicker}
-                  setValue={setCategories}
-                  setItems={setItems}
-                  multiple={true}
-                  mode="BADGE"
-                  textStyle={{
-                    color: theme.colors.text.primary,
-                  }}
-                  stickyHeader
-                  badgeDotColors={itemsColors}
-                  dropDownDirection="TOP"
-                  dropDownContainerStyle={{
-                    backgroundColor: 'whitesmoke',
-                    borderWidth: 0.2,
-                    overflow: 'scroll',
-                  }}
-                />
-              </>
-            )}
-            <Spacer size={'large'} />
-            <FlexRow justifyContent="space-between">
-              <Text fontfamily="heading">Date Filter (optional)</Text>
-              <View style={toggleSwithStyles}>
-                <Switch
-                  value={dateFilter}
-                  color={theme.colors.brand.primary}
-                  onValueChange={() => setDateFilter(!dateFilter)}
-                />
-              </View>
+    <Card style={{flex: 1}}>
+      <Card.Content
+        style={{
+          paddingTop: 50,
+        }}>
+        <RadioButton.Group
+          onValueChange={newValue => setType(newValue)}
+          value={type}>
+          <Text fontfamily="heading">Select Format *</Text>
+          <Spacer />
+          <FlexRow justifyContent="space-between">
+            <FlexRow>
+              <RadioButton.Android
+                color={theme.colors.brand.primary}
+                value="pdf"
+              />
+              <Text>Pdf</Text>
             </FlexRow>
-            <Spacer size={'xlarge'} />
-            {dateFilter && (
-              <>
-                <FlexRow justifyContent="space-between">
-                  <FlexRow>
-                    <Ionicons
-                      name="calendar-outline"
-                      size={25}
-                      color={theme.colors.brand.primary}></Ionicons>
-                    <Spacer position={'left'} />
-                    <Text fontfamily="heading">From </Text>
-                  </FlexRow>
+            <FlexRow>
+              <RadioButton.Android
+                color={theme.colors.brand.primary}
+                value="excel"
+              />
+              <Text>Excel</Text>
+            </FlexRow>
+          </FlexRow>
+        </RadioButton.Group>
 
-                  {Platform.OS === 'android' && (
-                    <TouchableOpacity
-                      style={{
-                        backgroundColor: theme.colors.brand.secondary,
-                        padding: 15,
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        borderRadius: 10,
-                      }}
-                      onPress={() =>
-                        setShowPicker(prevState => ({
-                          ...prevState,
-                          from: true,
-                        }))
-                      }>
-                      <Text fontfamily="bodySemiBold" fontsize="14px">
-                        {moment(fromDate).format('DD MMM YYYY')}
-                      </Text>
-                    </TouchableOpacity>
-                  )}
+        <Spacer size={'large'} />
+        <RadioButton.Group
+          onValueChange={newValue => setCategoryType(newValue)}
+          value={categoryType}>
+          <Text fontfamily="heading">Category Type (optional)</Text>
+          <Spacer />
+          <FlexRow justifyContent="space-between">
+            <FlexRow>
+              <RadioButton.Android
+                color={theme.colors.brand.primary}
+                value="expense"
+              />
+              <Text>Expense</Text>
+            </FlexRow>
+            <FlexRow>
+              <RadioButton.Android
+                color={theme.colors.brand.primary}
+                value="income"
+              />
+              <Text>Income</Text>
+            </FlexRow>
+          </FlexRow>
+        </RadioButton.Group>
 
+        {categoryType && (
+          <>
+            <Spacer size={'large'} />
+            <DropDownPicker
+              placeholder="Select categories (optional)"
+              style={{
+                borderWidth: 0.2,
+              }}
+              open={openDropdownPicker}
+              value={categories}
+              items={items}
+              setOpen={setOpenDropdownPicker}
+              setValue={setCategories}
+              setItems={setItems}
+              multiple={true}
+              mode="BADGE"
+              textStyle={{
+                color: theme.colors.text.primary,
+              }}
+              stickyHeader
+              badgeDotColors={itemsColors}
+              dropDownDirection="TOP"
+              dropDownContainerStyle={{
+                backgroundColor: 'whitesmoke',
+                borderWidth: 0.2,
+                overflow: 'scroll',
+              }}
+            />
+          </>
+        )}
+        <Spacer size={'large'} />
+        <FlexRow justifyContent="space-between">
+          <Text fontfamily="heading">Date Filter (optional)</Text>
+          <View style={toggleSwithStyles}>
+            <Switch
+              value={dateFilter}
+              color={theme.colors.brand.primary}
+              onValueChange={() => setDateFilter(!dateFilter)}
+            />
+          </View>
+        </FlexRow>
+        <Spacer size={'xlarge'} />
+        {dateFilter && (
+          <>
+            <FlexRow justifyContent="space-between">
+              <FlexRow>
+                <Ionicons
+                  name="calendar-outline"
+                  size={25}
+                  color={theme.colors.brand.primary}></Ionicons>
+                <Spacer position={'left'} />
+                <Text fontfamily="heading">From </Text>
+              </FlexRow>
+
+              {Platform.OS === 'android' && (
+                <>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: theme.colors.brand.secondary,
+                      padding: 15,
+                      paddingTop: 10,
+                      paddingBottom: 10,
+                      borderRadius: 10,
+                    }}
+                    onPress={() =>
+                      setShowPicker(prevState => ({
+                        ...prevState,
+                        from: true,
+                      }))
+                    }>
+                    <Text fontfamily="bodySemiBold" fontsize="14px">
+                      {moment(fromDate).format('DD MMM YYYY')}
+                    </Text>
+                  </TouchableOpacity>
                   {showPicker.from && (
                     <DateTimePicker
-                      style={{width: '100%', position: 'absolute', right: 0}}
                       mode="date"
-                      maximumDate={new Date(toDate)}
                       value={fromDate}
+                      maximumDate={new Date()}
                       onChange={(e, d) => {
+                        console.log(e);
                         if (e.type === 'dismissed') {
                           setShowPicker(prev => ({
                             ...prev,
@@ -439,51 +448,75 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
                           }
                           setFromDate(d);
                         }
-                      }}></DateTimePicker>
-                  )}
-                </FlexRow>
-                <Spacer />
-                <Divider />
-                <Spacer size={'large'} />
-
-                <FlexRow justifyContent="space-between">
-                  <FlexRow>
-                    <Ionicons
-                      name="time-outline"
-                      size={25}
-                      color={theme.colors.brand.primary}></Ionicons>
-                    <Spacer position={'left'} />
-                    <Text fontfamily="heading">To</Text>
-                  </FlexRow>
-
-                  {Platform.OS === 'android' && (
-                    <TouchableOpacity
-                      style={{
-                        backgroundColor: theme.colors.brand.secondary,
-                        padding: 15,
-                        paddingTop: 10,
-                        paddingBottom: 10,
-                        borderRadius: 10,
                       }}
-                      onPress={() =>
-                        setShowPicker(prevState => ({
-                          ...prevState,
-                          to: true,
-                        }))
-                      }>
-                      <Text fontfamily="bodySemiBold" fontsize="14px">
-                        {moment(toDate).format('DD MMM YYYY')}
-                      </Text>
-                    </TouchableOpacity>
+                    />
                   )}
+                </>
+              )}
 
+              {Platform.OS === 'ios' && (
+                <DateTimePicker
+                  mode="date"
+                  maximumDate={new Date(toDate)}
+                  value={fromDate}
+                  onChange={(e, d) => {
+                    if (e.type === 'dismissed') {
+                      setShowPicker(prev => ({
+                        ...prev,
+                        from: false,
+                      }));
+                    }
+                    if (d) {
+                      if (Platform.OS === 'android') {
+                        setShowPicker(prevState => {
+                          return {
+                            ...prevState,
+                            from: false,
+                          };
+                        });
+                      }
+                      setFromDate(d);
+                    }
+                  }}
+                />
+              )}
+            </FlexRow>
+            <Spacer />
+            <Divider />
+            <Spacer size={'large'} />
+
+            <FlexRow justifyContent="space-between">
+              <FlexRow>
+                <Ionicons
+                  name="time-outline"
+                  size={25}
+                  color={theme.colors.brand.primary}></Ionicons>
+                <Spacer position={'left'} />
+                <Text fontfamily="heading">To</Text>
+              </FlexRow>
+
+              {Platform.OS === 'android' && (
+                <>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: theme.colors.brand.secondary,
+                      padding: 15,
+                      paddingTop: 10,
+                      paddingBottom: 10,
+                      borderRadius: 10,
+                    }}
+                    onPress={() =>
+                      setShowPicker(prevState => ({
+                        ...prevState,
+                        to: true,
+                      }))
+                    }>
+                    <Text fontfamily="bodySemiBold" fontsize="14px">
+                      {moment(toDate).format('DD MMM YYYY')}
+                    </Text>
+                  </TouchableOpacity>
                   {showPicker.to && (
                     <DateTimePicker
-                      style={{
-                        width: '100%',
-                        position: 'absolute',
-                        right: 0,
-                      }}
                       maximumDate={new Date()}
                       mode="date"
                       value={toDate}
@@ -508,48 +541,75 @@ export const SheetExport = ({sheet, modalOpen, setModalOpen}) => {
                       }}
                     />
                   )}
-                </FlexRow>
-                <Spacer />
-                <Divider />
-                <Spacer size={'large'} />
+                </>
+              )}
 
-                <Spacer position={'bottom'} size="large" />
-              </>
-            )}
-
+              {Platform.OS === 'ios' && (
+                <DateTimePicker
+                  maximumDate={new Date()}
+                  mode="date"
+                  value={toDate}
+                  onChange={(e, t) => {
+                    if (e.type === 'dismissed') {
+                      setShowPicker(prev => ({
+                        ...prev,
+                        to: false,
+                      }));
+                    }
+                    if (t) {
+                      if (Platform.OS === 'android') {
+                        setShowPicker(prevState => {
+                          return {
+                            ...prevState,
+                            to: false,
+                          };
+                        });
+                      }
+                      setToDate(t);
+                    }
+                  }}
+                />
+              )}
+            </FlexRow>
+            <Spacer />
+            <Divider />
             <Spacer size={'large'} />
-          </Card.Content>
-          <Card.Actions
-            style={{
-              alignSelf: 'flex-end',
-              marginRight: 10,
-            }}>
-            <Button onPress={onResetFilters} color={theme.colors.text.primary}>
-              Reset
-            </Button>
-            <Spacer size={'medium'} position="right" />
-            <Button
-              mode="contained"
-              onPress={() => onFilter({sharing: true})}
-              style={{
-                backgroundColor: '#01AFDB',
-              }}
-              icon="share">
-              SHARE
-            </Button>
-            <Spacer size={'medium'} position="right" />
-            <Button
-              onPress={() => onFilter({})}
-              mode="contained"
-              style={{
-                backgroundColor: '#32B997',
-              }}
-              icon="download">
-              Export
-            </Button>
-          </Card.Actions>
-        </Card>
-      </Modal>
-    </Portal>
+
+            <Spacer position={'bottom'} size="large" />
+          </>
+        )}
+
+        <Spacer size={'large'} />
+      </Card.Content>
+      <Card.Actions
+        style={{
+          alignSelf: 'flex-end',
+          marginRight: 10,
+        }}>
+        <Button onPress={onResetFilters} buttonColor={'#aaa'} textColor="#fff">
+          Reset
+        </Button>
+        <Spacer size={'medium'} position="right" />
+        <Button
+          mode="contained"
+          onPress={() => onFilter({sharing: true})}
+          style={{
+            backgroundColor: '#01AFDB',
+          }}
+          icon="share">
+          SHARE
+        </Button>
+        <Spacer size={'medium'} position="right" />
+        <Button
+          onPress={() => onFilter({})}
+          mode="contained"
+          style={{
+            backgroundColor: '#32B997',
+          }}
+          icon="download">
+          Export
+        </Button>
+      </Card.Actions>
+    </Card>
   );
 };

@@ -40,6 +40,7 @@ import {
   deleteUserPinCode,
 } from '@haskkor/react-native-pincode';
 import {applockActions} from '../../../store/applock-slice';
+import {colors} from '../../../infrastructure/theme/colors';
 
 export const SettingsScreen = ({navigation}) => {
   const {onLogout, userData, userAdditionalDetails} = useContext(
@@ -73,8 +74,6 @@ export const SettingsScreen = ({navigation}) => {
   const [open, setOpen] = useState(false);
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-
-  const [encrypted, setEncrypted] = useState(false);
 
   const {
     onExportData,
@@ -143,25 +142,6 @@ export const SettingsScreen = ({navigation}) => {
 
   const onFetchExchangeRates = () => {
     dispatch(fetchExchangeRates({showAlert: true, dispatch: dispatch}));
-  };
-
-  const onClickExportDataToExcel = () => {
-    let config = {
-      encrypted: encrypted,
-      password: password,
-    };
-
-    if (encrypted && (!password || password.trim() === '')) {
-      dispatch(
-        notificationActions.showToast({
-          status: 'warning',
-          message: 'Enter the password to protect the file continue',
-        }),
-      );
-      return;
-    }
-    onExportAllSheetsToExcel(config);
-    setOpen(false);
   };
 
   const toggleSwithStyles = {
@@ -246,32 +226,48 @@ export const SettingsScreen = ({navigation}) => {
                       <>
                         <FlexRow justifyContent="space-between">
                           {Platform.OS === 'android' && (
-                            <TouchableOpacity
-                              style={{
-                                backgroundColor: theme.colors.brand.secondary,
-                                padding: 15,
-                                paddingTop: 10,
-                                paddingBottom: 10,
-                                borderRadius: 10,
-                              }}
-                              onPress={() => setShowPicker(true)}>
-                              <Text fontfamily="bodySemiBold" fontsize="14px">
-                                {moment(isDailyReminderEnabled.time).format(
-                                  'hh:mm A',
-                                )}
-                              </Text>
-                            </TouchableOpacity>
+                            <>
+                              <TouchableOpacity
+                                style={{
+                                  backgroundColor: theme.colors.brand.secondary,
+                                  padding: 15,
+                                  paddingTop: 10,
+                                  paddingBottom: 10,
+                                  borderRadius: 10,
+                                }}
+                                onPress={() => setShowPicker(true)}>
+                                <Text fontfamily="bodySemiBold" fontsize="14px">
+                                  {moment(isDailyReminderEnabled.time).format(
+                                    'hh:mm A',
+                                  )}
+                                </Text>
+                              </TouchableOpacity>
+
+                              {showPicker && (
+                                <DateTimePicker
+                                  mode="time"
+                                  value={isDailyReminderEnabled.time}
+                                  onChange={(e, t) => {
+                                    if (e.type === 'dismissed') {
+                                      setShowPicker(false);
+                                    }
+                                    if (t) {
+                                      if (Platform.OS === 'android') {
+                                        setShowPicker(false);
+                                      }
+                                      setIsDailyReminderEnabled(p => ({
+                                        ...p,
+                                        time: t,
+                                      }));
+                                    }
+                                  }}
+                                />
+                              )}
+                            </>
                           )}
 
-                          {(showPicker || Platform.OS === 'ios') && (
+                          {Platform.OS === 'ios' && (
                             <DateTimePicker
-                              style={
-                                {
-                                  // width: '100%',
-                                  // position: 'absolute',
-                                  // right: 0,
-                                }
-                              }
                               mode="time"
                               value={isDailyReminderEnabled.time}
                               onChange={(e, t) => {
@@ -297,6 +293,8 @@ export const SettingsScreen = ({navigation}) => {
 
                       <Button
                         mode="contained"
+                        buttonColor={theme.colors.brand.primary}
+                        textColor={'#fff'}
                         onPress={() => {
                           if (userAdditionalDetails?.dailyReminder?.enabled) {
                             onUpdateDailyReminder({
@@ -567,93 +565,6 @@ export const SettingsScreen = ({navigation}) => {
           </Spacer>
         </MainWrapper>
       </ScrollView>
-
-      <Portal>
-        <Dialog
-          visible={open}
-          onDismiss={() => {
-            setOpen(false);
-            setEncrypted(false);
-            setPassword(false);
-          }}>
-          {encrypted && (
-            <Dialog.Content>
-              <TextInput
-                secureTextEntry={!showPassword}
-                theme={{roundness: 10}}
-                mode="outlined"
-                value={password}
-                returnKeyType="done"
-                onChangeText={n => {
-                  // console.log(n.match(/\./).length);
-                  setPassword(n.trim());
-                }}
-                placeholder="Enter password to protect file"
-                right={
-                  password && (
-                    <TextInput.Icon
-                      name={!showPassword ? 'eye-outline' : 'eye-off-outline'}
-                      color="#bbb"
-                      onPress={() => setShowPassword(!showPassword)}
-                    />
-                  )
-                }
-                maxLength={20}
-              />
-            </Dialog.Content>
-          )}
-
-          {encrypted && (
-            <Dialog.Actions>
-              <Button
-                onPress={() => {
-                  setEncrypted(false);
-                  setPassword('');
-                }}
-                mode="outlined"
-                icon={'chevron-left'}>
-                Back
-              </Button>
-              <Spacer size={'large'} position="left" />
-              <Button
-                mode="contained"
-                disabled={!password || password.trim() === ''}
-                onPress={onClickExportDataToExcel}>
-                Export
-              </Button>
-              <Spacer size={'large'} position="right" />
-            </Dialog.Actions>
-          )}
-
-          {!encrypted && (
-            <Dialog.Content>
-              <FlexColumn justifyContent="center">
-                <Button
-                  onPress={() => setEncrypted(true)}
-                  mode="contained"
-                  icon={'lock'}
-                  style={{backgroundColor: '#3AA75F'}}>
-                  With Encryption
-                </Button>
-                <Spacer size={'large'} position="top">
-                  <Button
-                    mode="outlined"
-                    onPress={onClickExportDataToExcel}
-                    icon={() => (
-                      <MaterialCommunityIcons
-                        name="lock-open-variant"
-                        color={theme.colors.brand.primary}
-                        size={18}
-                      />
-                    )}>
-                    Without Encryption
-                  </Button>
-                </Spacer>
-              </FlexColumn>
-            </Dialog.Content>
-          )}
-        </Dialog>
-      </Portal>
     </SafeArea>
   );
 };

@@ -196,7 +196,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
         setDate(new Date(sheetDetail.date));
         setSelectedImage(sheetDetail?.image);
         setShowTime(sheetDetail.showTime);
-        if (sheetDetail.showTime) {
+        if (sheetDetail.showTime && sheetDetail.time) {
           setTime(new Date(sheetDetail.time));
         }
         let category = categories[sheetDetail.type].filter(
@@ -244,7 +244,6 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     if (showTime) {
       sheetDetail.time = time.toString();
     }
-
     onSaveSheetDetails(sheet, sheetDetail, updatedSheet => {
       navigation.navigate('SheetDetailsHome', {
         screen: 'Transactions',
@@ -531,69 +530,102 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
 
           <Spacer size={'large'} />
 
-          <Card theme={{roundness: Platform.OS === 'ios' ? 5 : 15}}>
+          <Card theme={{roundness: 5}}>
+            {/* date picker */}
             <Card.Content>
-              <FlexRow justifyContent="space-between">
-                <FlexRow>
-                  <Ionicons
-                    name="calendar-outline"
-                    size={25}
-                    color={theme.colors.brand.primary}>
-                    <Spacer position={'left'} />
-                  </Ionicons>
-                  <Text fontfamily="heading">Date</Text>
-                </FlexRow>
+              <View>
+                <FlexRow justifyContent="space-between">
+                  <FlexRow>
+                    <Ionicons
+                      name="calendar-outline"
+                      size={25}
+                      color={theme.colors.brand.primary}>
+                      <Spacer position={'left'} />
+                    </Ionicons>
+                    <Text fontfamily="heading">Date</Text>
+                  </FlexRow>
 
-                {Platform.OS === 'android' && (
-                  <TouchableOpacity
-                    style={{
-                      backgroundColor: theme.colors.brand.secondary,
-                      padding: 15,
-                      paddingTop: 10,
-                      paddingBottom: 10,
-                      borderRadius: 10,
-                    }}
-                    onPress={() =>
-                      setShowPicker(prevState => ({
-                        ...prevState,
-                        date: true,
-                      }))
-                    }>
-                    <Text fontfamily="bodySemiBold" fontsize="14px">
-                      {moment(date).format('DD MMM YYYY')}
-                    </Text>
-                  </TouchableOpacity>
-                )}
+                  {Platform.OS === 'android' && (
+                    <>
+                      <TouchableOpacity
+                        style={{
+                          backgroundColor: theme.colors.brand.secondary,
+                          padding: 15,
+                          paddingTop: 10,
+                          paddingBottom: 10,
+                          borderRadius: 10,
+                        }}
+                        onPress={() =>
+                          setShowPicker(prevState => ({
+                            ...prevState,
+                            date: true,
+                          }))
+                        }>
+                        <Text fontfamily="bodySemiBold" fontsize="14px">
+                          {moment(date).format('DD MMM YYYY')}
+                        </Text>
+                      </TouchableOpacity>
+                      {showPicker.date && (
+                        <DateTimePicker
+                          mode="date"
+                          value={date}
+                          maximumDate={new Date()}
+                          onChange={(e, d) => {
+                            if (e.type === 'dismissed') {
+                              setShowPicker(prev => ({
+                                ...prev,
+                                date: false,
+                              }));
+                            }
+                            if (d) {
+                              if (Platform.OS === 'android') {
+                                setShowPicker(prevState => {
+                                  return {
+                                    ...prevState,
+                                    date: false,
+                                  };
+                                });
+                              }
+                              setDate(d);
+                              time.setMonth(d.getMonth());
+                              time.setDate(d.getDate());
+                            }
+                          }}
+                        />
+                      )}
+                    </>
+                  )}
 
-                {showPicker.date && (
-                  <DateTimePicker
-                    style={{width: '100%', position: 'absolute', right: 0}}
-                    mode="date"
-                    value={date}
-                    maximumDate={new Date()}
-                    onChange={(e, d) => {
-                      if (e.type === 'dismissed') {
-                        setShowPicker(prev => ({
-                          ...prev,
-                          date: false,
-                        }));
-                      }
-                      if (d) {
-                        if (Platform.OS === 'android') {
-                          setShowPicker(prevState => {
-                            return {
-                              ...prevState,
-                              date: false,
-                            };
-                          });
+                  {Platform.OS === 'ios' && (
+                    <DateTimePicker
+                      mode="date"
+                      value={date}
+                      maximumDate={new Date()}
+                      onChange={(e, d) => {
+                        if (e.type === 'dismissed') {
+                          setShowPicker(prev => ({
+                            ...prev,
+                            date: false,
+                          }));
                         }
-                        setDate(d);
-                        time.setMonth(d.getMonth());
-                        time.setDate(d.getDate());
-                      }
-                    }}></DateTimePicker>
-                )}
-              </FlexRow>
+                        if (d) {
+                          if (Platform.OS === 'android') {
+                            setShowPicker(prevState => {
+                              return {
+                                ...prevState,
+                                date: false,
+                              };
+                            });
+                          }
+                          setDate(d);
+                          time.setMonth(d.getMonth());
+                          time.setDate(d.getDate());
+                        }
+                      }}
+                    />
+                  )}
+                </FlexRow>
+              </View>
             </Card.Content>
             <Spacer />
             <Divider />
@@ -615,67 +647,97 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
 
             {showTime && (
               <>
+                {/* time picker */}
                 <Card.Content>
-                  <FlexRow justifyContent="space-between">
-                    <FlexRow>
-                      <Ionicons
-                        name="time-outline"
-                        size={25}
-                        color={theme.colors.brand.primary}>
-                        <Spacer position={'left'} />
-                      </Ionicons>
-                      <Text fontfamily="heading">Time</Text>
-                    </FlexRow>
+                  <View>
+                    <FlexRow justifyContent="space-between">
+                      <FlexRow>
+                        <Ionicons
+                          name="time-outline"
+                          size={25}
+                          color={theme.colors.brand.primary}>
+                          <Spacer position={'left'} />
+                        </Ionicons>
+                        <Text fontfamily="heading">Time</Text>
+                      </FlexRow>
 
-                    {Platform.OS === 'android' && (
-                      <TouchableOpacity
-                        style={{
-                          backgroundColor: theme.colors.brand.secondary,
-                          padding: 15,
-                          paddingTop: 10,
-                          paddingBottom: 10,
-                          borderRadius: 10,
-                        }}
-                        onPress={() =>
-                          setShowPicker(prevState => ({
-                            ...prevState,
-                            time: true,
-                          }))
-                        }>
-                        <Text fontfamily="bodySemiBold" fontsize="14px">
-                          {moment(time).format('hh:mm A')}
-                        </Text>
-                      </TouchableOpacity>
-                    )}
+                      {Platform.OS === 'android' && (
+                        <>
+                          <TouchableOpacity
+                            style={{
+                              backgroundColor: theme.colors.brand.secondary,
+                              padding: 15,
+                              paddingTop: 10,
+                              paddingBottom: 10,
+                              borderRadius: 10,
+                            }}
+                            onPress={() =>
+                              setShowPicker(prevState => ({
+                                ...prevState,
+                                time: true,
+                              }))
+                            }>
+                            <Text fontfamily="bodySemiBold" fontsize="14px">
+                              {moment(time).format('hh:mm A')}
+                            </Text>
+                          </TouchableOpacity>
+                          {showPicker.time && (
+                            <DateTimePicker
+                              mode="time"
+                              value={time}
+                              onChange={(e, t) => {
+                                if (e.type === 'dismissed') {
+                                  setShowPicker(prev => ({
+                                    ...prev,
+                                    time: false,
+                                  }));
+                                }
+                                if (t) {
+                                  if (Platform.OS === 'android') {
+                                    setShowPicker(prevState => {
+                                      return {
+                                        ...prevState,
+                                        time: false,
+                                      };
+                                    });
+                                  }
+                                  setTime(t);
+                                }
+                              }}
+                            />
+                          )}
+                        </>
+                      )}
 
-                    {showPicker.time && (
-                      <DateTimePicker
-                        style={{width: '100%', position: 'absolute', right: 0}}
-                        mode="time"
-                        value={time}
-                        onChange={(e, t) => {
-                          if (e.type === 'dismissed') {
-                            setShowPicker(prev => ({
-                              ...prev,
-                              time: false,
-                            }));
-                          }
-                          if (t) {
-                            if (Platform.OS === 'android') {
-                              setShowPicker(prevState => {
-                                return {
-                                  ...prevState,
-                                  time: false,
-                                };
-                              });
+                      {Platform.OS === 'ios' && (
+                        <DateTimePicker
+                          mode="time"
+                          value={time}
+                          onChange={(e, t) => {
+                            if (e.type === 'dismissed') {
+                              setShowPicker(prev => ({
+                                ...prev,
+                                time: false,
+                              }));
                             }
-                            setTime(t);
-                          }
-                        }}
-                      />
-                    )}
-                  </FlexRow>
+                            if (t) {
+                              if (Platform.OS === 'android') {
+                                setShowPicker(prevState => {
+                                  return {
+                                    ...prevState,
+                                    time: false,
+                                  };
+                                });
+                              }
+                              setTime(t);
+                            }
+                          }}
+                        />
+                      )}
+                    </FlexRow>
+                  </View>
                 </Card.Content>
+
                 <Spacer />
                 <Divider />
                 <Spacer size={'large'} />
@@ -732,7 +794,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
               editMode ? onEdit() : onSave();
             }}
             mode="contained"
-            color={theme.colors.brand.primary}
+            buttonColor={theme.colors.brand.primary}
             disabled={disabled}>
             <ButtonText disabled={disabled} color="#fff">
               Done
@@ -774,7 +836,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                   onPress={() =>
                     setNewCategoryIdentified(p => ({...p, showDialog: false}))
                   }
-                  color="#aaa">
+                  textColor="#aaa">
                   Cancel
                 </Button>
                 <Spacer position={'left'} size="large" />
@@ -783,7 +845,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                   icon={'plus'}
                   mode="outlined"
                   onPress={onAddNewCategory}
-                  color={theme.colors.brand.primary}>
+                  textColor="#fff"
+                  buttonColor={theme.colors.brand.primary}>
                   Add and Continue
                 </Button>
               </Dialog.Actions>

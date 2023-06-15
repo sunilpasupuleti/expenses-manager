@@ -208,7 +208,7 @@ export const PhoneLoginScreen = ({navigation, route}) => {
             theme={{roundness: 10}}
             mode="contained"
             style={{height: 40}}
-            color={theme.colors.brand.primary}
+            buttonColor={theme.colors.brand.primary}
             onPress={onClickSubmit}
             loading={showLoader}
             disabled={showLoader}>
@@ -255,7 +255,7 @@ export const PhoneLoginScreen = ({navigation, route}) => {
             <Button
               mode="contained"
               style={{height: 40}}
-              color={theme.colors.brand.primary}
+              buttonColor={theme.colors.brand.primary}
               onPress={onVerifyOtp}
               loading={showLoader}
               disabled={showLoader}>

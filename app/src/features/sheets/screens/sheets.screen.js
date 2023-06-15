@@ -72,15 +72,7 @@ export const SheetsScreen = ({navigation}) => {
         <SheetsInfo navigation={navigation} searchKeyword={searchKeyword} />
 
         <NewSheet onPress={() => navigation.navigate('AddSheet')}>
-          <AddSheetIcon
-            name="md-add-outline"
-            size={25}
-            color="#fff"
-            // color={theme.colors.brand.primary}
-          />
-          {/* <Text fontfamily="heading" color={theme.colors.brand.primary}>
-            New Sheet
-          </Text> */}
+          <AddSheetIcon name="md-add-outline" size={25} color="#fff" />
         </NewSheet>
       </MainWrapper>
     </SafeArea>

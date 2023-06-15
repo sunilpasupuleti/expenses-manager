@@ -129,6 +129,7 @@ module.exports = {
             date,
             createdAt,
             image,
+            time,
           } = sd;
           let structuredCategory = {
             id: category.id,
@@ -137,7 +138,9 @@ module.exports = {
           };
           if (category.icon) structuredCategory.icon = category.icon;
           amount = encryptAES(amount, uid);
-          notes = encryptAES(notes, uid);
+          if (notes) {
+            notes = encryptAES(notes, uid);
+          }
           let sheetDetail = {
             id,
             amount,
@@ -150,6 +153,9 @@ module.exports = {
             createdAt,
             image,
           };
+          if (showTime && time) {
+            sheetDetail.time = time;
+          }
           structuredSheetDetails.push(sheetDetail);
         });
       }

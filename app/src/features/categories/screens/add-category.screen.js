@@ -224,7 +224,7 @@ export const AddCategoryScreen = ({navigation, route}) => {
             <FlexRow justifyContent="space-between">
               <Button
                 mode="text"
-                color="#aaa"
+                buttonColor="#aaa"
                 onPress={() => {
                   setShowColorPicker(false);
                 }}>
@@ -232,7 +232,7 @@ export const AddCategoryScreen = ({navigation, route}) => {
               </Button>
               <Button
                 mode="text"
-                color={categoryColor}
+                buttonColor={categoryColor}
                 onPress={() => {
                   setShowColorPicker(false);
                 }}>

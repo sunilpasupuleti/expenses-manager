@@ -18,6 +18,8 @@ import {SheetTrendsScreen} from '../../features/sheets/screens/sheet-trends/shee
 import {SheetsScreen} from '../../features/sheets/screens/sheets.screen';
 import {SheetDetailsHome} from '../../features/sheets/screens/sheet-details/sheet-details-home.screen';
 import {useSelector} from 'react-redux';
+import {SheetExport} from '../../features/sheets/components/sheet-export/sheet-export.component';
+import {SheetDetailsFilter} from '../../features/sheets/components/sheet-details/sheet-details-filter.component';
 
 const SheetStack = createStackNavigator();
 
@@ -62,17 +64,6 @@ export const SheetsNavigator = () => {
         component={SheetDetailsHome}
       />
 
-      {/* <SheetStack.Screen
-        options={{
-          headerShown: true,
-          headerMode: 'screen',
-          ...headerStyles,
-          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-        }}
-        name="SheetDetails"
-        component={SheetDetailsScreen}
-      /> */}
-
       <SheetStack.Screen
         options={{
           headerShown: true,
@@ -82,6 +73,28 @@ export const SheetsNavigator = () => {
         }}
         name="AddSheetDetail"
         component={AddSheetDetailScreen}
+      />
+
+      <SheetStack.Screen
+        options={{
+          headerShown: true,
+          gestureResponseDistance: Dimensions.get('window').height - 200,
+          ...headerStyles,
+          ...TransitionPresets.ModalPresentationIOS,
+        }}
+        name="SheetExport"
+        component={SheetExport}
+      />
+
+      <SheetStack.Screen
+        options={{
+          headerShown: true,
+          gestureResponseDistance: Dimensions.get('window').height - 200,
+          ...headerStyles,
+          ...TransitionPresets.ModalPresentationIOS,
+        }}
+        name="SheetDetailsFilter"
+        component={SheetDetailsFilter}
       />
 
       <SheetStack.Screen
