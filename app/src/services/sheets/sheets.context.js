@@ -1105,6 +1105,19 @@ export const SheetsContextProvider = ({children}) => {
           dispatch(loaderActions.hideLoader());
           callback();
           console.log('successfully exported file ios - ' + res);
+
+          if (config && config.sharing) {
+            Share.open({
+              url: path,
+              title: 'Transactions Excel File',
+              subject: 'Transaction file - Excel',
+            }).catch(err => {
+              console.log(err, 'error while sharing the data - ios excel');
+            });
+            dispatch(loaderActions.hideLoader());
+            return;
+          }
+
           Share.open({
             url: path,
             filename: `transactions-${moment()}.xlsx`,
@@ -1371,7 +1384,7 @@ export const SheetsContextProvider = ({children}) => {
         title: 'Transactions Pdf File',
         subject: 'Transaction file - Pdf',
       }).catch(err => {
-        console.log(err, 'error while sharing the data - android');
+        console.log(err, 'error while sharing the data - ios pdf');
       });
       dispatch(loaderActions.hideLoader());
       return;

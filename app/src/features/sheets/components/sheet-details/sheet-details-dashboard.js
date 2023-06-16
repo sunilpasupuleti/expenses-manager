@@ -75,7 +75,7 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
   useEffect(() => {
     if (routeIsFocused) {
       navigation.setOptions({
-        headerTitle: sheet.name,
+        headerTitle: sheet?.name,
         headerLeft: () => (
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <FlexRow>
@@ -179,183 +179,187 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
       style={{
         backgroundColor: theme.colors.bg.primary,
       }}>
-      <ScrollView
-        style={{marginBottom: 60}}
-        showsHorizontalScrollIndicator={false}>
-        <MainWrapper>
-          <LinearGradient
-            start={{x: 0, y: 0}}
-            end={{x: 1, y: 0}}
-            colors={['#4D9DE9', '#D06AF0', '#F9907D']}
-            style={{borderRadius: 15, padding: 20}}>
-            <SheetSummaryTotalBalance>
-              <Text color="#fff" fontfamily="headingSemiBold" fontsize="16px">
-                Total Balance
-              </Text>
+      {sheet && (
+        <ScrollView
+          style={{marginBottom: 60}}
+          showsHorizontalScrollIndicator={false}>
+          <MainWrapper>
+            <LinearGradient
+              start={{x: 0, y: 0}}
+              end={{x: 1, y: 0}}
+              colors={['#4D9DE9', '#D06AF0', '#F9907D']}
+              style={{borderRadius: 15, padding: 20}}>
+              <SheetSummaryTotalBalance>
+                <Text color="#fff" fontfamily="headingSemiBold" fontsize="16px">
+                  Total Balance
+                </Text>
+                <Spacer size={'large'} />
+                <Text color="#fff" fontfamily="headingBold" fontsize="38px">
+                  {GetCurrencySymbol(sheet.currency)}{' '}
+                  {GetCurrencyLocalString(sheet.totalBalance)}
+                </Text>
+              </SheetSummaryTotalBalance>
               <Spacer size={'large'} />
-              <Text color="#fff" fontfamily="headingBold" fontsize="38px">
-                {GetCurrencySymbol(sheet.currency)}{' '}
-                {GetCurrencyLocalString(sheet.totalBalance)}
-              </Text>
-            </SheetSummaryTotalBalance>
+              <FlexRow justifyContent="space-between">
+                <InEx>
+                  <InExIcon>
+                    <Ionicons
+                      name="arrow-down-outline"
+                      size={20}
+                      color="#32B896"
+                    />
+                  </InExIcon>
+                  <InExAmount>
+                    <Text color="#fff" fontfamily="heading" fontsize="16px">
+                      Income
+                    </Text>
+                    <Spacer />
+                    <Text color="#fff" fontfamily="headingBold" fontsize="16px">
+                      {getTotalIncome().localStringAmount}
+                    </Text>
+                  </InExAmount>
+                </InEx>
+
+                <InEx>
+                  <InExIcon>
+                    <Ionicons
+                      name="arrow-up-outline"
+                      size={20}
+                      color={'tomato'}
+                    />
+                  </InExIcon>
+                  <InExAmount>
+                    <Text color="#fff" fontfamily="heading" fontsize="16px">
+                      Expenses
+                    </Text>
+                    <Spacer />
+                    <Text color="#fff" fontfamily="headingBold" fontsize="16px">
+                      {getTotalExpense().localStringAmount}
+                    </Text>
+                  </InExAmount>
+                </InEx>
+              </FlexRow>
+            </LinearGradient>
             <Spacer size={'large'} />
-            <FlexRow justifyContent="space-between">
-              <InEx>
-                <InExIcon>
-                  <Ionicons
-                    name="arrow-down-outline"
-                    size={20}
-                    color="#32B896"
-                  />
-                </InExIcon>
-                <InExAmount>
-                  <Text color="#fff" fontfamily="heading" fontsize="16px">
-                    Income
-                  </Text>
-                  <Spacer />
-                  <Text color="#fff" fontfamily="headingBold" fontsize="16px">
-                    {getTotalIncome().localStringAmount}
-                  </Text>
-                </InExAmount>
-              </InEx>
+            <CategoryTabs
+              activeType={activeType}
+              setActiveType={setActiveType}
+              tabReverse={true}
+              animation={false}
+            />
 
-              <InEx>
-                <InExIcon>
-                  <Ionicons
-                    name="arrow-up-outline"
-                    size={20}
-                    color={'tomato'}
-                  />
-                </InExIcon>
-                <InExAmount>
-                  <Text color="#fff" fontfamily="heading" fontsize="16px">
-                    Expenses
-                  </Text>
-                  <Spacer />
-                  <Text color="#fff" fontfamily="headingBold" fontsize="16px">
-                    {getTotalExpense().localStringAmount}
-                  </Text>
-                </InExAmount>
-              </InEx>
-            </FlexRow>
-          </LinearGradient>
-          <Spacer size={'large'} />
-          <CategoryTabs
-            activeType={activeType}
-            setActiveType={setActiveType}
-            tabReverse={true}
-            animation={false}
-          />
+            {sortedByPercentages && sortedByPercentages.length > 0 && (
+              <>
+                {sortedByPercentages.map(key => {
+                  let details = groupedDetails[key];
 
-          {sortedByPercentages && sortedByPercentages.length > 0 && (
-            <>
-              {sortedByPercentages.map(key => {
-                let details = groupedDetails[key];
+                  let category = details.category;
+                  // get the icon from categoires list
+                  // let categoryObj = allCategories.filter(c => c.name === key)[0];
+                  let categoryIcon = null;
+                  if (category && category.icon) {
+                    categoryIcon = category.icon;
+                  }
 
-                let category = details.category;
-                // get the icon from categoires list
-                // let categoryObj = allCategories.filter(c => c.name === key)[0];
-                let categoryIcon = null;
-                if (category && category.icon) {
-                  categoryIcon = category.icon;
-                }
-
-                return (
-                  <Spacer size={'large'} key={key}>
-                    <Card
-                      theme={{roundness: 5}}
-                      elevation={2}
-                      style={{position: 'relative'}}>
-                      <TouchableHighlightWithColor
-                        style={{
-                          paddingTop: 12,
-                          paddingBottom: 12,
-                          paddingLeft: 0,
-                          paddingRight: 0,
-                        }}
-                        onPress={() =>
-                          navigation.navigate('SheetStatsDetails', {
-                            category,
-                            sheetDetails: details,
-                            sheet: sheet,
-                          })
-                        }>
-                        <>
-                          <View
-                            style={{
-                              position: 'absolute',
-                              bottom: 0,
-                              height: 2,
-                              width: details.percentage + '%',
-                              backgroundColor: category.color,
-                            }}
-                          />
-                          <Card.Content>
-                            <FlexRow justifyContent="space-between">
-                              <FlexRow>
-                                <CategoryColor
-                                  color={category.color}
-                                  style={{width: 50, height: 50}}>
-                                  {categoryIcon && (
-                                    <MaterialCommunityIcon
-                                      name={categoryIcon}
-                                      size={22}
-                                      color="#fff"
-                                    />
-                                  )}
-                                </CategoryColor>
-                                <Spacer size={'large'} position="left" />
-                                <Text fontsize="16px" fontfamily="heading">
-                                  {category.name}
-                                </Text>
-                              </FlexRow>
-                              <View>
-                                <Text fontsize="14px" fontfamily="heading">
-                                  {GetCurrencySymbol(sheet.currency)}{' '}
-                                  {activeType === 'expense' && '-'}{' '}
-                                  {GetCurrencyLocalString(details.totalAmount)}
-                                  {/* -40,000.23 */}
-                                </Text>
-                                <Spacer size={'medium'} />
-                                <FlexRow justifyContent="flex-end">
-                                  <Text
-                                    fontsize="16px"
-                                    fontfamily="heading"
-                                    color="#292929">
-                                    {details.percentage}%
+                  return (
+                    <Spacer size={'large'} key={key}>
+                      <Card
+                        theme={{roundness: 5}}
+                        elevation={2}
+                        style={{position: 'relative'}}>
+                        <TouchableHighlightWithColor
+                          style={{
+                            paddingTop: 12,
+                            paddingBottom: 12,
+                            paddingLeft: 0,
+                            paddingRight: 0,
+                          }}
+                          onPress={() =>
+                            navigation.navigate('SheetStatsDetails', {
+                              category,
+                              sheetDetails: details,
+                              sheet: sheet,
+                            })
+                          }>
+                          <>
+                            <View
+                              style={{
+                                position: 'absolute',
+                                bottom: 0,
+                                height: 2,
+                                width: details.percentage + '%',
+                                backgroundColor: category.color,
+                              }}
+                            />
+                            <Card.Content>
+                              <FlexRow justifyContent="space-between">
+                                <FlexRow>
+                                  <CategoryColor
+                                    color={category.color}
+                                    style={{width: 50, height: 50}}>
+                                    {categoryIcon && (
+                                      <MaterialCommunityIcon
+                                        name={categoryIcon}
+                                        size={22}
+                                        color="#fff"
+                                      />
+                                    )}
+                                  </CategoryColor>
+                                  <Spacer size={'large'} position="left" />
+                                  <Text fontsize="16px" fontfamily="heading">
+                                    {category.name}
                                   </Text>
                                 </FlexRow>
-                              </View>
-                            </FlexRow>
-                          </Card.Content>
-                        </>
-                      </TouchableHighlightWithColor>
-                    </Card>
-                  </Spacer>
-                );
-              })}
-            </>
-          )}
-          {!sortedByPercentages ||
-            (sortedByPercentages.length === 0 && (
-              <View
-                style={{
-                  marginTop: 100,
-                }}>
-                <Text
-                  fontfamily="heading"
+                                <View>
+                                  <Text fontsize="14px" fontfamily="heading">
+                                    {GetCurrencySymbol(sheet.currency)}{' '}
+                                    {activeType === 'expense' && '-'}{' '}
+                                    {GetCurrencyLocalString(
+                                      details.totalAmount,
+                                    )}
+                                    {/* -40,000.23 */}
+                                  </Text>
+                                  <Spacer size={'medium'} />
+                                  <FlexRow justifyContent="flex-end">
+                                    <Text
+                                      fontsize="16px"
+                                      fontfamily="heading"
+                                      color="#292929">
+                                      {details.percentage}%
+                                    </Text>
+                                  </FlexRow>
+                                </View>
+                              </FlexRow>
+                            </Card.Content>
+                          </>
+                        </TouchableHighlightWithColor>
+                      </Card>
+                    </Spacer>
+                  );
+                })}
+              </>
+            )}
+            {!sortedByPercentages ||
+              (sortedByPercentages.length === 0 && (
+                <View
                   style={{
-                    textAlign: 'center',
-                    letterSpacing: 1,
-                    lineHeight: 30,
+                    marginTop: 100,
                   }}>
-                  There are no {_.capitalize(activeType)}s to display. Create
-                  one from Transactions tab.
-                </Text>
-              </View>
-            ))}
-        </MainWrapper>
-      </ScrollView>
+                  <Text
+                    fontfamily="heading"
+                    style={{
+                      textAlign: 'center',
+                      letterSpacing: 1,
+                      lineHeight: 30,
+                    }}>
+                    There are no {_.capitalize(activeType)}s to display. Create
+                    one from Transactions tab.
+                  </Text>
+                </View>
+              ))}
+          </MainWrapper>
+        </ScrollView>
+      )}
     </SafeArea>
   );
 };

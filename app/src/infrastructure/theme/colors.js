@@ -54,6 +54,7 @@ export const colors = {
   touchable: {
     highlight: '#9a99e6',
   },
+
   headerTintColor: '#000',
   switchBg: '#ddd',
 };

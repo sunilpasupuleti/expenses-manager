@@ -53,7 +53,10 @@ import {loaderActions} from '../../../../store/loader-slice';
 
 export const SheetDetailsScreen = ({navigation, route}) => {
   const [sheet, setSheet] = useState(route.params.sheet);
+  // for filtering purpose
   const [filteredSheet, setFilteredSheet] = useState(route.params.sheet);
+  // original sheet without change
+  const [originalSheet, setOriginalSheet] = useState(route.params.sheet);
 
   const routeIsFocused = useIsFocused();
 
@@ -76,16 +79,23 @@ export const SheetDetailsScreen = ({navigation, route}) => {
   useEffect(() => {
     if (route.params.sheet && routeIsFocused) {
       let s = getSheetById(route.params.sheet.id);
-      setSheet(s);
-      setFilteredSheet(s);
-      onGroupSheetDetails(s);
+      setOriginalSheet(s);
+      if (route.params.filter) {
+        let sh = route.params.sheet;
+        setSheet(sh);
+        setFilteredSheet(sh);
+        onGroupSheetDetails(sh);
+      } else {
+        setSheet(s);
+        setFilteredSheet(s);
+        onGroupSheetDetails(s);
+      }
     }
   }, [route.params, useIsFocused]);
 
   const onGroupSheetDetails = s => {
     let sheetDetails = s.details;
     const groupByDate = item => moment(item.date).format('YYYY-MM-DD');
-
     if (sheetDetails) {
       let grouped = _(sheetDetails).groupBy(groupByDate).value();
       let keys = [];
@@ -104,7 +114,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
   useEffect(() => {
     if (routeIsFocused) {
       navigation.setOptions({
-        headerTitle: sheet.name,
+        headerTitle: sheet?.name,
         // headerStyle: {
         //   backgroundColor: theme.colors.bg.primary,
         // },
@@ -273,11 +283,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
 
   useEffect(() => {
     let fsheet;
-    // if (customFilter.filtered) {
-    // fsheet = {...customFilteredSheet};
-    // } else {
     fsheet = {...filteredSheet};
-    // }
     if (searchKeyword !== '' && fsheet.details) {
       let filteredDetails = fsheet.details.filter(sd => {
         let notesMatched = sd.notes
@@ -297,7 +303,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
     }
     setSheet(fsheet);
     onGroupSheetDetails(fsheet);
-  }, [searchKeyword]);
+  }, [searchKeyword, filteredSheet]);
 
   const onClickScanButton = async mode => {
     let options = {
@@ -344,180 +350,191 @@ export const SheetDetailsScreen = ({navigation, route}) => {
       style={{
         backgroundColor: theme.colors.bg.primary,
       }}>
-      <SheetDetailsTotalBalance fontsize={'30px'} fontfamily="bodySemiBold">
-        {GetCurrencySymbol(sheet.currency)}{' '}
-        {GetCurrencyLocalString(sheet.totalBalance)}
-      </SheetDetailsTotalBalance>
-      <SheetDetailsUnderline />
+      {sheet && (
+        <>
+          <SheetDetailsTotalBalance fontsize={'30px'} fontfamily="bodySemiBold">
+            {GetCurrencySymbol(sheet.currency)}{' '}
+            {GetCurrencyLocalString(sheet.totalBalance)}
+          </SheetDetailsTotalBalance>
+          <SheetDetailsUnderline />
 
-      <Searchbar
-        value={searchKeyword}
-        theme={{roundness: 10}}
-        style={{elevation: 2, margin: 10, marginBottom: 0}}
-        placeholder="Search by Category/Name/Amt"
-        onChangeText={k => setSearchKeyword(k)}
-        clearIcon={() =>
-          searchKeyword !== '' && (
-            <Ionicons
-              onPress={() => setSearchKeyword('')}
-              name="close-circle-outline"
-              size={25}
-              color={theme.colors.brand.primary}
-            />
-          )
-        }
-      />
-      <Spacer size={'large'} />
-      <FlexRow justifyContent="flex-end">
-        <Spacer position={'right'} size="medium">
-          <MaterialCommunityIcons
-            onPress={() =>
-              navigation.navigate('SheetDetailsFilter', {
-                sheet: sheet,
-              })
-            }
-            name={'filter-outline'}
-            // name={
-            //   customFilter.filtered ? 'filter-remove-outline' : 'filter-outline'
-            // }
-            size={30}
-            color={theme.colors.brand.primary}
-          />
-        </Spacer>
-      </FlexRow>
-
-      <Spacer size={'xlarge'} />
-      {sheet.details && sheet.details.length > 0 && (
-        <FlatList
-          data={Object.keys(groupedSheetDetails)}
-          showsVerticalScrollIndicator={false}
-          renderItem={({item, index}) => {
-            let sheetDetails = groupedSheetDetails[item];
-            var totalExpenseAmount = 0;
-            var totalIncomeAmount = 0;
-            sheetDetails.filter(d => {
-              if (d.type === 'expense') {
-                totalExpenseAmount += d.amount;
-              } else if (d.type === 'income') {
-                totalIncomeAmount += d.amount;
-              }
-            });
-            let totalBalance = totalIncomeAmount - totalExpenseAmount;
-
-            let sortedSheetDetails = _(sheetDetails)
-              .sortBy(item => item.createdAt)
-              .reverse()
-              .value();
-            return (
-              <SheetDetailsInfo
-                totalBalance={totalBalance}
-                date={item}
-                sheetDetails={sortedSheetDetails}
-                navigation={navigation}
-                sheet={sheet}
-              />
-            );
-          }}
-          keyExtractor={item => item}
-          contentContainerStyle={{paddingBottom: 150}}
-        />
-      )}
-
-      {sheet.details && sheet.details.length === 0 && (
-        <View>
-          <Text style={{textAlign: 'center', fontStyle: 'italic'}}>
-            Tap the plus button to create a new expense.
-          </Text>
-        </View>
-      )}
-
-      <BottomIconsContainer>
-        {/*  for camera option */}
-        <Menu
-          onBackdropPress={() => cameraRef.current.close()}
-          ref={element => (cameraRef.current = element)}>
-          <MenuTrigger
-            customStyles={{
-              triggerTouchable: {
-                underlayColor: '#eee',
-                // onPress: () => {
-                //   console.log('pressed');
-                //   menuRef.current.open();
-                // },
-              },
-              TriggerTouchableComponent: TouchableOpacity,
-            }}>
-            <CameraButton onPress={() => cameraRef.current.open()}>
-              <FlexRow>
-                <CameraIcon
-                  name="scan"
-                  size={20}
-                  color="#fff"
-                  // color={theme.colors.brand.primary}
+          <Searchbar
+            value={searchKeyword}
+            theme={{roundness: 10}}
+            style={{elevation: 2, margin: 10, marginBottom: 0}}
+            placeholder="Search by Category/Name/Amt"
+            onChangeText={k => setSearchKeyword(k)}
+            clearIcon={() =>
+              searchKeyword !== '' && (
+                <Ionicons
+                  onPress={() => setSearchKeyword('')}
+                  name="close-circle-outline"
+                  size={25}
+                  color={theme.colors.brand.primary}
                 />
-                <Spacer position={'left'}>
-                  <Text fontsize="12px" color={'#fff'}>
-                    Smart Scan Receipt
-                  </Text>
-                </Spacer>
-              </FlexRow>
-            </CameraButton>
-          </MenuTrigger>
+              )
+            }
+          />
+          <Spacer size={'large'} />
+          <FlexRow justifyContent="flex-end">
+            <Spacer position={'right'} size="medium">
+              <MaterialCommunityIcons
+                onPress={() =>
+                  navigation.navigate('SheetDetailsFilter', {
+                    sheet: originalSheet,
+                    filter:
+                      route.params && route.params.filter
+                        ? route.params.filter
+                        : null,
+                  })
+                }
+                name={
+                  route.params &&
+                  route.params.filter &&
+                  route.params.filter.status
+                    ? 'filter-remove-outline'
+                    : 'filter-outline'
+                }
+                size={30}
+                color={theme.colors.brand.primary}
+              />
+            </Spacer>
+          </FlexRow>
 
-          <MenuOptions
-            optionsContainerStyle={{
-              marginLeft: 35,
-              marginTop: -80,
-              borderRadius: 10,
-              minWidth: 250,
-            }}>
-            <MenuOption
-              customStyles={menuOptionStyles}
-              onSelect={() => {
-                cameraRef.current.close();
-                onClickScanButton('camera');
-              }}>
-              <FlexRow justifyContent="space-between">
-                <Text color="#2f2f2f" fontfamily="heading">
-                  Take a Photo
-                </Text>
-                <Ionicons name="camera-outline" size={20} color="#000" />
-              </FlexRow>
-            </MenuOption>
-            <MenuOption
-              customStyles={menuOptionStyles}
-              onSelect={() => {
-                cameraRef.current.close();
-                onClickScanButton('gallery');
-              }}>
-              <FlexRow justifyContent="space-between">
-                <Text color="#2f2f2f" fontfamily="heading">
-                  Choose a Photo
-                </Text>
-                <FontAwesome name="photo" size={20} color="#000" />
-              </FlexRow>
-            </MenuOption>
-          </MenuOptions>
-          <Spacer size={'medium'} />
-        </Menu>
-        <SheetDetailsAddIcon>
-          <TouchableNativeFeedback
-            onPress={() => {
-              navigation.navigate('AddSheetDetail', {
-                sheet: sheet,
-              });
-            }}>
-            <FlexRow>
-              <AntDesign name="plus" size={20} color={'#fff'} />
-              <Spacer position={'left'}>
-                <Text fontsize="12px" color={'#fff'}>
-                  Add new
-                </Text>
-              </Spacer>
-            </FlexRow>
-          </TouchableNativeFeedback>
-        </SheetDetailsAddIcon>
-      </BottomIconsContainer>
+          <Spacer size={'xlarge'} />
+          {sheet.details && sheet.details.length > 0 && (
+            <FlatList
+              data={Object.keys(groupedSheetDetails)}
+              showsVerticalScrollIndicator={false}
+              renderItem={({item, index}) => {
+                let sheetDetails = groupedSheetDetails[item];
+                var totalExpenseAmount = 0;
+                var totalIncomeAmount = 0;
+                sheetDetails.filter(d => {
+                  if (d.type === 'expense') {
+                    totalExpenseAmount += d.amount;
+                  } else if (d.type === 'income') {
+                    totalIncomeAmount += d.amount;
+                  }
+                });
+                let totalBalance = totalIncomeAmount - totalExpenseAmount;
+
+                let sortedSheetDetails = _(sheetDetails)
+                  .sortBy(item => item.createdAt)
+                  .reverse()
+                  .value();
+                return (
+                  <SheetDetailsInfo
+                    totalBalance={totalBalance}
+                    date={item}
+                    sheetDetails={sortedSheetDetails}
+                    navigation={navigation}
+                    sheet={sheet}
+                  />
+                );
+              }}
+              keyExtractor={item => item}
+              contentContainerStyle={{paddingBottom: 150}}
+            />
+          )}
+
+          {sheet.details && sheet.details.length === 0 && (
+            <View>
+              <Text style={{textAlign: 'center', fontStyle: 'italic'}}>
+                Tap the plus button to create a new expense.
+              </Text>
+            </View>
+          )}
+
+          <BottomIconsContainer>
+            {/*  for camera option */}
+            <Menu
+              onBackdropPress={() => cameraRef.current.close()}
+              ref={element => (cameraRef.current = element)}>
+              <MenuTrigger
+                customStyles={{
+                  triggerTouchable: {
+                    underlayColor: '#eee',
+                    // onPress: () => {
+                    //   console.log('pressed');
+                    //   menuRef.current.open();
+                    // },
+                  },
+                  TriggerTouchableComponent: TouchableOpacity,
+                }}>
+                <CameraButton onPress={() => cameraRef.current.open()}>
+                  <FlexRow>
+                    <CameraIcon
+                      name="scan"
+                      size={20}
+                      color="#fff"
+                      // color={theme.colors.brand.primary}
+                    />
+                    <Spacer position={'left'}>
+                      <Text fontsize="12px" color={'#fff'}>
+                        Smart Scan Receipt
+                      </Text>
+                    </Spacer>
+                  </FlexRow>
+                </CameraButton>
+              </MenuTrigger>
+
+              <MenuOptions
+                optionsContainerStyle={{
+                  marginLeft: 35,
+                  marginTop: -80,
+                  borderRadius: 10,
+                  minWidth: 250,
+                }}>
+                <MenuOption
+                  customStyles={menuOptionStyles}
+                  onSelect={() => {
+                    cameraRef.current.close();
+                    onClickScanButton('camera');
+                  }}>
+                  <FlexRow justifyContent="space-between">
+                    <Text color="#2f2f2f" fontfamily="heading">
+                      Take a Photo
+                    </Text>
+                    <Ionicons name="camera-outline" size={20} color="#000" />
+                  </FlexRow>
+                </MenuOption>
+                <MenuOption
+                  customStyles={menuOptionStyles}
+                  onSelect={() => {
+                    cameraRef.current.close();
+                    onClickScanButton('gallery');
+                  }}>
+                  <FlexRow justifyContent="space-between">
+                    <Text color="#2f2f2f" fontfamily="heading">
+                      Choose a Photo
+                    </Text>
+                    <FontAwesome name="photo" size={20} color="#000" />
+                  </FlexRow>
+                </MenuOption>
+              </MenuOptions>
+              <Spacer size={'medium'} />
+            </Menu>
+            <SheetDetailsAddIcon>
+              <TouchableNativeFeedback
+                onPress={() => {
+                  navigation.navigate('AddSheetDetail', {
+                    sheet: sheet,
+                  });
+                }}>
+                <FlexRow>
+                  <AntDesign name="plus" size={20} color={'#fff'} />
+                  <Spacer position={'left'}>
+                    <Text fontsize="12px" color={'#fff'}>
+                      Add new
+                    </Text>
+                  </Spacer>
+                </FlexRow>
+              </TouchableNativeFeedback>
+            </SheetDetailsAddIcon>
+          </BottomIconsContainer>
+        </>
+      )}
     </SafeArea>
   );
 };
