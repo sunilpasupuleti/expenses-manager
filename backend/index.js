@@ -11,11 +11,10 @@ const fs = require("fs");
 const rfs = require("rotating-file-stream");
 const path = require("path");
 const schedule = require("node-schedule");
-const notification = require("./routes/notificationRoutes");
-const user = require("./routes/userRoutes");
-const backup = require("./routes/backupRoutes");
 const Users = require("./models/Users");
-const httpProxy = require("http-proxy");
+const socketIo = require("socket.io");
+const cookieParser = require("cookie-parser");
+
 const {
   sendDailyReminderNotification,
   sendDailyBackupNotification,
@@ -45,6 +44,7 @@ app.use(morgan("combined", { stream: accessLogStream }));
 connectDB();
 
 app.use(cors());
+app.use(cookieParser());
 app.use(express.json({ limit: "100mb" }));
 app.use(express.urlencoded({ extended: true, limit: "100mb" }));
 
@@ -67,9 +67,10 @@ app.use("/logs/error", express.static(errorLogsPath));
 /**
  * Routes
  */
-app.use("/user", user);
-app.use("/notification", notification);
-app.use("/backup", backup);
+app.use("/user", require("./routes/userRoutes"));
+app.use("/notification", require("./routes/notificationRoutes"));
+app.use("/backup", require("./routes/backupRoutes"));
+app.use("/admin", require("./routes/adminRoutes"));
 
 /**
  * Error handling
@@ -91,9 +92,21 @@ process.on("SIGINT", function () {
  * Create Server
  */
 
-const http = require("http").Server(app);
+const server = require("http").Server(app);
 
-http.listen(process.env.PORT || 8080, async () => {
+const io = socketIo(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+    transports: ["websocket"],
+    credentials: true,
+  },
+  allowEIO3: true,
+});
+
+require("./sockets/socket")(io);
+
+server.listen(process.env.PORT || 8080, async () => {
   logger.info(`server started on port number ${process.env.PORT}`);
 
   // In case if server restarts reschedule all the jobs with which user have dialy reminder and abckup enabled

@@ -170,7 +170,6 @@ export const AuthenticationContextProvider = ({children}) => {
   const onSignUpWithEmail = async (email, password) => {
     try {
       let result = await auth().createUserWithEmailAndPassword(email, password);
-
       onSetUserData(result);
 
       return {status: true};
@@ -269,6 +268,7 @@ export const AuthenticationContextProvider = ({children}) => {
       providerId: user.providerId,
       uid: user.uid,
       fcmToken: token,
+      phoneNumber: user.phoneNumber,
       active: true,
     };
     sendRequest(

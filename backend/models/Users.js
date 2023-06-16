@@ -12,6 +12,7 @@ const usersSchema = mongoose.Schema(
     dailyBackup: { type: Boolean, default: true },
 
     email: { type: String },
+    phoneNumber: { type: String },
     uid: { type: String },
     fcmToken: { type: String, default: null },
     photoURL: { type: String },
