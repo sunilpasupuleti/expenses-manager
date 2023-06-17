@@ -262,6 +262,7 @@ export const AccountScreen = ({navigation}) => {
           mode="contained"
           style={{height: 40}}
           buttonColor={theme.colors.brand.primary}
+          textColor="#fff"
           onPress={onClickSubmit}
           loading={showLoader}
           disabled={showLoader}>
@@ -312,6 +313,7 @@ export const AccountScreen = ({navigation}) => {
               mode="contained"
               style={{height: 40}}
               buttonColor={theme.colors.brand.primary}
+              textColor="#fff"
               icon="phone"
               onPress={() => navigation.navigate('PhoneLogin')}>
               SIGN IN USING PHONE

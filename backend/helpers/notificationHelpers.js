@@ -1,8 +1,5 @@
-const dotenv = require("dotenv");
 const { getMessaging } = require("firebase-admin/messaging");
 const logger = require("../middleware/logger/logger");
-
-dotenv.config();
 
 module.exports = {
   async sendDailyReminderNotification(data) {

@@ -21,7 +21,7 @@ import SignOutIcon from "@mui/icons-material/ExitToApp";
 import { useEffect } from "react";
 import { useContext } from "react";
 import { AuthenticationContext } from "../../../services/Authentication/Authentication.context";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { styled as scStyled } from "styled-components";
 import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
 import { useState } from "react";
@@ -105,6 +105,8 @@ export const Dashboard = ({ title }) => {
   const [open, setOpen] = useState(false);
   const { onLogout, userData } = useContext(AuthenticationContext);
   const navigate = useNavigate();
+  const location = useLocation();
+  const path = location.pathname;
 
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -128,16 +130,34 @@ export const Dashboard = ({ title }) => {
     document.title = title;
   }, []);
 
+  const ListItemStyles = (paths = []) => {
+    let obj = {
+      display: "block",
+    };
+    if (paths.includes(location.pathname)) {
+      obj.backgroundColor = "var(--primary)";
+      obj.color = "#fff";
+    }
+
+    return obj;
+  };
   const ListItemButtonStyles = {
     minHeight: 48,
     justifyContent: open ? "initial" : "center",
     px: 2.5,
   };
 
-  const ListItemIconStyles = {
-    minWidth: 0,
-    mr: open ? 3 : "auto",
-    justifyContent: "center",
+  const ListItemIconStyles = (paths = []) => {
+    let obj = {
+      minWidth: 0,
+      mr: open ? 3 : "auto",
+      justifyContent: "center",
+    };
+    if (paths.includes(location.pathname)) {
+      obj.color = "#fff";
+    }
+
+    return obj;
   };
 
   const onClickLogout = () => {
@@ -146,7 +166,11 @@ export const Dashboard = ({ title }) => {
     });
   };
 
-  return (
+  const pathNames = {
+    notification: "/dashboard/send-notifications",
+  };
+
+  return userData ? (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar position="fixed" open={open}>
@@ -225,11 +249,11 @@ export const Dashboard = ({ title }) => {
         <List>
           <ListItem
             disablePadding
-            sx={{ display: "block" }}
-            onClick={() => navigate("/dashboard/send-notifications")}
+            sx={ListItemStyles([pathNames.notification])}
+            onClick={() => navigate(pathNames.notification)}
           >
             <ListItemButton sx={ListItemButtonStyles}>
-              <ListItemIcon sx={ListItemIconStyles}>
+              <ListItemIcon sx={ListItemIconStyles([pathNames.notification])}>
                 <NotificationIcon />
               </ListItemIcon>
               <ListItemText
@@ -241,11 +265,11 @@ export const Dashboard = ({ title }) => {
 
           <ListItem
             disablePadding
-            sx={{ display: "block" }}
+            sx={ListItemStyles()}
             onClick={onClickLogout}
           >
             <ListItemButton sx={ListItemButtonStyles}>
-              <ListItemIcon sx={ListItemIconStyles}>
+              <ListItemIcon sx={ListItemIconStyles()}>
                 <SignOutIcon />
               </ListItemIcon>
               <ListItemText
@@ -262,5 +286,5 @@ export const Dashboard = ({ title }) => {
         <Outlet />
       </Box>
     </Box>
-  );
+  ) : null;
 };

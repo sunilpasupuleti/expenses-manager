@@ -180,6 +180,9 @@ const showNotification = (
           ? require('../../../assets/mike.png')
           : require('../../../assets/wallet.jpeg'),
       actions: actions,
+      pressAction: {
+        id: 'default',
+      },
     },
     ios: {
       foregroundPresentationOptions: {
