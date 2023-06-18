@@ -46,7 +46,8 @@ jobs:
             docker rm expenses-manager-web
             docker rmi expenses-manager/web
             docker build -t expenses-manger/web .
-            docker container run -d --name expenses-manafer-web -p 4200:4200 expenses-manager/web
+            docker container run -d --name expenses-manager-web -p 4200:4200 expenses-manager/web
+
             docker stop expenses-manager-backend
             docker rm  expenses-manager-backend
             docker rmi expenses-manager/backend
