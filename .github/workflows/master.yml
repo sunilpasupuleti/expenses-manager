@@ -35,11 +35,10 @@ jobs:
             cd /home/ubuntu/expenses-manager/web/
             rm .env
             touch .env
-            yarn install
-            npm run build
+            echo "${{secrets.WEB_ENV_FILE}}" | base64 --decode > .env
+
             cp -a build/. /var/www/html/expenses-manager/
 
-            echo "${{secrets.WEB_ENV_FILE}}" | base64 --decode > .env
 
             cd /home/ubuntu/expenses-manager/backend/
             rm config/.env

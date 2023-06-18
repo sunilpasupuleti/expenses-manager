@@ -22,6 +22,10 @@ DerivedData
 *.xcuserstate
 ios/.xcode.env.local
 
+# ignore web build
+!/web/build/
+
+
 # Android/IntelliJ
 #
 build/
