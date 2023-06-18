@@ -27,6 +27,7 @@ jobs:
           key: ${{secrets.AWS_PEM_KEY}}
           port: 22
           script: |
+            source ~/.nvm/nvm.sh
             source ~/.bashrc
             cd /home/ubuntu/expenses-manager/web
             npm install -f
