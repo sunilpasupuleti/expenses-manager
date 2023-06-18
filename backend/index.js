@@ -45,11 +45,7 @@ connectDB();
 
 app.use(
   cors({
-    origin: [
-      process.env.FRONTEND_URL,
-      "http://localhost:4200",
-      "https://expenses-manager.webwizard.in",
-    ],
+    origin: process.env.CORS_ORIGIN_URL.split(","),
     credentials: true,
     allowedHeaders: [
       "Access-Control-Allow-Origin",
@@ -198,7 +194,7 @@ server.listen(process.env.PORT || 8080, async () => {
     });
   }
 
-  activateNotifications();
+  // activateNotifications();
 });
 
 /**

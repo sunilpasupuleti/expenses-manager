@@ -13,8 +13,8 @@ const { lowercase } = require("../../../helpers/typography");
 
 const cookieOptions = {
   httpOnly: true,
-  sameSite: "none",
-  path: "/",
+  sameSite: "strict",
+  path: "/expenses-manager",
 };
 
 const returnLoginCookies = (data, res) => {
