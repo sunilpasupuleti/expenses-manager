@@ -38,6 +38,7 @@ jobs:
             yarn install
             npm run build
             cp -a build/. /var/www/html/expenses-manager/
+
             echo "${{secrets.WEB_ENV_FILE}}" | base64 --decode > .env
 
             cd /home/ubuntu/expenses-manager/backend/
