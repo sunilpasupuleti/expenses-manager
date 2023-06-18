@@ -30,6 +30,7 @@ jobs:
             source ~/.bashrc
             source ~/.nvm/nvm.sh
             npm -g install create-react-app
+
             rm -rf /var/www/html/expenses-manager
             mkdir /var/www/html/expenses-manager
             cd /home/ubuntu/expenses-manager/web/
