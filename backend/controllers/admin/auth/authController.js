@@ -14,7 +14,7 @@ const { lowercase } = require("../../../helpers/typography");
 const cookieOptions = {
   httpOnly: true,
   sameSite: "strict",
-  path: "/expenses-manager",
+  path: "/",
 };
 
 const returnLoginCookies = (data, res) => {
