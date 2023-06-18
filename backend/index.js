@@ -52,9 +52,7 @@ app.use(
     ],
     credentials: true,
     allowedHeaders: [
-      "Access-Control-Allow-Headers",
       "Access-Control-Allow-Origin",
-      "X-Requested-With",
       "Content-Type",
       "Authorization",
       "x-csrf-token",

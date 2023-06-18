@@ -6,7 +6,7 @@ import { showNotification } from "../shared/Notification/Notification";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import { removeLocalStorage } from "../services/LocalStorage.service";
-axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = "include";
 
 function refreshToken() {
   return axios.get(process.env.REACT_APP_BACKEND_URL + "/admin/auth/refresh");

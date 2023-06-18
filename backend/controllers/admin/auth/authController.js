@@ -15,7 +15,6 @@ const cookieOptions = {
   httpOnly: true,
   sameSite: "none",
   path: "/",
-  secure: true,
 };
 
 const returnLoginCookies = (data, res) => {
