@@ -45,7 +45,11 @@ connectDB();
 
 app.use(
   cors({
-    origin: "*",
+    origin: [
+      process.env.FRONTEND_URL,
+      "http://localhost:4200",
+      "https://expenses-manager.webwizard.in",
+    ],
     credentials: true,
   })
 );
