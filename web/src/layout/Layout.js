@@ -19,6 +19,7 @@ const Layout = (props) => {
     <SocketContextProvider>
       <AuthenticationContextProvider>
         <Routes>
+          <Route path="/" element={<Admin title="Admin" />} />
           <Route path="/admin" element={<Admin title="Admin" />} />
           <Route
             path="/dashboard"

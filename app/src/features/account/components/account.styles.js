@@ -92,15 +92,10 @@ export const OtpStripInput = styled(TextInput).attrs({
   activeOutlineColor: colors.brand.primary,
   theme: {
     roundness: 10,
-    colors: {
-      text: colors.brand.primary,
-    },
   },
 })`
   font-size: 20px;
-  height: 60px;
   width: 45px;
-  background-color: ${colors.brand.secondary};
   margin-left: 10px;
   margin-top: 20px;
   text-align: center;

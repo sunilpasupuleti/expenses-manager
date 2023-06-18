@@ -217,6 +217,10 @@ module.exports = {
       let backUp = userData.backups[userData.backups.length - 1];
       if (backUp) {
         backupId = backUp._id;
+      } else {
+        return sendResponse(res, httpCodes.OK, {
+          message: "There is no data to restore",
+        });
       }
     } else {
       if (!ObjectId.isValid(backupId)) {

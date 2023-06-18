@@ -239,6 +239,10 @@ export const AuthenticationContextProvider = ({children}) => {
           error =
             'Unable to send because the user with this number is disabled!';
           break;
+        case 'auth/too-many-requests':
+          error =
+            'We have blocked all requests from this device due to unusual activity. Try again later.] error in initializing the phone base auhentication';
+          break;
         case 'auth/network-request-failed':
           error = 'No Internet Connection!';
           break;
@@ -271,6 +275,7 @@ export const AuthenticationContextProvider = ({children}) => {
       phoneNumber: user.phoneNumber,
       active: true,
     };
+
     sendRequest(
       {
         type: 'POST',

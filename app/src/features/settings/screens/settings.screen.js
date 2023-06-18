@@ -156,11 +156,27 @@ export const SettingsScreen = ({navigation}) => {
           {/* display profile and email */}
           <ProfileWrapper>
             {userData && userData.photoURL && (
-              <ProfilePicture source={{uri: userData?.photoURL}} />
+              <ProfilePicture
+                source={{
+                  uri: userData?.photoURL,
+                }}
+              />
+            )}
+
+            {userData && !userData.photoURL && (
+              <ProfilePicture source={require('../../../../assets/user.png')} />
             )}
             {userData && userData.email && (
               <ProfileText fontfamily="heading">{userData?.email}</ProfileText>
             )}
+            {userData &&
+              !userData.email &&
+              !userData.displayName &&
+              userData.phoneNumber && (
+                <ProfileText fontfamily="heading">
+                  {userData.phoneNumber}
+                </ProfileText>
+              )}
             {userData && !userData.email && userData.displayName && (
               <ProfileText fontfamily="heading">
                 {userData.displayName}

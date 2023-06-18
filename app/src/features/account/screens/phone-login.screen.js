@@ -66,7 +66,7 @@ export const PhoneLoginScreen = ({navigation, route}) => {
     confirmCode
       .confirm(otp.value)
       .then(res => {
-        console.log(res);
+        console.log(res, 'Authenticated succesfully using phone');
         setShowLoader(false);
         onSetUserData(res);
       })
@@ -104,6 +104,21 @@ export const PhoneLoginScreen = ({navigation, route}) => {
     let value = replaceAt(otpValue, i, replaceValue);
 
     setOtp(p => ({...p, value: value}));
+  };
+
+  const onPressBackOtpValue = (key, i) => {
+    if (key === 'Backspace') {
+      let valueAtIndex = otp.value.at(i);
+      if (valueAtIndex === '-') {
+        if (otpInputsRef.current[i - 1]) otpInputsRef.current[i - 1].focus();
+      }
+    }
+    if (key !== 'Backspace' && key) {
+      let valueAtIndex = otp.value.at(i);
+      if (valueAtIndex) {
+        if (otpInputsRef.current[i + 1]) otpInputsRef.current[i + 1].focus();
+      }
+    }
   };
 
   const onClickSubmit = async () => {
@@ -239,11 +254,11 @@ export const PhoneLoginScreen = ({navigation, route}) => {
                 <OtpStripInput
                   key={i}
                   selectionColor={theme.colors.brand.primary}
-                  theme={{roundness: 10}}
                   value={
                     otp.value?.charAt(i) === '-' ? '' : otp.value.charAt(i)
                   }
                   onChangeText={n => onChangeOtpValue(n.trim(), i)}
+                  onKeyPress={n => onPressBackOtpValue(n.nativeEvent.key, i)}
                   ref={el => (otpInputsRef.current[i] = el)}
                 />
               );

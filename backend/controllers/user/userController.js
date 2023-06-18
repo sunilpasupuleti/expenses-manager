@@ -25,6 +25,7 @@ module.exports = {
       email: user.email,
       photoURL: user.picture,
       prodivderId: user.prodivderId,
+      phoneNumber: user.phoneNumber,
       uid: user.uid,
       fcmToken: fcmToken,
       active: active,

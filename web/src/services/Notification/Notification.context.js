@@ -13,7 +13,7 @@ export const NotificationContext = createContext({
 export const NotificationContextProvider = ({ children }) => {
   const { sendRequest } = useHttp();
 
-  const notificationUrl = "admin/notification/";
+  const notificationUrl = "/admin/notification/";
 
   const onSendNotificationToUsers = async (
     data,

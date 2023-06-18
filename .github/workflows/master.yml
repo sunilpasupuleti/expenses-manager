@@ -28,12 +28,17 @@ jobs:
           port: 22
           script: |
             source ~/.bashrc
+            cd /home/ubuntu/expenses-manager/web
+            npm install -f
+            npm run build
+            rm -rf /var/www/expenses-manager &&  mkdir /var/www/expenses-manager 
+            cp -r /build/* /var/www/expenses-manager
             cd /home/ubuntu/expenses-manager/backend/
             rm config/.env
             rm config/expensesmanager.json
             touch config/.env
             touch config/expensesmanager.json
-            echo "${{secrets.ENV_FILE}}" | base64 --decode > config/.env
+            echo "${{secrets.BACKEND_ENV_FILE}}" | base64 --decode > config/.env
             echo "${{secrets.EXPENSES_MANAGER_JSON}}" | base64 --decode > config/expensesmanager.json
             docker stop expenses-manager-backend
             docker rm  expenses-manager-backend

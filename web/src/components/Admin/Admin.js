@@ -92,7 +92,7 @@ export const Admin = ({ title }) => {
   let redirect = searchParams.get("redirect");
   const [loading, setLoading] = useState(false);
 
-  const { onSignin } = useContext(AuthenticationContext);
+  const { onSignin, userData } = useContext(AuthenticationContext);
 
   const logoImageSprings = useSpring({
     from: { x: -250 },
@@ -156,7 +156,9 @@ export const Admin = ({ title }) => {
         data,
         () => {
           setLoading(false);
-          redirect ? navigate("/" + redirect) : navigate("/dashboard");
+          redirect
+            ? navigate("/" + redirect)
+            : navigate("/dashboard/send-notifications");
         },
         () => {
           setLoading(false);
@@ -170,6 +172,12 @@ export const Admin = ({ title }) => {
   useEffect(() => {
     document.title = title;
   }, []);
+
+  useEffect(() => {
+    if (userData) {
+      navigate("/dashboard/send-notifications");
+    }
+  }, [userData]);
 
   return (
     <Grid container>

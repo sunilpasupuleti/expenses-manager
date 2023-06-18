@@ -9,7 +9,7 @@ import { removeLocalStorage } from "../services/LocalStorage.service";
 axios.defaults.withCredentials = true;
 
 function refreshToken() {
-  return axios.get(process.env.REACT_APP_BACKEND_URL + "admin/auth/refresh");
+  return axios.get(process.env.REACT_APP_BACKEND_URL + "/admin/auth/refresh");
 }
 // if refresh token expired
 function onLogout(navigate) {
@@ -43,9 +43,11 @@ const useHttp = () => {
     ) => {
       loader && showLoader(dispatch);
       let type = requestConfig.type;
-      let url = requestConfig.url;
+      let url = process.env.REACT_APP_BACKEND_URL + requestConfig.url;
       let data = requestConfig.data;
       let headers = requestConfig.headers;
+
+      console.log(url);
 
       try {
         let request;
@@ -82,7 +84,7 @@ const useHttp = () => {
           })
           .catch(async (err) => {
             callbacks.errorCallback &&
-              callbacks.errorCallback(err.response.data);
+              callbacks.errorCallback(err.response?.data);
             console.log(err, "error in http call");
             loader && hideLoader(dispatch);
             let message;
