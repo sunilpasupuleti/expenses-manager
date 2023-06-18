@@ -1553,3 +1553,4 @@
 ::1 - - [18/Jun/2023:18:08:02 +0000] "POST /admin/auth/signin HTTP/1.1" 200 153 "http://localhost:4200/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
 ::1 - - [18/Jun/2023:18:08:02 +0000] "GET /admin/notification/active-users HTTP/1.1" 304 - "http://localhost:4200/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
 ::1 - - [18/Jun/2023:18:08:17 +0000] "OPTIONS /admin/auth/signin HTTP/1.1" 204 0 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+::1 - - [18/Jun/2023:18:11:48 +0000] "OPTIONS /admin/auth/signin HTTP/1.1" 204 0 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"

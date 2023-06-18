@@ -51,7 +51,12 @@ app.use(
       "https://expenses-manager.webwizard.in",
     ],
     credentials: true,
-    allowedHeaders: ["Content-Type", "Authorization", "x-csrf-token"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "x-csrf-token",
+      "Access-Control-Allow-Origin",
+    ],
   })
 );
 app.use(cookieParser());
