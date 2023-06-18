@@ -13,9 +13,8 @@ const { lowercase } = require("../../../helpers/typography");
 
 const cookieOptions = {
   httpOnly: true,
-  sameSite: "none",
+  sameSite: "strict",
   path: "/",
-  secure: true,
 };
 
 const returnLoginCookies = (data, res) => {
