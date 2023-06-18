@@ -46,7 +46,6 @@ jobs:
             touch config/expensesmanager.json
             echo "${{secrets.BACKEND_ENV_FILE}}" | base64 --decode > config/.env
             echo "${{secrets.EXPENSES_MANAGER_JSON}}" | base64 --decode > config/expensesmanager.json
-
             docker stop expenses-manager-backend
             docker rm  expenses-manager-backend
             docker rmi expenses-manager/backend
