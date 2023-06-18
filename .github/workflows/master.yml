@@ -28,7 +28,6 @@ jobs:
           port: 22
           script: |
             source ~/.bashrc
-            sudo chmod 777 -R /home/ubuntu/var/www/html
             cd /home/ubuntu/expenses-manager/web
             npm install -f
             npm run build
