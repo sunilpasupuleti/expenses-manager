@@ -60,6 +60,9 @@ if (process.env.NODE_ENV === "production") {
       level: "debug",
       zippedArchive: true,
     }),
+    new transports.Console({
+      format: format.combine(format.colorize(), customFormat),
+    }),
   ];
 } else {
   metadata = {

@@ -31,7 +31,6 @@ module.exports = () => {
           })
           .catch((err) => console.log(err));
       }
-
       logger.info(`Database Connected (${db.name}) : ${db.host}`);
     });
 };

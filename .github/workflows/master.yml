@@ -37,7 +37,7 @@ jobs:
             touch .env
             echo "${{secrets.WEB_ENV_FILE}}" | base64 --decode > .env
 
-            cp -a build/. /var/www/html/expenses-manager/
+            cp -a dist/. /var/www/html/expenses-manager/
 
 
             cd /home/ubuntu/expenses-manager/backend/
