@@ -14,4 +14,5 @@ CMD ["npm","run","build"]
 FROM httpd:alpine
 
 WORKDIR /var/www/html/expenses-manager
+
 COPY --from=build /build/build/ .

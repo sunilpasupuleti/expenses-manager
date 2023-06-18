@@ -35,6 +35,7 @@ jobs:
             rm .env
             touch .env
             echo "${{secrets.WEB_ENV_FILE}}" | base64 --decode > .env
+
             cd /home/ubuntu/expenses-manager/backend/
             rm config/.env
             rm config/expensesmanager.json
@@ -45,7 +46,7 @@ jobs:
             docker stop expenses-manager-web
             docker rm expenses-manager-web
             docker rmi expenses-manager/web
-            docker build -t expenses-manger/web .
+            docker build -t expenses-manager/web .
             docker container run -d --name expenses-manager-web -p 4200:4200 expenses-manager/web
 
             docker stop expenses-manager-backend
