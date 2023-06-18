@@ -1,4 +1,4 @@
-![Logo](https://expenses-manager-app.webwizard.in/expenses%20manager%20app%20graphics/EXPENSES%20MANAGER.jpg)
+![Logo](https://expenses-manager.webwizard.in/expenses%20manager%20app%20graphics/EXPENSES%20MANAGER.jpg)
 
 # Expenses Manager
 
@@ -96,21 +96,21 @@ https://play.google.com/store/apps/details?id=com.webwizard.expensesmanager
 
 ## Screenshots
 
-![App Screenshot](https://expenses-manager-app.webwizard.in/expenses%20manager%20app%20graphics/reduced/1.png)
+![App Screenshot](https://expenses-manager.webwizard.in/expenses%20manager%20app%20graphics/reduced/1.png)
 
-![App Screenshot](https://expenses-manager-app.webwizard.in/expenses%20manager%20app%20graphics/reduced/2.png)
+![App Screenshot](https://expenses-manager.webwizard.in/expenses%20manager%20app%20graphics/reduced/2.png)
 
-![App Screenshot](https://expenses-manager-app.webwizard.in/expenses%20manager%20app%20graphics/reduced/3.png)
+![App Screenshot](https://expenses-manager.webwizard.in/expenses%20manager%20app%20graphics/reduced/3.png)
 
-![App Screenshot](https://expenses-manager-app.webwizard.in/expenses%20manager%20app%20graphics/reduced/4.png)
+![App Screenshot](https://expenses-manager.webwizard.in/expenses%20manager%20app%20graphics/reduced/4.png)
 
-![App Screenshot](https://expenses-manager-app.webwizard.in/expenses%20manager%20app%20graphics/reduced/5.png)
+![App Screenshot](https://expenses-manager.webwizard.in/expenses%20manager%20app%20graphics/reduced/5.png)
 
-![App Screenshot](https://expenses-manager-app.webwizard.in/expenses%20manager%20app%20graphics/reduced/6.png)
+![App Screenshot](https://expenses-manager.webwizard.in/expenses%20manager%20app%20graphics/reduced/6.png)
 
-![App Screenshot](https://expenses-manager-app.webwizard.in/expenses%20manager%20app%20graphics/reduced/7.png)
+![App Screenshot](https://expenses-manager.webwizard.in/expenses%20manager%20app%20graphics/reduced/7.png)
 
-![App Screenshot](https://expenses-manager-app.webwizard.in/expenses%20manager%20app%20graphics/reduced/8.png)
+![App Screenshot](https://expenses-manager.webwizard.in/expenses%20manager%20app%20graphics/reduced/8.png)
 
 ## Installation
 
