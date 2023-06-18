@@ -15,4 +15,4 @@ FROM httpd:alpine
 
 WORKDIR /var/www/html/expenses-manager
 
-COPY --from=build /build/build/ .
+COPY --from=build /expenses-manager/web/build /var/www/html/expenses-manager
