@@ -52,10 +52,12 @@ app.use(
     ],
     credentials: true,
     allowedHeaders: [
+      "Access-Control-Allow-Headers",
+      "Access-Control-Allow-Origin",
+      "X-Requested-With",
       "Content-Type",
       "Authorization",
       "x-csrf-token",
-      "Access-Control-Allow-Origin",
     ],
   })
 );
@@ -82,6 +84,7 @@ app.use("/logs/error", express.static(errorLogsPath));
 /**
  * Routes
  */
+
 app.use("/user", require("./routes/userRoutes"));
 app.use("/notification", require("./routes/notificationRoutes"));
 app.use("/backup", require("./routes/backupRoutes"));

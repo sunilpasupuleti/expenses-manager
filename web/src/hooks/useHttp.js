@@ -45,8 +45,11 @@ const useHttp = () => {
       let type = requestConfig.type;
       let url = process.env.REACT_APP_BACKEND_URL + requestConfig.url;
       let data = requestConfig.data;
-      let headers = requestConfig.headers;
 
+      let headers = {
+        "Access-Control-Allow-Origin": "*",
+        ...requestConfig.headers,
+      };
       console.log(url);
 
       try {
