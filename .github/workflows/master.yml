@@ -29,8 +29,8 @@ jobs:
           script: |
             source ~/.bashrc
             source ~/.nvm/nvm.sh
-            rm -rf /home/ubuntu/var/www/html/expenses-manager
-            mkdir /home/ubuntu/var/www/html/expenses-manager
+            rm -rf /var/www/html/expenses-manager
+            mkdir /var/www/html/expenses-manager
             cd /home/ubuntu/expenses-manager/web/
             rm .env
             touch .env
