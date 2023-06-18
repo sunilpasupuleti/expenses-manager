@@ -27,13 +27,14 @@ jobs:
           key: ${{secrets.AWS_PEM_KEY}}
           port: 22
           script: |
-            source ~/.nvm/nvm.sh
             source ~/.bashrc
-            cd /home/ubuntu/expenses-manager/web
-            npm install -f
-            npm run build
-            rm -rf /home/ubuntu/var/www/html/expenses-manager &&  mkdir home/ubuntu/var/www/html/expenses-manager 
-            cp -r /build/* /home/ubuntu/var/www/expenses-manager
+            source ~/.nvm/nvm.sh
+            rm -rf /home/ubuntu/var/www/html/expenses-manager
+            mkdir /home/ubuntu/var/www/html/expenses-manager
+            cd /home/ubuntu/expenses-manager/web/
+            rm .env
+            touch .env
+            echo "${{secrets.WEB_ENV_FILE}}" | base64 --decode > .env
             cd /home/ubuntu/expenses-manager/backend/
             rm config/.env
             rm config/expensesmanager.json
@@ -41,6 +42,11 @@ jobs:
             touch config/expensesmanager.json
             echo "${{secrets.BACKEND_ENV_FILE}}" | base64 --decode > config/.env
             echo "${{secrets.EXPENSES_MANAGER_JSON}}" | base64 --decode > config/expensesmanager.json
+            docker stop expenses-manager-web
+            docker rm expenses-manager-web
+            docker rmi expenses-manager-web
+            docker build -t expenses-manger-web
+            docker container run -d --name expenses-manafer-web -p 4200:4200 expenses-manager/web
             docker stop expenses-manager-backend
             docker rm  expenses-manager-backend
             docker rmi expenses-manager/backend
