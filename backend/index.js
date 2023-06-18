@@ -52,6 +52,7 @@ app.use(
       "Content-Type",
       "Authorization",
       "x-csrf-token",
+      "Accept",
     ],
   })
 );
