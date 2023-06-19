@@ -74,7 +74,6 @@ export const AuthenticationContextProvider = ({children}) => {
             '@expenses-manager-logged',
             JSON.stringify(true),
           );
-          await AsyncStorage.setItem('@expenses-manager-user-uid', user.uid);
           dispatch(serviceActions.setAppStatus({authenticated: true}));
         }
 
@@ -95,6 +94,19 @@ export const AuthenticationContextProvider = ({children}) => {
       unsubcribe();
     };
   }, []);
+
+  useEffect(() => {
+    console.log(userData);
+    (async () => {
+      if (userData) {
+        console.log(userData);
+        // await AsyncStorage.setItem(
+        //   '@expenses-manager-user',
+        //   JSON.stringify(userData),
+        // );
+      }
+    })();
+  }, [userData]);
 
   const onGoogleAuthentication = async () => {
     dispatch(loaderActions.showLoader({backdrop: true}));
@@ -323,7 +335,7 @@ export const AuthenticationContextProvider = ({children}) => {
       .then(async () => {
         await deleteUserPinCode('@expenses-manager-app-lock');
         await resetPinCodeInternalStates();
-        await AsyncStorage.removeItem('@expenses-manager-user-uid');
+        await AsyncStorage.removeItem('@expenses-manager-user');
         await AsyncStorage.removeItem('@expenses-manager-logged');
         setAuthFlag(true);
         setUserData(null);

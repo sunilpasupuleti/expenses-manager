@@ -67,9 +67,22 @@ module.exports = {
         message: " NO User found",
       });
     }
+
+    let selectedFields = {
+      displayName: 1,
+      email: 1,
+      photoURL: 1,
+      prodivderId: 1,
+      phoneNumber: 1,
+      uid: 1,
+      fcmToken: 1,
+      active: 1,
+      timeZone: 1,
+    };
     Users.findOne({
       uid: user.uid,
     })
+      .select(selectedFields)
       .then((result) => {
         return sendResponse(res, httpCodes.OK, {
           message: "User Data",

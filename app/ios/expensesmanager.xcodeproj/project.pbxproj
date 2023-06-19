@@ -14,7 +14,6 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		838CA18B6639220EB32B452D /* Pods_expensesmanager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AA3920AD1B88ACF93DC99E8F /* Pods_expensesmanager.framework */; };
 		AB1888700BD977A80F4B989E /* Pods_expensesmanager_expensesmanagerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6162DAD656319BEC957D43CD /* Pods_expensesmanager_expensesmanagerTests.framework */; };
-		D630F2352A357B3B008B81E1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D630F2342A357B3A008B81E1 /* GoogleService-Info.plist */; };
 		D630F2682A36EEEC008B81E1 /* RNReactNativeHapticFeedback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D630F2672A36EEEC008B81E1 /* RNReactNativeHapticFeedback.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		D667168A2A38778A00F60FBE /* Montserrat_500Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D667166A2A38778800F60FBE /* Montserrat_500Medium.ttf */; };
 		D667168B2A38778A00F60FBE /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D667166B2A38778800F60FBE /* Lato-Regular.ttf */; };
@@ -48,6 +47,7 @@
 		D66716A72A38778A00F60FBE /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D66716872A38778A00F60FBE /* FontAwesome5_Regular.ttf */; };
 		D66716A82A38778A00F60FBE /* Montserrat_400Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D66716882A38778A00F60FBE /* Montserrat_400Regular.ttf */; };
 		D66716A92A38778A00F60FBE /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D66716892A38778A00F60FBE /* Ionicons.ttf */; };
+		D668738D2A40B7AF000E22A1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D668738C2A40B7AF000E22A1 /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,7 +77,6 @@
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = expensesmanager/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-expensesmanager-expensesmanagerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-expensesmanager-expensesmanagerTests.release.xcconfig"; path = "Target Support Files/Pods-expensesmanager-expensesmanagerTests/Pods-expensesmanager-expensesmanagerTests.release.xcconfig"; sourceTree = "<group>"; };
 		AA3920AD1B88ACF93DC99E8F /* Pods_expensesmanager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_expensesmanager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		D630F2342A357B3A008B81E1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D630F25A2A36EC6C008B81E1 /* RNReactNativeHapticFeedback.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RNReactNativeHapticFeedback.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D630F2672A36EEEC008B81E1 /* RNReactNativeHapticFeedback.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RNReactNativeHapticFeedback.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D667166A2A38778800F60FBE /* Montserrat_500Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Montserrat_500Medium.ttf; path = "../../assets/allfonts with vector icons also/Montserrat_500Medium.ttf"; sourceTree = "<group>"; };
@@ -112,6 +111,8 @@
 		D66716872A38778A00F60FBE /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Regular.ttf; path = "../../assets/allfonts with vector icons also/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
 		D66716882A38778A00F60FBE /* Montserrat_400Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Montserrat_400Regular.ttf; path = "../../assets/allfonts with vector icons also/Montserrat_400Regular.ttf"; sourceTree = "<group>"; };
 		D66716892A38778A00F60FBE /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons.ttf; path = "../../assets/allfonts with vector icons also/Ionicons.ttf"; sourceTree = "<group>"; };
+		D668738C2A40B7AF000E22A1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		D66D6E522A4027B900E3B538 /* expensesmanager.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = expensesmanager.entitlements; path = expensesmanager/expensesmanager.entitlements; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -156,6 +157,7 @@
 		13B07FAE1A68108700A75B9A /* expensesmanager */ = {
 			isa = PBXGroup;
 			children = (
+				D66D6E522A4027B900E3B538 /* expensesmanager.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -188,8 +190,8 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				D668738C2A40B7AF000E22A1 /* GoogleService-Info.plist */,
 				D66716692A38776200F60FBE /* Fonts */,
-				D630F2342A357B3A008B81E1 /* GoogleService-Info.plist */,
 				13B07FAE1A68108700A75B9A /* expensesmanager */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* expensesmanagerTests */,
@@ -383,7 +385,7 @@
 				D667169E2A38778A00F60FBE /* Montserrat_700Bold.ttf in Resources */,
 				D66716A52A38778A00F60FBE /* Entypo.ttf in Resources */,
 				D66716A82A38778A00F60FBE /* Montserrat_400Regular.ttf in Resources */,
-				D630F2352A357B3B008B81E1 /* GoogleService-Info.plist in Resources */,
+				D668738D2A40B7AF000E22A1 /* GoogleService-Info.plist in Resources */,
 				D66716942A38778A00F60FBE /* Montserrat_600SemiBold.ttf in Resources */,
 				D667168E2A38778A00F60FBE /* MaterialCommunityIcons.ttf in Resources */,
 				D66716A42A38778A00F60FBE /* Oswald-Regular.ttf in Resources */,
@@ -645,6 +647,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = expensesmanager/expensesmanager.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VMGHBGB9S9;
 				ENABLE_BITCODE = NO;
@@ -673,6 +676,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = expensesmanager/expensesmanager.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = VMGHBGB9S9;
 				INFOPLIST_FILE = expensesmanager/Info.plist;

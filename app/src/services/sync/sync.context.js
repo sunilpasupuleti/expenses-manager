@@ -123,6 +123,7 @@ export const SyncContextProvider = ({children}) => {
         },
         {
           successCallback: async result => {
+            console.log('hehehe');
             if (result.backup) {
               onSaveExpensesData(result.backup);
               dispatch(loaderActions.hideLoader());

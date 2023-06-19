@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import axios from 'axios';
 import {BACKEND_URL} from '../../../config';
+import {Platform} from 'react-native';
 
 notifee.onForegroundEvent(event => {
   //   console.log('Foreground event', event);
@@ -198,7 +199,6 @@ async function onAppBootstrap() {
   // Register the device with FCM
   await messaging().requestPermission();
   let result = messaging().isDeviceRegisteredForRemoteMessages;
-
   if (!result) {
     await messaging()
       .registerDeviceForRemoteMessages()
