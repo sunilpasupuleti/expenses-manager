@@ -1,4 +1,4 @@
-![Logo](https://expenses-manager.webwizard.in/expenses%20manager%20app%20graphics/EXPENSES%20MANAGER.jpg)
+![Logo](https://expenses-manager.webwizard.in/graphics/EXPENSES%20MANAGER.jpg)
 
 # Expenses Manager
 
@@ -66,7 +66,7 @@ https://play.google.com/store/apps/details?id=com.webwizard.expensesmanager
 
   You can Export the JSON file and can import all the accounts and transactions from the JSON file in future in case of app loss.
 
-- All Currencies
+- All Currencies available
 
   Expense Manager supports all currencies you may need especially when travelling. It also supports automatically updated currency rates for major currencies
 
@@ -96,21 +96,21 @@ https://play.google.com/store/apps/details?id=com.webwizard.expensesmanager
 
 ## Screenshots
 
-![App Screenshot](https://expenses-manager.webwizard.in/expenses%20manager%20app%20graphics/reduced/1.png)
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/1.png)
 
-![App Screenshot](https://expenses-manager.webwizard.in/expenses%20manager%20app%20graphics/reduced/2.png)
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/2.png)
 
-![App Screenshot](https://expenses-manager.webwizard.in/expenses%20manager%20app%20graphics/reduced/3.png)
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/3.png)
 
-![App Screenshot](https://expenses-manager.webwizard.in/expenses%20manager%20app%20graphics/reduced/4.png)
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/4.png)
 
-![App Screenshot](https://expenses-manager.webwizard.in/expenses%20manager%20app%20graphics/reduced/5.png)
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/5.png)
 
-![App Screenshot](https://expenses-manager.webwizard.in/expenses%20manager%20app%20graphics/reduced/6.png)
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/6.png)
 
-![App Screenshot](https://expenses-manager.webwizard.in/expenses%20manager%20app%20graphics/reduced/7.png)
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/7.png)
 
-![App Screenshot](https://expenses-manager.webwizard.in/expenses%20manager%20app%20graphics/reduced/8.png)
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/8.png)
 
 ## Installation
 
