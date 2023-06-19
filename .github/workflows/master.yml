@@ -19,7 +19,7 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: |
             ./web/dist/
-            ./privacy_policy.html
+            ./privacy_policy.html/
             ./graphics/
 
           server-dir: /expenses-manager.webwizard.in/
@@ -29,8 +29,6 @@ jobs:
             **/.vscode*/**
             **/.DS_STORE*/**
             **/node_modules/**
-            **/app/**
-            **/backend/**
             **/__MACOSX/**
 
       - name: 📂 Deploy in EC2 Instance
