@@ -148,6 +148,7 @@ export const SettingsScreen = ({navigation}) => {
     backgroundColor: Platform.OS !== 'ios' && theme.colors.switchBg,
     padding: 3,
   };
+
   return (
     <SafeArea>
       <ScrollView showsVerticalScrollIndicator={false}>

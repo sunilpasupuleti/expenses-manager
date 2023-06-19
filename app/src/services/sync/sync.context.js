@@ -21,9 +21,7 @@ export const SyncContext = createContext({
 });
 
 export const SyncContextProvider = ({children}) => {
-  const {userData, onGetUserDetails, userAdditionalDetails} = useContext(
-    AuthenticationContext,
-  );
+  const {userData} = useContext(AuthenticationContext);
   const {expensesData, onSaveExpensesData, categories} =
     useContext(SheetsContext);
   const changesMade = useSelector(state => state.service.changesMade);
@@ -42,7 +40,7 @@ export const SyncContextProvider = ({children}) => {
     }
   }, [userData, changesMade.status]);
 
-  const backUpData = async () => {
+  const backUpData = async (notify = true) => {
     if (!expensesData) {
       dispatch(
         notificationActions.showToast({
@@ -52,7 +50,7 @@ export const SyncContextProvider = ({children}) => {
       );
       return;
     }
-
+    console.log('fired');
     try {
       dispatch(
         loaderActions.showLoader({backdrop: true, loaderType: 'backup'}),
@@ -73,22 +71,27 @@ export const SyncContextProvider = ({children}) => {
         {
           successCallback: async () => {
             dispatch(loaderActions.hideLoader());
-            dispatch(
-              notificationActions.showToast({
-                status: 'success',
-                message: 'Your data backed up safely.',
-              }),
-            );
+            if (notify) {
+              dispatch(
+                notificationActions.showToast({
+                  status: 'success',
+                  message: 'Your data backed up safely.',
+                }),
+              );
+            }
             dispatch(setChangesMade({status: false}));
           },
           errorCallback: err => {
             dispatch(loaderActions.hideLoader());
-            dispatch(
-              notificationActions.showToast({
-                status: 'error',
-                message: 'Error in backing up your data.',
-              }),
-            );
+            if (notify) {
+              dispatch(
+                notificationActions.showToast({
+                  status: 'error',
+                  message: 'Error in backing up your data.',
+                }),
+              );
+            }
+
             console.log(err, 'error in backup');
           },
         },

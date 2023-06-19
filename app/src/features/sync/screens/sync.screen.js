@@ -27,8 +27,7 @@ import {notificationActions} from '../../../store/notification-slice';
 
 export const SyncScreen = ({navigation, route}) => {
   const theme = useTheme();
-  const {backUpData, restoreData, backUpAndRestore, onGetRestoreDates} =
-    useContext(SyncContext);
+  const {backUpData, restoreData, onGetRestoreDates} = useContext(SyncContext);
   const {onLogout} = useContext(AuthenticationContext);
   const [restoreDates, setRestoreDates] = useState([]);
   const [showModal, setShowModal] = useState(false);

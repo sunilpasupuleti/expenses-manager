@@ -12,21 +12,25 @@ const schedule = require("node-schedule");
 
 module.exports = {
   async saveUser(req, res) {
-    let user = req.user;
-    const { fcmToken, active, timeZone } = req.body;
-    if (!user) {
-      return sendResponse(res, httpCodes.NOT_FOUND, {
-        message: "No User found",
-      });
-    }
+    const {
+      displayName,
+      email,
+      photoURL,
+      uid,
+      prodivderId,
+      fcmToken,
+      active,
+      timeZone,
+      phoneNumber,
+    } = req.body;
 
     let data = {
-      displayName: user.name,
-      email: user.email,
-      photoURL: user.picture,
-      prodivderId: user.prodivderId,
-      phoneNumber: user.phoneNumber,
-      uid: user.uid,
+      displayName: displayName,
+      email: email,
+      photoURL: photoURL,
+      prodivderId: prodivderId,
+      phoneNumber: phoneNumber,
+      uid: uid,
       fcmToken: fcmToken,
       active: active,
       timeZone: timeZone,
@@ -34,7 +38,7 @@ module.exports = {
 
     Users.findOneAndUpdate(
       {
-        uid: user.uid,
+        uid: uid,
       },
       {
         $set: data,
