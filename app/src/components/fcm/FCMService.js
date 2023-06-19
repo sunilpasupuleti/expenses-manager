@@ -75,10 +75,15 @@ notifee.getNotificationSettings().then(settings => {
 export async function onMessageReceived(message) {
   let type = message.data.type;
   let uid = message.data?.uid;
+  let title = message.data?.title;
+  let body = message.data?.body;
+  let backupSuccessTitle = message.data?.backupSuccessTitle;
+  let backupSuccessBody = message.data?.backupSuccessBody;
+
+  let backupFailedTitle = message.data?.backupFailedTitle;
+  let backupFailedBody = message.data?.backupFailedBody;
+
   if (type && type === 'daily-reminder') {
-    let title = 'Reminder 🔔';
-    let body = `Have you recorded your  transactions.. 🤔?
-  If not 😕 do it now.`;
     let actions = [
       {
         title: 'Yes',
@@ -93,22 +98,11 @@ export async function onMessageReceived(message) {
   }
 
   if (type && type === 'daily-update') {
-    let title = message.data?.title;
-    let body = message.data?.body;
     let actions = [];
     showNotification(title, body, 'daily-update', false, type, actions);
   }
 
   if (type && type === 'daily-backup') {
-    let title = 'Back Up 🔄';
-    let body = `Please wait while we are backing up your data......`;
-
-    let successTitle = 'Back up successfull 🥰';
-    let successBody = 'Your data backed up safely ❤️';
-
-    let failedTitle = 'Sorry ! Back up failed 😥';
-    let failedBody = 'In case of backup failure, do it manually in the app.';
-
     let value = await AsyncStorage.getItem(`@expenses-manager-data-${uid}`);
     value = JSON.parse(value);
     // Encrypt
@@ -136,8 +130,8 @@ export async function onMessageReceived(message) {
       .then(ref => {
         cancelNotification('daily-backup');
         showNotification(
-          successTitle,
-          successBody,
+          backupSuccessTitle,
+          backupSuccessBody,
           'daily-backup-success',
           false,
           type,
@@ -147,8 +141,8 @@ export async function onMessageReceived(message) {
       .catch(err => {
         cancelNotification('daily-backup');
         showNotification(
-          failedTitle,
-          failedBody,
+          backupFailedTitle,
+          backupFailedBody,
           'daily-backup-failed',
           false,
           type,

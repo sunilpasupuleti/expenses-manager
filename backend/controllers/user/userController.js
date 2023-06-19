@@ -13,7 +13,7 @@ const schedule = require("node-schedule");
 module.exports = {
   async saveUser(req, res) {
     let user = req.user;
-    const { fcmToken, active } = req.body;
+    const { fcmToken, active, timeZone } = req.body;
     if (!user) {
       return sendResponse(res, httpCodes.NOT_FOUND, {
         message: "No User found",
@@ -29,7 +29,9 @@ module.exports = {
       uid: user.uid,
       fcmToken: fcmToken,
       active: active,
+      timeZone: timeZone,
     };
+
     Users.findOneAndUpdate(
       {
         uid: user.uid,

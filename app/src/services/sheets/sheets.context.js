@@ -167,11 +167,6 @@ export const SheetsContextProvider = ({children}) => {
     dailyReminder,
     callback = () => null,
   ) => {
-    let data = {...dailyReminder};
-    data.time = `${moment(data.time).format('HH')}:${moment(data.time).format(
-      'mm',
-    )}`;
-
     dispatch(loaderActions.showLoader({backdrop: true}));
     let jwtToken = await auth().currentUser.getIdToken();
     let fcmToken = null;
@@ -181,6 +176,12 @@ export const SheetsContextProvider = ({children}) => {
         fcmToken = t;
       })
       .catch(err => {});
+    let timeZone = await Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    let data = {...dailyReminder, fcmToken: fcmToken, timeZone: timeZone};
+    data.time = `${moment(data.time).format('HH')}:${moment(data.time).format(
+      'mm',
+    )}`;
 
     sendRequest(
       {

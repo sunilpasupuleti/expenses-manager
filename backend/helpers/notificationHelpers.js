@@ -7,8 +7,11 @@ module.exports = {
       "sending daily reminder notification to  - " + data.displayName
     );
     let token = data.fcmToken;
+    let title = "Reminder 🔔";
+    let body = `Have you recorded your  transactions.. 🤔?
+  If not 😕 do it now.`;
     let payload = {
-      data: { type: "daily-reminder", uid: data.uid },
+      data: { type: "daily-reminder", uid: data.uid, title, body },
     };
     getMessaging()
       .sendToDevice(token, payload, { priority: "high" })
@@ -35,8 +38,17 @@ module.exports = {
   async sendDailyBackupNotification(data) {
     logger.info("sending daily backup notification to  - " + data.displayName);
     let token = data.fcmToken;
+    let title = "Back Up 🔄";
+    let body = `Please wait while we are backing up your data......`;
+    let backupSuccessTitle = 'Back up successfull 🥰';
+    let backupSuccessBody = 'Your data backed up safely ❤️';
+
+    let backupFailedTitle = 'Sorry ! Back up failed 😥';
+    let backupFailedBody = 'In case of backup failure, do it manually in the app.';
+
+
     let payload = {
-      data: { type: "daily-backup", uid: data.uid },
+      data: { type: "daily-backup", uid: data.uid, title, body , backupSuccessBody, backupSuccessTitle , backupFailedBody , backupFailedTitle },
     };
     getMessaging()
       .sendToDevice(token, payload, { priority: "high" })

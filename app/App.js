@@ -65,7 +65,6 @@ const App = () => {
         },
       );
     }
-
     //  call all slices
     dispatch(fetchAppLock());
     dispatch(fetchTheme());

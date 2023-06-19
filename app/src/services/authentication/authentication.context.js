@@ -42,28 +42,31 @@ export const AuthenticationContext = createContext({
 
 export const AuthenticationContextProvider = ({children}) => {
   const [userData, setUserData] = useState(null);
-
+  const [authFlag, setAuthFlag] = useState(true);
   const [userAdditionalDetails, setUserAdditionalDetails] = useState(null);
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
   const WEB_CLIENT_ID = remoteConfig().getValue('WEB_CLIENT_ID').asString();
   const dispatch = useDispatch();
   const {sendRequest} = useHttp();
 
-  var authFlag = true;
-
   const onSetUserAdditionalDetails = data => {
     setUserAdditionalDetails(data);
   };
 
   useEffect(() => {
-    console.log(BACKEND_URL);
+    console.log(
+      BACKEND_URL,
+      '-',
+      Intl.DateTimeFormat().resolvedOptions().timeZone,
+    );
     const unsubcribe = auth().onAuthStateChanged(async user => {
       if (user) {
         let loggedIn = await AsyncStorage.getItem('@expenses-manager-logged');
         loggedIn = JSON.parse(loggedIn);
+
         // auth flag is used to prevent calling auth change state multiple times
         if (authFlag) {
-          authFlag = false;
+          setAuthFlag(false);
           if (loggedIn) {
             onGetUserDetails();
           }
@@ -265,6 +268,7 @@ export const AuthenticationContextProvider = ({children}) => {
         console.log(err);
       });
     let user = data.user;
+    let timeZone = await Intl.DateTimeFormat().resolvedOptions().timeZone;
     let transformedData = {
       displayName: user.displayName,
       email: user.email,
@@ -274,7 +278,10 @@ export const AuthenticationContextProvider = ({children}) => {
       fcmToken: token,
       phoneNumber: user.phoneNumber,
       active: true,
+      timeZone: timeZone,
     };
+
+    console.log(transformedData);
 
     sendRequest(
       {
@@ -311,8 +318,6 @@ export const AuthenticationContextProvider = ({children}) => {
 
   const onLogout = async () => {
     let jwtToken = await auth().currentUser.getIdToken();
-    authFlag = true;
-
     auth()
       .signOut()
       .then(async () => {
@@ -320,7 +325,9 @@ export const AuthenticationContextProvider = ({children}) => {
         await resetPinCodeInternalStates();
         await AsyncStorage.removeItem('@expenses-manager-user-uid');
         await AsyncStorage.removeItem('@expenses-manager-logged');
-
+        setAuthFlag(true);
+        setUserData(null);
+        setUserAdditionalDetails(null);
         messaging().deleteToken();
         dispatch(serviceActions.setAppStatus({authenticated: false}));
         dispatch(setChangesMade({status: false, loaded: true}));

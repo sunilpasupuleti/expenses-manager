@@ -139,6 +139,7 @@ server.listen(process.env.PORT || 8080, async () => {
   function activateNotifications() {
     users.forEach((d) => {
       let userData = d;
+      let timeZone = userData.timeZone ? userData.timeZone : "Asia/Kolkata";
       let jobDailyReminderId = `${userData.uid}-daily-reminder`;
       let jobKeyDailyReminderFound = Object.keys(jobs).filter(
         (key) => key === jobDailyReminderId
@@ -150,6 +151,9 @@ server.listen(process.env.PORT || 8080, async () => {
         (key) => key === jobDailyBackupId
       )[0];
       let jobFoundDailyBackup = jobs[jobKeyDailyBackupFound];
+
+      let display =
+        userData.displayName || userData.email || userData.phoneNumber;
       if (
         !jobFoundDailyReminder &&
         userData.dailyReminder &&
@@ -164,12 +168,12 @@ server.listen(process.env.PORT || 8080, async () => {
         var rule = new schedule.RecurrenceRule();
         rule.hour = hr;
         rule.minute = min;
-        rule.tz = "Asia/Calcutta";
+        rule.tz = timeZone;
 
         rule.dayOfWeek = new schedule.Range(0, 6);
         let jobId = `${userData.uid}-daily-reminder`;
         logger.info(
-          `Enabling daily reminder for ${userData.displayName} at time - ${hr}:${min}`
+          `Enabling daily reminder for ${display} at time - ${hr}:${min} - ${timeZone}`
         );
 
         schedule.scheduleJob(jobId, rule, function () {
@@ -188,12 +192,12 @@ server.listen(process.env.PORT || 8080, async () => {
         let hour = 00;
         let minute = 01;
         rule.hour = hour;
-        rule.tz = "Asia/Calcutta";
+        rule.tz = timeZone;
 
         rule.minute = minute;
         rule.dayOfWeek = new schedule.Range(0, 6);
         let jobId = `${userData.uid}-daily-backup`;
-        logger.info(`Enabling daily backup for ${userData.displayName} `);
+        logger.info(`Enabling daily backup for ${display} - ${timeZone}`);
 
         logger.info("-----------------------------------");
         schedule.scheduleJob(jobId, rule, function () {

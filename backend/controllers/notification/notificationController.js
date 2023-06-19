@@ -12,14 +12,14 @@ const logger = require("../../middleware/logger/logger");
 
 module.exports = {
   async updateDailyReminder(req, res) {
-    const { time, fcmToken, enable, update, disable } = req.body;
+    const { time, fcmToken, enable, update, disable, timeZone } = req.body;
 
-    console.log(req.body);
+    // console.log(req.body);
 
     let { uid } = req.user;
-    if (!uid || !time || !fcmToken) {
+    if (!uid || !time || !fcmToken || !timeZone) {
       return sendResponse(res, httpCodes.BAD_REQUEST, {
-        message: "UID , TIME , FCM TOKEN all fields are required",
+        message: "UID , TIME , FCM TOKEN , TIME ZONE fields are required",
       });
     }
 
@@ -40,7 +40,7 @@ module.exports = {
           // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
           rule.hour = hr;
           rule.minute = min;
-          rule.tz = "Asia/Calcutta";
+          rule.tz = timeZone;
           rule.dayOfWeek = new schedule.Range(0, 6);
           let jobId = `${uid}-daily-reminder`;
           Users.findOneAndUpdate(
@@ -64,7 +64,7 @@ module.exports = {
               let returnData = response;
               // get user data
               logger.info(
-                `Enabling daily reminder for ${userData.displayName} at time - ${hr}:${min}`
+                `Enabling daily reminder for ${userData.displayName} at time - ${hr}:${min} - ${timeZone}`
               );
               logger.info("-----------------------------------");
               schedule.scheduleJob(jobId, rule, function () {
@@ -151,10 +151,10 @@ module.exports = {
   },
 
   async updateDailyBackUp(req, res) {
-    const { fcmToken, enabled } = req.body;
+    const { fcmToken, enabled, timeZone } = req.body;
 
     let { uid } = req.user;
-    if (!uid || typeof enabled !== "boolean" || !fcmToken) {
+    if (!uid || typeof enabled !== "boolean" || !fcmToken || !timeZone) {
       return sendResponse(res, httpCodes.BAD_REQUEST, {
         message: "all fields are required",
       });
@@ -173,7 +173,7 @@ module.exports = {
           let minute = 01;
           rule.hour = hour;
           rule.minute = minute;
-          rule.tz = "Asia/Calcutta";
+          rule.tz = timeZone;
 
           rule.dayOfWeek = new schedule.Range(0, 6);
           let jobId = `${uid}-daily-backup`;
@@ -336,8 +336,15 @@ module.exports = {
 
       .then((response) => {
         let returnData = response;
+
         let dailyReminder = returnData.dailyReminder;
         let dailyBackup = returnData.dailyBackup;
+        let timeZone = returnData.timeZone
+          ? returnData.timeZone
+          : "Asia/Calcutta";
+        let display =
+          returnData.displayName || returnData.email || returnData.phoneNumber;
+
         if (
           returnData.active &&
           dailyReminder &&
@@ -351,7 +358,7 @@ module.exports = {
           // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
           rule.hour = hr;
           rule.minute = min;
-          rule.tz = "Asia/Calcutta";
+          rule.tz = timeZone;
 
           rule.dayOfWeek = new schedule.Range(0, 6);
           let jobId = `${uid}-daily-reminder`;
@@ -361,7 +368,7 @@ module.exports = {
             jobFoundDailyReminder.cancel();
           }
           logger.info(
-            `Enabling daily reminder for ${returnData.displayName} at time - ${hr}:${min}`
+            `Enabling daily reminder for ${display} at time - ${hr}:${min} - ${timeZone}`
           );
 
           schedule.scheduleJob(jobId, rule, function () {
@@ -376,7 +383,7 @@ module.exports = {
           let minute = 01;
           rule.hour = hour;
           rule.minute = minute;
-          rule.tz = "Asia/Calcutta";
+          rule.tz = timeZone;
 
           rule.dayOfWeek = new schedule.Range(0, 6);
           let jobId = `${uid}-daily-backup`;
@@ -387,7 +394,7 @@ module.exports = {
           }
 
           logger.info(
-            `Enabling daily backup for ${returnData.displayName} at ${hour}:${minute}`
+            `Enabling daily backup for ${display} at ${hour}:${minute} - ${timeZone}`
           );
 
           schedule.scheduleJob(jobId, rule, function () {
