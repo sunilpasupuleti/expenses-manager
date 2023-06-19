@@ -17,7 +17,11 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./web/dist/
+          local-dir: |
+            ./web/dist/
+            ./privacy_policy.html
+            ./graphics/
+
           server-dir: /expenses-manager.webwizard.in/
           exclude: |
             **/.git*
