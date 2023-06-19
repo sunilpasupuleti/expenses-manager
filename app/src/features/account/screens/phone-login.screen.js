@@ -31,13 +31,15 @@ export const PhoneLoginScreen = ({navigation, route}) => {
   const {onSignInWithMobile, onSetUserData} = useContext(AuthenticationContext);
 
   const onResetAllValues = () => {
-    setPhone({value: '91', error: false});
     setOtp({value: '------', error: false});
     setError(null);
     setShowLoader(false);
   };
 
   const onChangeMode = mode => {
+    if (mode === 'phone') {
+      setPhone({value: '91', error: false});
+    }
     onResetAllValues();
     setMode(mode);
   };
@@ -121,7 +123,7 @@ export const PhoneLoginScreen = ({navigation, route}) => {
     }
   };
 
-  const onClickSubmit = async () => {
+  const onClickSubmit = async (resend = false) => {
     setError(null);
     setSuccess(null);
     if (mode === 'phone') {
@@ -135,13 +137,13 @@ export const PhoneLoginScreen = ({navigation, route}) => {
         return;
       }
     }
-
     setShowLoader(true);
     let result;
     let number = '+' + phone.value;
+
     if (mode === 'phone') {
-      result = await onSignInWithMobile(number);
-      if (result.status) {
+      result = await onSignInWithMobile(number, resend);
+      if (result && result.status) {
         onChangeMode('otp');
         setSuccess(result);
         setConfirmCode(result.result);
@@ -225,7 +227,7 @@ export const PhoneLoginScreen = ({navigation, route}) => {
             style={{height: 40}}
             buttonColor={theme.colors.brand.primary}
             textColor="#fff"
-            onPress={onClickSubmit}
+            onPress={() => onClickSubmit(false)}
             loading={showLoader}
             disabled={showLoader}>
             {showLoader ? 'SENDING OTP' : ' SEND OTP'}
@@ -247,6 +249,9 @@ export const PhoneLoginScreen = ({navigation, route}) => {
           {success && success.message && (
             <SuccessMessage fontsize="15px">{success.message}</SuccessMessage>
           )}
+          {/* <Hyperlink onPress={() => onClickSubmit(true)}>
+            Otp not received? Resend Otp
+          </Hyperlink> */}
 
           <OtpStrips>
             {[...Array(6)].map((x, i) => {
@@ -279,8 +284,9 @@ export const PhoneLoginScreen = ({navigation, route}) => {
               {showLoader ? 'VERIFYING OTP' : ' VERIFY OTP'}
             </Button>
             <Spacer size={'large'} />
+
             <Hyperlink onPress={() => onChangeMode('phone')}>
-              Change number ?
+              Change number?
             </Hyperlink>
           </AccountContainer>
         </>

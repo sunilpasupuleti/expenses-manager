@@ -98,4 +98,5 @@ export const SuccessMessage = styled(Text)`
   text-align: center;
   margin-top: 10px;
   margin-bottom: 10px;
+  padding-left: 10px;
 `;

@@ -29,7 +29,7 @@ export const AuthenticationContext = createContext({
   onGoogleAuthentication: () => null,
   onSignInWithEmail: () => null,
   onSignUpWithEmail: () => null,
-  onSignInWithMobile: () => null,
+  onSignInWithMobile: (phone, resend) => null,
   onSetUserData: () => null,
   onResetPassword: () => null,
   userData: null,
@@ -216,9 +216,9 @@ export const AuthenticationContextProvider = ({children}) => {
     }
   };
 
-  const onSignInWithMobile = async phone => {
+  const onSignInWithMobile = async (phone, resend = false) => {
     try {
-      let result = await auth().signInWithPhoneNumber(phone);
+      let result = await auth().signInWithPhoneNumber(phone, resend);
       return {
         status: true,
         result: result,
