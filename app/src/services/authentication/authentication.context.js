@@ -96,14 +96,12 @@ export const AuthenticationContextProvider = ({children}) => {
   }, []);
 
   useEffect(() => {
-    console.log(userData);
     (async () => {
       if (userData) {
-        console.log(userData);
-        // await AsyncStorage.setItem(
-        //   '@expenses-manager-user',
-        //   JSON.stringify(userData),
-        // );
+        await AsyncStorage.setItem(
+          '@expenses-manager-user',
+          JSON.stringify(userData),
+        );
       }
     })();
   }, [userData]);

@@ -78,6 +78,8 @@ module.exports = {
       fcmToken: 1,
       active: 1,
       timeZone: 1,
+      dailyReminder: 1,
+      dailyBackup: 1,
     };
     Users.findOne({
       uid: user.uid,
