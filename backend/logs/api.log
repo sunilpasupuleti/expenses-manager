@@ -110,3 +110,4 @@
 ::1 - - [18/Jun/2023:19:36:39 +0000] "GET /admin/notification/active-users HTTP/1.1" 304 - "http://localhost:4200/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
 ::1 - - [18/Jun/2023:19:36:43 +0000] "OPTIONS /admin/auth/signout HTTP/1.1" 204 0 "http://localhost:4200/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
 ::1 - - [18/Jun/2023:19:36:43 +0000] "GET /admin/auth/signout HTTP/1.1" 304 - "http://localhost:4200/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+::1 - - [19/Jun/2023:00:55:23 +0000] "GET / HTTP/1.1" 404 139 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
