@@ -158,9 +158,9 @@ export const SheetsContextProvider = ({children}) => {
 
   GOOGLE_CLOUD_VISION_API_URL;
   useEffect(() => {
-    // if (userData) {
-    retrieveExpensesData();
-    // }
+    if (userData) {
+      retrieveExpensesData();
+    }
   }, [userData]);
 
   const onUpdateDailyReminder = async (
@@ -472,10 +472,8 @@ export const SheetsContextProvider = ({children}) => {
 
     try {
       const jsonValue = JSON.stringify(passedExpensesData);
-      let user = await AsyncStorage.getItem(`@expenses-manager-user`);
-      user = JSON.parse(user);
       await AsyncStorage.setItem(
-        `@expenses-manager-data-${user.uid}`,
+        `@expenses-manager-data-${userData.uid}`,
         jsonValue,
       );
       // retrieveExpensesData();
@@ -487,10 +485,8 @@ export const SheetsContextProvider = ({children}) => {
   const retrieveExpensesData = async () => {
     // dispatch(loaderActions.showLoader({backdrop: true}));
     try {
-      let user = await AsyncStorage.getItem(`@expenses-manager-user`);
-      user = JSON.parse(user);
       let value = await AsyncStorage.getItem(
-        `@expenses-manager-data-${user.uid}`,
+        `@expenses-manager-data-${userData.uid}`,
       );
       value = JSON.parse(value);
       if (value != null) {

@@ -1,6 +1,5 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useDispatch} from 'react-redux';
 import {Alert, AppState} from 'react-native';
 import {loaderActions} from './loader-slice';
 import remoteConfig from '@react-native-firebase/remote-config';

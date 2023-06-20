@@ -19,6 +19,7 @@ import {
   resetPinCodeInternalStates,
   deleteUserPinCode,
 } from '@haskkor/react-native-pincode';
+import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 
 GoogleSignin.configure({
   webClientId: remoteConfig().getValue('WEB_CLIENT_ID').asString(),
@@ -40,15 +41,14 @@ export const AuthenticationContext = createContext({
   fetchedUserDetails: false,
 });
 
+let authFlag = true;
+
 export const AuthenticationContextProvider = ({children}) => {
   const [userData, setUserData] = useState(null);
-  const [authFlag, setAuthFlag] = useState(true);
   const [userAdditionalDetails, setUserAdditionalDetails] = useState(null);
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
-  const WEB_CLIENT_ID = remoteConfig().getValue('WEB_CLIENT_ID').asString();
   const dispatch = useDispatch();
   const {sendRequest} = useHttp();
-
   const onSetUserAdditionalDetails = data => {
     setUserAdditionalDetails(data);
   };
@@ -60,51 +60,48 @@ export const AuthenticationContextProvider = ({children}) => {
       Intl.DateTimeFormat().resolvedOptions().timeZone,
     );
     const unsubcribe = auth().onAuthStateChanged(async user => {
-      if (user) {
+      if (user && authFlag) {
+        // auth flag is used to prevent calling auth change state multiple times
+        authFlag = false;
         let loggedIn = await AsyncStorage.getItem('@expenses-manager-logged');
         loggedIn = JSON.parse(loggedIn);
-
-        // auth flag is used to prevent calling auth change state multiple times
-        if (authFlag) {
-          setAuthFlag(false);
-          if (loggedIn) {
-            onGetUserDetails();
-          }
-          await AsyncStorage.setItem(
-            '@expenses-manager-logged',
-            JSON.stringify(true),
-          );
-          dispatch(serviceActions.setAppStatus({authenticated: true}));
+        if (loggedIn) {
+          onGetUserDetails(async data => {
+            console.log(data.user, 'user man');
+            await AsyncStorage.setItem(
+              '@expenses-manager-user',
+              JSON.stringify(data.user),
+            );
+          });
         }
-
-        // if (authFlag) {
-        //   console.log(user);
-        //   authFlag = false;
-        //   onGetUserDetails(async () => {
-        //     await AsyncStorage.setItem('@expenses-manager-user-uid', user.uid);
-        //     dispatch(serviceActions.setAppStatus({authenticated: true}));
-        //   });
-        // }
+        dispatch(serviceActions.setAppStatus({authenticated: true}));
+        await AsyncStorage.setItem(
+          '@expenses-manager-logged',
+          JSON.stringify(true),
+        );
       } else {
         dispatch(serviceActions.setAppStatus({authenticated: false}));
       }
     });
 
+    const netEvent = NetInfo.addEventListener(async state => {
+      let isConnected = state.isConnected;
+      if (!isConnected && !userData) {
+        let cachedUserData = await AsyncStorage.getItem(
+          '@expenses-manager-user',
+        );
+        if (cachedUserData) {
+          cachedUserData = JSON.parse(cachedUserData);
+          setUserData(cachedUserData);
+        }
+      }
+    });
+
     return () => {
       unsubcribe();
+      netEvent();
     };
   }, []);
-
-  useEffect(() => {
-    (async () => {
-      if (userData) {
-        await AsyncStorage.setItem(
-          '@expenses-manager-user',
-          JSON.stringify(userData),
-        );
-      }
-    })();
-  }, [userData]);
 
   const onGoogleAuthentication = async () => {
     dispatch(loaderActions.showLoader({backdrop: true}));
@@ -291,8 +288,6 @@ export const AuthenticationContextProvider = ({children}) => {
       timeZone: timeZone,
     };
 
-    console.log(transformedData);
-
     sendRequest(
       {
         type: 'POST',
@@ -307,6 +302,10 @@ export const AuthenticationContextProvider = ({children}) => {
           if (result.user) {
             setUserData(result.user);
             setUserAdditionalDetails(result.user);
+            await AsyncStorage.setItem(
+              '@expenses-manager-user',
+              JSON.stringify(result.user),
+            );
           }
           sendRequest({
             type: 'POST',
@@ -335,7 +334,7 @@ export const AuthenticationContextProvider = ({children}) => {
         await resetPinCodeInternalStates();
         await AsyncStorage.removeItem('@expenses-manager-user');
         await AsyncStorage.removeItem('@expenses-manager-logged');
-        setAuthFlag(true);
+        authFlag = true;
         setUserData(null);
         setUserAdditionalDetails(null);
         messaging().deleteToken();
@@ -428,7 +427,7 @@ export const AuthenticationContextProvider = ({children}) => {
         successCallback: data => {
           setUserAdditionalDetails(data.user);
           setUserData(data.user);
-          successCallBack();
+          successCallBack(data);
         },
         errorCallback: () => {
           dispatch(loaderActions.hideLoader());

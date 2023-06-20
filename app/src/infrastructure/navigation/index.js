@@ -23,7 +23,6 @@ import merge from 'deepmerge';
 import {useColorScheme} from 'react-native';
 
 export const Navigation = () => {
-  const dispatch = useDispatch();
   const {enabled: isAppLockEnabled, appAuthStatus} = useSelector(
     state => state.applock,
   );

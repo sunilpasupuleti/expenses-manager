@@ -144,7 +144,7 @@ export const AccountScreen = ({navigation}) => {
             width: 160,
             height: 160,
             borderRadius: 100,
-            borderColor: '#ddd',
+            // borderColor: '#ddd',
             borderWidth: 1,
           }}
           source={require('../../../../assets/login-screen.png')}

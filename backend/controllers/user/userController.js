@@ -12,29 +12,26 @@ const schedule = require("node-schedule");
 
 module.exports = {
   async saveUser(req, res) {
+    let uid = req.user.uid;
     const {
       displayName,
       email,
       photoURL,
-      uid,
       prodivderId,
       fcmToken,
       active,
       timeZone,
       phoneNumber,
     } = req.body;
-
-    let data = {
-      displayName: displayName,
-      email: email,
-      photoURL: photoURL,
-      prodivderId: prodivderId,
-      phoneNumber: phoneNumber,
-      uid: uid,
-      fcmToken: fcmToken,
-      active: active,
-      timeZone: timeZone,
-    };
+    let data = {};
+    Object.keys(req.body).map((key) => {
+      if (key) {
+        let value = req.body[key];
+        if (value !== undefined) {
+          data[key] = value;
+        }
+      }
+    });
 
     Users.findOneAndUpdate(
       {

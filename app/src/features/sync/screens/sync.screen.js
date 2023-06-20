@@ -54,7 +54,7 @@ export const SyncScreen = ({navigation, route}) => {
     (async () => {
       if (route.params && route.params.backupAndSignOut) {
         if (changesMade) {
-          await backUpData();
+          await backUpData(false);
         }
         onLogout();
       }
