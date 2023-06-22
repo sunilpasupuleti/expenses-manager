@@ -106,14 +106,15 @@ process.on("SIGINT", function () {
  * Create Server
  */
 
-const server = require("http").Server(app);
 const https_options = {
   ca: fs.readFileSync("./config/ssl/ca_bundle.crt"),
   key: fs.readFileSync("./config/ssl/private.key"),
   cert: fs.readFileSync("./config/ssl/certificate.crt"),
 };
 
-// const server = require("https").createServer(https_options, app);
+// const server = require("http").Server(app);
+
+const server = require("https").createServer(https_options, app);
 
 const io = socketIo(server, {
   cors: {
@@ -207,7 +208,7 @@ server.listen(process.env.PORT || 8080, async () => {
     });
   }
 
-  // activateNotifications();
+  activateNotifications();
 });
 
 /**
