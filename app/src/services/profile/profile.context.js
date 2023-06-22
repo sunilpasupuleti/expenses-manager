@@ -27,13 +27,13 @@ export const ProfileContextProvider = ({children}) => {
     errorCallback = () => {},
   ) => {
     let currentUser = await auth().currentUser;
-    let providerData = currentUser.providerData;
+    let providerId = currentUser.providerData[0].providerId;
     let updatedDetails = {};
     let {displayName, email, phoneNumber} = data;
     let error = null;
-    console.log(providerData);
+    console.log(providerId);
     const updateData = async () => {
-      if (displayName !== userData.displayName) {
+      if (displayName && displayName !== userData.displayName) {
         await currentUser
           .updateProfile({
             displayName: displayName,
@@ -44,31 +44,31 @@ export const ProfileContextProvider = ({children}) => {
             throw new Error(error);
           });
       }
-      if (email !== userData.email && !error) {
-        await currentUser
-          .updateEmail(email)
-          .then(() => (updatedDetails.email = email))
-          .catch(err => {
-            switch (err.code) {
-              case 'auth/invalid-email':
-                error = 'Invalid email address';
-                break;
-              case 'auth/email-already-in-use':
-                error = 'Email-address is already in use! Try another email.';
-                break;
-              case 'auth/requires-recent-login':
-                error = 'Email-address is already in use! Try another email.';
-                currentUser.reauthenticateWithCredential();
-                onUpdateProfile(data, successCallBack, errorCallback);
-                break;
-              default:
-                error = 'Error Occured while updating email-address.';
-                break;
-            }
-            console.log(err.code, 'Error in updating email-address');
-            throw new Error(error);
-          });
-      }
+      // if (email && email !== userData.email && !error) {
+      await currentUser
+        .updateEmail(email)
+        .then(() => (updatedDetails.email = email))
+        .catch(err => {
+          switch (err.code) {
+            case 'auth/invalid-email':
+              error = 'Invalid email address';
+              break;
+            case 'auth/email-already-in-use':
+              error = 'Email-address is already in use! Try another email.';
+              break;
+            case 'auth/requires-recent-login':
+              error = 'Email-address is already in use! Try another email.';
+              currentUser.reauthenticateWithCredential();
+              onUpdateProfile(data, successCallBack, errorCallback);
+              break;
+            default:
+              error = 'Error Occured while updating email-address.';
+              break;
+          }
+          console.log(err.code, 'Error in updating email-address');
+          throw new Error(error);
+        });
+      // }
     };
 
     updateData()

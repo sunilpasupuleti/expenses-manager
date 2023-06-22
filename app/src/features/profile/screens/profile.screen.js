@@ -128,7 +128,13 @@ export const ProfileScreen = ({navigation, route}) => {
       displayName: displayName.value.trim(),
     };
 
-    if (email.value) {
+    console.log(userData);
+
+    if (
+      email.value &&
+      userData.providerId &&
+      userData.providerId !== 'google.com'
+    ) {
       let emailRegex = /^\S+@\S+\.\S+$/;
       let validEmail = emailRegex.test(email.value);
       if (!validEmail) {
@@ -180,7 +186,7 @@ export const ProfileScreen = ({navigation, route}) => {
             )}
           </ProfileWrapper>
 
-          <Spacer size="large" />
+          <Spacer size="xlarge" />
           <Card>
             <Card.Content>
               <ProfileInput
@@ -191,6 +197,7 @@ export const ProfileScreen = ({navigation, route}) => {
                 value={inputs.displayName.value}
                 placeholder="Your Name"
                 keyboardType="default"
+                right={<ProfileInput.Icon icon="account" iconColor="#bbb" />}
               />
 
               <ProfileInputErrorMessage fontsize="13px">
@@ -205,6 +212,7 @@ export const ProfileScreen = ({navigation, route}) => {
                 value={inputs.email.value}
                 placeholder="Email Address"
                 keyboardType="default"
+                disabled={userData?.providerId === 'google.com'}
                 right={<ProfileInput.Icon icon="email" iconColor="#bbb" />}
               />
 

@@ -28,6 +28,7 @@ module.exports = {
         next();
       })
       .catch((err) => {
+        logger.error("Error in verifying token " + JSON.stringify(err));
         return sendResponse(res, httpCodes.UNAUTHORIZED, {
           message: "Token has expired please login again",
           token: "false",

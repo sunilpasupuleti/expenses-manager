@@ -136,7 +136,6 @@ server.listen(process.env.PORT || 8080, async () => {
   let jobs = schedule.scheduledJobs;
 
   let users = await Users.find().populate("backups");
-
   function activateNotifications() {
     users.forEach((d) => {
       let userData = d;

@@ -73,7 +73,7 @@ module.exports = {
       displayName: 1,
       email: 1,
       photoURL: 1,
-      prodivderId: 1,
+      providerId: 1,
       phoneNumber: 1,
       uid: 1,
       fcmToken: 1,

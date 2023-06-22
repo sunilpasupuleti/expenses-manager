@@ -146,13 +146,15 @@ export const AccountScreen = ({navigation}) => {
         <Animatable.Image
           animation={'slideInRight'}
           style={{
-            width: 160,
-            height: 160,
+            width: 100,
+            height: 100,
             borderRadius: 100,
             // borderColor: '#ddd',
             borderWidth: 1,
+            marginBottom: 30,
+            marginTop: 30,
           }}
-          source={require('../../../../assets/login-screen.png')}
+          source={require('../../../../assets/wallet.jpeg')}
         />
         <Text
           fontfamily="bodyBold"
@@ -272,6 +274,7 @@ export const AccountScreen = ({navigation}) => {
             textColor="#fff"
             onPress={onClickSubmit}
             loading={showLoader}
+            icon="location-exit"
             disabled={showLoader}>
             {mode === 'signin'
               ? 'SIGN IN'

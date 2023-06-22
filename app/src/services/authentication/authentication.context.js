@@ -264,8 +264,8 @@ export const AuthenticationContextProvider = ({children}) => {
 
   const onSignInSuccess = async data => {
     let currentUser = await auth().currentUser;
-    let providerData = currentUser.providerData;
-    let jwtToken = currentUser.getIdToken();
+    let providerId = currentUser.providerData[0].providerId;
+    let jwtToken = await auth().currentUser.getIdToken();
     let token = null;
     await messaging()
       .getToken()
@@ -281,13 +281,12 @@ export const AuthenticationContextProvider = ({children}) => {
       displayName: user.displayName,
       email: user.email,
       photoURL: user.photoURL,
-      providerId: user.providerId,
+      providerId: providerId,
       uid: user.uid,
       fcmToken: token,
       phoneNumber: user.phoneNumber,
       active: true,
       timeZone: timeZone,
-      providerData: providerData,
       lastLogin: new Date(),
     };
 
@@ -295,7 +294,7 @@ export const AuthenticationContextProvider = ({children}) => {
     sendRequest(
       {
         type: 'POST',
-        url: BACKEND_URL + '/user',
+        url: 'http://192.168.29.104:3000' + '/user',
         data: transformedData,
         headers: {
           authorization: 'Bearer ' + jwtToken,
