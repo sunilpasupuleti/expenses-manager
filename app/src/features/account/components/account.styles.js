@@ -18,6 +18,7 @@ export const Title = styled(Text)`
 
 export const AccountContainer = styled.ScrollView`
   padding: ${props => props.theme.space[4]};
+  margin-top: 30px;
   flex: 1;
 `;
 

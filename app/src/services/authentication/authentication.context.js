@@ -31,13 +31,13 @@ export const AuthenticationContext = createContext({
   onSignInWithEmail: () => null,
   onSignUpWithEmail: () => null,
   onSignInWithMobile: (phone, resend) => null,
-  onSetUserData: () => null,
+  onSignInSuccess: () => null,
   onResetPassword: () => null,
   userData: null,
+  setUserData: null,
   onLogout: () => null,
-  onUpdateUserDetails: () => null,
   onSetUserAdditionalDetails: data => null,
-  onGetUserDetails: () => null,
+  onGetUserDetails: (successCallBack, errorCallback) => null,
   fetchedUserDetails: false,
 });
 
@@ -49,6 +49,7 @@ export const AuthenticationContextProvider = ({children}) => {
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
   const dispatch = useDispatch();
   const {sendRequest} = useHttp();
+
   const onSetUserAdditionalDetails = data => {
     setUserAdditionalDetails(data);
   };
@@ -67,7 +68,6 @@ export const AuthenticationContextProvider = ({children}) => {
         loggedIn = JSON.parse(loggedIn);
         if (loggedIn) {
           onGetUserDetails(async data => {
-            console.log(data.user, 'user man');
             await AsyncStorage.setItem(
               '@expenses-manager-user',
               JSON.stringify(data.user),
@@ -118,7 +118,7 @@ export const AuthenticationContextProvider = ({children}) => {
       auth()
         .signInWithCredential(googleCredentials)
         .then(res => {
-          onSetUserData(res);
+          onSignInSuccess(res);
         })
         .catch(err => {
           dispatch(loaderActions.hideLoader());
@@ -180,8 +180,7 @@ export const AuthenticationContextProvider = ({children}) => {
   const onSignUpWithEmail = async (email, password) => {
     try {
       let result = await auth().createUserWithEmailAndPassword(email, password);
-      onSetUserData(result);
-
+      onSignInSuccess(result);
       return {status: true};
     } catch (e) {
       console.log(e, 'error with sign in with email and password');
@@ -263,8 +262,10 @@ export const AuthenticationContextProvider = ({children}) => {
     }
   };
 
-  const onSetUserData = async data => {
-    let jwtToken = await auth().currentUser.getIdToken();
+  const onSignInSuccess = async data => {
+    let currentUser = await auth().currentUser;
+    let providerData = currentUser.providerData;
+    let jwtToken = currentUser.getIdToken();
     let token = null;
     await messaging()
       .getToken()
@@ -286,8 +287,11 @@ export const AuthenticationContextProvider = ({children}) => {
       phoneNumber: user.phoneNumber,
       active: true,
       timeZone: timeZone,
+      providerData: providerData,
+      lastLogin: new Date(),
     };
 
+    console.log(transformedData, 'transformed');
     sendRequest(
       {
         type: 'POST',
@@ -370,50 +374,10 @@ export const AuthenticationContextProvider = ({children}) => {
     });
   };
 
-  const onUpdateUserDetails = async details => {
-    let jwtToken = await auth().currentUser.getIdToken();
-
-    let token = null;
-    await messaging()
-      .getToken()
-      .then(t => {
-        token = t;
-      })
-      .catch(err => {});
-    dispatch(loaderActions.showLoader({backdrop: true}));
-
-    sendRequest(
-      {
-        type: 'POST',
-        url: BACKEND_URL + '/user/',
-        data: {
-          fcmToken: token,
-          ...details,
-        },
-        headers: {
-          authorization: 'Bearer ' + jwtToken,
-        },
-      },
-      {
-        successCallback: () => {
-          onGetUserDetails(() => {
-            dispatch(loaderActions.hideLoader());
-            dispatch(
-              notificationActions.showToast({
-                status: 'success',
-                message: 'Updated successfully',
-              }),
-            );
-          });
-        },
-        errorCallback: () => {
-          dispatch(loaderActions.hideLoader());
-        },
-      },
-    );
-  };
-
-  const onGetUserDetails = async (successCallBack = () => {}) => {
+  const onGetUserDetails = async (
+    successCallBack = () => {},
+    errorCallback = () => {},
+  ) => {
     let jwtToken = await auth().currentUser.getIdToken();
     sendRequest(
       {
@@ -430,6 +394,7 @@ export const AuthenticationContextProvider = ({children}) => {
           successCallBack(data);
         },
         errorCallback: () => {
+          errorCallback();
           dispatch(loaderActions.hideLoader());
         },
       },
@@ -446,8 +411,9 @@ export const AuthenticationContextProvider = ({children}) => {
         onSignUpWithEmail,
         onResetPassword,
         onSignInWithMobile,
-        onSetUserData,
-        onUpdateUserDetails,
+        onSignInSuccess,
+        setUserData,
+        setUserAdditionalDetails,
         onSetUserAdditionalDetails,
         userAdditionalDetails,
         onGetUserDetails,

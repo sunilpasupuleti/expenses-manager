@@ -32,8 +32,8 @@ export const AddSheetInput = ({
       placeholder="Enter the account name"
       right={
         <SheetNameInput.Icon
-          name="close-circle"
-          color="#bbb"
+          icon="close-circle"
+          iconColor="#bbb"
           onPress={onClearSheetName}
         />
       }

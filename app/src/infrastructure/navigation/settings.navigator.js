@@ -11,6 +11,8 @@ import {SettingsScreen} from '../../features/settings/screens/settings.screen';
 import {SyncScreen} from '../../features/sync/screens/sync.screen';
 import {CategoriesNavigator} from './categories.navigator';
 import {useSelector} from 'react-redux';
+import {ProfileScreen} from '../../features/profile/screens/profile.screen';
+import {ProfileContextProvider} from '../../services/profile/profile.context';
 
 const SettingsStack = createStackNavigator();
 
@@ -20,6 +22,14 @@ export const SettingsNavigator = () => {
   const appState = useSelector(state => state.service.appState);
 
   let headerShown = appState === 'active' ? true : false;
+
+  const ProfileComponent = ({navigation, route}) => {
+    return (
+      <ProfileContextProvider>
+        <ProfileScreen navigation={navigation} route={route} />
+      </ProfileContextProvider>
+    );
+  };
   return (
     <SettingsStack.Navigator
       screenOptions={{
@@ -38,6 +48,7 @@ export const SettingsNavigator = () => {
         component={SettingsScreen}
       />
       <SettingsStack.Screen name="Sync" component={SyncScreen} />
+      <SettingsStack.Screen name="Profile" component={ProfileComponent} />
       <SettingsStack.Screen name="Appearance" component={AppearanceScreen} />
       <SettingsStack.Screen
         options={{headerShown: false, headerMode: 'screen'}}

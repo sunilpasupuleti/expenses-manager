@@ -67,13 +67,15 @@ module.exports = {
       .select({
         email: 1,
         displayName: 1,
-        photoUrl: 1,
+        photoURL: 1,
         fcmToken: 1,
         phoneNumber: 1,
+        lastLogin: 1,
         uid: 1,
         _id: 1,
       })
       .sort({ displayName: 1 });
+    console.log(activeUsers);
     return sendResponse(res, httpCodes.OK, {
       message: "Active users list",
       activeUsers: activeUsers,

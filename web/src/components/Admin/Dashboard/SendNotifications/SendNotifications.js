@@ -32,6 +32,7 @@ import * as NotificationAnimationData from "../../../../assets/lottie/sending_no
 import { styled } from "styled-components";
 import Lottie from "react-lottie";
 import { useSpring, animated } from "@react-spring/web";
+import moment from "moment";
 
 const errors = {
   titleRequired: "Title required",
@@ -64,6 +65,21 @@ const LottieContainer = styled.div`
   @media (max-width: 768px) {
     width: 300px;
   }
+`;
+
+const TableProfileContainer = styled.div`
+  width: 100px;
+  height: 100px;
+  &:hover {
+    transform: scale(1.2);
+    transition: all 1s ease;
+  }
+`;
+
+const TableProfileImage = styled.img`
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
 `;
 
 const NotificationLoaderContainer = styled.div`
@@ -315,6 +331,7 @@ export const SendNotifications = ({ title }) => {
           >
             <Box
               display="flex"
+              flexWrap="wrap"
               justifyContent="space-between"
               alignItems="center"
             >
@@ -355,7 +372,7 @@ export const SendNotifications = ({ title }) => {
                 />
               </Grid>
 
-              <Grid item md={6}>
+              <Grid item md={6} sm={12}>
                 <TextField
                   error={inputs.body.error}
                   helperText={inputs.body.errorMessage}
@@ -420,7 +437,7 @@ export const SendNotifications = ({ title }) => {
                   </Toolbar>
 
                   <TableContainer component={Paper} sx={{ mt: 4 }}>
-                    <Table sx={{ minWidth: 650 }}>
+                    <Table sx={{ minWidth: 750 }}>
                       <TableHead>
                         <TableRow>
                           <TableCell padding="checkbox">
@@ -472,6 +489,7 @@ export const SendNotifications = ({ title }) => {
                           <TableCell>Phone Number</TableCell>
                           <TableCell>Image</TableCell>
                           <TableCell>UID</TableCell>
+                          <TableCell>Last Login</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
@@ -516,8 +534,30 @@ export const SendNotifications = ({ title }) => {
                               <TableCell>
                                 {user.phoneNumber ? user.phoneNumber : "-"}
                               </TableCell>
-                              <TableCell>{user.photoUrl}</TableCell>
+                              {}
+                              <TableCell>
+                                {user.photoURL ? (
+                                  <TableProfileContainer
+                                    onClick={() => window.open(user.photoURL)}
+                                  >
+                                    <TableProfileImage
+                                      referrerPolicy="no-referrer"
+                                      src={user.photoURL}
+                                      alt="Profile Image"
+                                    />
+                                  </TableProfileContainer>
+                                ) : (
+                                  "-"
+                                )}
+                              </TableCell>
                               <TableCell>{user.uid}</TableCell>
+                              <TableCell>
+                                {user.lastLogin
+                                  ? moment(user.lastLogin).format(
+                                      "MMM DD YYYY, hh:mm:ss A"
+                                    )
+                                  : "-"}
+                              </TableCell>
                             </TableRow>
                           );
                         })}

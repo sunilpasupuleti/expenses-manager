@@ -11,8 +11,11 @@ import {
 } from 'react-native-paper';
 import {AuthenticationContextProvider} from './src/services/authentication/authentication.context';
 import {
+  Alert,
   AppState,
+  BackHandler,
   DeviceEventEmitter,
+  Linking,
   LogBox,
   Platform,
   StatusBar,
@@ -32,6 +35,8 @@ import moment from 'moment';
 import SplashScreen from 'react-native-splash-screen';
 import './src/components/fcm/FCMService';
 import {fetchAppLock} from './src/store/applock-slice';
+import VersionCheck from 'react-native-version-check';
+
 moment.suppressDeprecationWarnings = true;
 if (Platform.OS === 'android') {
   require('intl');
@@ -61,6 +66,9 @@ const App = () => {
       androidStateListener = DeviceEventEmitter.addListener(
         'ActivityStateChange',
         e => {
+          if (e.event === 'active') {
+            checkAppUpdateNeeded();
+          }
           dispatch(setAppState({state: e.event}));
         },
       );
@@ -82,6 +90,35 @@ const App = () => {
       SplashScreen.hide();
     }
   }, [appStatus]);
+
+  const checkAppUpdateNeeded = async () => {
+    try {
+      const latestVersion = await VersionCheck.getLatestVersion();
+      const currentVersion = await VersionCheck.getCurrentVersion();
+      console.log(
+        `App versions - Current Version ${currentVersion} - Latest Version ${latestVersion}`,
+      );
+
+      let updateNeeded = await VersionCheck.needUpdate();
+      if (updateNeeded && updateNeeded.isNeeded) {
+        Alert.alert(
+          `Plese Update the app from ${currentVersion} to ${latestVersion} `,
+          'You will have to update your app to the latest version to continue using.',
+          [
+            {
+              text: 'Update',
+              onPress: () => {
+                BackHandler.exitApp();
+                Linking.openURL(updateNeeded.storeUrl);
+              },
+              style: 'cancel',
+            },
+          ],
+          {cancelable: false},
+        );
+      }
+    } catch (error) {}
+  };
 
   return (
     <>

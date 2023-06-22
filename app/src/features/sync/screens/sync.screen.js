@@ -1,5 +1,5 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import moment from 'moment';
+import momentTz from 'moment-timezone';
 import React, {useContext, useEffect, useState} from 'react';
 import {Alert, ScrollView, StyleSheet, View} from 'react-native';
 import {Divider, Modal, Portal} from 'react-native-paper';
@@ -28,7 +28,7 @@ import {notificationActions} from '../../../store/notification-slice';
 export const SyncScreen = ({navigation, route}) => {
   const theme = useTheme();
   const {backUpData, restoreData, onGetRestoreDates} = useContext(SyncContext);
-  const {onLogout} = useContext(AuthenticationContext);
+  const {onLogout, userData} = useContext(AuthenticationContext);
   const [restoreDates, setRestoreDates] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const changesMade = useSelector(state => state.service.changesMade.status);
@@ -188,26 +188,39 @@ export const SyncScreen = ({navigation, route}) => {
                 minHeight: '40%',
                 maxHeight: '80%',
               }}>
-              <ScrollView>
-                {restoreDates.map((backup, i) => {
-                  return (
-                    <TouchableHighlightWithColor
-                      key={i}
-                      onPress={() => {
-                        setShowModal(false);
-                        restoreData(backup._id);
-                      }}>
-                      <View>
-                        <FlexRow justifyContent="space-between">
-                          <Text style={{padding: 5}}>{backup.date}</Text>
-                          <Text style={{padding: 5}}>{backup.time}</Text>
-                        </FlexRow>
-                        <Divider />
-                      </View>
-                    </TouchableHighlightWithColor>
-                  );
-                })}
-              </ScrollView>
+              <View>
+                <ScrollView>
+                  {restoreDates.map((backup, i) => {
+                    let timeZone =
+                      Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+                    let date = momentTz(backup.date)
+                      .tz(timeZone)
+                      .format('DD MMM YYYY');
+
+                    let time = momentTz(backup.time)
+                      .tz(timeZone)
+                      .format('hh:mm:ss A');
+
+                    return (
+                      <TouchableHighlightWithColor
+                        key={i}
+                        onPress={() => {
+                          setShowModal(false);
+                          restoreData(backup._id);
+                        }}>
+                        <View>
+                          <FlexRow justifyContent="space-between">
+                            <Text style={{padding: 5}}>{date}</Text>
+                            <Text style={{padding: 5}}>{time}</Text>
+                          </FlexRow>
+                          <Divider />
+                        </View>
+                      </TouchableHighlightWithColor>
+                    );
+                  })}
+                </ScrollView>
+              </View>
             </Modal>
           </Portal>
         )}

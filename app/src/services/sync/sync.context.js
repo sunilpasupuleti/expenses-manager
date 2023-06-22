@@ -50,7 +50,6 @@ export const SyncContextProvider = ({children}) => {
       );
       return;
     }
-    console.log('fired');
     try {
       dispatch(
         loaderActions.showLoader({backdrop: true, loaderType: 'backup'}),
@@ -59,10 +58,12 @@ export const SyncContextProvider = ({children}) => {
       sendRequest(
         {
           type: 'POST',
-          url: BACKEND_URL + '/backup',
+          url: 'http://192.168.29.104:3000' + '/backup',
           data: {
             ...expensesData,
             categories: categories,
+            date: new Date(),
+            time: new Date(),
           },
           headers: {
             authorization: 'Bearer ' + jwtToken,
@@ -177,7 +178,7 @@ export const SyncContextProvider = ({children}) => {
     sendRequest(
       {
         type: 'GET',
-        url: BACKEND_URL + '/backup/all',
+        url: 'http://192.168.29.104:3000' + '/backup/all',
         headers: {
           authorization: 'Bearer ' + jwtToken,
         },

@@ -1,5 +1,6 @@
 const httpstatus = require("http-status-codes");
 const moment = require("moment");
+const momentTz = require("moment-timezone");
 const logger = require("../../middleware/logger/logger");
 const _ = require("lodash");
 const Users = require("../../models/Users");
@@ -27,12 +28,13 @@ module.exports = {
           result.backups.forEach((b) => {
             let backup = {
               _id: b._id,
-              date: moment(b.createdAt).format("DD MMM YYYY"),
-              time: moment(b.createdAt).format("hh:mm:ss A"),
+              date: b.createdAt,
+              time: b.createdAt,
             };
             backups.push(backup);
           });
         }
+
         return sendResponse(res, httpCodes.OK, {
           message: "Backups fetched successfully",
           backups: backups.reverse(),
@@ -50,9 +52,10 @@ module.exports = {
     let user = req.user;
     let uid = user.uid;
     let structuredData = {};
-    let { categories, sheets } = req.body;
+    let { categories, sheets, date, time } = req.body;
     let incomeCategories = [];
     let expenseCategories = [];
+
     categories.income.forEach((c) => {
       let { id, color, name, icon } = c;
       name = encryptAES(name, user.uid);

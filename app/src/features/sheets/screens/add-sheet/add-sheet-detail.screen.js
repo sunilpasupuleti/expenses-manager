@@ -451,8 +451,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
             keyboardType="decimal-pad"
             right={
               <SheetDetailInput.Icon
-                name="close-circle"
-                color="#bbb"
+                icon="close-circle"
+                iconColor="#bbb"
                 onPress={() => setAmount(0)}
               />
             }
@@ -469,8 +469,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
             right={
               notes && (
                 <SheetDetailInput.Icon
-                  name="close-circle"
-                  color="#bbb"
+                  icon="close-circle"
+                  iconColor="#bbb"
                   onPress={() => setNotes(null)}
                 />
               )

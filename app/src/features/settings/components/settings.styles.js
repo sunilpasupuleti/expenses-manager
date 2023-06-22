@@ -37,13 +37,19 @@ export const SettingsCardContent = styled.TouchableHighlight.attrs({
 export const ProfileWrapper = styled.View`
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
 `;
 
 export const ProfilePicture = styled.Image`
-  height: 150px;
-  width: 150px;
+  height: 50px;
+  width: 50px;
   border-radius: 100px;
+`;
+
+export const ManageProfileTitle = styled(Text).attrs({
+  color: colors.brand.primary,
+})`
+  margin: 5px;
+  margin-left: 11px;
 `;
 
 export const ProfileText = styled(Text)`

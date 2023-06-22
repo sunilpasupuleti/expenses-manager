@@ -13,6 +13,7 @@ import {
 import {SafeArea} from '../../../components/utility/safe-area.component';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
+  ManageProfileTitle,
   ProfilePicture,
   ProfileText,
   ProfileWrapper,
@@ -31,16 +32,15 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Alert, Platform, ScrollView, TouchableOpacity} from 'react-native';
 import {SheetsContext} from '../../../services/sheets/sheets.context';
 import {fetchExchangeRates} from '../../../store/service-slice';
-import TouchID from 'react-native-touch-id';
 import moment from 'moment';
-import {Button, Dialog, Portal, TextInput} from 'react-native-paper';
+import {Button} from 'react-native-paper';
 import {notificationActions} from '../../../store/notification-slice';
 import {
   resetPinCodeInternalStates,
   deleteUserPinCode,
 } from '@haskkor/react-native-pincode';
 import {applockActions} from '../../../store/applock-slice';
-import {colors} from '../../../infrastructure/theme/colors';
+import {View} from 'react-native';
 
 export const SettingsScreen = ({navigation}) => {
   const {onLogout, userData, userAdditionalDetails} = useContext(
@@ -70,10 +70,6 @@ export const SettingsScreen = ({navigation}) => {
     time: date,
   });
   const [showPicker, setShowPicker] = useState(false);
-
-  const [open, setOpen] = useState(false);
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
 
   const {
     onExportData,
@@ -155,234 +151,259 @@ export const SettingsScreen = ({navigation}) => {
         <MainWrapper>
           <Spacer size={'medium'} />
           {/* display profile and email */}
-          <ProfileWrapper>
-            {userData && userData.photoURL && (
-              <ProfilePicture
-                source={{
-                  uri: userData?.photoURL,
-                }}
-              />
-            )}
 
-            {userData && !userData.photoURL && (
-              <ProfilePicture source={require('../../../../assets/user.png')} />
-            )}
-            {userData && userData.email && (
-              <ProfileText fontfamily="heading">{userData?.email}</ProfileText>
-            )}
-            {userData &&
-              !userData.email &&
-              !userData.displayName &&
-              userData.phoneNumber && (
-                <ProfileText fontfamily="heading">
-                  {userData.phoneNumber}
-                </ProfileText>
-              )}
-            {userData && !userData.email && userData.displayName && (
-              <ProfileText fontfamily="heading">
-                {userData.displayName}
-              </ProfileText>
-            )}
-          </ProfileWrapper>
-
-          {/* for sync card */}
           <SettingsCard>
-            {/* Sync card */}
-            <SettingsCardContent onPress={() => navigation.navigate('Sync')}>
+            {/* Profile Card */}
+            <SettingsCardContent onPress={() => navigation.navigate('Profile')}>
               <Setting justifyContent="space-between">
                 <FlexRow>
-                  <SettingIconWrapper color="#467df7">
-                    <Ionicons name="sync-outline" size={20} color="#fff" />
-                  </SettingIconWrapper>
+                  <ProfileWrapper>
+                    {userData && userData.photoURL && (
+                      <ProfilePicture
+                        source={{
+                          uri: userData?.photoURL,
+                        }}
+                      />
+                    )}
 
-                  <SettingTitle>Sync</SettingTitle>
+                    {userData && !userData.photoURL && (
+                      <ProfilePicture
+                        source={require('../../../../assets/user.png')}
+                      />
+                    )}
+                  </ProfileWrapper>
+                  <View>
+                    <SettingTitle>
+                      {userData && userData.displayName && (
+                        <ProfileText fontfamily="heading">
+                          {userData.displayName}
+                        </ProfileText>
+                      )}
+
+                      {userData && !userData.displayName && userData.email && (
+                        <ProfileText fontfamily="heading">
+                          {userData?.email}
+                        </ProfileText>
+                      )}
+                      {userData &&
+                        !userData.email &&
+                        !userData.displayName &&
+                        userData.phoneNumber && (
+                          <ProfileText fontfamily="heading">
+                            {userData.phoneNumber}
+                          </ProfileText>
+                        )}
+                    </SettingTitle>
+                    <ManageProfileTitle>Manage Profile</ManageProfileTitle>
+                  </View>
                 </FlexRow>
               </Setting>
             </SettingsCardContent>
+          </SettingsCard>
 
-            <SettingsCardContent>
-              <>
+          <Spacer size={'large'}>
+            <SettingsCard>
+              {/* Sync card */}
+              <SettingsCardContent onPress={() => navigation.navigate('Sync')}>
                 <Setting justifyContent="space-between">
                   <FlexRow>
-                    <SettingIconWrapper color="#F47C7C">
-                      <Ionicons name="alarm-outline" size={20} color="#fff" />
+                    <SettingIconWrapper color="#467df7">
+                      <Ionicons name="sync-outline" size={20} color="#fff" />
                     </SettingIconWrapper>
 
-                    <SettingTitle>Daily Reminder </SettingTitle>
+                    <SettingTitle>Sync</SettingTitle>
                   </FlexRow>
-
-                  <ToggleSwitch
-                    style={toggleSwithStyles}
-                    value={isDailyReminderEnabled.enabled}
-                    onValueChange={() => {
-                      if (isDailyReminderEnabled.enabled) {
-                        onUpdateDailyReminder(
-                          {
-                            time: isDailyReminderEnabled.time,
-                            disable: true,
-                          },
-                          // callback
-                          () =>
-                            setIsDailyReminderEnabled(p => ({
-                              ...p,
-                              enabled: false,
-                            })),
-                        );
-                      } else {
-                        setIsDailyReminderEnabled(p => ({
-                          ...p,
-                          enabled: !isDailyReminderEnabled.enabled,
-                        }));
-                      }
-                    }}
-                  />
                 </Setting>
-                {isDailyReminderEnabled.enabled && (
-                  <Spacer size={'large'}>
-                    <FlexRow justifyContent="space-between">
-                      <>
-                        <FlexRow justifyContent="space-between">
-                          {Platform.OS === 'android' && (
-                            <>
-                              <TouchableOpacity
-                                style={{
-                                  backgroundColor: theme.colors.brand.secondary,
-                                  padding: 15,
-                                  paddingTop: 10,
-                                  paddingBottom: 10,
-                                  borderRadius: 10,
-                                }}
-                                onPress={() => setShowPicker(true)}>
-                                <Text fontfamily="bodySemiBold" fontsize="14px">
-                                  {moment(isDailyReminderEnabled.time).format(
-                                    'hh:mm A',
-                                  )}
-                                </Text>
-                              </TouchableOpacity>
+              </SettingsCardContent>
 
-                              {showPicker && (
-                                <DateTimePicker
-                                  mode="time"
-                                  value={isDailyReminderEnabled.time}
-                                  onChange={(e, t) => {
-                                    if (e.type === 'dismissed') {
-                                      setShowPicker(false);
-                                    }
-                                    if (t) {
-                                      if (Platform.OS === 'android') {
+              <SettingsCardContent>
+                <>
+                  <Setting justifyContent="space-between">
+                    <FlexRow>
+                      <SettingIconWrapper color="#F47C7C">
+                        <Ionicons name="alarm-outline" size={20} color="#fff" />
+                      </SettingIconWrapper>
+
+                      <SettingTitle>Daily Reminder </SettingTitle>
+                    </FlexRow>
+
+                    <ToggleSwitch
+                      style={toggleSwithStyles}
+                      value={isDailyReminderEnabled.enabled}
+                      onValueChange={() => {
+                        if (isDailyReminderEnabled.enabled) {
+                          onUpdateDailyReminder(
+                            {
+                              time: isDailyReminderEnabled.time,
+                              disable: true,
+                            },
+                            // callback
+                            () =>
+                              setIsDailyReminderEnabled(p => ({
+                                ...p,
+                                enabled: false,
+                              })),
+                          );
+                        } else {
+                          setIsDailyReminderEnabled(p => ({
+                            ...p,
+                            enabled: !isDailyReminderEnabled.enabled,
+                          }));
+                        }
+                      }}
+                    />
+                  </Setting>
+                  {isDailyReminderEnabled.enabled && (
+                    <Spacer size={'large'}>
+                      <FlexRow justifyContent="space-between">
+                        <>
+                          <FlexRow justifyContent="space-between">
+                            {Platform.OS === 'android' && (
+                              <>
+                                <TouchableOpacity
+                                  style={{
+                                    backgroundColor:
+                                      theme.colors.brand.secondary,
+                                    padding: 15,
+                                    paddingTop: 10,
+                                    paddingBottom: 10,
+                                    borderRadius: 10,
+                                  }}
+                                  onPress={() => setShowPicker(true)}>
+                                  <Text
+                                    fontfamily="bodySemiBold"
+                                    fontsize="14px">
+                                    {moment(isDailyReminderEnabled.time).format(
+                                      'hh:mm A',
+                                    )}
+                                  </Text>
+                                </TouchableOpacity>
+
+                                {showPicker && (
+                                  <DateTimePicker
+                                    mode="time"
+                                    value={isDailyReminderEnabled.time}
+                                    onChange={(e, t) => {
+                                      if (e.type === 'dismissed') {
                                         setShowPicker(false);
                                       }
-                                      setIsDailyReminderEnabled(p => ({
-                                        ...p,
-                                        time: t,
-                                      }));
-                                    }
-                                  }}
-                                />
-                              )}
-                            </>
-                          )}
+                                      if (t) {
+                                        if (Platform.OS === 'android') {
+                                          setShowPicker(false);
+                                        }
+                                        setIsDailyReminderEnabled(p => ({
+                                          ...p,
+                                          time: t,
+                                        }));
+                                      }
+                                    }}
+                                  />
+                                )}
+                              </>
+                            )}
 
-                          {Platform.OS === 'ios' && (
-                            <DateTimePicker
-                              mode="time"
-                              value={isDailyReminderEnabled.time}
-                              onChange={(e, t) => {
-                                if (e.type === 'dismissed') {
-                                  setShowPicker(false);
-                                }
-                                if (t) {
-                                  if (Platform.OS === 'android') {
+                            {Platform.OS === 'ios' && (
+                              <DateTimePicker
+                                mode="time"
+                                value={isDailyReminderEnabled.time}
+                                onChange={(e, t) => {
+                                  if (e.type === 'dismissed') {
                                     setShowPicker(false);
                                   }
-                                  setIsDailyReminderEnabled(p => ({
-                                    ...p,
-                                    time: t,
-                                  }));
-                                }
-                              }}
-                            />
-                          )}
-                        </FlexRow>
-                        <Spacer />
-                        <Spacer size={'large'} />
-                      </>
+                                  if (t) {
+                                    if (Platform.OS === 'android') {
+                                      setShowPicker(false);
+                                    }
+                                    setIsDailyReminderEnabled(p => ({
+                                      ...p,
+                                      time: t,
+                                    }));
+                                  }
+                                }}
+                              />
+                            )}
+                          </FlexRow>
+                          <Spacer />
+                          <Spacer size={'large'} />
+                        </>
 
-                      <Button
-                        mode="contained"
-                        buttonColor={theme.colors.brand.primary}
-                        textColor={'#fff'}
-                        onPress={() => {
-                          if (userAdditionalDetails?.dailyReminder?.enabled) {
-                            onUpdateDailyReminder({
-                              time: isDailyReminderEnabled.time,
-                              update: true,
-                            });
-                          } else {
-                            onUpdateDailyReminder({
-                              enable: true,
-                              time: isDailyReminderEnabled.time,
-                            });
-                          }
-                        }}>
-                        {userAdditionalDetails?.dailyReminder?.enabled
-                          ? 'Update Reminder'
-                          : 'Set Reminder'}
-                      </Button>
-                    </FlexRow>
+                        <Button
+                          mode="contained"
+                          buttonColor={theme.colors.brand.primary}
+                          textColor={'#fff'}
+                          onPress={() => {
+                            if (userAdditionalDetails?.dailyReminder?.enabled) {
+                              onUpdateDailyReminder({
+                                time: isDailyReminderEnabled.time,
+                                update: true,
+                              });
+                            } else {
+                              onUpdateDailyReminder({
+                                enable: true,
+                                time: isDailyReminderEnabled.time,
+                              });
+                            }
+                          }}>
+                          {userAdditionalDetails?.dailyReminder?.enabled
+                            ? 'Update Reminder'
+                            : 'Set Reminder'}
+                        </Button>
+                      </FlexRow>
+                    </Spacer>
+                  )}
+
+                  <Spacer size={'large'}>
+                    <SettingHint marginLeft="0px">
+                      You will get the daily notification to remind you to
+                      record your daily transactions.
+                    </SettingHint>
                   </Spacer>
-                )}
+                </>
+              </SettingsCardContent>
 
-                <Spacer size={'large'}>
-                  <SettingHint marginLeft="0px">
-                    You will get the daily notification to remind you to record
-                    your daily transactions.
-                  </SettingHint>
-                </Spacer>
-              </>
-            </SettingsCardContent>
+              <SettingsCardContent>
+                <>
+                  <Setting justifyContent="space-between">
+                    <FlexRow>
+                      <SettingIconWrapper color="#47B5FF">
+                        <MaterialCommunityIcons
+                          name="backup-restore"
+                          size={20}
+                          color="#fff"
+                        />
+                      </SettingIconWrapper>
 
-            <SettingsCardContent>
-              <>
-                <Setting justifyContent="space-between">
-                  <FlexRow>
-                    <SettingIconWrapper color="#47B5FF">
-                      <MaterialCommunityIcons
-                        name="backup-restore"
-                        size={20}
-                        color="#fff"
-                      />
-                    </SettingIconWrapper>
+                      <SettingTitle>Daily Backup</SettingTitle>
+                    </FlexRow>
 
-                    <SettingTitle>Daily Backup</SettingTitle>
-                  </FlexRow>
+                    <ToggleSwitch
+                      style={toggleSwithStyles}
+                      value={isDailyBackUpEnabled}
+                      onValueChange={() => {
+                        if (isDailyBackUpEnabled) {
+                          onUpdateDailyBackup(false, () =>
+                            setIsDailyBackUpEnabled(false),
+                          );
+                        }
+                        if (!isDailyBackUpEnabled) {
+                          onUpdateDailyBackup(true, () =>
+                            setIsDailyBackUpEnabled(true),
+                          );
+                        }
+                      }}
+                    />
+                  </Setting>
 
-                  <ToggleSwitch
-                    style={toggleSwithStyles}
-                    value={isDailyBackUpEnabled}
-                    onValueChange={() => {
-                      if (isDailyBackUpEnabled) {
-                        onUpdateDailyBackup(false, () =>
-                          setIsDailyBackUpEnabled(false),
-                        );
-                      }
-                      if (!isDailyBackUpEnabled) {
-                        onUpdateDailyBackup(true, () =>
-                          setIsDailyBackUpEnabled(true),
-                        );
-                      }
-                    }}
-                  />
-                </Setting>
-
-                <Spacer size={'large'}>
-                  <SettingHint marginLeft="0px">
-                    Your data will be backed up daily at 12:00 AM automatically.
-                  </SettingHint>
-                </Spacer>
-              </>
-            </SettingsCardContent>
-          </SettingsCard>
+                  <Spacer size={'large'}>
+                    <SettingHint marginLeft="0px">
+                      Your data will be backed up daily at 12:00 AM
+                      automatically.
+                    </SettingHint>
+                  </Spacer>
+                </>
+              </SettingsCardContent>
+            </SettingsCard>
+          </Spacer>
 
           <Spacer size={'xlarge'}>
             <SettingsCard>

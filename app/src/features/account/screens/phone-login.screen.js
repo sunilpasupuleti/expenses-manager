@@ -28,7 +28,9 @@ export const PhoneLoginScreen = ({navigation, route}) => {
 
   const theme = useTheme();
 
-  const {onSignInWithMobile, onSetUserData} = useContext(AuthenticationContext);
+  const {onSignInWithMobile, onSignInSuccess} = useContext(
+    AuthenticationContext,
+  );
 
   const onResetAllValues = () => {
     setOtp({value: '------', error: false});
@@ -70,7 +72,7 @@ export const PhoneLoginScreen = ({navigation, route}) => {
       .then(res => {
         console.log(res, 'Authenticated succesfully using phone');
         setShowLoader(false);
-        onSetUserData(res);
+        onSignInSuccess(res);
       })
       .catch(e => {
         setShowLoader(false);
