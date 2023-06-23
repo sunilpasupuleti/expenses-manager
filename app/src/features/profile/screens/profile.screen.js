@@ -1,23 +1,23 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, Card, TextInput} from 'react-native-paper';
+import {Button, Card} from 'react-native-paper';
 import {useDispatch} from 'react-redux';
 import {useTheme} from 'styled-components/native';
-import {ErrorMessage, MainWrapper} from '../../../components/styles';
+import {MainWrapper} from '../../../components/styles';
 import {SafeArea} from '../../../components/utility/safe-area.component';
 import {AuthenticationContext} from '../../../services/authentication/authentication.context';
 import {
+  ProfileImageButtonContainer,
   ProfileInput,
   ProfileInputErrorMessage,
   ProfilePicture,
   ProfileWrapper,
 } from '../components/profile.styles';
 import {Spacer} from '../../../components/spacer/spacer.component';
-import {ScrollView} from 'react-native';
-import {
-  ProfileContext,
-  ProfileContextProvider,
-} from '../../../services/profile/profile.context';
+import {Alert, ScrollView} from 'react-native';
+import {ProfileContext} from '../../../services/profile/profile.context';
+import remoteConfig from '@react-native-firebase/remote-config';
+import {launchImageLibrary} from 'react-native-image-picker';
 
 const defaultInputState = {
   displayName: {
@@ -47,10 +47,21 @@ export const ProfileScreen = ({navigation, route}) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const {userData} = useContext(AuthenticationContext);
-  const {onUpdateProfile} = useContext(ProfileContext);
+  const {onUpdateProfile, onRemoveProfilePicture, onUpdateProfilePicture} =
+    useContext(ProfileContext);
 
   const [inputs, setInputs] = useState(defaultInputState);
+
   const [loading, setLoading] = useState(false);
+
+  const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
+
+  const [buttonLoading, setButtonLoading] = useState({
+    update: false,
+    remove: false,
+  });
+
+  const [previewImage, setPreviewImage] = useState(null);
 
   useEffect(() => {
     navigation.setOptions({
@@ -124,17 +135,15 @@ export const ProfileScreen = ({navigation, route}) => {
       onSetErrorMessage('displayName', errors.nameRequired);
     }
 
+    if (!email.value) {
+      onSetErrorMessage('email', errors.invalidEmail);
+    }
+
     let data = {
       displayName: displayName.value.trim(),
     };
 
-    console.log(userData);
-
-    if (
-      email.value &&
-      userData.providerId &&
-      userData.providerId !== 'google.com'
-    ) {
+    if (email.value) {
       let emailRegex = /^\S+@\S+\.\S+$/;
       let validEmail = emailRegex.test(email.value);
       if (!validEmail) {
@@ -168,21 +177,229 @@ export const ProfileScreen = ({navigation, route}) => {
     }
   };
 
+  const onClickRemoveProfilePicture = () => {
+    Alert.alert(
+      `Remove Profile Picture?`,
+      'Are you sure you want to remove your profile picture? You wont be able to revert this action back.',
+      [
+        {
+          text: 'No',
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: () => {
+            const showRemoveButtonLoader = status => {
+              setButtonLoading({
+                update: false,
+                remove: status,
+              });
+            };
+            showRemoveButtonLoader(true);
+
+            onRemoveProfilePicture(
+              () => {
+                showRemoveButtonLoader(false);
+              },
+              () => {
+                showRemoveButtonLoader(false);
+              },
+            );
+          },
+          style: 'default',
+        },
+      ],
+      {cancelable: false},
+    );
+  };
+
+  const onSelectProfilePicture = async () => {
+    let options = {
+      mediaType: 'photo',
+      cameraType: 'back',
+      includeBase64: true,
+      presentationStyle: 'popover',
+    };
+    let callback = response => {
+      if (
+        response &&
+        response.assets &&
+        response.assets[0] &&
+        response.assets[0].base64
+      ) {
+        let base64 =
+          'data:' +
+          response.assets[0].type +
+          ';base64,' +
+          response.assets[0].base64;
+        let data = {
+          base64: base64,
+          type: response.assets[0].type,
+        };
+        setPreviewImage(data);
+      }
+    };
+    await launchImageLibrary(options, response => {
+      callback(response);
+    });
+  };
+
+  const onClickUploadProfilePicture = async () => {
+    let data = {
+      photo: {
+        ...previewImage,
+      },
+    };
+    const showRemoveButtonLoader = status => {
+      setButtonLoading({
+        update: status,
+        remove: false,
+      });
+    };
+    showRemoveButtonLoader(true);
+
+    onUpdateProfilePicture(
+      data,
+      () => {
+        setPreviewImage(null);
+        showRemoveButtonLoader(false);
+      },
+      () => {
+        setPreviewImage(null);
+        showRemoveButtonLoader(false);
+      },
+    );
+  };
+
+  const onCancelUploadPicture = () => {
+    setPreviewImage(null);
+    setButtonLoading({
+      update: false,
+      remove: false,
+    });
+  };
+
   return (
     <SafeArea>
       <MainWrapper>
         <ScrollView showsVerticalScrollIndicator={false}>
           <ProfileWrapper>
-            {userData && userData.photoURL && (
+            {!previewImage && (
+              <>
+                {userData && userData.photoURL && (
+                  <ProfilePicture
+                    source={{
+                      uri: userData.photoURL.startsWith(
+                        `public/users/${userData.uid}`,
+                      )
+                        ? `${BACKEND_URL}/${userData.photoURL}`
+                        : userData.photoURL,
+                    }}
+                  />
+                )}
+
+                {userData && !userData.photoURL && (
+                  <ProfilePicture
+                    source={require('../../../../assets/user.png')}
+                  />
+                )}
+              </>
+            )}
+
+            {previewImage && (
               <ProfilePicture
                 source={{
-                  uri: userData?.photoURL,
+                  uri: previewImage.base64,
                 }}
               />
             )}
 
-            {userData && !userData.photoURL && (
-              <ProfilePicture source={require('../../../../assets/user.png')} />
+            {!previewImage && (
+              <ProfileImageButtonContainer>
+                {/* to show only one button full width */}
+                {!buttonLoading.remove && (
+                  <Button
+                    theme={{roundness: 10}}
+                    mode="contained"
+                    style={{
+                      height: 40,
+                      width:
+                        buttonLoading.update || !userData.photoURL
+                          ? '100%'
+                          : 'auto',
+                    }}
+                    icon={'camera'}
+                    loading={buttonLoading.update}
+                    buttonColor={theme.colors.brand.secondary}
+                    onPress={
+                      !buttonLoading.update ? onSelectProfilePicture : null
+                    }
+                    textColor="#fff">
+                    {buttonLoading.update
+                      ? 'Updating Picture'
+                      : 'Update Picture'}
+                  </Button>
+                )}
+
+                {!buttonLoading.update && userData.photoURL && (
+                  <Button
+                    theme={{roundness: 10}}
+                    mode="contained"
+                    style={{
+                      height: 40,
+                      width: buttonLoading.remove ? '100%' : 'auto',
+                    }}
+                    icon={'delete'}
+                    onPress={
+                      !buttonLoading.remove ? onClickRemoveProfilePicture : null
+                    }
+                    buttonColor={'tomato'}
+                    loading={buttonLoading.remove}
+                    textColor="#fff">
+                    {buttonLoading.remove
+                      ? 'Removing Picture'
+                      : 'Remove Picture'}
+                  </Button>
+                )}
+              </ProfileImageButtonContainer>
+            )}
+
+            {previewImage && (
+              <ProfileImageButtonContainer>
+                {!buttonLoading.update && (
+                  <Button
+                    theme={{roundness: 10}}
+                    mode="contained"
+                    style={{
+                      height: 40,
+                    }}
+                    icon={'close'}
+                    buttonColor={'grey'}
+                    onPress={onCancelUploadPicture}
+                    textColor="#fff">
+                    Cancel
+                  </Button>
+                )}
+
+                <Button
+                  theme={{roundness: 10}}
+                  mode="contained"
+                  style={{
+                    height: 40,
+                    width: buttonLoading.update ? '100%' : 'auto',
+                  }}
+                  icon={'check'}
+                  onPress={
+                    !buttonLoading.update ? onClickUploadProfilePicture : null
+                  }
+                  buttonColor={'#198754'}
+                  loading={buttonLoading.update}
+                  textColor="#fff">
+                  {buttonLoading.update
+                    ? 'Uploading Picture'
+                    : 'Upload Picture'}
+                </Button>
+              </ProfileImageButtonContainer>
             )}
           </ProfileWrapper>
 

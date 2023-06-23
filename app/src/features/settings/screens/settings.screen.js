@@ -41,11 +41,15 @@ import {
 } from '@haskkor/react-native-pincode';
 import {applockActions} from '../../../store/applock-slice';
 import {View} from 'react-native';
+import remoteConfig from '@react-native-firebase/remote-config';
 
 export const SettingsScreen = ({navigation}) => {
   const {onLogout, userData, userAdditionalDetails} = useContext(
     AuthenticationContext,
   );
+
+  const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
+
   const isAppLockEnabled = useSelector(state => state.applock.enabled);
 
   const [isDailyBackUpEnabled, setIsDailyBackUpEnabled] = useState(
@@ -161,7 +165,11 @@ export const SettingsScreen = ({navigation}) => {
                     {userData && userData.photoURL && (
                       <ProfilePicture
                         source={{
-                          uri: userData?.photoURL,
+                          uri: userData.photoURL.startsWith(
+                            `public/users/${userData.uid}`,
+                          )
+                            ? `${BACKEND_URL}/${userData.photoURL}`
+                            : userData.photoURL,
                         }}
                       />
                     )}

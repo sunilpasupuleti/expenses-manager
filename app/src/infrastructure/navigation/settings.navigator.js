@@ -23,13 +23,6 @@ export const SettingsNavigator = () => {
 
   let headerShown = appState === 'active' ? true : false;
 
-  const ProfileComponent = ({navigation, route}) => {
-    return (
-      <ProfileContextProvider>
-        <ProfileScreen navigation={navigation} route={route} />
-      </ProfileContextProvider>
-    );
-  };
   return (
     <SettingsStack.Navigator
       screenOptions={{
@@ -48,7 +41,7 @@ export const SettingsNavigator = () => {
         component={SettingsScreen}
       />
       <SettingsStack.Screen name="Sync" component={SyncScreen} />
-      <SettingsStack.Screen name="Profile" component={ProfileComponent} />
+      <SettingsStack.Screen name="Profile" component={ProfileScreen} />
       <SettingsStack.Screen name="Appearance" component={AppearanceScreen} />
       <SettingsStack.Screen
         options={{headerShown: false, headerMode: 'screen'}}

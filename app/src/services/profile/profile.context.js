@@ -1,17 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useContext} from 'react';
-import {createContext, useEffect, useState} from 'react';
+import {createContext} from 'react';
 import {useDispatch} from 'react-redux';
 import auth from '@react-native-firebase/auth';
-import {loaderActions} from '../../store/loader-slice';
 import remoteConfig from '@react-native-firebase/remote-config';
 import useHttp from '../../hooks/use-http';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {AuthenticationContext} from '../authentication/authentication.context';
 import {notificationActions} from '../../store/notification-slice';
+import {Alert} from 'react-native';
+import {setChangesMade} from '../../store/service-slice';
 
 export const ProfileContext = createContext({
   onUpdateProfile: (data, successCallBack, errorCallback) => null,
+  onRemoveProfilePicture: (successCallBack, errorCallback) => null,
+  onUpdateProfilePicture: (successCallBack, errorCallback) => null,
 });
 
 export const ProfileContextProvider = ({children}) => {
@@ -19,7 +21,9 @@ export const ProfileContextProvider = ({children}) => {
   const dispatch = useDispatch();
   const {sendRequest} = useHttp();
 
-  const {userData, onGetUserDetails} = useContext(AuthenticationContext);
+  const {userData, onLogout, onGetUserDetails} = useContext(
+    AuthenticationContext,
+  );
 
   const onUpdateProfile = async (
     data,
@@ -30,64 +34,80 @@ export const ProfileContextProvider = ({children}) => {
     let providerId = currentUser.providerData[0].providerId;
     let updatedDetails = {};
     let {displayName, email, phoneNumber} = data;
-    let error = null;
-    console.log(providerId);
-    const updateData = async () => {
-      if (displayName && displayName !== userData.displayName) {
-        await currentUser
+    currentUser
+      .updateEmail(email)
+      .then(() => {
+        updatedDetails.email = email;
+        currentUser
           .updateProfile({
             displayName: displayName,
           })
-          .then(() => (updatedDetails.displayName = displayName))
+          .then(() => {
+            updatedDetails.displayName = displayName;
+            onSuccessUpdatingProfileData(
+              updatedDetails,
+              successCallBack,
+              errorCallback,
+            );
+          })
           .catch(err => {
-            error = 'Error in updating name ' + err;
-            throw new Error(error);
+            errorCallback();
+            console.log('Error occured in updating profile data ' + err);
+            dispatch(
+              notificationActions.showToast({
+                message: 'Error in updating profile',
+                status: 'error',
+              }),
+            );
           });
-      }
-      // if (email && email !== userData.email && !error) {
-      await currentUser
-        .updateEmail(email)
-        .then(() => (updatedDetails.email = email))
-        .catch(err => {
-          switch (err.code) {
-            case 'auth/invalid-email':
-              error = 'Invalid email address';
-              break;
-            case 'auth/email-already-in-use':
-              error = 'Email-address is already in use! Try another email.';
-              break;
-            case 'auth/requires-recent-login':
-              error = 'Email-address is already in use! Try another email.';
-              currentUser.reauthenticateWithCredential();
-              onUpdateProfile(data, successCallBack, errorCallback);
-              break;
-            default:
-              error = 'Error Occured while updating email-address.';
-              break;
-          }
-          console.log(err.code, 'Error in updating email-address');
-          throw new Error(error);
-        });
-      // }
-    };
-
-    updateData()
-      .then(() => {
-        onSuccessUpdatingProfileData(
-          updatedDetails,
-          successCallBack,
-          errorCallback,
-        );
       })
-      .catch(e => {
+      .catch(err => {
+        let error = '';
+        console.log(err.code, 'man error');
+        const showError = () => {
+          dispatch(
+            notificationActions.showToast({
+              message: error,
+              status: 'error',
+            }),
+          );
+        };
+        switch (err.code) {
+          case 'auth/invalid-email':
+            error = 'Invalid email address';
+            showError();
+            break;
+          case 'auth/email-already-in-use':
+            error = 'Email-address is already in use! Try another email.';
+            showError();
+            break;
+          case 'auth/requires-recent-login':
+            Alert.alert(
+              'We have to identify its you?',
+              `For the security reasons, we should identify its you, so please re-login into our app again`,
+              [
+                {
+                  text: 'RE-LOGIN',
+                  onPress: () => {
+                    onLogout();
+                  },
+                  style: 'default',
+                },
+                {
+                  text: 'CANCEL',
+                  onPress: () => {},
+                  style: 'cancel',
+                },
+              ],
+            );
+            break;
+          default:
+            error = 'Error Occured while updating email-address.';
+            showError();
+            break;
+        }
         errorCallback();
-        console.log('Error occured while updating profile ', error);
-        dispatch(
-          notificationActions.showToast({
-            message: error,
-            status: 'error',
-          }),
-        );
+        console.log('Error occured in updating profile data email' + error);
       });
   };
 
@@ -99,13 +119,11 @@ export const ProfileContextProvider = ({children}) => {
   ) => {
     let currentUser = await auth().currentUser;
 
-    console.log(details);
-
     let jwtToken = await auth().currentUser.getIdToken();
     sendRequest(
       {
         type: 'POST',
-        url: 'http://192.168.29.104:3000' + '/user/',
+        url: BACKEND_URL + '/user/',
         data: {
           ...details,
         },
@@ -117,6 +135,7 @@ export const ProfileContextProvider = ({children}) => {
         successCallback: () => {
           currentUser.reload();
           successCallBack();
+          dispatch(setChangesMade({status: true}));
           onGetUserDetails();
           dispatch(
             notificationActions.showToast({
@@ -138,10 +157,134 @@ export const ProfileContextProvider = ({children}) => {
     );
   };
 
+  const onRemoveProfilePicture = async (
+    successCallBack = () => {},
+    errorCallback = () => {},
+  ) => {
+    let jwtToken = await auth().currentUser.getIdToken();
+    sendRequest(
+      {
+        type: 'DELETE',
+        url: BACKEND_URL + '/user/remove-profile-picture',
+        headers: {
+          authorization: 'Bearer ' + jwtToken,
+        },
+      },
+      {
+        successCallback: async result => {
+          let currentUser = await auth().currentUser;
+          currentUser
+            .updateProfile({
+              photoURL: null,
+            })
+            .then(() => {
+              const onSuccess = () => {
+                currentUser.reload();
+                dispatch(setChangesMade({status: true}));
+                successCallBack();
+                dispatch(
+                  notificationActions.showToast({
+                    message: result.message,
+                    status: 'success',
+                  }),
+                );
+              };
+              // call onsucces irrespective of geting user details failed or succefull
+              onGetUserDetails(onSuccess, onSuccess);
+            })
+            .catch(err => {
+              errorCallback();
+              console.log('Error in removing profile picture', err);
+              dispatch(
+                notificationActions.showToast({
+                  message: err,
+                  status: 'error',
+                }),
+              );
+            });
+        },
+        errorCallback: err => {
+          errorCallback();
+          console.log('Error in removing profile picture', err);
+          dispatch(
+            notificationActions.showToast({
+              message: err,
+              status: 'error',
+            }),
+          );
+        },
+      },
+    );
+  };
+
+  const onUpdateProfilePicture = async (
+    data,
+    successCallBack = () => {},
+    errorCallback = () => {},
+  ) => {
+    let jwtToken = await auth().currentUser.getIdToken();
+    sendRequest(
+      {
+        type: 'PUT',
+        url: BACKEND_URL + '/user/update-profile-picture',
+        data: data,
+        headers: {
+          authorization: 'Bearer ' + jwtToken,
+        },
+      },
+      {
+        successCallback: async result => {
+          let currentUser = await auth().currentUser;
+          currentUser
+            .updateProfile({
+              photoURL: result.photoURL,
+            })
+            .then(() => {
+              const onSuccess = () => {
+                currentUser.reload();
+                dispatch(setChangesMade({status: true}));
+                successCallBack();
+                dispatch(
+                  notificationActions.showToast({
+                    message: result.message,
+                    status: 'success',
+                  }),
+                );
+              };
+              // call onsucces irrespective of geting user details failed or succefull
+              onGetUserDetails(onSuccess, onSuccess);
+            })
+            .catch(err => {
+              errorCallback();
+              console.log('Error in updating profile picture', err);
+              dispatch(
+                notificationActions.showToast({
+                  message: err,
+                  status: 'error',
+                }),
+              );
+            });
+        },
+        errorCallback: err => {
+          errorCallback();
+          console.log('Error in updating profile picture', err);
+          dispatch(
+            notificationActions.showToast({
+              message: err,
+              status: 'error',
+            }),
+          );
+        },
+      },
+    );
+  };
+
   return (
     <ProfileContext.Provider
       value={{
         onUpdateProfile,
+        onRemoveProfilePicture,
+        onUpdateProfilePicture,
       }}>
       {children}
     </ProfileContext.Provider>

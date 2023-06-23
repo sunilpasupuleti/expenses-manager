@@ -33,7 +33,7 @@ const useHttp = () => {
         } else if (type && type === 'PUT') {
           request = axios.put(url, data, {headers: headers});
         } else if (type && type === 'DELETE') {
-          request = axios.delete(url, data, {headers: headers});
+          request = axios.delete(url, {headers: headers});
         } else {
           setError('Invalid http call request');
           return;

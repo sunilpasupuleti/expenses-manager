@@ -685,6 +685,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                             <DateTimePicker
                               mode="time"
                               value={time}
+                              maximumDate={new Date()}
                               onChange={(e, t) => {
                                 if (e.type === 'dismissed') {
                                   setShowPicker(prev => ({
@@ -713,6 +714,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                         <DateTimePicker
                           mode="time"
                           value={time}
+                          maximumDate={new Date()}
                           onChange={(e, t) => {
                             if (e.type === 'dismissed') {
                               setShowPicker(prev => ({

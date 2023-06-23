@@ -27,3 +27,10 @@ export const ProfileInputErrorMessage = styled(Text)`
   margin-left: 5px;
   margin-bottom: 5px;
 `;
+
+export const ProfileImageButtonContainer = styled.View`
+  margin-top: 50px;
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+`;

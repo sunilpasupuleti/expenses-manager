@@ -8,8 +8,7 @@ import messaging from '@react-native-firebase/messaging';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import axios from 'axios';
-import {BACKEND_URL} from '../../../config';
-import {Platform} from 'react-native';
+import remoteConfig from '@react-native-firebase/remote-config';
 
 notifee.onForegroundEvent(event => {
   //   console.log('Foreground event', event);
@@ -74,6 +73,8 @@ notifee.getNotificationSettings().then(settings => {
 });
 
 export async function onMessageReceived(message) {
+  const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
+
   let type = message.data.type;
   let uid = message.data?.uid;
   let title = message.data?.title;

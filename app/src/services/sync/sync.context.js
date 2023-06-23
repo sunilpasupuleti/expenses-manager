@@ -58,7 +58,7 @@ export const SyncContextProvider = ({children}) => {
       sendRequest(
         {
           type: 'POST',
-          url: 'http://192.168.29.104:3000' + '/backup',
+          url: BACKEND_URL + '/backup',
           data: {
             ...expensesData,
             categories: categories,
@@ -178,7 +178,7 @@ export const SyncContextProvider = ({children}) => {
     sendRequest(
       {
         type: 'GET',
-        url: 'http://192.168.29.104:3000' + '/backup/all',
+        url: BACKEND_URL + '/backup/all',
         headers: {
           authorization: 'Bearer ' + jwtToken,
         },

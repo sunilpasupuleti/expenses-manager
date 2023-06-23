@@ -155,6 +155,7 @@ export const AuthenticationContextProvider = ({children}) => {
   const onSignInWithEmail = async (email, password) => {
     try {
       let result = await auth().signInWithEmailAndPassword(email, password);
+      onSignInSuccess(result);
       return {status: true};
     } catch (e) {
       console.log(e, 'error with sign in with email and password');
@@ -294,7 +295,7 @@ export const AuthenticationContextProvider = ({children}) => {
     sendRequest(
       {
         type: 'POST',
-        url: 'http://192.168.29.104:3000' + '/user',
+        url: BACKEND_URL + '/user',
         data: transformedData,
         headers: {
           authorization: 'Bearer ' + jwtToken,

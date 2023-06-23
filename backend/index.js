@@ -23,9 +23,14 @@ const {
 /**
  * Morgon
  */
+let logsPath = __dirname + "/logs";
+if (!fs.existsSync(logsPath)) {
+  fs.mkdirSync(logsPath);
+  fs.writeFileSync(apiLogsPath, "");
+}
+
 let apiLogsPath = __dirname + "/logs/api.log";
 if (!fs.existsSync(apiLogsPath)) {
-  fs.mkdirSync(path.join(__dirname, "logs"));
   fs.writeFileSync(apiLogsPath, "");
 }
 // Create rotating write stream
@@ -129,7 +134,7 @@ const io = socketIo(server, {
 require("./sockets/socket")(io);
 
 server.listen(process.env.PORT || 8080, async () => {
-  logger.info(`server started on port number ${process.env.PORT}`);
+  logger.info(`server started on port number ${process.env.PORT} }`);
 
   // In case if server restarts reschedule all the jobs with which user have dialy reminder and abckup enabled
 

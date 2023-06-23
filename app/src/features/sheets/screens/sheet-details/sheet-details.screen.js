@@ -24,11 +24,8 @@ import {
 } from 'react-native-popup-menu';
 
 import {useDispatch} from 'react-redux';
-import {Button, Dialog, Portal} from 'react-native-paper';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import {Platform} from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {FlexRow, MainWrapper} from '../../../../components/styles';
+import {FlexRow} from '../../../../components/styles';
 
 import {Text} from '../../../../components/typography/text.component';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
@@ -49,7 +46,6 @@ import {
 } from '../../../../components/symbol.currency';
 import {fetchExchangeRates} from '../../../../store/service-slice';
 import {useIsFocused} from '@react-navigation/native';
-import {loaderActions} from '../../../../store/loader-slice';
 
 export const SheetDetailsScreen = ({navigation, route}) => {
   const [sheet, setSheet] = useState(route.params.sheet);
