@@ -502,6 +502,14 @@ export const SendNotifications = ({ title }) => {
                         ).map((user, index) => {
                           const isItemSelected = isSelected(user._id);
                           const labelId = `enhanced-table-checkbox-${index}`;
+                          let photoURL = null;
+                          if (user.photoURL) {
+                            photoURL = user.photoURL.startsWith(
+                              `public/users/${user.uid}`
+                            )
+                              ? `${process.env.REACT_APP_BACKEND_URL}/${user.photoURL}`
+                              : user.photoURL;
+                          }
                           return (
                             <TableRow
                               onClick={(event) => handleClick(event, user._id)}
@@ -536,13 +544,13 @@ export const SendNotifications = ({ title }) => {
                               </TableCell>
                               {}
                               <TableCell>
-                                {user.photoURL ? (
+                                {photoURL ? (
                                   <TableProfileContainer
-                                    onClick={() => window.open(user.photoURL)}
+                                    onClick={() => window.open(photoURL)}
                                   >
                                     <TableProfileImage
                                       referrerPolicy="no-referrer"
-                                      src={user.photoURL}
+                                      src={photoURL}
                                       alt="Profile Image"
                                     />
                                   </TableProfileContainer>
