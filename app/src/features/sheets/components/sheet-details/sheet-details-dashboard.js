@@ -75,7 +75,10 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
   useEffect(() => {
     if (routeIsFocused) {
       navigation.setOptions({
-        headerTitle: sheet?.name,
+        headerTitle:
+          sheet?.name.length > 20
+            ? sheet.name.substring(0, 20) + '...'
+            : sheet.name,
         headerLeft: () => (
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <FlexRow>

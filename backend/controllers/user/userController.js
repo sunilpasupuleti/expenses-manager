@@ -9,6 +9,7 @@ const {
   decryptAES,
 } = require("../../helpers/utility");
 const fs = require("fs");
+const fsExtra = require("fs-extra");
 const path = require("path");
 
 module.exports = {
@@ -148,7 +149,7 @@ module.exports = {
     let photoURL = user.photoURL;
     if (photoURL && photoURL.startsWith(`public/users/${uid}`)) {
       let picturePath = path.join(process.cwd(), photoURL);
-      if (!fs.existsSync(picturePath)) {
+      if (fs.existsSync(picturePath)) {
         fs.unlinkSync(picturePath);
       }
     }
@@ -188,6 +189,137 @@ module.exports = {
             message: "Error occured while updating profile picture " + err,
           });
         });
+    });
+  },
+
+  async uploadSheetDetailPicture(req, res) {
+    const uid = req.user.uid;
+    let { photo, sheetId, sheetDetailId } = req.body;
+    // console.log(photo);
+    var base64Data = photo.base64.split(";base64,").pop();
+    let pictureExtension = photo.type.split("/")[1];
+    let pictureName = `${sheetDetailId}.${pictureExtension}`;
+
+    let folderPath = `public/users/${uid}/${sheetId}`;
+    let picturePath = `public/users/${uid}/${sheetId}/${pictureName}`;
+    if (!fs.existsSync(folderPath)) {
+      {
+        fs.mkdirSync(folderPath, { recursive: true });
+      }
+    }
+
+    fs.writeFile(picturePath, base64Data, { encoding: "base64" }, (err) => {
+      if (err) {
+        return sendResponse(res, httpCodes.INTERNAL_SERVER_ERROR, {
+          message:
+            "Error occured while uploading transaction picture. Please try again later!",
+        });
+      }
+      return sendResponse(res, httpCodes.OK, {
+        message: "Successfully uploaded transaction picture",
+        photoURL: picturePath,
+      });
+    });
+  },
+
+  async removeSheetDetailPicture(req, res) {
+    let { url } = req.body;
+    let picturePath = path.join(process.cwd(), url);
+    if (fs.existsSync(picturePath)) {
+      fs.unlinkSync(picturePath);
+    }
+
+    return sendResponse(res, httpCodes.OK, {
+      message: "Sheet Detail Picture Removed Successfully",
+    });
+  },
+
+  async deleteSheet(req, res) {
+    let { sheetId } = req.params;
+    let uid = req.user.uid;
+    let currentDirectory = process.cwd() + "/";
+    let sheetFolderPath = path.join(
+      currentDirectory,
+      `/public/users/${uid}/${sheetId}`
+    );
+    if (fs.existsSync(sheetFolderPath)) {
+      fsExtra.emptyDirSync(sheetFolderPath);
+      fsExtra.rmdirSync(sheetFolderPath);
+    }
+    return sendResponse(res, httpCodes.OK, {
+      message: "Successfully deleted sheet path",
+    });
+  },
+
+  async moveSheetDetailPicture(req, res) {
+    const uid = req.user.uid;
+    let { photo, moveToSheetId, sheetDetailId, currentSheetId } = req.body;
+    let currentDirectory = process.cwd() + "/";
+    let oldPath = path.join(currentDirectory, photo.url);
+    let pictureName = oldPath.split(
+      currentDirectory + `public/users/${uid}/${currentSheetId}/`
+    )[1];
+    let photoURL = `public/users/${uid}/${moveToSheetId}/${pictureName}`;
+    let newPath = path.join(
+      currentDirectory,
+      `public/users/${uid}/${moveToSheetId}/`
+    );
+    let picturePath = newPath + pictureName;
+
+    if (!fs.existsSync(newPath)) {
+      {
+        fs.mkdirSync(newPath, { recursive: true });
+      }
+    }
+
+    fsExtra.move(oldPath, picturePath, (err) => {
+      if (err) {
+        logger.error(JSON.stringify(err));
+        return sendResponse(res, httpCodes.INTERNAL_SERVER_ERROR, {
+          message:
+            "Error occured while moving transaction picture. Please try again later!",
+        });
+      }
+      return sendResponse(res, httpCodes.OK, {
+        message: "Successfully moved transaction picture",
+        photoURL: photoURL,
+      });
+    });
+  },
+
+  async duplicateSheetDetailPicture(req, res) {
+    const uid = req.user.uid;
+    let { photo, newSheetDetailId, sheetDetailId, sheetId } = req.body;
+    let currentDirectory = process.cwd() + "/";
+    let oldPath = path.join(currentDirectory, photo.url);
+
+    let pictureName = newSheetDetailId + "." + photo.extension;
+
+    let photoURL = `public/users/${uid}/${sheetId}/${pictureName}`;
+    let newPath = path.join(
+      currentDirectory,
+      `public/users/${uid}/${sheetId}/`
+    );
+    let picturePath = newPath + pictureName;
+
+    if (!fs.existsSync(newPath)) {
+      {
+        fs.mkdirSync(newPath, { recursive: true });
+      }
+    }
+
+    fsExtra.copy(oldPath, picturePath, (err) => {
+      if (err) {
+        logger.error(JSON.stringify(err));
+        return sendResponse(res, httpCodes.INTERNAL_SERVER_ERROR, {
+          message:
+            "Error occured while duplicating transaction picture. Please try again later!",
+        });
+      }
+      return sendResponse(res, httpCodes.OK, {
+        message: "Successfully duplicated transaction picture",
+        photoURL: photoURL,
+      });
     });
   },
 };

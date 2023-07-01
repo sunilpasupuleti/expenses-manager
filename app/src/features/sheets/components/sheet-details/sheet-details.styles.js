@@ -1,5 +1,5 @@
 import React from 'react';
-import {TextInput} from 'react-native-paper';
+import {ActivityIndicator, TextInput} from 'react-native-paper';
 import styled from 'styled-components/native';
 import {Text} from '../../../../components/typography/text.component';
 import {colors} from '../../../../infrastructure/theme/colors';
@@ -101,4 +101,29 @@ export const CameraButton = styled.TouchableOpacity`
 
 export const CameraIcon = styled(Ionicons)`
   margin-right: 3px;
+`;
+
+export const SheetDetailAvatarWrapper = styled.View`
+  align-items: center;
+  justify-content: center;
+`;
+
+export const SheetDetailAvatarActivityIndicator = styled(ActivityIndicator)`
+  position: absolute;
+`;
+
+export const SheetDetailImageWrapper = styled.View`
+  height: 400px;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const SheetDetailImageActivityIndicator = styled(ActivityIndicator)`
+  position: absolute;
+`;
+
+export const SheetDetailImage = styled.Image`
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
 `;

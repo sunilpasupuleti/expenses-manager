@@ -1,5 +1,5 @@
 import React from 'react';
-import {Card} from 'react-native-paper';
+import {ActivityIndicator, Card} from 'react-native-paper';
 import styled from 'styled-components/native';
 import {FlexRow} from '../../../components/styles';
 import {Text} from '../../../components/typography/text.component';
@@ -37,11 +37,19 @@ export const SettingsCardContent = styled.TouchableHighlight.attrs({
 export const ProfileWrapper = styled.View`
   align-items: center;
   justify-content: center;
+  height: 50px;
+  width: 50px;
+  border: 1px solid ${colors.brand.primary};
+  border-radius: 100px;
+`;
+
+export const ProfilePictureActivityIndicator = styled(ActivityIndicator)`
+  position: absolute;
 `;
 
 export const ProfilePicture = styled.Image`
-  height: 50px;
-  width: 50px;
+  height: 100%;
+  width: 100%;
   border-radius: 100px;
 `;
 

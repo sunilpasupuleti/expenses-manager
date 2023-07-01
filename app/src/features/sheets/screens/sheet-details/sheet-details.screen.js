@@ -110,7 +110,10 @@ export const SheetDetailsScreen = ({navigation, route}) => {
   useEffect(() => {
     if (routeIsFocused) {
       navigation.setOptions({
-        headerTitle: sheet?.name,
+        headerTitle:
+          sheet?.name.length > 25
+            ? sheet.name.substring(0, 25) + '...'
+            : sheet.name,
         // headerStyle: {
         //   backgroundColor: theme.colors.bg.primary,
         // },

@@ -4,17 +4,13 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import React, {useContext, useEffect, useState} from 'react';
-import {
-  FlexColumn,
-  FlexRow,
-  MainWrapper,
-  ToggleSwitch,
-} from '../../../components/styles';
+import {FlexRow, MainWrapper, ToggleSwitch} from '../../../components/styles';
 import {SafeArea} from '../../../components/utility/safe-area.component';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   ManageProfileTitle,
   ProfilePicture,
+  ProfilePictureActivityIndicator,
   ProfileText,
   ProfileWrapper,
   Setting,
@@ -33,7 +29,7 @@ import {Alert, Platform, ScrollView, TouchableOpacity} from 'react-native';
 import {SheetsContext} from '../../../services/sheets/sheets.context';
 import {fetchExchangeRates} from '../../../store/service-slice';
 import moment from 'moment';
-import {Button} from 'react-native-paper';
+import {ActivityIndicator, Button} from 'react-native-paper';
 import {notificationActions} from '../../../store/notification-slice';
 import {
   resetPinCodeInternalStates,
@@ -84,6 +80,8 @@ export const SettingsScreen = ({navigation}) => {
     onUpdateDailyBackup,
   } = useContext(SheetsContext);
   const changesMade = useSelector(state => state.service.changesMade.status);
+
+  const [profilePictureLoading, setProfilePictureLoading] = useState(false);
   const dispatch = useDispatch();
   const theme = useTheme();
 
@@ -162,21 +160,35 @@ export const SettingsScreen = ({navigation}) => {
               <Setting justifyContent="space-between">
                 <FlexRow>
                   <ProfileWrapper>
-                    {userData && userData.photoURL && (
-                      <ProfilePicture
-                        source={{
-                          uri: userData.photoURL.startsWith(
-                            `public/users/${userData.uid}`,
-                          )
-                            ? `${BACKEND_URL}/${userData.photoURL}`
-                            : userData.photoURL,
-                        }}
-                      />
-                    )}
+                    <>
+                      {userData && userData.photoURL && (
+                        <ProfilePicture
+                          onLoadStart={() => setProfilePictureLoading(true)}
+                          onLoad={() => setProfilePictureLoading(false)}
+                          source={{
+                            uri: userData.photoURL.startsWith(
+                              `public/users/${userData.uid}`,
+                            )
+                              ? `${BACKEND_URL}/${
+                                  userData.photoURL
+                                }?time=${new Date()}`
+                              : userData.photoURL,
+                          }}
+                        />
+                      )}
 
-                    {userData && !userData.photoURL && (
-                      <ProfilePicture
-                        source={require('../../../../assets/user.png')}
+                      {userData && !userData.photoURL && (
+                        <ProfilePicture
+                          onLoadStart={() => setProfilePictureLoading(true)}
+                          onLoad={() => setProfilePictureLoading(false)}
+                          source={require('../../../../assets/user.png')}
+                        />
+                      )}
+                    </>
+                    {profilePictureLoading && (
+                      <ProfilePictureActivityIndicator
+                        animating={true}
+                        color={theme.colors.brand.primary}
                       />
                     )}
                   </ProfileWrapper>

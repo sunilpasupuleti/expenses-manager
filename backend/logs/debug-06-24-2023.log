@@ -1,0 +1,89 @@
+6/24/2023, 4:26:06 AM [info]  Message :  server started on port number 3000 }
+6/24/2023, 4:26:07 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+6/24/2023, 4:28:01 AM [error]  Message :  Error in verifying token {"code":"auth/id-token-expired","message":"Firebase ID token has expired. Get a fresh ID token from your client app and try again (auth/id-token-expired). See https://firebase.google.com/docs/auth/admin/verify-id-tokens for details on how to retrieve an ID token."}
+6/24/2023, 5:05:23 AM [info]  Message :  server started on port number 3000 }
+6/24/2023, 5:05:24 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+6/24/2023, 5:05:38 AM [info]  Message :  server started on port number 3000 }
+6/24/2023, 5:05:38 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+6/24/2023, 5:18:23 AM [info]  Message :  server started on port number 3000 }
+6/24/2023, 5:18:24 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+6/24/2023, 5:19:13 AM [info]  Message :  server started on port number 3000 }
+6/24/2023, 5:19:14 AM [info]  Message :  server started on port number 3000 }
+6/24/2023, 5:19:14 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+6/24/2023, 5:20:56 AM [info]  Message :  server started on port number 3000 }
+6/24/2023, 5:20:57 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+6/24/2023, 5:22:04 AM [info]  Message :  server started on port number 3000 }
+6/24/2023, 5:22:04 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+6/24/2023, 5:29:40 AM [info]  Message :  server started on port number 3000 }
+6/24/2023, 5:29:41 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+6/24/2023, 5:29:50 AM [info]  Message :  server started on port number 3000 }
+6/24/2023, 5:29:51 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+6/24/2023, 5:45:06 AM [info]  Message :  server started on port number 3000 }
+6/24/2023, 5:45:07 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+6/24/2023, 5:45:37 AM [info]  Message :  server started on port number 3000 }
+6/24/2023, 5:45:37 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+6/24/2023, 6:05:32 AM [info]  Message :  server started on port number 3000 }
+6/24/2023, 6:05:34 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+6/24/2023, 6:05:44 AM [error]  Message :  ----- Reason -----
+6/24/2023, 6:05:44 AM [error]  Message :  result is not defined
+6/24/2023, 6:06:47 AM [error]  Message :  ----- Reason -----
+6/24/2023, 6:06:47 AM [error]  Message :  result is not defined
+6/24/2023, 6:08:31 AM [error]  Message :  ----- Reason -----
+6/24/2023, 6:08:31 AM [error]  Message :  result is not defined
+6/24/2023, 6:09:14 AM [error]  Message :  ----- Reason -----
+6/24/2023, 6:09:14 AM [error]  Message :  result is not defined
+6/24/2023, 6:09:30 AM [error]  Message :  ----- Reason -----
+6/24/2023, 6:09:30 AM [error]  Message :  result is not defined
+6/24/2023, 6:11:56 AM [info]  Message :  server started on port number 3000 }
+6/24/2023, 6:11:57 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+6/24/2023, 6:37:02 AM [info]  Message :  ---------------------
+6/24/2023, 2:32:43 PM [info]  Message :  ---------------------
+6/24/2023, 2:33:13 PM [info]  Message :  Enabling daily reminder for Sunil Kumar Pasupuleti at time - 23:03 - Asia/Kolkata
+6/24/2023, 2:33:13 PM [info]  Message :  Enabling daily backup for Sunil Kumar Pasupuleti at 0:1 - Asia/Kolkata
+6/24/2023, 2:33:13 PM [info]  Message :  -----------------------------------
+6/24/2023, 2:35:17 PM [info]  Message :  server started on port number 3000 }
+6/24/2023, 2:35:18 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+6/24/2023, 2:48:27 PM [info]  Message :  Enabling daily reminder for Sunil Kumar Pasupuleti at time - 23:03 - Asia/Kolkata
+6/24/2023, 2:48:27 PM [info]  Message :  Enabling daily backup for Sunil Kumar Pasupuleti at 0:1 - Asia/Kolkata
+6/24/2023, 2:48:27 PM [info]  Message :  -----------------------------------
+6/24/2023, 2:48:57 PM [info]  Message :  canceling the previous daily reminder notification
+6/24/2023, 2:48:57 PM [info]  Message :  Enabling daily reminder for Sunil Kumar Pasupuleti at time - 23:03 - Asia/Kolkata
+6/24/2023, 2:48:57 PM [info]  Message :  canceling the previous backup notification
+6/24/2023, 2:48:57 PM [info]  Message :  Enabling daily backup for Sunil Kumar Pasupuleti at 0:1 - Asia/Kolkata
+6/24/2023, 2:48:57 PM [info]  Message :  -----------------------------------
+6/24/2023, 2:50:04 PM [info]  Message :  canceling the previous daily reminder notification
+6/24/2023, 2:50:04 PM [info]  Message :  Enabling daily reminder for Sunil Kumar Pasupuleti at time - 23:03 - Asia/Kolkata
+6/24/2023, 2:50:04 PM [info]  Message :  canceling the previous backup notification
+6/24/2023, 2:50:04 PM [info]  Message :  Enabling daily backup for Sunil Kumar Pasupuleti at 0:1 - Asia/Kolkata
+6/24/2023, 2:50:04 PM [info]  Message :  -----------------------------------
+6/24/2023, 2:52:45 PM [info]  Message :  canceling the previous daily reminder notification
+6/24/2023, 2:52:45 PM [info]  Message :  Enabling daily reminder for Sunil Kumar Pasupuleti at time - 23:03 - Asia/Kolkata
+6/24/2023, 2:52:45 PM [info]  Message :  canceling the previous backup notification
+6/24/2023, 2:52:45 PM [info]  Message :  Enabling daily backup for Sunil Kumar Pasupuleti at 0:1 - Asia/Kolkata
+6/24/2023, 2:52:45 PM [info]  Message :  -----------------------------------
+6/24/2023, 3:04:12 PM [info]  Message :  canceling the previous daily reminder notification
+6/24/2023, 3:04:12 PM [info]  Message :  Enabling daily reminder for Sunil Kumar Pasupuleti at time - 23:03 - Asia/Kolkata
+6/24/2023, 3:04:12 PM [info]  Message :  canceling the previous backup notification
+6/24/2023, 3:04:12 PM [info]  Message :  Enabling daily backup for Sunil Kumar Pasupuleti at 0:1 - Asia/Kolkata
+6/24/2023, 3:04:12 PM [info]  Message :  -----------------------------------
+6/24/2023, 3:21:08 PM [info]  Message :  canceling the previous daily reminder notification
+6/24/2023, 3:21:08 PM [info]  Message :  Enabling daily reminder for Sunil Kumar Pasupuleti at time - 23:03 - Asia/Kolkata
+6/24/2023, 3:21:08 PM [info]  Message :  canceling the previous backup notification
+6/24/2023, 3:21:08 PM [info]  Message :  Enabling daily backup for Sunil Kumar Pasupuleti at 0:1 - Asia/Kolkata
+6/24/2023, 3:21:08 PM [info]  Message :  -----------------------------------
+6/24/2023, 11:09:11 PM [info]  Message :  sending daily reminder notification to  - Sunil Kumar Pasupuleti
+6/24/2023, 11:09:11 PM [error]  Message :   error in sending the daily reminder notification 
+6/24/2023, 11:09:11 PM [error]  Message :  {"code":"app/invalid-credential","message":"Credential implementation provided to initializeApp() via the \"credential\" property failed to fetch a valid Google OAuth2 access token with the following error: \"Error fetching access token: Error while making request: getaddrinfo ENOTFOUND accounts.google.com. Error code: ENOTFOUND\"."}
+6/25/2023, 12:29:22 AM [info]  Message :  sending daily backup notification to  - Sunil Kumar Pasupuleti
+6/25/2023, 12:29:22 AM [info]  Message :  successfully sent daily backup notification 
+6/25/2023, 12:29:22 AM [info]  Message :  {"results":[{"messageId":"0:1687633163062137%c6668bd6f9fd7ecd"}],"canonicalRegistrationTokenCount":0,"failureCount":0,"successCount":1,"multicastId":3342685615447921000}
+6/25/2023, 9:12:55 AM [info]  Message :  canceling the previous daily reminder notification
+6/25/2023, 9:12:56 AM [info]  Message :  Enabling daily reminder for Sunil Kumar Pasupuleti at time - 23:03 - Asia/Kolkata
+6/25/2023, 9:12:56 AM [info]  Message :  canceling the previous backup notification
+6/25/2023, 9:12:56 AM [info]  Message :  Enabling daily backup for Sunil Kumar Pasupuleti at 0:1 - Asia/Kolkata
+6/25/2023, 9:12:56 AM [info]  Message :  -----------------------------------
+6/25/2023, 9:23:25 AM [info]  Message :  canceling the previous daily reminder notification
+6/25/2023, 9:23:25 AM [info]  Message :  Enabling daily reminder for Sunil Kumar Pasupuleti at time - 23:03 - Asia/Kolkata
+6/25/2023, 9:23:25 AM [info]  Message :  canceling the previous backup notification
+6/25/2023, 9:23:25 AM [info]  Message :  Enabling daily backup for Sunil Kumar Pasupuleti at 0:1 - Asia/Kolkata
+6/25/2023, 9:23:25 AM [info]  Message :  -----------------------------------

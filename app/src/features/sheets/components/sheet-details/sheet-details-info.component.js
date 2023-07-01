@@ -29,6 +29,8 @@ import {
   GetCurrencySymbol,
 } from '../../../../components/symbol.currency';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
+import {useDispatch} from 'react-redux';
+import {notificationActions} from '../../../../store/notification-slice';
 moment.suppressDeprecationWarnings = true;
 
 export const SheetDetailsInfo = ({
@@ -45,6 +47,8 @@ export const SheetDetailsInfo = ({
     categories,
     onChangeSheetType,
   } = useContext(SheetsContext);
+
+  const dispatch = useDispatch();
 
   const onPressEditButton = sheetDetail => {
     navigation.navigate('AddSheetDetail', {

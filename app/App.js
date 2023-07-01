@@ -59,6 +59,9 @@ const App = () => {
     let androidStateListener = null;
     if (Platform.OS === 'ios') {
       iosStateListener = AppState.addEventListener('change', nextAppState => {
+        if (nextAppState === 'active') {
+          // checkAppUpdateNeeded();
+        }
         dispatch(setAppState({state: nextAppState}));
       });
     }

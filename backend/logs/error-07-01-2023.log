@@ -1,0 +1,3 @@
+7/1/2023, 10:15:38 PM [error]  Message :  {"errno":-2,"code":"ENOENT","syscall":"lstat","path":"/Users/sunilkumarpasupuleti/Desktop/projects/apps/expensesmanager/backend/public/users/uGsNJkkVl1hp3ws8en9bg5cGlxE3/lj96ur1pf3w0zyzuxpg/ljk8btbm6on9bdvqvlh/ljk8btbm6on9bdvqvlh.jpeg"}
+7/1/2023, 10:40:54 PM [error]  Message :  ----- Reason -----
+7/1/2023, 10:40:54 PM [error]  Message :  currentDirectory is not defined

@@ -1,34 +1,34 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {
   Avatar,
   Button,
   Card,
   Dialog,
   Divider,
-  Menu,
   Portal,
 } from 'react-native-paper';
 import {useTheme} from 'styled-components/native';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
 import {
+  SheetDetailAvatarActivityIndicator,
+  SheetDetailAvatarWrapper,
+  SheetDetailImage,
+  SheetDetailImageActivityIndicator,
+  SheetDetailImageWrapper,
   SheetDetailInput,
   SheetDetailsTotalBalance,
   SheetDetailsUnderline,
 } from '../../components/sheet-details/sheet-details.styles';
-import storage from '@react-native-firebase/storage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   Alert,
-  Image,
   PermissionsAndroid,
   Platform,
   TouchableOpacity,
   View,
 } from 'react-native';
-import {utils} from '@react-native-firebase/app';
 import moment from 'moment';
 import Haptics from 'react-native-haptic-feedback';
 import {ScrollView} from 'react-native';
@@ -56,6 +56,9 @@ import {notificationActions} from '../../../../store/notification-slice';
 import {launchImageLibrary} from 'react-native-image-picker';
 import RNFetchBlob from 'rn-fetch-blob';
 import {loaderActions} from '../../../../store/loader-slice';
+import remoteConfig from '@react-native-firebase/remote-config';
+import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
+import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 
 export const AddSheetDetailScreen = ({navigation, route}) => {
   const theme = useTheme();
@@ -63,6 +66,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   const [activeType, setActiveType] = useState('expense');
   const [sheet, setSheet] = useState(route.params.sheet);
   const [date, setDate] = useState(new Date());
+  const [avatarLoading, setAvatarLoading] = useState(false);
+  const [imageLoading, setImageLoading] = useState(false);
   let d = new Date();
   d.setMonth(date.getMonth());
   d.setDate(date.getDate());
@@ -87,6 +92,9 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   const [selectedImage, setSelectedImage] = useState({
     url: null,
   });
+  const {userData} = useContext(AuthenticationContext);
+
+  const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
 
   const [imageChanged, setImageChanged] = useState(false);
 
@@ -194,7 +202,26 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
         setNotes(sheetDetail.notes);
         setActiveType(sheetDetail.type);
         setDate(new Date(sheetDetail.date));
-        setSelectedImage(sheetDetail?.image);
+        let imageUrl = null;
+        console.log(sheetDetail.image);
+        if (sheetDetail.image && sheetDetail.image.url) {
+          console.log(userData.uid, sheet.id, sheetDetail.id);
+          if (
+            sheetDetail.image.url.startsWith(
+              `public/users/${userData.uid}/${sheet.id}/${sheetDetail.id}`,
+            )
+          ) {
+            imageUrl = `${BACKEND_URL}/${sheetDetail.image.url}`;
+
+            console.log(imageUrl);
+          } else {
+            imageUrl = sheetDetail.image.url;
+          }
+        }
+        setSelectedImage({
+          ...sheetDetail?.image,
+          url: imageUrl,
+        });
         setShowTime(sheetDetail.showTime);
         if (sheetDetail.showTime && sheetDetail.time) {
           setTime(new Date(sheetDetail.time));
@@ -281,21 +308,14 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       imageChanged: imageChanged,
       imageDeleted: deleteImage,
     };
+
     if (showTime) sheetDetail.time = time.toString();
     setOpen(false);
     onEditSheetDetails(sheet, sheetDetail, updatedSheet => {
-      // if (!deleteImage) {
       navigation.navigate('SheetDetailsHome', {
         screen: 'Transactions',
         sheet: updatedSheet,
       });
-      // } else {
-      //   setOpen(false);
-      //   setSelectedImage({
-      //     url: null,
-      //   });
-      // }
-      // navigation.navigate('SheetDetails', {sheet: updatedSheet});
     });
   };
 
@@ -343,6 +363,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
           setImageChanged(true);
         }
         setSelectedImage({
+          type: response.assets[0].type,
+          base64: base64Data,
           url: base64Data,
         });
       }
@@ -353,24 +375,10 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     if (selectedImage) {
       if (Platform.OS === 'ios') {
         // write code
-      } else {
-        try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-            {
-              title: 'Storage Permission Required',
-              message: 'App needs access to your storage to download Photos',
-            },
-          );
-
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            downloadImage(selectedImage);
-          } else {
-            Alert.alert('Storage Permission not granted');
-          }
-        } catch (err) {
-          console.warn(err, 'error occured storage');
-        }
+        downloadImage(selectedImage);
+      }
+      if (Platform.OS === 'android') {
+        downloadImage(selectedImage);
       }
     }
   };
@@ -379,33 +387,55 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     if (image && image.url) {
       // Getting the extention of the file
       // get bytes
-
-      let {config, fs} = RNFetchBlob;
-
-      let ext = image.extension;
-      const dirs = fs.dirs;
-      var path = dirs.DownloadDir + `/transaction-image-${moment()}.${ext}`;
-      const reference = storage().ref(image.path);
-      setOpen(false);
       dispatch(
-        loaderActions.showLoader({backdrop: true, loaderType: 'restore'}),
+        loaderActions.showLoader({
+          backdrop: true,
+          loaderType: 'image_upload',
+        }),
       );
-      await reference
-        .writeToFile(path)
-        .then(r => {
-          dispatch(loaderActions.hideLoader());
-          dispatch(
-            notificationActions.showToast({
-              status: 'success',
-              message: 'Image downloaded! Please check your Downloads folder.',
-            }),
-          );
+
+      RNFetchBlob.config({
+        fileCache: true,
+        appendExt: image.extension,
+      })
+        .fetch('GET', image.url)
+        .then(res => {
+          saveToCameraRoll(res.data);
         })
         .catch(err => {
+          dispatch(
+            notificationActions.showToast({
+              status: 'error',
+              message: err,
+            }),
+          );
           dispatch(loaderActions.hideLoader());
-          console.log('Error occured in downloading image ', err);
-          Alert.alert('Error occured in downloading the file');
         });
+
+      const saveToCameraRoll = url => {
+        CameraRoll.save(url)
+          .then(() => {
+            setOpen(false);
+            dispatch(
+              notificationActions.showToast({
+                status: 'success',
+                message: 'Image saved to your Gallery/Photos',
+              }),
+            );
+            dispatch(loaderActions.hideLoader());
+          })
+          .catch(err => {
+            setOpen(false);
+            dispatch(
+              notificationActions.showToast({
+                status: 'error',
+                message:
+                  err?.message + '. Please enable permission from settings',
+              }),
+            );
+            dispatch(loaderActions.hideLoader());
+          });
+      };
     } else {
       dispatch(loaderActions.hideLoader());
       Alert.alert('No Image Found');
@@ -535,7 +565,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
             <Card.Content>
               <View>
                 <FlexRow justifyContent="space-between">
-                  <FlexRow>
+                  <FlexRow gap="5px">
                     <Ionicons
                       name="calendar-outline"
                       size={25}
@@ -632,7 +662,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
             <Spacer size={'large'} />
 
             <Card.Content>
-              <FlexRow justifyContent="space-between">
+              <FlexRow justifyContent="space-between" gap="5px">
                 <Text>Show Time</Text>
                 <ToggleSwitch
                   value={showTime}
@@ -771,12 +801,22 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                   </TouchableOpacity>
 
                   <TouchableOpacity onPress={() => setOpen(true)}>
-                    <Avatar.Image
-                      size={70}
-                      source={{
-                        uri: selectedImage.url,
-                      }}
-                    />
+                    <SheetDetailAvatarWrapper>
+                      <Avatar.Image
+                        onLoadStart={() => setAvatarLoading(true)}
+                        onLoad={() => setAvatarLoading(false)}
+                        size={70}
+                        source={{
+                          uri: selectedImage.url,
+                        }}
+                      />
+                      {avatarLoading && (
+                        <SheetDetailAvatarActivityIndicator
+                          color={theme.colors.brand.primary}
+                          animating
+                        />
+                      )}
+                    </SheetDetailAvatarWrapper>
                   </TouchableOpacity>
                 </FlexRow>
               )}
@@ -860,7 +900,22 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
         {open && (
           <Portal>
             <Dialog visible={open} onDismiss={() => setOpen(false)}>
-              <Image style={{height: 400}} source={{uri: selectedImage?.url}} />
+              <SheetDetailImageWrapper>
+                <SheetDetailImage
+                  onLoadStart={() => setImageLoading(true)}
+                  onLoad={() => setImageLoading(false)}
+                  source={{
+                    uri: selectedImage?.url,
+                  }}
+                />
+                {imageLoading && (
+                  <SheetDetailImageActivityIndicator
+                    color={theme.colors.brand.primary}
+                    animating
+                  />
+                )}
+              </SheetDetailImageWrapper>
+              <Spacer size="medium" />
               <Dialog.Actions>
                 <Button onPress={() => setOpen(false)} color="#aaa">
                   Cancel

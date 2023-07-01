@@ -24,6 +24,7 @@ export const ButtonText = styled(Text).attrs({
 export const FlexRow = styled.View`
   flex-direction: row;
   align-items: center;
+  ${props => props.gap && `gap : ${props.gap};`}
   ${props =>
     props.justifyContent && `justify-content : ${props.justifyContent};`}
 `;

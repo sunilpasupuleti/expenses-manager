@@ -117,9 +117,9 @@ const https_options = {
   cert: fs.readFileSync("./config/ssl/certificate.crt"),
 };
 
-// const server = require("http").Server(app);
+const server = require("http").Server(app);
 
-const server = require("https").createServer(https_options, app);
+// const server = require("https").createServer(https_options, app);
 
 const io = socketIo(server, {
   cors: {
@@ -130,7 +130,6 @@ const io = socketIo(server, {
   },
   allowEIO3: true,
 });
-
 require("./sockets/socket")(io);
 
 server.listen(process.env.PORT || 8080, async () => {
@@ -212,7 +211,7 @@ server.listen(process.env.PORT || 8080, async () => {
     });
   }
 
-  activateNotifications();
+  // activateNotifications();
 });
 
 /**
@@ -220,6 +219,7 @@ server.listen(process.env.PORT || 8080, async () => {
  */
 const { initializeApp, cert } = require("firebase-admin/app");
 var serviceAccount = require("./config/expensesmanager.json");
+const { log } = require("winston");
 
 initializeApp({
   credential: cert(serviceAccount),

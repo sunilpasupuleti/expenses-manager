@@ -138,7 +138,7 @@ export const AccountScreen = ({navigation}) => {
       <Animatable.View
         animation={'pulse'}
         iterationCount={4}
-        duration={1500}
+        duration={2000}
         style={{
           justifyContent: 'center',
           alignItems: 'center',
@@ -165,7 +165,7 @@ export const AccountScreen = ({navigation}) => {
       </Animatable.View>
 
       <AccountContainer showsVerticalScrollIndicator={false}>
-        <Animatable.View animation="fadeIn" duration={2000}>
+        <Animatable.View animation="fadeIn" duration={3000}>
           {error && (
             <ErrorMessage fontsize="13px">{error.message}</ErrorMessage>
           )}

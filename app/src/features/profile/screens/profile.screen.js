@@ -1,6 +1,6 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import React, {useContext, useEffect, useState} from 'react';
-import {Button, Card} from 'react-native-paper';
+import {Button, Card, IconButton} from 'react-native-paper';
 import {useDispatch} from 'react-redux';
 import {useTheme} from 'styled-components/native';
 import {MainWrapper} from '../../../components/styles';
@@ -11,6 +11,8 @@ import {
   ProfileInput,
   ProfileInputErrorMessage,
   ProfilePicture,
+  ProfilePictureActivityIndicator,
+  ProfilePictureWrapper,
   ProfileWrapper,
 } from '../components/profile.styles';
 import {Spacer} from '../../../components/spacer/spacer.component';
@@ -18,6 +20,10 @@ import {Alert, ScrollView} from 'react-native';
 import {ProfileContext} from '../../../services/profile/profile.context';
 import remoteConfig from '@react-native-firebase/remote-config';
 import {launchImageLibrary} from 'react-native-image-picker';
+import {loaderActions} from '../../../store/loader-slice';
+import RNFetchBlob from 'rn-fetch-blob';
+import {notificationActions} from '../../../store/notification-slice';
+import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 
 const defaultInputState = {
   displayName: {
@@ -62,6 +68,8 @@ export const ProfileScreen = ({navigation, route}) => {
   });
 
   const [previewImage, setPreviewImage] = useState(null);
+
+  const [profilePictureLoading, setProfilePictureLoading] = useState(false);
 
   useEffect(() => {
     navigation.setOptions({
@@ -279,41 +287,124 @@ export const ProfileScreen = ({navigation, route}) => {
     });
   };
 
+  const downloadProfilePicture = async () => {
+    if (userData && userData.photoURL) {
+      // Getting the extention of the file
+      // get bytes
+      let photoURL = userData.photoURL.startsWith(
+        `public/users/${userData.uid}`,
+      )
+        ? `${BACKEND_URL}/${userData.photoURL}`
+        : userData.photoURL;
+
+      let extension = photoURL.split('profile.');
+
+      dispatch(
+        loaderActions.showLoader({
+          backdrop: true,
+          loaderType: 'image_upload',
+        }),
+      );
+
+      RNFetchBlob.config({
+        fileCache: true,
+        appendExt: extension[1],
+      })
+        .fetch('GET', photoURL)
+        .then(res => {
+          saveToCameraRoll(res.data);
+        })
+        .catch(err => {
+          dispatch(
+            notificationActions.showToast({
+              status: 'error',
+              message: err,
+            }),
+          );
+          dispatch(loaderActions.hideLoader());
+        });
+
+      const saveToCameraRoll = url => {
+        CameraRoll.save(url)
+          .then(() => {
+            dispatch(
+              notificationActions.showToast({
+                status: 'success',
+                message: 'Profile Picture saved to your Gallery/Photos',
+              }),
+            );
+            dispatch(loaderActions.hideLoader());
+          })
+          .catch(err => {
+            dispatch(
+              notificationActions.showToast({
+                status: 'error',
+                message:
+                  err?.message + '. Please enable permission from settings',
+              }),
+            );
+            dispatch(loaderActions.hideLoader());
+          });
+      };
+    } else {
+      dispatch(loaderActions.hideLoader());
+      Alert.alert('No Image Found');
+    }
+  };
+
   return (
     <SafeArea>
       <MainWrapper>
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="never">
           <ProfileWrapper>
-            {!previewImage && (
-              <>
-                {userData && userData.photoURL && (
-                  <ProfilePicture
-                    source={{
-                      uri: userData.photoURL.startsWith(
-                        `public/users/${userData.uid}`,
-                      )
-                        ? `${BACKEND_URL}/${userData.photoURL}`
-                        : userData.photoURL,
-                    }}
-                  />
-                )}
+            <ProfilePictureWrapper>
+              {!previewImage && (
+                <>
+                  {userData && userData.photoURL && (
+                    <ProfilePicture
+                      onLoadStart={() => setProfilePictureLoading(true)}
+                      onLoad={() => setProfilePictureLoading(false)}
+                      source={{
+                        uri: userData.photoURL.startsWith(
+                          `public/users/${userData.uid}`,
+                        )
+                          ? `${BACKEND_URL}/${userData.photoURL}`
+                          : userData.photoURL,
+                      }}
+                    />
+                  )}
 
-                {userData && !userData.photoURL && (
-                  <ProfilePicture
-                    source={require('../../../../assets/user.png')}
-                  />
-                )}
-              </>
-            )}
+                  {userData && !userData.photoURL && (
+                    <ProfilePicture
+                      onLoadStart={() => setProfilePictureLoading(true)}
+                      onLoad={() => setProfilePictureLoading(false)}
+                      source={require('../../../../assets/user.png')}
+                    />
+                  )}
 
-            {previewImage && (
-              <ProfilePicture
-                source={{
-                  uri: previewImage.base64,
-                }}
-              />
-            )}
+                  {profilePictureLoading && (
+                    <ProfilePictureActivityIndicator
+                      animating={true}
+                      color={theme.colors.brand.primary}
+                    />
+                  )}
+                </>
+              )}
 
+              {previewImage && (
+                <ProfilePicture
+                  onLoadStart={() => setProfilePictureLoading(true)}
+                  onLoad={() => setProfilePictureLoading(false)}
+                  source={{
+                    uri: previewImage.base64,
+                  }}
+                />
+              )}
+            </ProfilePictureWrapper>
+
+            {/* button containers */}
             {!previewImage && (
               <ProfileImageButtonContainer>
                 {/* to show only one button full width */}
@@ -359,6 +450,22 @@ export const ProfileScreen = ({navigation, route}) => {
                     {buttonLoading.remove
                       ? 'Removing Picture'
                       : 'Remove Picture'}
+                  </Button>
+                )}
+
+                {userData.photoURL && (
+                  <Button
+                    theme={{roundness: 10}}
+                    mode="outlined"
+                    style={{
+                      height: 40,
+                      width: buttonLoading.remove ? '100%' : 'auto',
+                    }}
+                    icon={'download'}
+                    onPress={downloadProfilePicture}
+                    buttonColor={theme.colors.brand.secondary}
+                    textColor="#fff">
+                    Download Picture
                   </Button>
                 )}
               </ProfileImageButtonContainer>

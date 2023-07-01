@@ -1,0 +1,28 @@
+7/1/2023, 8:47:41 PM [info]  Message :  server started on port number 3000 }
+7/1/2023, 8:47:43 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/1/2023, 9:10:43 PM [info]  Message :  Enabling daily reminder for Sunil Kumar Pasupuleti at time - 23:03 - Asia/Kolkata
+7/1/2023, 9:10:43 PM [info]  Message :  Enabling daily backup for Sunil Kumar Pasupuleti at 0:1 - Asia/Kolkata
+7/1/2023, 9:10:43 PM [info]  Message :  -----------------------------------
+7/1/2023, 9:23:07 PM [info]  Message :  server started on port number 3000 }
+7/1/2023, 9:23:08 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/1/2023, 9:23:14 PM [info]  Message :  server started on port number 3000 }
+7/1/2023, 9:23:15 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/1/2023, 10:15:38 PM [error]  Message :  {"errno":-2,"code":"ENOENT","syscall":"lstat","path":"/Users/sunilkumarpasupuleti/Desktop/projects/apps/expensesmanager/backend/public/users/uGsNJkkVl1hp3ws8en9bg5cGlxE3/lj96ur1pf3w0zyzuxpg/ljk8btbm6on9bdvqvlh/ljk8btbm6on9bdvqvlh.jpeg"}
+7/1/2023, 10:29:54 PM [info]  Message :  server started on port number 3000 }
+7/1/2023, 10:29:55 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/1/2023, 10:34:22 PM [info]  Message :  server started on port number 3000 }
+7/1/2023, 10:34:23 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/1/2023, 10:34:32 PM [info]  Message :  server started on port number 3000 }
+7/1/2023, 10:34:32 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/1/2023, 10:37:50 PM [info]  Message :  server started on port number 3000 }
+7/1/2023, 10:37:51 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/1/2023, 10:40:46 PM [info]  Message :  server started on port number 3000 }
+7/1/2023, 10:40:47 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/1/2023, 10:40:54 PM [error]  Message :  ----- Reason -----
+7/1/2023, 10:40:54 PM [error]  Message :  currentDirectory is not defined
+7/1/2023, 10:41:12 PM [info]  Message :  server started on port number 3000 }
+7/1/2023, 10:41:13 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/1/2023, 10:42:10 PM [info]  Message :  server started on port number 3000 }
+7/1/2023, 10:42:11 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/1/2023, 10:42:59 PM [info]  Message :  server started on port number 3000 }
+7/1/2023, 10:43:00 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net

@@ -13,11 +13,9 @@ import DocumentPicker from 'react-native-document-picker';
 import RNFetchBlob from 'rn-fetch-blob';
 import RNFS from 'react-native-fs';
 import useHttp from '../../hooks/use-http';
-
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import _ from 'lodash';
 import matchWords from '../../components/utility/category-match-words.json';
-import storage from '@react-native-firebase/storage';
 import XLSX from 'xlsx';
 import moment from 'moment';
 import {zip} from 'react-native-zip-archive';
@@ -545,54 +543,73 @@ export const SheetsContextProvider = ({children}) => {
       var Base64Code = sheetDetail.image.url.split(/,\s*/);
       let prefix = Base64Code[0]; //data:image/png;base64,
       let format = prefix.match(/image\/(jpeg|png|jpg)/); //at 0 index image/jpeg at 1 index it shows png or jpeg
-      let path = `${userData.uid}/${sheet.id}/${sheetDetail.id}.${format[1]}`;
-      const reference = storage().ref(path);
+
+      let data = {
+        photo: sheetDetail.image,
+        sheetId: sheet.id,
+        sheetDetailId: sheetDetail.id,
+      };
+      let jwtToken = await auth().currentUser.getIdToken();
       dispatch(
-        loaderActions.showLoader({backdrop: true, loaderType: 'image_upload'}),
+        loaderActions.showLoader({
+          backdrop: true,
+          loaderType: 'image_upload',
+        }),
       );
-      await reference
-        .putString(Base64Code[1], 'base64', {contentType: format[0]})
-        .then(async r => {
-          const url = await reference.getDownloadURL().catch(err => {
-            console.log('Error in getting download url ', err);
-            Alert.alert('Error in uploading the bill');
-          });
-          dispatch(loaderActions.hideLoader());
-          console.log(url);
-          sheetDetail.image.url = url;
-          sheetDetail.image.path = r.metadata.fullPath;
-          sheetDetail.image.type = format[0];
-          sheetDetail.image.extension = format[1];
-        })
-        .catch(err => {
-          dispatch(loaderActions.hideLoader());
-          sheetDetail.image = null;
-          Alert.alert('Error in uploading the bill');
-          console.log('Error in uploading the image ', err);
-        });
+
+      sendRequest(
+        {
+          type: 'PUT',
+          url: BACKEND_URL + '/user/upload-sheet-detail-picture',
+          data: data,
+          headers: {
+            authorization: 'Bearer ' + jwtToken,
+          },
+        },
+        {
+          successCallback: async result => {
+            dispatch(loaderActions.hideLoader());
+            let imageObj = {
+              url: result.photoURL,
+              type: format[0],
+              extension: format[1],
+            };
+            sheetDetail.image = imageObj;
+            saveSheet();
+          },
+          errorCallback: err => {
+            console.log('Error in uploading the bill ', err);
+            dispatch(loaderActions.hideLoader());
+            Alert.alert('Error in uploading the bill ' + err);
+          },
+        },
+      );
+    } else {
+      saveSheet();
     }
 
-    var presentSheets = [...sheets];
-    var sheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
-    var presentSheet = presentSheets[sheetIndex];
-    if (!presentSheet.details) {
-      presentSheet.details = [];
-    }
+    const saveSheet = () => {
+      var presentSheets = [...sheets];
+      var sheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
+      var presentSheet = presentSheets[sheetIndex];
+      if (!presentSheet.details) {
+        presentSheet.details = [];
+      }
 
-    presentSheet.details.push(sheetDetail);
-    presentSheet.totalBalance = calculateBalance(presentSheet);
-    presentSheet.updatedAt = Date.now();
-    presentSheets[sheetIndex] = presentSheet;
-
-    let updatedExpensesData = {
-      ...expensesData,
-      sheets: presentSheets,
-      categories: categories,
+      presentSheet.details.push(sheetDetail);
+      presentSheet.totalBalance = calculateBalance(presentSheet);
+      presentSheet.updatedAt = Date.now();
+      presentSheets[sheetIndex] = presentSheet;
+      let updatedExpensesData = {
+        ...expensesData,
+        sheets: presentSheets,
+        categories: categories,
+      };
+      onSaveExpensesData(updatedExpensesData).then(() => {
+        onSetChangesMade(true); // set changes made to true so that backup occurs only if some changes are made
+        callback(presentSheet);
+      });
     };
-    onSaveExpensesData(updatedExpensesData).then(() => {
-      onSetChangesMade(true); // set changes made to true so that backup occurs only if some changes are made
-      callback(presentSheet);
-    });
   };
 
   const onSaveCategory = async (category, type, callback = () => null) => {
@@ -642,6 +659,7 @@ export const SheetsContextProvider = ({children}) => {
       let presentSheets = [...sheets];
       let index = presentSheets.findIndex(s => s.id === sheet.id);
       presentSheets[index] = {...sheets[index], ...sheet};
+
       let updatedExpensesData = {
         ...expensesData,
         sheets: presentSheets,
@@ -669,87 +687,107 @@ export const SheetsContextProvider = ({children}) => {
     );
     // if image changed delete the image
     if (sheetDetail.imageChanged) {
-      if (
-        sheetDetail.image &&
-        sheetDetail.image.url &&
-        presentSheet.details[sheetDetailIndex].image &&
-        presentSheet.details[sheetDetailIndex].image.url &&
-        sheetDetail.image.url ===
-          presentSheet.details[sheetDetailIndex].image.url
-      ) {
-        let previousImage = storage().refFromURL(
-          presentSheet.details[sheetDetailIndex].image.url,
-        );
-        // delete previous image
-        previousImage.delete();
-      }
-
       if (sheetDetail.image && sheetDetail.image.url) {
+        let data = {
+          photo: sheetDetail.image,
+          sheetId: sheet.id,
+          sheetDetailId: sheetDetail.id,
+        };
+
         var Base64Code = sheetDetail.image.url.split(/,\s*/);
         let prefix = Base64Code[0]; //data:image/png;base64,
         let format = prefix.match(/image\/(jpeg|png|jpg)/); //at 0 index image/jpeg at 1 index it shows png or jpeg
-        let path = `${userData.uid}/${sheet.id}/${sheetDetail.id}.${format[1]}`;
-        const reference = storage().ref(path);
+        let jwtToken = await auth().currentUser.getIdToken();
         dispatch(
           loaderActions.showLoader({
             backdrop: true,
             loaderType: 'image_upload',
           }),
         );
-        await reference
-          .putString(Base64Code[1], 'base64', {contentType: format[0]})
-          .then(async r => {
-            const url = await reference.getDownloadURL().catch(err => {
-              console.log('Error in getting download url ', err);
-              Alert.alert('Error in uploading the bill');
-            });
-            dispatch(loaderActions.hideLoader());
-            sheetDetail.image.url = url;
-            sheetDetail.image.path = r.metadata.fullPath;
-            sheetDetail.image.type = format[0];
-            sheetDetail.image.extension = format[1];
-          })
-          .catch(err => {
-            dispatch(loaderActions.hideLoader());
-            Alert.alert('Error in uploading the bill');
-            console.log('Error in uploading the image ', err);
-          });
+
+        sendRequest(
+          {
+            type: 'PUT',
+            url: BACKEND_URL + '/user/upload-sheet-detail-picture',
+            data: data,
+            headers: {
+              authorization: 'Bearer ' + jwtToken,
+            },
+          },
+          {
+            successCallback: async result => {
+              dispatch(loaderActions.hideLoader());
+              let imageObj = {
+                url: result.photoURL,
+                type: format[0],
+                extension: format[1],
+              };
+              sheetDetail.image = imageObj;
+              editSheet();
+            },
+            errorCallback: err => {
+              console.log('Error in uploading the bill ', err);
+              dispatch(loaderActions.hideLoader());
+              Alert.alert('Error in uploading the bill ' + err);
+            },
+          },
+        );
       }
     }
 
     // if image delete request
     if (sheetDetail.imageDeleted) {
-      let path = presentSheet.details[sheetDetailIndex].image.url;
-      if (path) {
-        dispatch(loaderActions.showLoader({backdrop: true}));
-        let toDeleteImage = storage().refFromURL(path);
-        sheetDetail.image = {url: null};
-        toDeleteImage
-          .delete()
-          .then(() => dispatch(loaderActions.hideLoader()))
-          .catch(err => {
-            console.log('error in deleteing image', err);
+      dispatch(
+        loaderActions.showLoader({
+          backdrop: true,
+          loaderType: 'image_upload',
+        }),
+      );
+      let jwtToken = await auth().currentUser.getIdToken();
+      sendRequest(
+        {
+          type: 'PUT',
+          url: BACKEND_URL + '/user/remove-sheet-detail-picture',
+          data: {
+            url: presentSheet.details[sheetDetailIndex].image.url,
+          },
+          headers: {
+            authorization: 'Bearer ' + jwtToken,
+          },
+        },
+        {
+          successCallback: async result => {
+            sheetDetail.image = {url: null};
+            editSheet();
             dispatch(loaderActions.hideLoader());
-          });
-      }
+          },
+          errorCallback: err => {
+            console.log('Error in deleting the picture ', err);
+            dispatch(loaderActions.hideLoader());
+            Alert.alert('Error in deleting the picture ' + err);
+          },
+        },
+      );
     }
 
-    delete sheetDetail.imageChanged;
-    delete sheetDetail.imageDeleted;
+    const editSheet = () => {
+      delete sheetDetail.imageChanged;
+      delete sheetDetail.imageDeleted;
 
-    presentSheet.details[sheetDetailIndex] = sheetDetail;
-    presentSheet.totalBalance = calculateBalance(presentSheet);
-    presentSheet.updatedAt = Date.now();
-    presentSheets[sheetIndex] = presentSheet;
-    let updatedExpensesData = {
-      ...expensesData,
-      sheets: presentSheets,
-      categories: categories,
+      presentSheet.details[sheetDetailIndex] = sheetDetail;
+      presentSheet.totalBalance = calculateBalance(presentSheet);
+      presentSheet.updatedAt = Date.now();
+      presentSheets[sheetIndex] = presentSheet;
+      let updatedExpensesData = {
+        ...expensesData,
+        sheets: presentSheets,
+        categories: categories,
+      };
+      onSaveExpensesData(updatedExpensesData).then(() => {
+        onSetChangesMade(true); // set changes made to true so that backup occurs only if some changes are made
+        callback(presentSheet);
+      });
     };
-    onSaveExpensesData(updatedExpensesData).then(() => {
-      onSetChangesMade(true); // set changes made to true so that backup occurs only if some changes are made
-      callback(presentSheet);
-    });
   };
 
   const onEditCategory = async (category, type, callback = () => null) => {
@@ -798,6 +836,22 @@ export const SheetsContextProvider = ({children}) => {
     };
     onSaveExpensesData(updatedExpensesData);
     onSetChangesMade(true);
+    let jwtToken = await auth().currentUser.getIdToken();
+    sendRequest(
+      {
+        type: 'DELETE',
+        url: BACKEND_URL + `/user/delete-sheet/${sheet.id}`,
+        headers: {
+          authorization: 'Bearer ' + jwtToken,
+        },
+      },
+      {
+        successCallback: async result => {},
+        errorCallback: err => {
+          console.log('Error in deleting sheet pictured ', err);
+        },
+      },
+    );
   };
 
   const onDeleteCategory = async (category, type) => {
@@ -828,9 +882,25 @@ export const SheetsContextProvider = ({children}) => {
     let presentSheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
     // delete bill
     if (sheetDetail.image && sheetDetail.image.url) {
-      let image = storage().refFromURL(sheetDetail.image.url);
-      // delete previous image
-      image.delete().catch(err => console.log('error in deleting image', err));
+      let jwtToken = await auth().currentUser.getIdToken();
+      sendRequest(
+        {
+          type: 'PUT',
+          url: BACKEND_URL + '/user/remove-sheet-detail-picture',
+          data: {
+            url: sheetDetail.image.url,
+          },
+          headers: {
+            authorization: 'Bearer ' + jwtToken,
+          },
+        },
+        {
+          successCallback: async result => {},
+          errorCallback: err => {
+            console.log('Error in deleting the picture ', err);
+          },
+        },
+      );
     }
 
     let remainingSheetDetails = presentSheets[presentSheetIndex].details.filter(
@@ -859,35 +929,82 @@ export const SheetsContextProvider = ({children}) => {
     sheetDetail,
     callback = () => null,
   ) => {
-    let presentSheets = [...sheets];
-    let moveFromSheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
-    let moveFromSheet = presentSheets[moveFromSheetIndex];
-    let moveFromremainingSheetDetails = moveFromSheet.details.filter(
-      s => s.id != sheetDetail.id,
+    let jwtToken = await auth().currentUser.getIdToken();
+    dispatch(
+      loaderActions.showLoader({
+        backdrop: true,
+      }),
     );
-    moveFromSheet.details = moveFromremainingSheetDetails;
-    moveFromSheet.totalBalance = calculateBalance(moveFromSheet);
-    moveFromSheet.updatedAt = Date.now();
-    presentSheets[moveFromSheetIndex] = moveFromSheet;
-    // to move sheet into
-    let moveToIndex = presentSheets.findIndex(s => s.id === moveToSheet.id);
-    var moveTo = presentSheets[moveToIndex];
-    if (!moveTo.details) {
-      moveTo.details = [];
+    let data = {
+      currentSheetId: sheet.id,
+      moveToSheetId: moveToSheet.id,
+      sheetDetailId: sheetDetail.id,
+      photo: sheetDetail?.image,
+    };
+
+    if (data.photo && data.photo.url) {
+      sendRequest(
+        {
+          type: 'PUT',
+          url: BACKEND_URL + '/user/move-sheet-detail-picture',
+          data: data,
+          headers: {
+            authorization: 'Bearer ' + jwtToken,
+          },
+        },
+        {
+          successCallback: async result => {
+            dispatch(loaderActions.hideLoader());
+            sheetDetail.image.url = result.photoURL;
+            moveSheet();
+          },
+          errorCallback: err => {
+            console.log('Error in moving the transaction ', err);
+            dispatch(loaderActions.hideLoader());
+            dispatch(
+              notificationActions.showToast({
+                message: 'Error occured while moving the transaction.',
+                status: 'error',
+              }),
+            );
+          },
+        },
+      );
+    } else {
+      moveSheet();
     }
 
-    moveTo.details.push(sheetDetail);
-    moveTo.totalBalance = calculateBalance(moveTo);
-    presentSheets[moveToIndex] = moveTo;
-    let updatedExpensesData = {
-      ...expensesData,
-      sheets: presentSheets,
-      categories: categories,
+    const moveSheet = () => {
+      let presentSheets = [...sheets];
+      let moveFromSheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
+      let moveFromSheet = presentSheets[moveFromSheetIndex];
+      let moveFromremainingSheetDetails = moveFromSheet.details.filter(
+        s => s.id != sheetDetail.id,
+      );
+      moveFromSheet.details = moveFromremainingSheetDetails;
+      moveFromSheet.totalBalance = calculateBalance(moveFromSheet);
+      moveFromSheet.updatedAt = Date.now();
+      presentSheets[moveFromSheetIndex] = moveFromSheet;
+      // to move sheet into
+      let moveToIndex = presentSheets.findIndex(s => s.id === moveToSheet.id);
+      var moveTo = presentSheets[moveToIndex];
+      if (!moveTo.details) {
+        moveTo.details = [];
+      }
+
+      moveTo.details.push(sheetDetail);
+      moveTo.totalBalance = calculateBalance(moveTo);
+      presentSheets[moveToIndex] = moveTo;
+      let updatedExpensesData = {
+        ...expensesData,
+        sheets: presentSheets,
+        categories: categories,
+      };
+      onSaveExpensesData(updatedExpensesData).then(() => {
+        onSetChangesMade(true);
+        callback(moveFromSheet);
+      });
     };
-    onSaveExpensesData(updatedExpensesData).then(() => {
-      onSetChangesMade(true);
-      callback(moveFromSheet);
-    });
   };
 
   const onDuplicateSheet = async (
@@ -897,25 +1014,73 @@ export const SheetsContextProvider = ({children}) => {
   ) => {
     let presentSheets = [...sheets];
     let dupSheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
-    let dupSheet = presentSheets[dupSheetIndex];
-    dupSheet.details.push({
-      ...sheetDetail,
-      image: {url: null},
-      id: Date.now().toString(36) + Math.random().toString(36).substring(2),
-    });
-    dupSheet.updatedAt = Date.now();
-    dupSheet.totalBalance = calculateBalance(dupSheet);
-    presentSheets[dupSheetIndex] = dupSheet;
-    let updatedExpensesData = {
-      ...expensesData,
-      sheets: presentSheets,
-      categories: categories,
+    let dupSheet = {...presentSheets[dupSheetIndex]};
+    let newSheetDetail = _.cloneDeep(sheetDetail);
+    newSheetDetail.id =
+      Date.now().toString(36) + Math.random().toString(36).substring(2);
+
+    let jwtToken = await auth().currentUser.getIdToken();
+    dispatch(
+      loaderActions.showLoader({
+        backdrop: true,
+      }),
+    );
+    let data = {
+      newSheetDetailId: newSheetDetail.id,
+      sheetId: sheet.id,
+      sheetDetailId: sheetDetail.id,
+      photo: sheetDetail?.image,
     };
 
-    onSaveExpensesData(updatedExpensesData).then(() => {
-      onSetChangesMade(true);
-      callback(dupSheet);
-    });
+    if (data.photo && data.photo.url) {
+      sendRequest(
+        {
+          type: 'PUT',
+          url: BACKEND_URL + '/user/duplicate-sheet-detail-picture',
+          data: data,
+          headers: {
+            authorization: 'Bearer ' + jwtToken,
+          },
+        },
+        {
+          successCallback: async result => {
+            dispatch(loaderActions.hideLoader());
+            newSheetDetail.image.url = result.photoURL;
+            duplicateSheet();
+          },
+          errorCallback: err => {
+            console.log('Error in duplicating the transaction ', err);
+            dispatch(loaderActions.hideLoader());
+            dispatch(
+              notificationActions.showToast({
+                message: 'Error occured while duplciating the transaction.',
+                status: 'error',
+              }),
+            );
+          },
+        },
+      );
+    } else {
+      duplicateSheet();
+    }
+
+    const duplicateSheet = () => {
+      dupSheet.details.push(newSheetDetail);
+      dupSheet.updatedAt = Date.now();
+      dupSheet.totalBalance = calculateBalance(dupSheet);
+      presentSheets[dupSheetIndex] = dupSheet;
+
+      let updatedExpensesData = {
+        ...expensesData,
+        sheets: presentSheets,
+        categories: categories,
+      };
+
+      onSaveExpensesData(updatedExpensesData).then(() => {
+        onSetChangesMade(true);
+        callback(dupSheet);
+      });
+    };
   };
 
   const onChangeSheetType = async (
@@ -1282,10 +1447,20 @@ export const SheetsContextProvider = ({children}) => {
         totalIncome += detail.amount;
       }
       // ${detail.image && `<img src='${detail.image}'/>`}
+      let imageUrl = null;
+      if (detail.image && detail.image.url) {
+        if (
+          detail.image.url.startsWith(
+            `public/users/${userData.uid}/${sheet.id}/${detail.id}`,
+          )
+        ) {
+          imageUrl = `${BACKEND_URL}/${detail.image.url}`;
+        } else {
+          imageUrl = detail.image.url;
+        }
+      }
       let image =
-        detail.image && detail.image.url
-          ? `<img src='${detail.image.url}'/>`
-          : '';
+        detail.image && detail.image.url ? `<img src='${imageUrl}'/>` : '';
       let tableRow = `
         <tr>
             <td>${index + 1}</td>
@@ -1514,11 +1689,22 @@ export const SheetsContextProvider = ({children}) => {
         } else {
           totalIncome += detail.amount;
         }
-        // ${detail.image && `<img src='${detail.image}'/>`}
+
+        let imageUrl = null;
+        if (detail.image && detail.image.url) {
+          if (
+            detail.image.url.startsWith(
+              `public/users/${userData.uid}/${sheet.id}/${detail.id}`,
+            )
+          ) {
+            imageUrl = `${BACKEND_URL}/${detail.image.url}`;
+          } else {
+            imageUrl = detail.image.url;
+          }
+        }
+
         let image =
-          detail.image && detail.image.url
-            ? `<img src='${detail.image.url}'/>`
-            : '';
+          detail.image && detail.image.url ? `<img src='${imageUrl}'/>` : '';
         let tableRow = `
         <tr>
             <td>${index + 1}</td>

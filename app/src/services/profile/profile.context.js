@@ -133,9 +133,9 @@ export const ProfileContextProvider = ({children}) => {
       },
       {
         successCallback: () => {
+          dispatch(setChangesMade({status: true}));
           currentUser.reload();
           successCallBack();
-          dispatch(setChangesMade({status: true}));
           onGetUserDetails();
           dispatch(
             notificationActions.showToast({
@@ -241,8 +241,8 @@ export const ProfileContextProvider = ({children}) => {
             })
             .then(() => {
               const onSuccess = () => {
-                currentUser.reload();
                 dispatch(setChangesMade({status: true}));
+                currentUser.reload();
                 successCallBack();
                 dispatch(
                   notificationActions.showToast({
