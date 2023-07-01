@@ -136,7 +136,6 @@ server.listen(process.env.PORT || 8080, async () => {
   logger.info(`server started on port number ${process.env.PORT} }`);
 
   // In case if server restarts reschedule all the jobs with which user have dialy reminder and abckup enabled
-
   let jobs = schedule.scheduledJobs;
 
   let users = await Users.find().populate("backups");
