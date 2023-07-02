@@ -20,6 +20,7 @@ import {
   deleteUserPinCode,
 } from '@haskkor/react-native-pincode';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
+import appleAuth from '@invertase/react-native-apple-authentication';
 
 GoogleSignin.configure({
   webClientId: remoteConfig().getValue('WEB_CLIENT_ID').asString(),
@@ -28,6 +29,7 @@ GoogleSignin.configure({
 export const AuthenticationContext = createContext({
   userAdditionalDetails: null,
   onGoogleAuthentication: () => null,
+  onAppleAuthentication: () => null,
   onSignInWithEmail: () => null,
   onSignUpWithEmail: () => null,
   onSignInWithMobile: (phone, resend) => null,
@@ -149,6 +151,47 @@ export const AuthenticationContextProvider = ({children}) => {
         console.log('Error in signin huff', error);
         // some other error happened
       }
+    }
+  };
+
+  const onAppleAuthentication = async () => {
+    dispatch(loaderActions.showLoader({backdrop: true}));
+    try {
+      const appleAuthRequestResponse = await appleAuth.performRequest({
+        requestedOperation: appleAuth.Operation.LOGIN,
+        requestedScopes: [appleAuth.Scope.EMAIL, appleAuth.Scope.FULL_NAME],
+      });
+      if (!appleAuthRequestResponse.identityToken) {
+        throw new Error('Apple SIgn-In Failed - no identity token returned');
+      }
+      const {identityToken, nonce} = appleAuthRequestResponse;
+      const appleCredentials = auth.AppleAuthProvider.credential(
+        identityToken,
+        nonce,
+      );
+      if (!appleCredentials) {
+        throw new Error(
+          'Apple SIgn-In Failed - no apple credentials  returned',
+        );
+      }
+      auth()
+        .signInWithCredential(appleCredentials)
+        .then(res => {
+          onSignInSuccess(res);
+        })
+        .catch(err => {
+          dispatch(loaderActions.hideLoader());
+          console.log('error in google sign in ', err);
+          dispatch(
+            notificationActions.showToast({
+              status: 'error',
+              message: err.toString(),
+            }),
+          );
+        });
+    } catch (error) {
+      console.log(error, 'Error in sign in huff APPLE');
+      dispatch(loaderActions.hideLoader());
     }
   };
 
@@ -405,6 +448,7 @@ export const AuthenticationContextProvider = ({children}) => {
     <AuthenticationContext.Provider
       value={{
         onGoogleAuthentication,
+        onAppleAuthentication,
         userData,
         onLogout,
         onSignInWithEmail,

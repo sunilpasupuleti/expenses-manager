@@ -44,10 +44,12 @@ if (Platform.OS === 'android') {
 }
 
 const App = () => {
-  LogBox.ignoreLogs([
-    'Setting a timer',
-    'Non-serializable values were found in the navigation state',
-  ]);
+  LogBox.ignoreAllLogs(); //Ignore all log notifications
+  // LogBox.ignoreLogs([
+  //   'Setting a timer',
+  //   'Non-serializable values were found in the navigation state',
+  //   'new NativeEventEmitter',
+  // ]);
 
   const themeType = useColorScheme();
   const appTheme = useSelector(state => state.service.theme);

@@ -24,6 +24,8 @@ import {loaderActions} from '../../../store/loader-slice';
 import RNFetchBlob from 'rn-fetch-blob';
 import {notificationActions} from '../../../store/notification-slice';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
+import auth from '@react-native-firebase/auth';
+import _ from 'lodash';
 
 const defaultInputState = {
   displayName: {
@@ -95,6 +97,7 @@ export const ProfileScreen = ({navigation, route}) => {
         values.displayName = displayName;
       }
       if (phoneNumber) {
+        phoneNumber = phoneNumber.replace('+', '');
         values.phoneNumber = phoneNumber;
       }
       if (email) {
@@ -352,6 +355,15 @@ export const ProfileScreen = ({navigation, route}) => {
     }
   };
 
+  let signInIcon =
+    userData.providerId === 'google.com'
+      ? 'google'
+      : userData.providerId === 'apple.com'
+      ? 'apple'
+      : userData.providerId === 'phone'
+      ? 'cellphone'
+      : 'login';
+
   return (
     <SafeArea>
       <MainWrapper>
@@ -536,7 +548,10 @@ export const ProfileScreen = ({navigation, route}) => {
                 value={inputs.email.value}
                 placeholder="Email Address"
                 keyboardType="default"
-                disabled={userData?.providerId === 'google.com'}
+                disabled={
+                  userData?.providerId === 'google.com' ||
+                  userData?.providerId === 'apple.com'
+                }
                 right={<ProfileInput.Icon icon="email" iconColor="#bbb" />}
               />
 
@@ -544,28 +559,49 @@ export const ProfileScreen = ({navigation, route}) => {
                 {inputs.email.errorMessage}
               </ProfileInputErrorMessage>
 
+              {userData.phoneNumber && (
+                <>
+                  <ProfileInput
+                    theme={{roundness: 10}}
+                    mode="outlined"
+                    returnKeyType="done"
+                    disabled
+                    onChangeText={n =>
+                      onValueChangeHandler('phoneNumber', n.trim())
+                    }
+                    value={inputs.phoneNumber.value}
+                    placeholder="Phone Number"
+                    keyboardType="phone-pad"
+                    right={<ProfileInput.Icon icon="phone" iconColor="#bbb" />}
+                  />
+
+                  <ProfileInputErrorMessage fontsize="13px">
+                    {inputs.phoneNumber.errorMessage}
+                  </ProfileInputErrorMessage>
+                </>
+              )}
+
               <ProfileInput
                 theme={{roundness: 10}}
                 mode="outlined"
                 returnKeyType="done"
-                onChangeText={n =>
-                  onValueChangeHandler('phoneNumber', n.trim())
-                }
-                value={inputs.phoneNumber.value}
+                disabled
+                value={'Signed In Using - ' + userData.providerId.toUpperCase()}
                 placeholder="Phone Number"
                 keyboardType="phone-pad"
-                right={<ProfileInput.Icon icon="phone" iconColor="#bbb" />}
+                right={<ProfileInput.Icon icon={signInIcon} iconColor="#bbb" />}
               />
-
-              <ProfileInputErrorMessage fontsize="13px">
-                {inputs.phoneNumber.errorMessage}
-              </ProfileInputErrorMessage>
             </Card.Content>
             <Card.Actions>
               <Button
                 theme={{roundness: 10}}
                 mode="contained"
-                style={{height: 40, width: '100%'}}
+                style={{
+                  height: 40,
+                  width: '100%',
+                  marginTop: 20,
+                  marginBottom: 20,
+                }}
                 onPress={onClickUpdateProfile}
                 icon={'content-save-all-outline'}
                 buttonColor={theme.colors.brand.primary}

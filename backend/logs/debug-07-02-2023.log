@@ -1,0 +1,64 @@
+7/2/2023, 8:55:16 AM [info]  Message :  server started on port number 3000 }
+7/2/2023, 8:55:20 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/2/2023, 9:16:56 AM [info]  Message :  ---------------------
+7/2/2023, 9:17:19 AM [info]  Message :  Enabling daily backup for +919959907940 at 0:1 - Asia/Kolkata
+7/2/2023, 9:17:19 AM [info]  Message :  -----------------------------------
+7/2/2023, 9:27:55 AM [info]  Message :  Destroying daily backup tl7xhC5METh6N53Jymz9P6KuXOC3
+7/2/2023, 9:27:55 AM [info]  Message :  ---------------------
+7/2/2023, 9:28:40 AM [info]  Message :  Enabling daily backup for +919959907940 at 0:1 - Asia/Kolkata
+7/2/2023, 9:28:40 AM [info]  Message :  -----------------------------------
+7/2/2023, 9:45:59 AM [info]  Message :  Destroying daily backup lJ3gXvxqCchbvEBx9iImyNli3xv1
+7/2/2023, 9:45:59 AM [info]  Message :  ---------------------
+7/2/2023, 9:46:41 AM [info]  Message :  Enabling daily reminder for Sunil Kumar Pasupuleti at time - 23:03 - Asia/Kolkata
+7/2/2023, 9:46:41 AM [info]  Message :  Enabling daily backup for Sunil Kumar Pasupuleti at 0:1 - Asia/Kolkata
+7/2/2023, 9:46:41 AM [info]  Message :  -----------------------------------
+7/2/2023, 9:54:52 AM [info]  Message :  Destroying daily backup uGsNJkkVl1hp3ws8en9bg5cGlxE3
+7/2/2023, 9:54:52 AM [info]  Message :  Destroying daily reminder uGsNJkkVl1hp3ws8en9bg5cGlxE3
+7/2/2023, 9:54:52 AM [info]  Message :  ---------------------
+7/2/2023, 9:55:20 AM [info]  Message :  Enabling daily backup for sunil.pandvd41@gmail.com at 0:1 - Asia/Kolkata
+7/2/2023, 9:55:20 AM [info]  Message :  -----------------------------------
+7/2/2023, 9:55:57 AM [info]  Message :  Destroying daily backup OEU9ClyEmtYuhDejhiuMWrHhTK42
+7/2/2023, 9:55:57 AM [info]  Message :  ---------------------
+7/2/2023, 10:24:13 AM [info]  Message :  Enabling daily backup for +919959907940 at 0:1 - Asia/Kolkata
+7/2/2023, 10:24:13 AM [info]  Message :  -----------------------------------
+7/2/2023, 11:42:47 AM [info]  Message :  Enabling daily reminder for 19-R-04C3 Manikanta at time - 14:11 - Asia/Kolkata
+7/2/2023, 11:42:47 AM [info]  Message :  Enabling daily backup for 19-R-04C3 Manikanta at 0:1 - Asia/Kolkata
+7/2/2023, 11:42:47 AM [info]  Message :  -----------------------------------
+7/2/2023, 11:42:55 AM [info]  Message :  Destroying daily backup 4MBNa7gPuzPRGtN3f3gYZX0pxG22
+7/2/2023, 11:42:55 AM [info]  Message :  Destroying daily reminder 4MBNa7gPuzPRGtN3f3gYZX0pxG22
+7/2/2023, 11:42:55 AM [info]  Message :  ---------------------
+7/2/2023, 11:43:45 AM [error]  Message :  Error in verifying token {"code":"auth/user-not-found","message":"There is no user record corresponding to the provided identifier."}
+7/2/2023, 11:43:50 AM [error]  Message :  Error in verifying token {"code":"auth/user-not-found","message":"There is no user record corresponding to the provided identifier."}
+7/2/2023, 11:43:51 AM [error]  Message :  Error in verifying token {"code":"auth/user-not-found","message":"There is no user record corresponding to the provided identifier."}
+7/2/2023, 12:27:14 PM [info]  Message :  Enabling daily backup for sunil.pandvd41@gmail.com at 0:1 - Asia/Kolkata
+7/2/2023, 12:27:14 PM [info]  Message :  -----------------------------------
+7/2/2023, 12:27:17 PM [info]  Message :  Destroying daily backup FpyN89hSGjQGFWeOxV4Q2dkijmz1
+7/2/2023, 12:27:17 PM [info]  Message :  ---------------------
+7/2/2023, 12:28:25 PM [info]  Message :  Enabling daily backup for sunilpasupuleti2001@gmail.com at 0:1 - Asia/Kolkata
+7/2/2023, 12:28:25 PM [info]  Message :  -----------------------------------
+7/2/2023, 12:28:28 PM [info]  Message :  Destroying daily backup By028oJpH3c5BjX3RZNUTkpQlwB2
+7/2/2023, 12:28:28 PM [info]  Message :  ---------------------
+7/2/2023, 1:07:25 PM [info]  Message :  Enabling daily backup for wnzpqrcdf9@privaterelay.appleid.com at 0:1 - Asia/Kolkata
+7/2/2023, 1:07:25 PM [info]  Message :  -----------------------------------
+7/2/2023, 1:09:01 PM [info]  Message :  Destroying daily backup cyZiDkCz8QR1UdYoEJ8s9YjcEnA3
+7/2/2023, 1:09:01 PM [info]  Message :  ---------------------
+7/2/2023, 1:09:20 PM [info]  Message :  Enabling daily backup for wnzpqrcdf9@privaterelay.appleid.com at 0:1 - Asia/Kolkata
+7/2/2023, 1:09:20 PM [info]  Message :  -----------------------------------
+7/2/2023, 1:09:55 PM [info]  Message :  Destroying daily backup UHS6TQns5WfL638bZVQlBAeAgof2
+7/2/2023, 1:09:55 PM [info]  Message :  ---------------------
+7/2/2023, 1:11:43 PM [info]  Message :  Enabling daily reminder for Sunil Kumar Pasupuleti at time - 23:03 - Asia/Kolkata
+7/2/2023, 1:11:43 PM [info]  Message :  Enabling daily backup for Sunil Kumar Pasupuleti at 0:1 - Asia/Kolkata
+7/2/2023, 1:11:43 PM [info]  Message :  -----------------------------------
+7/2/2023, 1:13:59 PM [error]  Message :  Error in verifying token {"code":"auth/user-not-found","message":"There is no user record corresponding to the provided identifier."}
+7/2/2023, 1:13:59 PM [error]  Message :  Error in verifying token {"code":"auth/user-not-found","message":"There is no user record corresponding to the provided identifier."}
+7/2/2023, 1:13:59 PM [error]  Message :  Error in verifying token {"code":"auth/user-not-found","message":"There is no user record corresponding to the provided identifier."}
+7/2/2023, 1:14:14 PM [info]  Message :  Enabling daily backup for wnzpqrcdf9@privaterelay.appleid.com at 0:1 - Asia/Kolkata
+7/2/2023, 1:14:14 PM [info]  Message :  -----------------------------------
+7/2/2023, 1:20:33 PM [info]  Message :  Destroying daily backup O7ry8V25HcbjI41aN5APwO25g782
+7/2/2023, 1:20:33 PM [info]  Message :  ---------------------
+7/2/2023, 1:20:45 PM [info]  Message :  Enabling daily backup for Sunil Kumar at 0:1 - Asia/Kolkata
+7/2/2023, 1:20:45 PM [info]  Message :  -----------------------------------
+7/2/2023, 1:22:17 PM [info]  Message :  Destroying daily backup vx16QZaiJgci3iwUBIpsO62ArIO2
+7/2/2023, 1:22:17 PM [info]  Message :  ---------------------
+7/2/2023, 1:25:05 PM [info]  Message :  Enabling daily backup for +919959907940 at 0:1 - Asia/Kolkata
+7/2/2023, 1:25:05 PM [info]  Message :  -----------------------------------

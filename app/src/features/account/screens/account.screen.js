@@ -1,12 +1,18 @@
 import React, {useContext, useState, useEffect} from 'react';
-import {Image, TouchableOpacity, View} from 'react-native';
+import {
+  Image,
+  Platform,
+  TouchableOpacity,
+  View,
+  useColorScheme,
+} from 'react-native';
 import {Spacer} from '../../../components/spacer/spacer.component';
 import {AuthenticationContext} from '../../../services/authentication/authentication.context';
 import {
   AccountContainer,
-  GoogleButton,
-  GoogleButtonImageWrapper,
-  GoogleButtonText,
+  AuthButton,
+  AuthButtonImageWrapper,
+  AuthButtonText,
   Hyperlink,
   LoginInput,
   OtherLoginButtonsContainer,
@@ -18,6 +24,8 @@ import {Button, TextInput} from 'react-native-paper';
 import {SafeArea} from '../../../components/utility/safe-area.component';
 import {ErrorMessage, SuccessMessage} from '../../../components/styles';
 import {useTheme} from 'styled-components/native';
+import {AppleButton} from '@invertase/react-native-apple-authentication';
+import {useSelector} from 'react-redux';
 
 export const AccountScreen = ({navigation}) => {
   const [email, setEmail] = useState({value: null, error: false});
@@ -26,6 +34,8 @@ export const AccountScreen = ({navigation}) => {
     value: null,
     error: false,
   });
+  const appTheme = useSelector(state => state.service.theme);
+  const themeType = useColorScheme();
 
   const [showPassword, setShowPassword] = useState(true);
   const [error, setError] = useState(null);
@@ -39,6 +49,7 @@ export const AccountScreen = ({navigation}) => {
     onSignInWithEmail,
     onResetPassword,
     onSignUpWithEmail,
+    onAppleAuthentication,
   } = useContext(AuthenticationContext);
 
   const onClickSubmit = async () => {
@@ -149,8 +160,6 @@ export const AccountScreen = ({navigation}) => {
             width: 100,
             height: 100,
             borderRadius: 100,
-            // borderColor: '#ddd',
-            borderWidth: 1,
             marginBottom: 30,
             marginTop: 30,
           }}
@@ -304,8 +313,30 @@ export const AccountScreen = ({navigation}) => {
 
           {mode !== 'passwordreset' && (
             <OtherLoginButtonsContainer>
-              <GoogleButton onPress={onGoogleAuthentication}>
-                <GoogleButtonImageWrapper>
+              {Platform.OS === 'ios' && (
+                <>
+                  <AppleButton
+                    buttonStyle={
+                      appTheme === 'automatic'
+                        ? themeType === 'light'
+                          ? AppleButton.Style.BLACK
+                          : AppleButton.Style.WHITE
+                        : appTheme === 'light'
+                        ? AppleButton.Style.BLACK
+                        : AppleButton.Style.WHITE
+                    }
+                    buttonType={AppleButton.Type.SIGN_IN}
+                    cornerRadius={20}
+                    onPress={onAppleAuthentication}
+                    style={{
+                      height: 45,
+                    }}
+                  />
+                  <Spacer size={'large'} />
+                </>
+              )}
+              <AuthButton color="#4185f4" onPress={onGoogleAuthentication}>
+                <AuthButtonImageWrapper>
                   <Image
                     source={require('../../../../assets/google.png')}
                     style={{
@@ -313,21 +344,25 @@ export const AccountScreen = ({navigation}) => {
                       width: 30,
                     }}
                   />
-                </GoogleButtonImageWrapper>
+                </AuthButtonImageWrapper>
 
-                <GoogleButtonText>Sign In With Google</GoogleButtonText>
-              </GoogleButton>
+                <AuthButtonText>Sign In With Google</AuthButtonText>
+              </AuthButton>
               <Spacer size={'large'} />
-              <Button
-                theme={{roundness: 10}}
-                mode="contained"
-                style={{height: 40}}
-                buttonColor={theme.colors.brand.primary}
-                textColor="#fff"
-                icon="phone"
-                onPress={() => navigation.navigate('PhoneLogin')}>
-                SIGN IN USING PHONE
-              </Button>
+
+              <AuthButton onPress={() => navigation.navigate('PhoneLogin')}>
+                <AuthButtonImageWrapper>
+                  <Image
+                    source={require('../../../../assets/phone.png')}
+                    style={{
+                      height: 25,
+                      width: 30,
+                    }}
+                  />
+                </AuthButtonImageWrapper>
+
+                <AuthButtonText>Sign In With Phone</AuthButtonText>
+              </AuthButton>
 
               <Spacer size={'xlarge'} />
               {mode === 'signin' && (

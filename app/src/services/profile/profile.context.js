@@ -33,7 +33,8 @@ export const ProfileContextProvider = ({children}) => {
     let currentUser = await auth().currentUser;
     let providerId = currentUser.providerData[0].providerId;
     let updatedDetails = {};
-    let {displayName, email, phoneNumber} = data;
+    let {displayName, email} = data;
+
     currentUser
       .updateEmail(email)
       .then(() => {

@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {Image, View} from 'react-native';
+import {Image, Keyboard, Platform, View} from 'react-native';
 import {Button} from 'react-native-paper';
 import {useTheme} from 'styled-components/native';
 import {Spacer} from '../../../components/spacer/spacer.component';
@@ -14,6 +14,7 @@ import {
   OtpStripInput,
   OtpStrips,
 } from '../components/account.styles';
+
 export const PhoneLoginScreen = ({navigation, route}) => {
   const [phone, setPhone] = useState({value: '91', error: false});
   const [otp, setOtp] = useState({value: '------', error: false});
@@ -149,6 +150,7 @@ export const PhoneLoginScreen = ({navigation, route}) => {
         onChangeMode('otp');
         setSuccess(result);
         setConfirmCode(result.result);
+        otpInputsRef.current[0]?.focus();
       }
     }
     setShowLoader(false);
@@ -260,11 +262,15 @@ export const PhoneLoginScreen = ({navigation, route}) => {
               return (
                 <OtpStripInput
                   key={i}
+                  autoComplete="sms-otp"
+                  textContentType="oneTimeCode"
                   selectionColor={theme.colors.brand.primary}
                   value={
                     otp.value?.charAt(i) === '-' ? '' : otp.value.charAt(i)
                   }
-                  onChangeText={n => onChangeOtpValue(n.trim(), i)}
+                  onChangeText={n => {
+                    onChangeOtpValue(n.trim(), i);
+                  }}
                   onKeyPress={n => onPressBackOtpValue(n.nativeEvent.key, i)}
                   ref={el => (otpInputsRef.current[i] = el)}
                 />

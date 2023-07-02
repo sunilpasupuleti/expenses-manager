@@ -22,38 +22,37 @@ export const AccountContainer = styled.ScrollView`
   flex: 1;
 `;
 
-export const AuthButton = styled(Button).attrs({})`
-  padding: ${props => props.theme.space[2]};
-  border-radius: 12px;
-`;
+export const AuthButton = styled.TouchableOpacity`
+  border-radius: 20px;
+  background-color: ${props =>
+    props.color ? props.color : props.theme.colors.brand.primary};
+  border: 1px solid
+    ${props => (props.color ? props.color : props.theme.colors.brand.primary)};
 
-export const GoogleButton = styled.TouchableOpacity`
-  border-radius: 12px;
-  background-color: #4185f4;
-  border: 1px solid #4185f4;
   flex-direction: row;
   display: flex;
   align-items: center;
-  height: 45px;
+  height: 40px;
 `;
 
-export const GoogleButtonImageWrapper = styled.View`
+export const AuthButtonImageWrapper = styled.View`
   background-color: #fff;
-  padding: 3px;
-  height: 110%;
+  padding: 0px;
+  height: 105%;
   left: -1px;
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
   width: 60px;
   display: flex;
   align-items: center;
   justify-content: center;
 `;
 
-export const GoogleButtonText = styled(Text)`
+export const AuthButtonText = styled(Text)`
   color: #fff;
   text-transform: uppercase;
   font-size: 13px;
-  letter-spacing: 1.3px;
-  margin-left: 15px;
+  margin-left: 35px;
 `;
 
 export const LoginInput = styled(TextInput).attrs({
