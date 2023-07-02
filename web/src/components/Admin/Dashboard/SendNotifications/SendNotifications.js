@@ -488,7 +488,7 @@ export const SendNotifications = ({ title }) => {
                           </TableCell>
                           <TableCell>Phone Number</TableCell>
                           <TableCell>Image</TableCell>
-                          <TableCell>UID</TableCell>
+                          <TableCell>UID & Provider Id</TableCell>
                           <TableCell>Last Login</TableCell>
                         </TableRow>
                       </TableHead>
@@ -558,7 +558,10 @@ export const SendNotifications = ({ title }) => {
                                   "-"
                                 )}
                               </TableCell>
-                              <TableCell>{user.uid}</TableCell>
+                              <TableCell>
+                                {user.uid} <br />{" "}
+                                {user.providerId?.toUpperCase()}
+                              </TableCell>
                               <TableCell>
                                 {user.lastLogin
                                   ? moment(user.lastLogin).format(

@@ -135,8 +135,8 @@ export const loadAppStatus = createAsyncThunk(
         return JSON.parse(d);
       },
     );
-    // let fetchedRemotely = await remoteConfig().fetchAndActivate();
-    let fetchedRemotely = null;
+    let fetchedRemotely = await remoteConfig().fetchAndActivate();
+    // let fetchedRemotely = null;
     if (fetchedRemotely) {
       console.log('Configs were retrieved from the backend and activated.');
     } else {
