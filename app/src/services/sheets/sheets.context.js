@@ -539,6 +539,29 @@ export const SheetsContextProvider = ({children}) => {
     sheetDetail,
     callback = () => null,
   ) => {
+    const saveSheet = () => {
+      var presentSheets = [...sheets];
+      var sheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
+      var presentSheet = presentSheets[sheetIndex];
+      if (!presentSheet.details) {
+        presentSheet.details = [];
+      }
+
+      presentSheet.details.push(sheetDetail);
+      presentSheet.totalBalance = calculateBalance(presentSheet);
+      presentSheet.updatedAt = Date.now();
+      presentSheets[sheetIndex] = presentSheet;
+      let updatedExpensesData = {
+        ...expensesData,
+        sheets: presentSheets,
+        categories: categories,
+      };
+      onSaveExpensesData(updatedExpensesData).then(() => {
+        onSetChangesMade(true); // set changes made to true so that backup occurs only if some changes are made
+        callback(presentSheet);
+      });
+    };
+
     if (sheetDetail.image && sheetDetail.image.url) {
       var Base64Code = sheetDetail.image.url.split(/,\s*/);
       let prefix = Base64Code[0]; //data:image/png;base64,
@@ -587,29 +610,6 @@ export const SheetsContextProvider = ({children}) => {
     } else {
       saveSheet();
     }
-
-    const saveSheet = () => {
-      var presentSheets = [...sheets];
-      var sheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
-      var presentSheet = presentSheets[sheetIndex];
-      if (!presentSheet.details) {
-        presentSheet.details = [];
-      }
-
-      presentSheet.details.push(sheetDetail);
-      presentSheet.totalBalance = calculateBalance(presentSheet);
-      presentSheet.updatedAt = Date.now();
-      presentSheets[sheetIndex] = presentSheet;
-      let updatedExpensesData = {
-        ...expensesData,
-        sheets: presentSheets,
-        categories: categories,
-      };
-      onSaveExpensesData(updatedExpensesData).then(() => {
-        onSetChangesMade(true); // set changes made to true so that backup occurs only if some changes are made
-        callback(presentSheet);
-      });
-    };
   };
 
   const onSaveCategory = async (category, type, callback = () => null) => {
@@ -679,6 +679,25 @@ export const SheetsContextProvider = ({children}) => {
     sheetDetail,
     callback = () => null,
   ) => {
+    const editSheet = () => {
+      delete sheetDetail.imageChanged;
+      delete sheetDetail.imageDeleted;
+
+      presentSheet.details[sheetDetailIndex] = sheetDetail;
+      presentSheet.totalBalance = calculateBalance(presentSheet);
+      presentSheet.updatedAt = Date.now();
+      presentSheets[sheetIndex] = presentSheet;
+      let updatedExpensesData = {
+        ...expensesData,
+        sheets: presentSheets,
+        categories: categories,
+      };
+      onSaveExpensesData(updatedExpensesData).then(() => {
+        onSetChangesMade(true); // set changes made to true so that backup occurs only if some changes are made
+        callback(presentSheet);
+      });
+    };
+
     var presentSheets = [...sheets];
     var sheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
     var presentSheet = presentSheets[sheetIndex];
@@ -734,9 +753,8 @@ export const SheetsContextProvider = ({children}) => {
         );
       }
     }
-
     // if image delete request
-    if (sheetDetail.imageDeleted) {
+    else if (sheetDetail.imageDeleted) {
       dispatch(
         loaderActions.showLoader({
           backdrop: true,
@@ -768,26 +786,9 @@ export const SheetsContextProvider = ({children}) => {
           },
         },
       );
+    } else {
+      editSheet();
     }
-
-    const editSheet = () => {
-      delete sheetDetail.imageChanged;
-      delete sheetDetail.imageDeleted;
-
-      presentSheet.details[sheetDetailIndex] = sheetDetail;
-      presentSheet.totalBalance = calculateBalance(presentSheet);
-      presentSheet.updatedAt = Date.now();
-      presentSheets[sheetIndex] = presentSheet;
-      let updatedExpensesData = {
-        ...expensesData,
-        sheets: presentSheets,
-        categories: categories,
-      };
-      onSaveExpensesData(updatedExpensesData).then(() => {
-        onSetChangesMade(true); // set changes made to true so that backup occurs only if some changes are made
-        callback(presentSheet);
-      });
-    };
   };
 
   const onEditCategory = async (category, type, callback = () => null) => {
@@ -930,49 +931,13 @@ export const SheetsContextProvider = ({children}) => {
     callback = () => null,
   ) => {
     let jwtToken = await auth().currentUser.getIdToken();
-    dispatch(
-      loaderActions.showLoader({
-        backdrop: true,
-      }),
-    );
+
     let data = {
       currentSheetId: sheet.id,
       moveToSheetId: moveToSheet.id,
       sheetDetailId: sheetDetail.id,
       photo: sheetDetail?.image,
     };
-
-    if (data.photo && data.photo.url) {
-      sendRequest(
-        {
-          type: 'PUT',
-          url: BACKEND_URL + '/user/move-sheet-detail-picture',
-          data: data,
-          headers: {
-            authorization: 'Bearer ' + jwtToken,
-          },
-        },
-        {
-          successCallback: async result => {
-            dispatch(loaderActions.hideLoader());
-            sheetDetail.image.url = result.photoURL;
-            moveSheet();
-          },
-          errorCallback: err => {
-            console.log('Error in moving the transaction ', err);
-            dispatch(loaderActions.hideLoader());
-            dispatch(
-              notificationActions.showToast({
-                message: 'Error occured while moving the transaction.',
-                status: 'error',
-              }),
-            );
-          },
-        },
-      );
-    } else {
-      moveSheet();
-    }
 
     const moveSheet = () => {
       let presentSheets = [...sheets];
@@ -1005,6 +970,43 @@ export const SheetsContextProvider = ({children}) => {
         callback(moveFromSheet);
       });
     };
+
+    if (data.photo && data.photo.url) {
+      dispatch(
+        loaderActions.showLoader({
+          backdrop: true,
+        }),
+      );
+      sendRequest(
+        {
+          type: 'PUT',
+          url: BACKEND_URL + '/user/move-sheet-detail-picture',
+          data: data,
+          headers: {
+            authorization: 'Bearer ' + jwtToken,
+          },
+        },
+        {
+          successCallback: async result => {
+            dispatch(loaderActions.hideLoader());
+            sheetDetail.image.url = result.photoURL;
+            moveSheet();
+          },
+          errorCallback: err => {
+            console.log('Error in moving the transaction ', err);
+            dispatch(loaderActions.hideLoader());
+            dispatch(
+              notificationActions.showToast({
+                message: 'Error occured while moving the transaction.',
+                status: 'error',
+              }),
+            );
+          },
+        },
+      );
+    } else {
+      moveSheet();
+    }
   };
 
   const onDuplicateSheet = async (
@@ -1020,11 +1022,7 @@ export const SheetsContextProvider = ({children}) => {
       Date.now().toString(36) + Math.random().toString(36).substring(2);
 
     let jwtToken = await auth().currentUser.getIdToken();
-    dispatch(
-      loaderActions.showLoader({
-        backdrop: true,
-      }),
-    );
+
     let data = {
       newSheetDetailId: newSheetDetail.id,
       sheetId: sheet.id,
@@ -1032,7 +1030,30 @@ export const SheetsContextProvider = ({children}) => {
       photo: sheetDetail?.image,
     };
 
+    const duplicateSheet = () => {
+      dupSheet.details.push(newSheetDetail);
+      dupSheet.updatedAt = Date.now();
+      dupSheet.totalBalance = calculateBalance(dupSheet);
+      presentSheets[dupSheetIndex] = dupSheet;
+
+      let updatedExpensesData = {
+        ...expensesData,
+        sheets: presentSheets,
+        categories: categories,
+      };
+
+      onSaveExpensesData(updatedExpensesData).then(() => {
+        onSetChangesMade(true);
+        callback(dupSheet);
+      });
+    };
+
     if (data.photo && data.photo.url) {
+      dispatch(
+        loaderActions.showLoader({
+          backdrop: true,
+        }),
+      );
       sendRequest(
         {
           type: 'PUT',
@@ -1063,24 +1084,6 @@ export const SheetsContextProvider = ({children}) => {
     } else {
       duplicateSheet();
     }
-
-    const duplicateSheet = () => {
-      dupSheet.details.push(newSheetDetail);
-      dupSheet.updatedAt = Date.now();
-      dupSheet.totalBalance = calculateBalance(dupSheet);
-      presentSheets[dupSheetIndex] = dupSheet;
-
-      let updatedExpensesData = {
-        ...expensesData,
-        sheets: presentSheets,
-        categories: categories,
-      };
-
-      onSaveExpensesData(updatedExpensesData).then(() => {
-        onSetChangesMade(true);
-        callback(dupSheet);
-      });
-    };
   };
 
   const onChangeSheetType = async (

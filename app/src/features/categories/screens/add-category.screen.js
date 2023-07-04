@@ -243,7 +243,9 @@ export const AddCategoryScreen = ({navigation, route}) => {
           {/* </Dialog.Actions> */}
         </Modal>
       </Portal>
-      <ScrollView ref={el => (scrollViewRef.current = el)}>
+      <ScrollView
+        ref={el => (scrollViewRef.current = el)}
+        keyboardShouldPersistTaps="never">
         <MainWrapper>
           <Spacer size="xlarge">
             {!editMode && (

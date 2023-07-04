@@ -453,7 +453,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
         )}
 
         <ScrollView
-          keyboardShouldPersistTaps="handled"
+          keyboardShouldPersistTaps="never"
           showsVerticalScrollIndicator={false}>
           <SheetDetailsTotalBalance fontsize={'30px'} fontfamily="bodySemiBold">
             {activeType === 'expense' && '-'}

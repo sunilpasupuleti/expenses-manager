@@ -52,7 +52,8 @@ export const AuthButtonText = styled(Text)`
   color: #fff;
   text-transform: uppercase;
   font-size: 13px;
-  margin-left: 35px;
+  letter-spacing: 1.3px;
+  margin-left: 25px;
 `;
 
 export const LoginInput = styled(TextInput).attrs({

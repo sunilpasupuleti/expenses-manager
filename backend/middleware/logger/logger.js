@@ -58,7 +58,6 @@ if (process.env.NODE_ENV === "production") {
       maxFiles: "1d",
       extension: ".log",
       level: "debug",
-      zippedArchive: true,
     }),
     new transports.Console({
       format: format.combine(format.colorize(), customFormat),

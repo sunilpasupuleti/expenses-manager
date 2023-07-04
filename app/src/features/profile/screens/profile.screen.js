@@ -468,7 +468,7 @@ export const ProfileScreen = ({navigation, route}) => {
                 {userData.photoURL && (
                   <Button
                     theme={{roundness: 10}}
-                    mode="outlined"
+                    mode="flat"
                     style={{
                       height: 40,
                       width: buttonLoading.remove ? '100%' : 'auto',
@@ -544,6 +544,7 @@ export const ProfileScreen = ({navigation, route}) => {
                 theme={{roundness: 10}}
                 mode="outlined"
                 returnKeyType="done"
+                multiline
                 onChangeText={n => onValueChangeHandler('email', n.trim())}
                 value={inputs.email.value}
                 placeholder="Email Address"

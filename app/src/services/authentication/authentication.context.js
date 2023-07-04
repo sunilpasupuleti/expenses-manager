@@ -81,8 +81,8 @@ export const AuthenticationContextProvider = ({children}) => {
           '@expenses-manager-logged',
           JSON.stringify(true),
         );
-      } else {
-        dispatch(serviceActions.setAppStatus({authenticated: false}));
+      } else if (user && !authFlag) {
+        dispatch(serviceActions.setAppStatus({authenticated: true}));
       }
     });
 
@@ -373,48 +373,55 @@ export const AuthenticationContextProvider = ({children}) => {
   };
 
   const onLogout = async () => {
-    let jwtToken = await auth().currentUser.getIdToken();
-    auth()
-      .signOut()
-      .then(async () => {
-        await deleteUserPinCode('@expenses-manager-app-lock');
-        await resetPinCodeInternalStates();
-        await AsyncStorage.removeItem('@expenses-manager-user');
-        await AsyncStorage.removeItem('@expenses-manager-logged');
-        authFlag = true;
-        setUserData(null);
-        setUserAdditionalDetails(null);
-        messaging().deleteToken();
-        dispatch(serviceActions.setAppStatus({authenticated: false}));
-        dispatch(setChangesMade({status: false, loaded: true}));
-      })
-      .catch(err => {
-        console.log(err, 'no user');
-        dispatch(
-          notificationActions.showToast({status: 'error', message: err}),
-        );
+    const signOut = async () => {
+      await deleteUserPinCode('@expenses-manager-app-lock');
+      await resetPinCodeInternalStates();
+      await AsyncStorage.removeItem('@expenses-manager-user');
+      await AsyncStorage.removeItem('@expenses-manager-logged');
+      authFlag = true;
+      setUserData(null);
+      setUserAdditionalDetails(null);
+      messaging().deleteToken();
+      dispatch(serviceActions.setAppStatus({authenticated: false}));
+      dispatch(setChangesMade({status: false, loaded: true}));
+    };
+    if (auth().currentUser) {
+      let jwtToken = await auth().currentUser.getIdToken();
+      auth()
+        .signOut()
+        .then(async () => {
+          signOut();
+        })
+        .catch(err => {
+          console.log(err, 'no user');
+          dispatch(
+            notificationActions.showToast({status: 'error', message: err}),
+          );
+        });
+      // destroy the daily reminder notification and daily backup notification
+      sendRequest({
+        type: 'POST',
+        url: BACKEND_URL + '/notification/destroy-notifications/',
+        data: {},
+        headers: {
+          authorization: 'Bearer ' + jwtToken,
+        },
       });
-    // destroy the daily reminder notification and daily backup notification
-    sendRequest({
-      type: 'POST',
-      url: BACKEND_URL + '/notification/destroy-notifications/',
-      data: {},
-      headers: {
-        authorization: 'Bearer ' + jwtToken,
-      },
-    });
 
-    sendRequest({
-      type: 'POST',
-      url: BACKEND_URL + '/user/',
-      data: {
-        active: false,
-        fcmToken: null,
-      },
-      headers: {
-        authorization: 'Bearer ' + jwtToken,
-      },
-    });
+      sendRequest({
+        type: 'POST',
+        url: BACKEND_URL + '/user/',
+        data: {
+          active: false,
+          fcmToken: null,
+        },
+        headers: {
+          authorization: 'Bearer ' + jwtToken,
+        },
+      });
+    } else {
+      signOut();
+    }
   };
 
   const onGetUserDetails = async (

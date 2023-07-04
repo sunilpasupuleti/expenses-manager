@@ -57,8 +57,8 @@ notifee.requestPermission({
 });
 
 notifee.createChannel({
-  id: 'transactions-reminder',
-  name: 'Transactions Reminder',
+  id: 'expenses-manager',
+  name: 'Expenses Manager',
   importance: AndroidImportance.HIGH,
   sound: 'notification',
   vibration: true,
@@ -167,7 +167,7 @@ const showNotification = (
     id: id,
     body: body,
     android: {
-      channelId: 'transactions-reminder',
+      channelId: 'expenses-manager',
       sound: 'notification',
       color: colors.brand.primary,
       ongoing: ongoing,
@@ -200,6 +200,7 @@ async function onAppBootstrap() {
   // Register the device with FCM
   await messaging().requestPermission();
   let result = messaging().isDeviceRegisteredForRemoteMessages;
+
   if (!result) {
     await messaging()
       .registerDeviceForRemoteMessages()

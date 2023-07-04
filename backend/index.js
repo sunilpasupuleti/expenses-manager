@@ -135,6 +135,18 @@ require("./sockets/socket")(io);
 server.listen(process.env.PORT || 8080, async () => {
   logger.info(`server started on port number ${process.env.PORT} }`);
 
+  /**
+   * Firebase config
+   */
+  const { initializeApp, cert } = require("firebase-admin/app");
+  var serviceAccount = require("./config/expensesmanager.json");
+
+  initializeApp({
+    credential: cert(serviceAccount),
+    databaseURL: process.env.FIREBASE_DATABASE_URL,
+    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+  });
+
   // In case if server restarts reschedule all the jobs with which user have dialy reminder and abckup enabled
 
   let jobs = schedule.scheduledJobs;
@@ -212,17 +224,4 @@ server.listen(process.env.PORT || 8080, async () => {
   }
 
   activateNotifications();
-});
-
-/**
- * Firebase config
- */
-const { initializeApp, cert } = require("firebase-admin/app");
-var serviceAccount = require("./config/expensesmanager.json");
-const { log } = require("winston");
-
-initializeApp({
-  credential: cert(serviceAccount),
-  databaseURL: process.env.FIREBASE_DATABASE_URL,
-  storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
 });

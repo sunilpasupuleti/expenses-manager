@@ -11,6 +11,10 @@ module.exports = {
     logger.info("sending daily update notifications to users  - ");
     let payload = {
       data: { type: "daily-update", title: title, body: body },
+      notification: {
+        title: title,
+        body: body,
+      },
     };
 
     users = users.map((id) => (id = new ObjectId(id)));
@@ -35,21 +39,17 @@ module.exports = {
           logger.error(
             `Error in sending daily notifications ${error.code} ${error.message}`
           );
-          return sendResponse(res, httpCodes.BAD_GATEWAY, {
-            message: `Error in sending notifications - failure count - ${
-              r.failureCount
-            } ${JSON.stringify(error)}`,
-          });
         } else {
           logger.info("successfully sent daily update notifications");
           //   logger.info(JSON.stringify(r));
           logger.info(
             `Failure count - ${r.failureCount} - Success cound - ${r.successCount}`
           );
-          return sendResponse(res, httpCodes.OK, {
-            message: `Succesfully sent notifications to the selected users.Failure count - ${r.failureCount} - Success count - ${r.successCount}`,
-          });
         }
+
+        return sendResponse(res, httpCodes.OK, {
+          message: `Succesfully sent notifications to the selected users.Failure count - ${r.failureCount} - Success count - ${r.successCount}`,
+        });
       })
       .catch((err) => {
         logger.error(err);

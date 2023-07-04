@@ -12,6 +12,10 @@ module.exports = {
   If not 😕 do it now.`;
     let payload = {
       data: { type: "daily-reminder", uid: data.uid, title, body },
+      notification: {
+        title: title,
+        body: body,
+      },
     };
     getMessaging()
       .sendToDevice(token, payload, { priority: "high" })
@@ -40,15 +44,28 @@ module.exports = {
     let token = data.fcmToken;
     let title = "Back Up 🔄";
     let body = `Please wait while we are backing up your data......`;
-    let backupSuccessTitle = 'Back up successfull 🥰';
-    let backupSuccessBody = 'Your data backed up safely ❤️';
+    let backupSuccessTitle = "Back up successfull 🥰";
+    let backupSuccessBody = "Your data backed up safely ❤️";
 
-    let backupFailedTitle = 'Sorry ! Back up failed 😥';
-    let backupFailedBody = 'In case of backup failure, do it manually in the app.';
-
+    let backupFailedTitle = "Sorry ! Back up failed 😥";
+    let backupFailedBody =
+      "In case of backup failure, do it manually in the app.";
 
     let payload = {
-      data: { type: "daily-backup", uid: data.uid, title, body , backupSuccessBody, backupSuccessTitle , backupFailedBody , backupFailedTitle },
+      data: {
+        type: "daily-backup",
+        uid: data.uid,
+        title,
+        body,
+        backupSuccessBody,
+        backupSuccessTitle,
+        backupFailedBody,
+        backupFailedTitle,
+      },
+      notification: {
+        title: title,
+        body: body,
+      },
     };
     getMessaging()
       .sendToDevice(token, payload, { priority: "high" })
