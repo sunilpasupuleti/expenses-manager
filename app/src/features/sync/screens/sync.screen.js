@@ -185,42 +185,40 @@ export const SyncScreen = ({navigation, route}) => {
               onDismiss={() => setShowModal(false)}
               contentContainerStyle={{
                 backgroundColor: theme.colors.ui.body,
-                minHeight: '40%',
+                minHeight: '100%',
                 maxHeight: '80%',
               }}>
-              <View>
-                <ScrollView>
-                  {restoreDates.map((backup, i) => {
-                    let timeZone =
-                      Intl.DateTimeFormat().resolvedOptions().timeZone;
+              <ScrollView>
+                {restoreDates.map((backup, i) => {
+                  let timeZone =
+                    Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-                    let date = momentTz(backup.date)
-                      .tz(timeZone)
-                      .format('DD MMM YYYY');
+                  let date = momentTz(backup.date)
+                    .tz(timeZone)
+                    .format('DD MMM YYYY');
 
-                    let time = momentTz(backup.time)
-                      .tz(timeZone)
-                      .format('hh:mm:ss A');
+                  let time = momentTz(backup.time)
+                    .tz(timeZone)
+                    .format('hh:mm:ss A');
 
-                    return (
-                      <TouchableHighlightWithColor
-                        key={i}
-                        onPress={() => {
-                          setShowModal(false);
-                          restoreData(backup._id);
-                        }}>
-                        <View>
-                          <FlexRow justifyContent="space-between">
-                            <Text style={{padding: 5}}>{date}</Text>
-                            <Text style={{padding: 5}}>{time}</Text>
-                          </FlexRow>
-                          <Divider />
-                        </View>
-                      </TouchableHighlightWithColor>
-                    );
-                  })}
-                </ScrollView>
-              </View>
+                  return (
+                    <TouchableHighlightWithColor
+                      key={i}
+                      onPress={() => {
+                        setShowModal(false);
+                        restoreData(backup._id);
+                      }}>
+                      <View>
+                        <FlexRow justifyContent="space-between">
+                          <Text style={{padding: 5}}>{date}</Text>
+                          <Text style={{padding: 5}}>{time}</Text>
+                        </FlexRow>
+                        <Divider />
+                      </View>
+                    </TouchableHighlightWithColor>
+                  );
+                })}
+              </ScrollView>
             </Modal>
           </Portal>
         )}

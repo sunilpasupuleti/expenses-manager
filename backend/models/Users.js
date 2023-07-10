@@ -14,6 +14,7 @@ const usersSchema = mongoose.Schema(
     email: { type: String },
     phoneNumber: { type: String },
     uid: { type: String },
+    platform: { type: String },
     fcmToken: { type: String, default: null },
     photoURL: { type: String },
     active: { type: Boolean, default: false },

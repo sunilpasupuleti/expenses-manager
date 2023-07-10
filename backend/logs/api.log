@@ -1,5 +1,0 @@
-::1 - - [04/Jul/2023:10:03:10 +0000] "GET / HTTP/1.1" 404 139 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
-::1 - - [04/Jul/2023:10:03:21 +0000] "GET /logs HTTP/1.1" 301 175 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
-::1 - - [04/Jul/2023:10:03:21 +0000] "GET /logs/ HTTP/1.1" 404 144 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
-::1 - - [04/Jul/2023:10:03:24 +0000] "GET /logs/server HTTP/1.1" 200 284 "-" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
-::1 - - [04/Jul/2023:10:03:24 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://localhost:3000/logs/server" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"

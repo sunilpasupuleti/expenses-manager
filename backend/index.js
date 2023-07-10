@@ -19,6 +19,7 @@ const {
   sendDailyReminderNotification,
   sendDailyBackupNotification,
 } = require("./helpers/notificationHelpers");
+const { getMessaging } = require("firebase-admin/messaging");
 
 /**
  * Morgon

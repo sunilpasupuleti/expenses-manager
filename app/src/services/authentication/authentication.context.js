@@ -13,7 +13,7 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import useHttp from '../../hooks/use-http';
-import {Alert} from 'react-native';
+import {Alert, Platform} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   resetPinCodeInternalStates,
@@ -21,6 +21,7 @@ import {
 } from '@haskkor/react-native-pincode';
 import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
 import appleAuth from '@invertase/react-native-apple-authentication';
+import OneSignal from 'react-native-onesignal';
 
 GoogleSignin.configure({
   webClientId: remoteConfig().getValue('WEB_CLIENT_ID').asString(),
@@ -49,6 +50,7 @@ export const AuthenticationContextProvider = ({children}) => {
   const [userData, setUserData] = useState(null);
   const [userAdditionalDetails, setUserAdditionalDetails] = useState(null);
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
+
   const dispatch = useDispatch();
   const {sendRequest} = useHttp();
 
@@ -62,6 +64,8 @@ export const AuthenticationContextProvider = ({children}) => {
       '-',
       Intl.DateTimeFormat().resolvedOptions().timeZone,
     );
+    AsyncStorage.setItem('@expenses-manager-backend-url', BACKEND_URL);
+
     const unsubcribe = auth().onAuthStateChanged(async user => {
       if (user && authFlag) {
         // auth flag is used to prevent calling auth change state multiple times
@@ -332,7 +336,15 @@ export const AuthenticationContextProvider = ({children}) => {
       active: true,
       timeZone: timeZone,
       lastLogin: new Date(),
+      platform: Platform.OS,
     };
+    let {email, uid, phoneNumber} = transformedData;
+    let oneSignalTags = {
+      uid: uid,
+    };
+    if (email) oneSignalTags.email = email;
+    if (phoneNumber) oneSignalTags.phoneNumber = phoneNumber;
+    OneSignal.sendTags(oneSignalTags);
 
     console.log(transformedData, 'transformed');
     sendRequest(
@@ -385,6 +397,7 @@ export const AuthenticationContextProvider = ({children}) => {
       dispatch(serviceActions.setAppStatus({authenticated: false}));
       dispatch(setChangesMade({status: false, loaded: true}));
     };
+    OneSignal.sendTags({uid: null, email: null});
     if (auth().currentUser) {
       let jwtToken = await auth().currentUser.getIdToken();
       auth()

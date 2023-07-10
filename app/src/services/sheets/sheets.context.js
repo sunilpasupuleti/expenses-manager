@@ -149,6 +149,7 @@ export const SheetsContextProvider = ({children}) => {
   const theme = useTheme();
 
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
+
   const GOOGLE_API_KEY = remoteConfig().getValue('GOOGLE_API_KEY').asString();
   const GOOGLE_CLOUD_VISION_API_URL = remoteConfig()
     .getValue('GOOGLE_CLOUD_VISION_API_URL')

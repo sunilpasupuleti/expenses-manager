@@ -56,9 +56,12 @@ export const SheetDetailAmount = styled(Text).attrs({
 export const SheetDetailCategoryColor = styled.View`
   position: absolute;
   left: 0px;
-  height: 100%;
-  width: 5px;
-  border-radius: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50px;
+  justify-content: center;
+  align-items: center;
+  margin-left: 5px;
   ${props => props.color && `background-color : ${props.color};`}
 `;
 
@@ -71,7 +74,8 @@ export const SheetDetailNotes = styled(Text).attrs({
 `;
 
 export const SheetDetailInfo = styled.View`
-  margin-left: 15px;
+  margin-left: 43px;
+  margin-top: 2px;
 `;
 
 export const BottomIconsContainer = styled.View`
@@ -90,6 +94,17 @@ export const SheetDetailsAddIcon = styled.View`
   background-color: ${({theme}) => theme.colors.brand.primary};
   border-radius: 50px;
   padding: 12px;
+`;
+
+export const DashboardAddButton = styled.View`
+  background-color: ${({theme}) => theme.colors.brand.primary};
+  border-radius: 50px;
+  margin: 10px;
+  width: 50px;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-end;
 `;
 
 export const CameraButton = styled.TouchableOpacity`

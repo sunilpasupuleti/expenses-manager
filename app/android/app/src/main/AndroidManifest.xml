@@ -17,7 +17,6 @@
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
 
   
-
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
@@ -25,6 +24,8 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:theme="@style/AppTheme">
+      
+      <meta-data android:name="com.onesignal.NotificationOpened.DEFAULT" android:value="DISABLE" />
       <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
@@ -36,6 +37,14 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
+        <intent-filter>
+          <action android:name="android.intent.action.VIEW" />
+          <category android:name="android.intent.category.DEFAULT" />
+          <category android:name="android.intent.category.BROWSABLE" />
+          <data android:scheme="expenses-manager" />
+        </intent-filter>
+
+
       </activity>
     </application>
 </manifest>

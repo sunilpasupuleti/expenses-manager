@@ -36,6 +36,9 @@ import SplashScreen from 'react-native-splash-screen';
 import './src/components/fcm/FCMService';
 import {fetchAppLock} from './src/store/applock-slice';
 import VersionCheck from 'react-native-version-check';
+import './src/components/fcm/one-signal';
+import OneSignal from 'react-native-onesignal';
+import remoteConfig from '@react-native-firebase/remote-config';
 
 moment.suppressDeprecationWarnings = true;
 if (Platform.OS === 'android') {
@@ -55,6 +58,16 @@ const App = () => {
   const appTheme = useSelector(state => state.service.theme);
   const dispatch = useDispatch();
   const appStatus = useSelector(state => state.service.appStatus);
+  const ONE_SIGNAL_APP_ID = remoteConfig()
+    .getValue('ONE_SIGNAL_APP_ID')
+    .asString();
+
+  try {
+    OneSignal.setAppId(ONE_SIGNAL_APP_ID);
+    // OneSignal.setLogLevel(6, 0);
+  } catch (e) {
+    console.log(e);
+  }
 
   useEffect(() => {
     let iosStateListener = null;

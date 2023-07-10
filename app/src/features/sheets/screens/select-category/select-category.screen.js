@@ -89,6 +89,7 @@ export const SelectCategoryScreen = ({navigation, route}) => {
       ),
     });
   }, []);
+
   return (
     <SafeArea>
       <MainWrapper>
@@ -156,7 +157,6 @@ export const SelectCategoryScreen = ({navigation, route}) => {
                     </FlexRow>
 
                     <Spacer size={'small'} />
-                    <Divider />
                   </Card.Content>
                 </TouchableHighlightWithColor>
               );
@@ -170,7 +170,7 @@ export const SelectCategoryScreen = ({navigation, route}) => {
               screen: 'Categories',
               params: {
                 screen: 'AddCategory',
-                params: {type: route.params.type},
+                params: {type: route.params.type, fromSheetDetailScreen: true},
               },
             })
           }>

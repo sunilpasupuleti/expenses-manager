@@ -29,7 +29,6 @@ import {Alert, Platform, ScrollView, TouchableOpacity} from 'react-native';
 import {SheetsContext} from '../../../services/sheets/sheets.context';
 import {fetchExchangeRates} from '../../../store/service-slice';
 import moment from 'moment';
-import {ActivityIndicator, Button} from 'react-native-paper';
 import {notificationActions} from '../../../store/notification-slice';
 import {
   resetPinCodeInternalStates,
@@ -38,6 +37,7 @@ import {
 import {applockActions} from '../../../store/applock-slice';
 import {View} from 'react-native';
 import remoteConfig from '@react-native-firebase/remote-config';
+import {Button} from 'react-native-paper';
 
 export const SettingsScreen = ({navigation}) => {
   const {onLogout, userData, userAdditionalDetails} = useContext(

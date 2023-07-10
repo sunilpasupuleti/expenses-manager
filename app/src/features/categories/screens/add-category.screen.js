@@ -75,6 +75,8 @@ export const AddCategoryScreen = ({navigation, route}) => {
   const [icon, setIcon] = useState(null);
   const [search, setSearch] = useState('');
 
+  // if focused from sheet details screen
+  const [fromSheetDetailScreen, setFromSheetDetailScreen] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const dispatch = useDispatch();
@@ -95,6 +97,9 @@ export const AddCategoryScreen = ({navigation, route}) => {
       }
       if (route.params.type) {
         setCategoryType(route.params.type);
+      }
+      if (route.params.fromSheetDetailScreen) {
+        setFromSheetDetailScreen(true);
       }
     }
   }, [route.params]);
@@ -166,6 +171,13 @@ export const AddCategoryScreen = ({navigation, route}) => {
       icon: icon,
     };
     onSaveCategory(category, categoryType, () => {
+      if (fromSheetDetailScreen) {
+        navigation.navigate('SelectCategory', {
+          selectedCategory: category,
+          type: route.params.type,
+        });
+        return;
+      }
       navigation.goBack();
     });
   };

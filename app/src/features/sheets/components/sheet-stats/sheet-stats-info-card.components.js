@@ -13,6 +13,7 @@ import {
   SheetDetailCategory,
   SheetDetailCategoryColor,
 } from '../sheet-details/sheet-details.styles';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 export const StatsInfoCard = ({
   category,
@@ -24,38 +25,52 @@ export const StatsInfoCard = ({
   return (
     <>
       <View style={{marginRight: 10}}>
-        <SheetDetailCategoryColor color={category.color} />
-        <FlexRow justifyContent="space-between">
-          <Spacer position={'left'} size={'large'}>
-            <SheetDetailCategory>{category.name} </SheetDetailCategory>
-          </Spacer>
-          <FlexRow>
-            <Text color="#8a8a8d" fontfamily="bodyBold">
-              {(percentage * 100).toFixed(2).toString() + '%'}{' '}
-              {/* {Math.round(percentage * 100).toString() + '%'}{' '} */}
-            </Text>
-            <Ionicons
-              name="chevron-forward-outline"
-              size={20}
-              color="#8a8a8d"
+        <SheetDetailCategoryColor color={category.color}>
+          {category.icon && (
+            <MaterialCommunityIcon
+              name={category.icon}
+              size={16}
+              color="#fff"
             />
-          </FlexRow>
-        </FlexRow>
-        <Spacer position={'left'} size={'large'}>
-          <Spacer />
-          <Text fontsize="14px" color="#8a8a8d" fontfamily="bodyBold">
-            {activeType === 'expense' && '-'}
-            {GetCurrencySymbol(currency)} {GetCurrencyLocalString(totalBalance)}{' '}
-          </Text>
-          {!category.total && (
-            <Spacer>
-              <ProgressBar
-                style={{backgroundColor: '#eee'}}
-                color={category.color}
-                progress={percentage}
-              />
-            </Spacer>
           )}
+        </SheetDetailCategoryColor>
+        <Spacer position={'left'} size={'xlarge'}>
+          <Spacer position={'left'} size={'medium'}>
+            <FlexRow justifyContent="space-between">
+              <SheetDetailCategory>{category.name} </SheetDetailCategory>
+              <FlexRow>
+                <Text color="#8a8a8d" fontfamily="bodyBold">
+                  {(percentage * 100).toFixed(2).toString() + '%'}{' '}
+                  {/* {Math.round(percentage * 100).toString() + '%'}{' '} */}
+                </Text>
+                <Ionicons
+                  name="chevron-forward-outline"
+                  size={20}
+                  color="#8a8a8d"
+                />
+              </FlexRow>
+            </FlexRow>
+          </Spacer>
+        </Spacer>
+
+        <Spacer position={'left'} size={'large'}>
+          <Spacer position={'left'} size={'large'}>
+            <Spacer />
+            <Text fontsize="14px" color="#8a8a8d" fontfamily="bodyBold">
+              {activeType === 'expense' && '-'}
+              {GetCurrencySymbol(currency)}{' '}
+              {GetCurrencyLocalString(totalBalance)}{' '}
+            </Text>
+            {!category.total && (
+              <Spacer>
+                <ProgressBar
+                  style={{backgroundColor: '#eee'}}
+                  color={category.color}
+                  progress={percentage}
+                />
+              </Spacer>
+            )}
+          </Spacer>
         </Spacer>
 
         <Spacer size={'large'} />

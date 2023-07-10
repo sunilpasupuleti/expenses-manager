@@ -160,6 +160,9 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   }, []);
 
   useEffect(() => {
+    if (route.params.activeType) {
+      setActiveType(route.params.activeType);
+    }
     if (route.params.selectedCategory) {
       setCategories(route.params.selectedCategory);
     }

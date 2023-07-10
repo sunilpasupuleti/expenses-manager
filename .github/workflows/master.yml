@@ -27,6 +27,22 @@ jobs:
             **/node_modules/**
             **/__MACOSX/**
 
+      - name: 📂 Deploying Grapics into webiwzard.in server
+        uses: SamKirkland/FTP-Deploy-Action@4.3.2
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ./graphics
+          server-dir: /expenses-manager.webwizard.in/graphics
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/.vscode*/**
+            **/.DS_STORE*/**
+            **/node_modules/**
+            **/__MACOSX/**
+
       - name: 📂 Deploy in EC2 Instance
         uses: easingthemes/ssh-deploy/@main
         env:

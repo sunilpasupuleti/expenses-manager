@@ -7,6 +7,7 @@ import {
   BACKEND_URL,
   GOOGLE_API_KEY,
   GOOGLE_CLOUD_VISION_API_URL,
+  ONESIGNAL_APP_ID,
   WEB_CLIENT_ID,
 } from '../../config';
 
@@ -128,6 +129,7 @@ export const loadAppStatus = createAsyncThunk(
       WEB_CLIENT_ID: WEB_CLIENT_ID,
       GOOGLE_API_KEY: GOOGLE_API_KEY,
       GOOGLE_CLOUD_VISION_API_URL: GOOGLE_CLOUD_VISION_API_URL,
+      ONE_SIGNAL_APP_ID: ONESIGNAL_APP_ID,
     });
 
     const logged = await AsyncStorage.getItem(`@expenses-manager-logged`).then(

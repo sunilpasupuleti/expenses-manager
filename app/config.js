@@ -5,3 +5,4 @@ export const WEB_CLIENT_ID =
 export const GOOGLE_API_KEY = 'AIzaSyCh4u66gDz1zMAzhWFU0osZXEJLrB8QFS0';
 export const GOOGLE_CLOUD_VISION_API_URL =
   'https://vision.googleapis.com/v1/images:annotate';
+export const ONESIGNAL_APP_ID = '71ac0751-7947-4387-bf43-9048f8fb21e8';

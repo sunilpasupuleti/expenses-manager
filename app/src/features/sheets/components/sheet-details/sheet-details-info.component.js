@@ -13,9 +13,9 @@ import {FlexRow} from '../../../../components/styles';
 import {useTheme} from 'styled-components/native';
 import {Spacer} from '../../../../components/spacer/spacer.component';
 import {Alert, FlatList, TouchableOpacity, View} from 'react-native';
-import _, {update} from 'lodash';
 import React, {useContext, useRef, useState} from 'react';
 import Haptics from 'react-native-haptic-feedback';
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {
   Menu,
@@ -158,7 +158,15 @@ export const SheetDetailsInfo = ({
                       },
                       TriggerTouchableComponent: TouchableOpacity,
                     }}>
-                    <SheetDetailCategoryColor color={category.color} />
+                    <SheetDetailCategoryColor color={category.color}>
+                      {category.icon && (
+                        <MaterialCommunityIcon
+                          name={category.icon}
+                          size={16}
+                          color="#fff"
+                        />
+                      )}
+                    </SheetDetailCategoryColor>
                     <SheetDetailInfo>
                       <FlexRow justifyContent="space-between">
                         <SheetDetailCategory>

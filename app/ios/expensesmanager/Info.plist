@@ -35,6 +35,7 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
+				<string>expenses-manager</string>
 				<string>com.googleusercontent.apps.4544693826-3hc21eltmp0auh2t8gjbll5s4v7c6au2</string>
 			</array>
 		</dict>
@@ -102,6 +103,7 @@
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
+		<string>processing</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>

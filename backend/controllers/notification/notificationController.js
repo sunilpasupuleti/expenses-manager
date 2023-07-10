@@ -376,7 +376,7 @@ module.exports = {
           });
         }
 
-        if (dailyBackup && returnData.active) {
+        if (dailyBackup) {
           var rule = new schedule.RecurrenceRule();
           // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
           let hour = 00;

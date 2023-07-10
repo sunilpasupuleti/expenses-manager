@@ -114,9 +114,11 @@ export const SyncContextProvider = ({children}) => {
     dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'restore'}));
     try {
       let url = BACKEND_URL + '/backup';
+
       if (backupId) {
         url += '?id=' + backupId;
       }
+
       sendRequest(
         {
           type: 'GET',

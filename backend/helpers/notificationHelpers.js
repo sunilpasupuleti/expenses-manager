@@ -1,91 +1,130 @@
 const { getMessaging } = require("firebase-admin/messaging");
 const logger = require("../middleware/logger/logger");
 
+const OneSignal = require("onesignal-node");
+const client = new OneSignal.Client(
+  process.env.ONE_SIGNAL_APP_ID,
+  process.env.ONE_SIGNAL_API_KEY
+);
+
 module.exports = {
   async sendDailyReminderNotification(data) {
     logger.info(
       "sending daily reminder notification to  - " + data.displayName
     );
-    let token = data.fcmToken;
     let title = "Reminder 🔔";
-    let body = `Have you recorded your  transactions.. 🤔?
-  If not 😕 do it now.`;
-    let payload = {
-      data: { type: "daily-reminder", uid: data.uid, title, body },
-      notification: {
-        title: title,
-        body: body,
-      },
+    let body = `Have you recorded your transactions.. 🤔? If not 😕 do it now.`;
+    let notificationData = {
+      type: "daily-reminder",
+      uid: data.uid,
     };
-    getMessaging()
-      .sendToDevice(token, payload, { priority: "high" })
-      .then((r) => {
-        let error = null;
-        if (r.results[0] && r.results[0].error) {
-          error = r.results[0].error;
-        }
-        if (error) {
-          logger.error(
-            `error in sending daily reminder notification ${error.code} ${error.message}`
-          );
-        } else {
-          logger.info("successfully sent daily reminder notification");
-          logger.info(JSON.stringify(r));
-        }
-      })
-      .catch((err) => {
-        logger.error(" error in sending the daily reminder notification ");
-        logger.error(JSON.stringify(err));
+    let bigPictureUrl = `${process.env.BACKEND_URL}/public/notification/daily_reminder.jpg`;
+    let largeIconUrl = `${process.env.BACKEND_URL}/public/notification/wallet.jpeg`;
+    let collapseId = "daily-reminder";
+    try {
+      const res = await client.createNotification({
+        name: "Daily Reminder",
+        headings: {
+          en: title,
+        },
+        priority: 7,
+
+        android_accent_color: "5756d5",
+        ios_sound: "notification_primary.wav",
+        ios_attachments: {
+          picture: bigPictureUrl,
+        },
+        content_available: true,
+        big_picture: bigPictureUrl,
+        android_channel_id: process.env.ONE_SIGNAL_DAILY_REMINDER_CHANNEL_ID,
+        large_icon: largeIconUrl,
+        contents: {
+          en: body,
+        },
+        collapse_id: collapseId,
+        buttons: [
+          {
+            id: "yes",
+            text: "Do it now",
+          },
+          {
+            id: "no",
+            text: "Later",
+          },
+        ],
+        filters: [
+          {
+            field: "tag",
+            key: "uid",
+            relation: "=",
+            value: data.uid,
+          },
+        ],
+        data: notificationData,
       });
+      logger.info(JSON.stringify(res.body));
+    } catch (err) {
+      if (err instanceof OneSignal.HTTPError) {
+        logger.error(err.body);
+      } else {
+        console.error(" Error in enabling daily reminder ");
+        logger.error(JSON.stringify(err));
+      }
+    }
   },
 
   async sendDailyBackupNotification(data) {
     logger.info("sending daily backup notification to  - " + data.displayName);
-    let token = data.fcmToken;
+
     let title = "Back Up 🔄";
     let body = `Please wait while we are backing up your data......`;
-    let backupSuccessTitle = "Back up successfull 🥰";
-    let backupSuccessBody = "Your data backed up safely ❤️";
-
-    let backupFailedTitle = "Sorry ! Back up failed 😥";
-    let backupFailedBody =
-      "In case of backup failure, do it manually in the app.";
-
-    let payload = {
-      data: {
-        type: "daily-backup",
-        uid: data.uid,
-        title,
-        body,
-        backupSuccessBody,
-        backupSuccessTitle,
-        backupFailedBody,
-        backupFailedTitle,
-      },
-      notification: {
-        title: title,
-        body: body,
-      },
+    let notificationData = {
+      type: "daily-backup",
+      uid: data.uid,
     };
-    getMessaging()
-      .sendToDevice(token, payload, { priority: "high" })
-      .then((r) => {
-        let error = null;
-        if (r.results[0] && r.results[0].error) {
-          error = r.results[0].error;
-        }
-        if (error) {
-          logger.error(
-            `error in sending daily backup notification ${error.code} ${error.message}`
-          );
-        } else {
-          logger.info("successfully sent daily backup notification ");
-          logger.info(JSON.stringify(r));
-        }
-      })
-      .catch((err) => {
-        logger.error(" error in sending the daily backup notification ");
-        logger.error(JSON.stringify(err));
+    let bigPictureUrl = `${process.env.BACKEND_URL}/public/notification/daily_backup.jpeg`;
+    let largeIconUrl = `${process.env.BACKEND_URL}/public/notification/wallet.jpeg`;
+    let collapseId = "daily-backup";
+
+    try {
+      const res = await client.createNotification({
+        name: "Daily Backup",
+        headings: {
+          en: title,
+        },
+        priority: 7,
+        android_accent_color: "5756d5",
+        ios_sound: "notification_primary.wav",
+        ios_attachments: {
+          picture: bigPictureUrl,
+        },
+        content_available: true,
+        big_picture: bigPictureUrl,
+        android_channel_id: process.env.ONE_SIGNAL_DAILY_BACKUP_CHANNEL_ID,
+        large_icon: largeIconUrl,
+        contents: {
+          en: body,
+        },
+        collapse_id: collapseId,
+        buttons: [],
+        filters: [
+          {
+            field: "tag",
+            key: "uid",
+            relation: "=",
+            value: data.uid,
+          },
+        ],
+        data: notificationData,
       });
+      logger.info(JSON.stringify(res.body));
+    } catch (err) {
+      if (err instanceof OneSignal.HTTPError) {
+        logger.error(err.body);
+      } else {
+        logger.error("Error in enabling Daily Backup");
+        logger.error(JSON.stringify(err));
+      }
+    }
   },
 };

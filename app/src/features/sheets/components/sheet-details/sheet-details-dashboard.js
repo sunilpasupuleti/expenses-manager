@@ -2,8 +2,13 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Text} from '../../../../components/typography/text.component';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-
-import {ScrollView, TouchableOpacity, View} from 'react-native';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import {
+  ScrollView,
+  TouchableNativeFeedback,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {
   FlexRow,
   MainWrapper,
@@ -30,6 +35,7 @@ import {Card} from 'react-native-paper';
 import {CategoryColor} from '../../../categories/components/categories.styles';
 import _ from 'lodash';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
+import {DashboardAddButton, SheetDetailsAddIcon} from './sheet-details.styles';
 
 export const SheetDetailsDashboard = ({navigation, route}) => {
   const theme = useTheme();
@@ -74,6 +80,14 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
 
   useEffect(() => {
     if (routeIsFocused) {
+      let sDetails = sheet.details;
+
+      let expense = sDetails.filter(s => s.type === 'expense');
+      let income = sDetails.filter(s => s.type === 'income');
+
+      if (income.length === 0) {
+        setActiveType('expense');
+      }
       navigation.setOptions({
         headerTitle:
           sheet?.name.length > 20
@@ -267,9 +281,13 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                   return (
                     <Spacer size={'large'} key={key}>
                       <Card
-                        theme={{roundness: 5}}
+                        theme={{roundness: 0}}
                         elevation={2}
-                        style={{position: 'relative'}}>
+                        style={{
+                          position: 'relative',
+                          borderTopLeftRadius: 10,
+                          borderTopRightRadius: 10,
+                        }}>
                         <TouchableHighlightWithColor
                           style={{
                             paddingTop: 12,
@@ -356,13 +374,27 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                       lineHeight: 30,
                     }}>
                     There are no {_.capitalize(activeType)}s to display. Create
-                    one from Transactions tab.
+                    one from Transactions tab or Below.
                   </Text>
                 </View>
               ))}
           </MainWrapper>
         </ScrollView>
       )}
+
+      <DashboardAddButton>
+        <TouchableNativeFeedback
+          onPress={() => {
+            navigation.navigate('AddSheetDetail', {
+              sheet: sheet,
+              activeType: activeType,
+            });
+          }}>
+          <FlexRow>
+            <AntDesign name="plus" size={20} color={'#fff'} />
+          </FlexRow>
+        </TouchableNativeFeedback>
+      </DashboardAddButton>
     </SafeArea>
   );
 };
