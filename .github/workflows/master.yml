@@ -34,7 +34,7 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./graphics/
-          server-dir: /expenses-manager.webwizard.in/graphics
+          server-dir: /expenses-manager.webwizard.in/graphics/
           exclude: |
             **/.git*
             **/.git*/**
