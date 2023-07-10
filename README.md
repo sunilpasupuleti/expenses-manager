@@ -96,21 +96,21 @@ https://play.google.com/store/apps/details?id=com.webwizard.expensesmanager
 
 ## Screenshots
 
-![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/1.png)
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/1.png)
 
-![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/2.png)
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/2.png)
 
-![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/3.png)
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/3.png)
 
-![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/4.png)
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/4.png)
 
-![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/5.png)
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/5.png)
 
-![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/6.png)
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/6.png)
 
-![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/7.png)
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/7.png)
 
-![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/8.png)
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/8.png)
 
 ## Installation
 
