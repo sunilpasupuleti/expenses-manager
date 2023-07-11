@@ -3,7 +3,6 @@ import OneSignal from 'react-native-onesignal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import auth from '@react-native-firebase/auth';
 import axios from 'axios';
-import remoteConfig from '@react-native-firebase/remote-config';
 import {Linking, Platform} from 'react-native';
 
 //Prompt for push on iOS
@@ -16,7 +15,7 @@ OneSignal.setNotificationWillShowInForegroundHandler(
     let data = notification.additionalData;
     console.log(data, 'Data recevied Notification foreground handler');
     if (data && data.type && data.type === 'daily-backup') {
-      await onBackupData(data);
+      onBackupData(data);
     } else {
       // immediately show notification
       notificationReceivedEvent.complete(notification);
@@ -56,7 +55,7 @@ const onBackupData = async data => {
   }
 
   let url = BACKEND_URL + '/backup?sendNotification=yes';
-  console.log(url, value ? value : {}, Platform.OS);
+  // console.log(url, value ? value : {}, Platform.OS);
   let jwtToken = await auth().currentUser.getIdToken();
   axios
     .post(url, value ? value : {}, {

@@ -50,7 +50,6 @@ const useHttp = () => {
         "Access-Control-Allow-Origin": "*",
         ...requestConfig.headers,
       };
-      console.log(url);
 
       try {
         let request;

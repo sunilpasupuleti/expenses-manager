@@ -185,7 +185,7 @@ export const SyncScreen = ({navigation, route}) => {
               onDismiss={() => setShowModal(false)}
               contentContainerStyle={{
                 backgroundColor: theme.colors.ui.body,
-                minHeight: '100%',
+                minHeight: '40%',
                 maxHeight: '80%',
               }}>
               <ScrollView>

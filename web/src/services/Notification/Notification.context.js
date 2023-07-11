@@ -4,10 +4,15 @@ import { createContext } from "react";
 import useHttp from "../../hooks/useHttp";
 
 export const NotificationContext = createContext({
-  onSendNotificationToUsers: (data, callback, errorCallBack, loader, notify) =>
-    null,
+  onSendDailyUpdateNotificationToUsers: (
+    data,
+    callback,
+    errorCallBack,
+    loader,
+    notify
+  ) => null,
 
-  onGetActiveUsersList: (callback, errorCallBack, loader, notify) => null,
+  onGetActiveDevicesList: (callback, errorCallBack, loader, notify) => null,
 });
 
 export const NotificationContextProvider = ({ children }) => {
@@ -15,7 +20,7 @@ export const NotificationContextProvider = ({ children }) => {
 
   const notificationUrl = "/admin/notification/";
 
-  const onSendNotificationToUsers = async (
+  const onSendDailyUpdateNotificationToUsers = async (
     data,
     callback = () => {},
     errorCallBack = () => {},
@@ -39,7 +44,7 @@ export const NotificationContextProvider = ({ children }) => {
     );
   };
 
-  const onGetActiveUsersList = async (
+  const onGetActiveDevicesList = async (
     callback = () => {},
     errorCallBack = () => {},
     loader = true,
@@ -47,7 +52,7 @@ export const NotificationContextProvider = ({ children }) => {
   ) => {
     sendRequest(
       {
-        url: notificationUrl + "active-users",
+        url: notificationUrl + "active-devices",
         type: "GET",
       },
       {
@@ -64,8 +69,8 @@ export const NotificationContextProvider = ({ children }) => {
   return (
     <NotificationContext.Provider
       value={{
-        onSendNotificationToUsers,
-        onGetActiveUsersList,
+        onSendDailyUpdateNotificationToUsers,
+        onGetActiveDevicesList,
       }}
     >
       {children}

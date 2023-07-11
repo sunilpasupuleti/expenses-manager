@@ -10,11 +10,11 @@ const {
 } = require("../controllers/admin/auth/authController");
 const { validateSignin } = require("../controllers/admin/auth/authValidator");
 const {
-  validateSendNotificationToUsers,
+  validateSendDailyUpdateNotificationToUsers,
 } = require("../controllers/admin/notification/notificationValidator");
 const {
-  sendNotificationToUsers,
-  getActiveUsersList,
+  sendDailyUpdatesNotificationToUsers,
+  getActiveDevicesList,
 } = require("../controllers/admin/notification/notificationController");
 
 // Get self user details after login
@@ -29,14 +29,17 @@ router.route("/auth/refresh").get(refreshToken);
 // Signout
 router.route("/auth/signout").get(signout);
 
-// Get active users list for sending notification
+// Get active devices list for sending notification
 router
-  .route("/notification/active-users")
-  .get(VerifyAdminToken, getActiveUsersList);
+  .route("/notification/active-devices")
+  .get(VerifyAdminToken, getActiveDevicesList);
 
 // send notification to users
 router
   .route("/notification")
-  .post(validateSendNotificationToUsers, sendNotificationToUsers);
+  .post(
+    validateSendDailyUpdateNotificationToUsers,
+    sendDailyUpdatesNotificationToUsers
+  );
 
 module.exports = router;

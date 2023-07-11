@@ -1,0 +1,1342 @@
+7/11/2023, 11:38:38 AM [info]  Message :  server started on port number 3000 }
+7/11/2023, 11:38:39 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 11:38:57 AM [error]  Message :  unauthorized, there is no access token but refesh token
+7/11/2023, 11:39:00 AM [debug]  Message :  CLIENT CONNECTED with ID -  Pa4baSGDH1aD6toAAAAB
+7/11/2023, 11:42:46 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 11:51 - Asia/Kolkata
+7/11/2023, 11:42:46 AM [info]  Message :  Enabling daily backup for Sunil Kumar at 0:1 - Asia/Kolkata
+7/11/2023, 11:42:46 AM [info]  Message :  -----------------------------------
+7/11/2023, 11:45:35 AM [debug]  Message :  CLIENT CONNECTED with ID -  8c5OVqvdG-t_kUp_AAAD
+7/11/2023, 11:45:56 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  Pa4baSGDH1aD6toAAAAB
+7/11/2023, 11:45:56 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  8c5OVqvdG-t_kUp_AAAD
+7/11/2023, 11:45:57 AM [debug]  Message :  CLIENT CONNECTED with ID -  tMmO-QtBbZt-GoUnAAAF
+7/11/2023, 11:51:00 AM [info]  Message :  sending daily reminder notification to  - Sunil Kumar
+7/11/2023, 11:51:00 AM [info]  Message :  {"id":"7f16d6ef-88e3-4c02-9a6d-a4b1973fc035","external_id":null}
+7/11/2023, 11:59:13 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  tMmO-QtBbZt-GoUnAAAF
+7/11/2023, 11:59:14 AM [debug]  Message :  CLIENT CONNECTED with ID -  wSICRIV9G4j4SVxlAAAH
+7/11/2023, 11:59:42 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  wSICRIV9G4j4SVxlAAAH
+7/11/2023, 11:59:43 AM [debug]  Message :  CLIENT CONNECTED with ID -  MpMzolCpWcRy-p0fAAAJ
+7/11/2023, 12:19:03 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  MpMzolCpWcRy-p0fAAAJ
+7/11/2023, 12:19:04 PM [debug]  Message :  CLIENT CONNECTED with ID -  Ev8ahGn6ovAov7o9AAAL
+7/11/2023, 12:24:56 PM [debug]  Message :  CLIENT CONNECTED with ID -  oGKI9f6PX1C9hFiGAAAN
+7/11/2023, 12:25:51 PM [debug]  Message :  CLIENT CONNECTED with ID -  yOUZTBSB5k5f6INJAAAP
+7/11/2023, 12:28:42 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  yOUZTBSB5k5f6INJAAAP
+7/11/2023, 12:28:42 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  oGKI9f6PX1C9hFiGAAAN
+7/11/2023, 12:28:42 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  Ev8ahGn6ovAov7o9AAAL
+7/11/2023, 12:28:46 PM [debug]  Message :  CLIENT CONNECTED with ID -  8Vo8pmEj3qFL_WrrAAAS
+7/11/2023, 12:29:53 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  8Vo8pmEj3qFL_WrrAAAS
+7/11/2023, 12:29:54 PM [debug]  Message :  CLIENT CONNECTED with ID -  81d99vZNF-aPQwWyAAAU
+7/11/2023, 12:36:59 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 12:37:00 PM [debug]  Message :  CLIENT CONNECTED with ID -  W3aoNQEa_CgOoW3BAAAB
+7/11/2023, 12:37:00 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 12:37:46 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 12:37:46 PM [debug]  Message :  CLIENT CONNECTED with ID -  zE39UbOHkcs0my0-AAAB
+7/11/2023, 12:37:47 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/11/2023, 12:45:52 PM [error]  Message :  unauthorized, there is no access token but refesh token
+7/11/2023, 12:45:54 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  zE39UbOHkcs0my0-AAAB
+7/11/2023, 12:45:55 PM [debug]  Message :  CLIENT CONNECTED with ID -  9p2Kz6jIGFl3SaAvAAAD
+7/11/2023, 12:46:07 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  9p2Kz6jIGFl3SaAvAAAD
+7/11/2023, 12:46:07 PM [debug]  Message :  CLIENT CONNECTED with ID -  crxVkYS0yjB9OR_gAAAF
+7/11/2023, 12:46:26 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  crxVkYS0yjB9OR_gAAAF
+7/11/2023, 12:46:26 PM [debug]  Message :  CLIENT CONNECTED with ID -  448EPEtUPO7uiYF9AAAH
+7/11/2023, 12:47:15 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  448EPEtUPO7uiYF9AAAH
+7/11/2023, 12:47:16 PM [debug]  Message :  CLIENT CONNECTED with ID -  UAO4rtPAI_KW-xmIAAAJ
+7/11/2023, 12:47:30 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  UAO4rtPAI_KW-xmIAAAJ
+7/11/2023, 12:47:31 PM [debug]  Message :  CLIENT CONNECTED with ID -  kG1tof1-CAh02p5bAAAL
+7/11/2023, 12:48:34 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  kG1tof1-CAh02p5bAAAL
+7/11/2023, 12:48:35 PM [debug]  Message :  CLIENT CONNECTED with ID -  wGrtZ9LO9SI0GkHwAAAN
+7/11/2023, 1:02:31 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 1:02:31 PM [debug]  Message :  CLIENT CONNECTED with ID -  bhemhgwHPPabDjo9AAAB
+7/11/2023, 1:02:32 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 1:03:36 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 1:03:36 PM [debug]  Message :  CLIENT CONNECTED with ID -  vy6Wqqy9r2pTrPCbAAAB
+7/11/2023, 1:03:37 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/11/2023, 1:22:32 PM [debug]  Message :  CLIENT CONNECTED with ID -  YZ7bBDhGs92__XvdAAAD
+7/11/2023, 1:22:40 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  vy6Wqqy9r2pTrPCbAAAB
+7/11/2023, 1:22:40 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  YZ7bBDhGs92__XvdAAAD
+7/11/2023, 1:22:41 PM [debug]  Message :  CLIENT CONNECTED with ID -  _EfkFnoJe-qGuEYqAAAF
+7/11/2023, 1:27:22 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 1:27:23 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 1:27:24 PM [debug]  Message :  CLIENT CONNECTED with ID -  DtWYt4PjTuDtNpuqAAAB
+7/11/2023, 1:30:45 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 1:30:45 PM [debug]  Message :  CLIENT CONNECTED with ID -  qUDtDRiDDr0sXEqZAAAB
+7/11/2023, 1:30:46 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/11/2023, 1:32:35 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 1:32:36 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 1:32:36 PM [debug]  Message :  CLIENT CONNECTED with ID -  B2yAxb7ey2da_4jmAAAB
+7/11/2023, 1:36:04 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  B2yAxb7ey2da_4jmAAAB
+7/11/2023, 1:36:07 PM [debug]  Message :  CLIENT CONNECTED with ID -  -BWnkULXfTsw1Oe6AAAD
+7/11/2023, 1:36:16 PM [debug]  Message :  CLIENT CONNECTED with ID -  WSSvmkNUDS26ozMEAAAF
+7/11/2023, 1:37:11 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  -BWnkULXfTsw1Oe6AAAD
+7/11/2023, 1:37:11 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  WSSvmkNUDS26ozMEAAAF
+7/11/2023, 1:37:12 PM [debug]  Message :  CLIENT CONNECTED with ID -  2gN1j55q1R0CXFaoAAAH
+7/11/2023, 1:37:28 PM [debug]  Message :  CLIENT CONNECTED with ID -  t54fkF1VYoyh0B_0AAAJ
+7/11/2023, 1:37:47 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 1:37:47 PM [debug]  Message :  CLIENT CONNECTED with ID -  8eIEbZzPhWLGILOBAAAB
+7/11/2023, 1:37:47 PM [debug]  Message :  CLIENT CONNECTED with ID -  SMExgNwvNEZachUIAAAD
+7/11/2023, 1:37:49 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 1:47:54 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 1:47:54 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/11/2023, 1:47:55 PM [debug]  Message :  CLIENT CONNECTED with ID -  KnLJ3e2gG14vgsaJAAAB
+7/11/2023, 1:47:55 PM [debug]  Message :  CLIENT CONNECTED with ID -  FYQb-7k-J_-JV-9KAAAD
+7/11/2023, 2:40:34 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 2:40:35 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/11/2023, 2:40:37 PM [debug]  Message :  CLIENT CONNECTED with ID -  u9fX_LfgpGHvxNWPAAAB
+7/11/2023, 2:40:44 PM [debug]  Message :  CLIENT CONNECTED with ID -  yG3a2WvOqPWf8cn5AAAD
+7/11/2023, 2:40:46 PM [error]  Message :  unauthorized, there is no access token but refesh token
+7/11/2023, 2:40:46 PM [error]  Message :  unauthorized, there is no access token but refesh token
+7/11/2023, 2:41:04 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 2:41:05 PM [debug]  Message :  CLIENT CONNECTED with ID -  aFRno3IQkKBFVxgrAAAB
+7/11/2023, 2:41:05 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 2:41:05 PM [debug]  Message :  CLIENT CONNECTED with ID -  ad1r8grlN1swb2eCAAAD
+7/11/2023, 2:42:10 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 2:42:10 PM [info]  Message :  No response code found
+7/11/2023, 2:42:26 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  aFRno3IQkKBFVxgrAAAB
+7/11/2023, 2:42:26 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  ad1r8grlN1swb2eCAAAD
+7/11/2023, 2:42:26 PM [debug]  Message :  CLIENT CONNECTED with ID -  U3ehmYLKIdqqA02MAAAF
+7/11/2023, 2:42:38 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 2:42:39 PM [debug]  Message :  CLIENT CONNECTED with ID -  jHQoXWIi07X-gAQXAAAB
+7/11/2023, 2:42:39 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 2:52:01 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:14:16 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  jHQoXWIi07X-gAQXAAAB
+7/11/2023, 3:14:17 PM [debug]  Message :  CLIENT CONNECTED with ID -  gbfE9HKn0O93XjYkAAAD
+7/11/2023, 3:19:56 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  gbfE9HKn0O93XjYkAAAD
+7/11/2023, 3:19:57 PM [debug]  Message :  CLIENT CONNECTED with ID -  a6lYBoQ4R5vhefFoAAAF
+7/11/2023, 3:20:41 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:21:24 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:23:05 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:23:49 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:24:15 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:24:35 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:26:02 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:26:12 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:36:04 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:36:05 PM [debug]  Message :  CLIENT CONNECTED with ID -  MUnPlFGp1DxRUBk4AAAB
+7/11/2023, 3:36:06 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 3:36:24 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:36:24 PM [error]  Message :  ----- Reason -----
+7/11/2023, 3:36:24 PM [error]  Message :  fs is not defined
+7/11/2023, 3:36:48 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:36:48 PM [debug]  Message :  CLIENT CONNECTED with ID -  kutE_HEBEAUEcIl5AAAB
+7/11/2023, 3:36:48 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 3:36:51 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:38:41 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:38:41 PM [debug]  Message :  CLIENT CONNECTED with ID -  qCOhV5OXpEJaemGKAAAB
+7/11/2023, 3:38:42 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 3:38:45 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:38:45 PM [error]  Message :  ----- Reason -----
+7/11/2023, 3:38:45 PM [error]  Message :  Callback must be a function. Received { encoding: 'base64' }
+7/11/2023, 3:39:08 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:39:09 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 3:39:09 PM [debug]  Message :  CLIENT CONNECTED with ID -  MLjyt-GRkA5Au--tAAAB
+7/11/2023, 3:39:10 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:39:54 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:39:55 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 3:39:55 PM [debug]  Message :  CLIENT CONNECTED with ID -  twK7mJ61DyBn5VC0AAAB
+7/11/2023, 3:40:02 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:42:01 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:42:01 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 3:42:02 PM [debug]  Message :  CLIENT CONNECTED with ID -  BVPd4eUAy90CFib6AAAB
+7/11/2023, 3:42:05 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:42:16 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:42:17 PM [debug]  Message :  CLIENT CONNECTED with ID -  iRykxJarHwYpAX-wAAAB
+7/11/2023, 3:42:17 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 3:42:20 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:42:32 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:42:32 PM [debug]  Message :  CLIENT CONNECTED with ID -  mPb84h7VS3u9LfGAAAAB
+7/11/2023, 3:42:32 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 3:42:35 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:42:48 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:42:48 PM [debug]  Message :  CLIENT CONNECTED with ID -  aFDVD_xJvrFYgxvGAAAB
+7/11/2023, 3:42:48 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 3:42:50 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:42:57 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:42:57 PM [debug]  Message :  CLIENT CONNECTED with ID -  GDHrvCPxCgTNLWxZAAAB
+7/11/2023, 3:42:57 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 3:42:58 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:43:29 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:43:29 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 3:43:30 PM [debug]  Message :  CLIENT CONNECTED with ID -  Fgb-TI4dvlDPQuEqAAAB
+7/11/2023, 3:43:33 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:44:15 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:44:15 PM [debug]  Message :  CLIENT CONNECTED with ID -  g2iTSYWEkV047VKgAAAB
+7/11/2023, 3:44:16 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 3:44:26 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:44:27 PM [debug]  Message :  CLIENT CONNECTED with ID -  CvXFLfkzJA6kbfVRAAAB
+7/11/2023, 3:44:27 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 3:44:29 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:44:37 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:49:18 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:49:18 PM [debug]  Message :  CLIENT CONNECTED with ID -  O8Wb8PHZrfrrg7TnAAAB
+7/11/2023, 3:49:19 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/11/2023, 3:49:28 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:49:28 PM [debug]  Message :  CLIENT CONNECTED with ID -  23tR9_5l7025o_VWAAAB
+7/11/2023, 3:49:29 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/11/2023, 3:49:30 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:50:07 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:50:07 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/11/2023, 3:50:07 PM [debug]  Message :  CLIENT CONNECTED with ID -  t0qcBErAURzueSWWAAAB
+7/11/2023, 3:50:10 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:50:10 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 3:50:11 PM [debug]  Message :  CLIENT CONNECTED with ID -  _K5Ml2SGfNMSsc5nAAAB
+7/11/2023, 3:50:12 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:50:12 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 3:50:13 PM [debug]  Message :  CLIENT CONNECTED with ID -  -u6HapmqnhjEDj5lAAAB
+7/11/2023, 3:50:24 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  -u6HapmqnhjEDj5lAAAB
+7/11/2023, 3:50:25 PM [error]  Message :  unauthorized, there is no access token but refesh token
+7/11/2023, 3:50:27 PM [debug]  Message :  CLIENT CONNECTED with ID -  NXrnfHERZTra1jl6AAAD
+7/11/2023, 3:51:14 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:51:15 PM [error]  Message :  ----- Reason -----
+7/11/2023, 3:51:15 PM [error]  Message :  path is not defined
+7/11/2023, 3:52:09 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:52:10 PM [debug]  Message :  CLIENT CONNECTED with ID -  qApI-VGvqZHB8hvtAAAB
+7/11/2023, 3:52:11 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 3:52:14 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:52:14 PM [error]  Message :  ----- Reason -----
+7/11/2023, 3:52:14 PM [error]  Message :  path is not defined
+7/11/2023, 3:52:44 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:52:45 PM [debug]  Message :  CLIENT CONNECTED with ID -  AmWM4ZfbG7uf58wDAAAB
+7/11/2023, 3:52:45 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 3:52:52 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:52:53 PM [debug]  Message :  CLIENT CONNECTED with ID -  PcNUZF3jtCjynaTnAAAB
+7/11/2023, 3:52:53 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 3:53:05 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 3:53:05 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 3:55:19 PM [error]  Message :  ----- uncaught exception  -----
+7/11/2023, 3:55:19 PM [error]  Message :  Error [ERR_PACKAGE_PATH_NOT_EXPORTED]: Package subpath './lib/fs' is not defined by "exports" in /Users/sunilkumarpasupuleti/Desktop/projects/apps/expensesmanager/backend/node_modules/fs-extra/package.json
+    at new NodeError (node:internal/errors:387:5)
+    at throwExportsNotFound (node:internal/modules/esm/resolve:365:9)
+    at packageExportsResolve (node:internal/modules/esm/resolve:649:3)
+    at resolveExports (node:internal/modules/cjs/loader:522:36)
+    at Function.Module._findPath (node:internal/modules/cjs/loader:562:31)
+    at Function.Module._resolveFilename (node:internal/modules/cjs/loader:971:27)
+    at Function.Module._load (node:internal/modules/cjs/loader:833:27)
+    at Module.require (node:internal/modules/cjs/loader:1057:19)
+    at require (node:internal/modules/cjs/helpers:103:18)
+    at Object.<anonymous> (/Users/sunilkumarpasupuleti/Desktop/projects/apps/expensesmanager/backend/index.js:231:20)
+7/11/2023, 3:55:19 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:55:20 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 3:55:20 PM [error]  Message :  ----- uncaught exception  -----
+7/11/2023, 3:55:20 PM [error]  Message :  ReferenceError: exists is not defined
+    at Object.<anonymous> (/Users/sunilkumarpasupuleti/Desktop/projects/apps/expensesmanager/backend/index.js:232:13)
+    at Module._compile (node:internal/modules/cjs/loader:1155:14)
+    at Object.Module._extensions..js (node:internal/modules/cjs/loader:1209:10)
+    at Module.load (node:internal/modules/cjs/loader:1033:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:868:12)
+    at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:81:12)
+    at node:internal/main/run_main_module:22:47
+7/11/2023, 3:55:20 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:55:21 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/11/2023, 3:55:22 PM [debug]  Message :  CLIENT CONNECTED with ID -  HQH6MWzFjL-YcghDAAAB
+7/11/2023, 3:55:25 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:55:26 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 3:55:26 PM [debug]  Message :  CLIENT CONNECTED with ID -  AHs_dAnYqH3wGsPvAAAB
+7/11/2023, 3:55:28 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:55:29 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 3:55:30 PM [debug]  Message :  CLIENT CONNECTED with ID -  -9ggJ_2cHoFu-dUZAAAB
+7/11/2023, 3:55:33 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:55:33 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 3:55:34 PM [debug]  Message :  CLIENT CONNECTED with ID -  0QhJjuKaipBIopu1AAAB
+7/11/2023, 3:58:02 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:58:02 PM [debug]  Message :  CLIENT CONNECTED with ID -  vTsR5bqd7sJS34MpAAAB
+7/11/2023, 3:58:03 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/11/2023, 3:58:15 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:58:16 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/11/2023, 3:58:16 PM [debug]  Message :  CLIENT CONNECTED with ID -  S_bgc_0Y5w2WuGaWAAAB
+7/11/2023, 3:58:33 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:58:34 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 3:58:34 PM [debug]  Message :  CLIENT CONNECTED with ID -  xbA525jwAvvIc1IWAAAB
+7/11/2023, 3:58:42 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:58:43 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 3:58:44 PM [debug]  Message :  CLIENT CONNECTED with ID -  gd1IUr6dp4h5OOV-AAAB
+7/11/2023, 3:58:47 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:58:48 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 3:58:48 PM [debug]  Message :  CLIENT CONNECTED with ID -  ykx-8H5A7Xu5VBEaAAAB
+7/11/2023, 3:58:56 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:58:57 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 3:58:57 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:58:58 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 3:58:58 PM [debug]  Message :  CLIENT CONNECTED with ID -  4lOxQ_0vkoa_whvTAAAB
+7/11/2023, 3:59:00 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:59:01 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 3:59:01 PM [debug]  Message :  CLIENT CONNECTED with ID -  l-TbFJnAueXLflfbAAAB
+7/11/2023, 3:59:02 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:59:03 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 3:59:04 PM [debug]  Message :  CLIENT CONNECTED with ID -  7EWs_R2AugBiZ_9yAAAB
+7/11/2023, 3:59:04 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:59:05 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 3:59:06 PM [debug]  Message :  CLIENT CONNECTED with ID -  bjbH72IbxErs5yL6AAAB
+7/11/2023, 3:59:08 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:59:09 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 3:59:09 PM [debug]  Message :  CLIENT CONNECTED with ID -  Z6hvBDmQS8Hd-E2EAAAB
+7/11/2023, 3:59:14 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 3:59:14 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 3:59:15 PM [debug]  Message :  CLIENT CONNECTED with ID -  58FgwGwZtxvUpcqwAAAB
+7/11/2023, 4:00:59 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 4:00:59 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 4:01:00 PM [debug]  Message :  CLIENT CONNECTED with ID -  h8LRti0lMmkO3yZzAAAB
+7/11/2023, 4:01:22 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 4:01:22 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 4:01:23 PM [debug]  Message :  CLIENT CONNECTED with ID -  gDo4Pzsvx6t8qLyUAAAB
+7/11/2023, 4:02:44 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 4:02:45 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 4:02:45 PM [debug]  Message :  CLIENT CONNECTED with ID -  IGlCLyd2aJG-GWYrAAAB
+7/11/2023, 4:02:47 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 4:02:48 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 4:02:49 PM [debug]  Message :  CLIENT CONNECTED with ID -  iaBTcguAGj-sfaI0AAAB
+7/11/2023, 4:02:50 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 4:02:51 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 4:02:51 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/11/2023, 4:02:52 PM [debug]  Message :  CLIENT CONNECTED with ID -  eAa8sRTT1TnceKioAAAB
+7/11/2023, 4:02:56 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 4:02:56 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 4:02:57 PM [debug]  Message :  CLIENT CONNECTED with ID -  eujW36anFcSR-nJcAAAB
+7/11/2023, 4:04:35 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 4:04:36 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 4:04:36 PM [debug]  Message :  CLIENT CONNECTED with ID -  ZJ3rpFFVCv7aiuBrAAAB
+7/11/2023, 4:04:48 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 4:04:48 PM [error]  Message :  Error in reading files
+7/11/2023, 4:04:56 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 4:04:57 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 4:04:57 PM [debug]  Message :  CLIENT CONNECTED with ID -  uYKdINP57igMfjVYAAAB
+7/11/2023, 4:05:02 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 4:05:02 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 4:05:03 PM [debug]  Message :  CLIENT CONNECTED with ID -  vfqLB8qdol_AXvetAAAB
+7/11/2023, 4:05:04 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 4:05:04 PM [error]  Message :  Error in reading files Error: ENOENT: no such file or directory, scandir 'function() {
+  if (!cwd)
+    cwd = origCwd.call(process)
+  return cwd
+}/public/notification'
+7/11/2023, 4:05:15 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 4:05:15 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/11/2023, 4:05:16 PM [debug]  Message :  CLIENT CONNECTED with ID -  gOXP4nHCIgqO76K6AAAB
+7/11/2023, 4:05:18 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 4:06:46 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 4:06:47 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 4:06:47 PM [debug]  Message :  CLIENT CONNECTED with ID -  JfrNHiHtzhAPwFYeAAAB
+7/11/2023, 4:06:48 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 4:06:55 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 4:06:56 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/11/2023, 4:06:56 PM [debug]  Message :  CLIENT CONNECTED with ID -  oO4Wax9EW1BLBa1cAAAB
+7/11/2023, 4:06:57 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 4:10:02 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 4:10:03 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 4:10:03 PM [debug]  Message :  CLIENT CONNECTED with ID -  1c4qM9WBnEaNGTDEAAAB
+7/11/2023, 4:10:13 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 4:10:14 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 4:10:14 PM [debug]  Message :  CLIENT CONNECTED with ID -  JEVSq8Ccy7ZjiIhnAAAB
+7/11/2023, 4:10:27 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 4:10:28 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 4:10:39 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 4:10:39 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/11/2023, 4:10:40 PM [debug]  Message :  CLIENT CONNECTED with ID -  hocYRUTilXBtTx4IAAAB
+7/11/2023, 4:11:02 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 4:11:03 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 4:11:34 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 4:11:35 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 4:11:58 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 4:11:58 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 4:11:58 PM [debug]  Message :  CLIENT CONNECTED with ID -  oiRQUL5duVMjtEr5AAAB
+7/11/2023, 4:12:01 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 4:12:01 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 4:12:18 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 4:12:18 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/11/2023, 4:12:20 PM [debug]  Message :  CLIENT CONNECTED with ID -  xcalPc8vUQsYJe-6AAAB
+7/11/2023, 4:12:22 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 4:12:22 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 4:12:47 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  xcalPc8vUQsYJe-6AAAB
+7/11/2023, 4:12:49 PM [debug]  Message :  CLIENT CONNECTED with ID -  51rinxLCAAJbuni5AAAD
+7/11/2023, 10:33:13 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 10:33:42 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 10:33:43 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 10:34:01 PM [error]  Message :  unauthorized, there is no access token but refesh token
+7/11/2023, 10:34:04 PM [debug]  Message :  CLIENT CONNECTED with ID -  caZmy2NZ04nh-PRCAAAB
+7/11/2023, 10:44:08 PM [info]  Message :  ---------------------
+7/11/2023, 10:44:24 PM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 11:51 - Asia/Kolkata
+7/11/2023, 10:44:24 PM [info]  Message :  Enabling daily backup for Sunil Kumar at 0:1 - Asia/Kolkata
+7/11/2023, 10:44:24 PM [info]  Message :  -----------------------------------
+7/11/2023, 10:44:39 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  caZmy2NZ04nh-PRCAAAB
+7/11/2023, 10:44:40 PM [debug]  Message :  CLIENT CONNECTED with ID -  BdCUpPuyPv5ZtQdaAAAD
+7/11/2023, 10:44:59 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 10:45:00 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 10:45:19 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 10:45:20 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 10:45:51 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 10:45:51 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 10:46:08 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 10:46:09 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 10:54:01 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 10:54:02 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 10:54:15 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 10:54:16 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 10:54:28 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 10:54:29 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 10:59:43 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  BdCUpPuyPv5ZtQdaAAAD
+7/11/2023, 10:59:44 PM [debug]  Message :  CLIENT CONNECTED with ID -  Q7jgQNil5AFiGR0qAAAF
+7/11/2023, 11:00:07 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  Q7jgQNil5AFiGR0qAAAF
+7/11/2023, 11:00:08 PM [debug]  Message :  CLIENT CONNECTED with ID -  H1Goz4HWsnpwHQ3ZAAAH
+7/11/2023, 11:00:13 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  H1Goz4HWsnpwHQ3ZAAAH
+7/11/2023, 11:00:13 PM [debug]  Message :  CLIENT CONNECTED with ID -  ig2EVRIFeD7D-L67AAAJ
+7/11/2023, 11:11:18 PM [debug]  Message :  CLIENT CONNECTED with ID -  wC7DmWRM9RUx4IYjAAAL
+7/11/2023, 11:11:33 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  wC7DmWRM9RUx4IYjAAAL
+7/11/2023, 11:11:33 PM [debug]  Message :  CLIENT CONNECTED with ID -  JnKXdfsT_K_Xh4EEAAAN
+7/11/2023, 11:12:08 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  JnKXdfsT_K_Xh4EEAAAN
+7/11/2023, 11:12:09 PM [debug]  Message :  CLIENT CONNECTED with ID -  hfDNVoqEj-0GVoAYAAAP
+7/11/2023, 11:12:19 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  hfDNVoqEj-0GVoAYAAAP
+7/11/2023, 11:12:19 PM [debug]  Message :  CLIENT CONNECTED with ID -  skwluixIBNw-hS0vAAAR
+7/11/2023, 11:12:28 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  skwluixIBNw-hS0vAAAR
+7/11/2023, 11:12:28 PM [debug]  Message :  CLIENT CONNECTED with ID -  EbE0EaGf-YGsoqXAAAAT
+7/11/2023, 11:14:31 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  EbE0EaGf-YGsoqXAAAAT
+7/11/2023, 11:14:31 PM [debug]  Message :  CLIENT CONNECTED with ID -  dNEEW_jvg9zvXNVUAAAV
+7/11/2023, 11:14:41 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  dNEEW_jvg9zvXNVUAAAV
+7/11/2023, 11:14:42 PM [debug]  Message :  CLIENT CONNECTED with ID -  q8qLgBzM7w--fhQ-AAAX
+7/11/2023, 11:14:50 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  q8qLgBzM7w--fhQ-AAAX
+7/11/2023, 11:14:50 PM [debug]  Message :  CLIENT CONNECTED with ID -  KbxO1SZnODaw90tmAAAZ
+7/11/2023, 11:14:55 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  KbxO1SZnODaw90tmAAAZ
+7/11/2023, 11:14:55 PM [debug]  Message :  CLIENT CONNECTED with ID -  2nmJyr2tnTqwu3BAAAAb
+7/11/2023, 11:14:57 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  2nmJyr2tnTqwu3BAAAAb
+7/11/2023, 11:14:57 PM [debug]  Message :  CLIENT CONNECTED with ID -  rATnKYsgZ56AMrWgAAAd
+7/11/2023, 11:16:39 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  rATnKYsgZ56AMrWgAAAd
+7/11/2023, 11:16:39 PM [debug]  Message :  CLIENT CONNECTED with ID -  2Pt_sFT5Do5e3u3UAAAf
+7/11/2023, 11:16:46 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  2Pt_sFT5Do5e3u3UAAAf
+7/11/2023, 11:16:46 PM [debug]  Message :  CLIENT CONNECTED with ID -  3AzAQqv1o2KXReCpAAAh
+7/11/2023, 11:17:31 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  3AzAQqv1o2KXReCpAAAh
+7/11/2023, 11:17:31 PM [debug]  Message :  CLIENT CONNECTED with ID -  dvTCqY1g7F1hW30TAAAj
+7/11/2023, 11:18:08 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  dvTCqY1g7F1hW30TAAAj
+7/11/2023, 11:18:09 PM [debug]  Message :  CLIENT CONNECTED with ID -  xx_0_JfQaILa3DY4AAAl
+7/11/2023, 11:22:02 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  xx_0_JfQaILa3DY4AAAl
+7/11/2023, 11:22:03 PM [debug]  Message :  CLIENT CONNECTED with ID -  qrP-ox3SpJrVvEK_AAAn
+7/11/2023, 11:27:01 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 11:27:01 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 11:27:23 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 11:27:24 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 11:27:40 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 11:27:40 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 11:36:53 PM [error]  Message :  unauthorized, there is no access token but refesh token
+7/11/2023, 11:36:55 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  qrP-ox3SpJrVvEK_AAAn
+7/11/2023, 11:36:56 PM [debug]  Message :  CLIENT CONNECTED with ID -  K86Jd8nObhgV_jtZAAAp
+7/11/2023, 11:39:28 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  K86Jd8nObhgV_jtZAAAp
+7/11/2023, 11:39:29 PM [debug]  Message :  CLIENT CONNECTED with ID -  H0tNVI_6q8GfB7p1AAAr
+7/11/2023, 11:42:28 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  H0tNVI_6q8GfB7p1AAAr
+7/11/2023, 11:42:29 PM [debug]  Message :  CLIENT CONNECTED with ID -  Do89CEDDJbZj-plYAAAt
+7/11/2023, 11:45:16 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 11:45:16 PM [error]  Message :  ----- Reason -----
+7/11/2023, 11:45:16 PM [error]  Message :  users.forEach is not a function
+7/11/2023, 11:46:06 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  Do89CEDDJbZj-plYAAAt
+7/11/2023, 11:46:07 PM [debug]  Message :  CLIENT CONNECTED with ID -  vDBoUYb-I8WVThrxAAAv
+7/11/2023, 11:46:15 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 11:46:16 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 11:46:34 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  vDBoUYb-I8WVThrxAAAv
+7/11/2023, 11:46:34 PM [debug]  Message :  CLIENT CONNECTED with ID -  _hP-TAA16CEwmpOvAAAx
+7/11/2023, 11:48:09 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  _hP-TAA16CEwmpOvAAAx
+7/11/2023, 11:48:10 PM [debug]  Message :  CLIENT CONNECTED with ID -  IC6b_3-dQ93aVWhOAAAz
+7/11/2023, 11:49:50 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  IC6b_3-dQ93aVWhOAAAz
+7/11/2023, 11:49:51 PM [debug]  Message :  CLIENT CONNECTED with ID -  bJ-bHn-GSev09LJ0AAA1
+7/11/2023, 11:50:21 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 11:50:22 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 11:50:43 PM [info]  Message :  Destroying daily backup vx16QZaiJgci3iwUBIpsO62ArIO2
+7/11/2023, 11:50:43 PM [info]  Message :  Destroying daily reminder vx16QZaiJgci3iwUBIpsO62ArIO2
+7/11/2023, 11:50:43 PM [info]  Message :  ---------------------
+7/11/2023, 11:50:53 PM [info]  Message :  Enabling daily reminder for wnzpqrcdf9@privaterelay.appleid.com at time - 05:28 - Asia/Kolkata
+7/11/2023, 11:50:53 PM [info]  Message :  Enabling daily backup for wnzpqrcdf9@privaterelay.appleid.com at 0:1 - Asia/Kolkata
+7/11/2023, 11:50:53 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:51:00 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  bJ-bHn-GSev09LJ0AAA1
+7/11/2023, 11:51:00 PM [debug]  Message :  CLIENT CONNECTED with ID -  uOo-8dkC22nXmYjmAAA3
+7/11/2023, 11:54:07 PM [info]  Message :  Destroying daily backup O7ry8V25HcbjI41aN5APwO25g782
+7/11/2023, 11:54:07 PM [info]  Message :  Destroying daily reminder O7ry8V25HcbjI41aN5APwO25g782
+7/11/2023, 11:54:07 PM [info]  Message :  ---------------------
+7/11/2023, 11:54:55 PM [info]  Message :  Enabling daily reminder for wnzpqrcdf9@privaterelay.appleid.com at time - 05:28 - Asia/Kolkata
+7/11/2023, 11:54:55 PM [info]  Message :  Enabling daily backup for wnzpqrcdf9@privaterelay.appleid.com at 0:1 - Asia/Kolkata
+7/11/2023, 11:54:55 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:55:59 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  uOo-8dkC22nXmYjmAAA3
+7/11/2023, 11:56:01 PM [debug]  Message :  CLIENT CONNECTED with ID -  gPgoXYJDvvxXZGk7AAA5
+7/11/2023, 11:56:17 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 11:56:18 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 11:56:44 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  gPgoXYJDvvxXZGk7AAA5
+7/11/2023, 11:56:44 PM [debug]  Message :  CLIENT CONNECTED with ID -  E8y-vrvk0Y0vEaVuAAA7
+7/11/2023, 11:56:51 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 11:56:51 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 11:57:19 PM [info]  Message :  sending daily update notifications to users  - 
+7/11/2023, 11:57:20 PM [info]  Message :  undefined DAILY UPDATE
+7/11/2023, 11:57:51 PM [info]  Message :  Updated time in daily reminder. Cancelling the previous one and scheduling new reminder
+7/11/2023, 11:57:51 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:57:51 PM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 23:58 - Asia/Kolkata
+7/11/2023, 11:57:51 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:00 PM [info]  Message :  sending daily reminder notification to  - Sunil Kumar
+7/11/2023, 11:58:00 PM [info]  Message :  {"id":"eb7b367c-48a0-4900-bcc5-4335ba716bb7","external_id":null}
+7/11/2023, 11:58:20 PM [info]  Message :  server started on port number 3000 }
+7/11/2023, 11:58:21 PM [debug]  Message :  CLIENT CONNECTED with ID -  fzWZaDbN8RDxWddcAAAB
+7/11/2023, 11:58:21 PM [debug]  Message :  CLIENT CONNECTED with ID -  Wzc8kbuiMgM6kFVCAAAD
+7/11/2023, 11:58:22 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for thedaisy005@gmail.com - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Bhavana chinnam - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919313500255 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily reminder for +919885560882 at time - 07:48 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919885560882 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily reminder for sridevi pasupuleti at time - 11:17 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for sridevi pasupuleti - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Nitin Phanse - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Dinesh Waradkar - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Dilip Rajbhar - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Deep Jyoti Das - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily reminder for 19-R-04C3 Manikanta at time - 14:11 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for 19-R-04C3 Manikanta - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily reminder for Sakeena Banu at time - 05:10 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Sakeena Banu - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919246229889 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Krrish Sharma - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919034407338 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Krrish Sharma - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for undefined - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Emily Allen - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily reminder for Mr. Arjun Kumar at time - 23:00 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Mr. Arjun Kumar - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Bhavana Chinnam - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for dynamic work - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919826259020 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Sreekuttan Vn - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for undefined - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for banjdoll22@gmail.com - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for DINESH DINO - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Dushyant Waghmare - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Govind Koppisetty - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Ashok B Chowdhury - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Joshua Mohan - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for kajri012dvi@gmail.com - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for undefined - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily reminder for Sunil Kumar Pasupuleti at time - 23:03 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Sunil Kumar Pasupuleti - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily reminder for Mounika Pasupuleti at time - 21:00 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Mounika Pasupuleti - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Parthiban S - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for SANJAY BEHERA - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919475929015 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily reminder for nitin tulsyan at time - 18:30 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for nitin tulsyan - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Adiya Tripathi - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Eswaramoorthy .K - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Sanjay Murali - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for drrajeshgandhi25@gmail.com - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for T Tirumalesh - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Kavi Nilavan - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for undefined - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for KUMAR MANGALAM - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Darling Vamsi - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for vimal jain - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Nagarajan B - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Neeraj Kumar - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily reminder for vishalsharma735@yahoo.in at time - 23:00 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for vishalsharma735@yahoo.in - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Punmabhai Chudhari - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Subhash Magar - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Jerrell Shelton - America/Chicago
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Simão Valoloca Manuel - Africa/Luanda
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Pete Jarosch - America/Chicago
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Bharat Sutharr - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +918111800003 - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for kswargari@rediffmail.com - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Yomi obasa - Europe/London
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919322044601 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Forethought Unlimited LLC. - America/New_York
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919557435979 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily reminder for Gobinda Bishi at time - 20:00 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Gobinda Bishi - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Jerin Ck - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +917847862423 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919155002709 - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919537588533 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Alan Grady - Asia/Manila
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Zach Eversoll - Asia/Manila
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for tau.hoskinsgrady.1659729733602@gmail.com - Asia/Manila
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Billy Muldoon - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Rhydian Davies - Europe/London
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for tree2 box - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Pterodactyl Grady - Asia/Manila
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Claire Altithorax - Asia/Manila
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Donald Sidhu - Asia/Manila
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919343576002 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Bijay Yadav - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +918956428099 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for nivedithatb21@gmail.com - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for YK Joshi - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for VINOD ROHILLA - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for KASIA K Markowska - Europe/London
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Ahmed Salahudeen - Asia/Qatar
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919706011766 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for prasad.inform09@gmail.com - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Kh Mohamed rafiq - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Gurpreet Brar - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for hema latha - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Alok Alok - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Phatrapron Boonbou - Europe/London
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Pawan Kumar - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for lakshaya_singh@afschoolavadi.com - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for sunny debnath - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Desi Spoon - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for chellapandi.private@hotmail.com - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Parixit Patel - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Pravin Ghorpade - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily reminder for sanjoy sen at time - 22:00 - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for sanjoy sen - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for shiva166sharma@gmail.com - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Senthil R - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Abhishek Singh - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Ashok kumar - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +917219141099 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919959907940 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Mukesh Solanki - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919869346700 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for vaibhavpnd5@gmail.com - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily reminder for SUNIL KUMAR PASUPULETI at time - 05:28 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for SUNIL KUMAR PASUPULETI - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919868812356 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919637396999 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily reminder for Manikanta at time - 14:28 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Manikanta - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Paresh Vishnu - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for ShivaShankar TJ - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for RAJESH BAMNIYA - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for tej narayan - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Gursewak Arora - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for P kishor Kishor - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for priyanshu sahni - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Thiyagarajan Elumalai - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for MAHAMMAD ASLAM VAJRALA - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily reminder for sunil.pandvd41@gmail.com at time - 23:20 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for sunil.pandvd41@gmail.com - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Suresh - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for njanssen44@hotmail.com - America/Chicago
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +916303445344 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +447932984314 - Europe/London
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919989644623 - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Megha Elsa Shibu - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for sheetal Kshirsagar - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919811032586 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for forkandfilebusiness@gmail.com - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for ashu mohmad - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily reminder for DILIP GOSALIA at time - 11:56 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for DILIP GOSALIA - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Anudeep Royal - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Neel Mehta - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Lee Roberts - Europe/London
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +918822664871 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +918850448421 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919811023318 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily reminder for Chandra Shekhar at time - 23:00 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Chandra Shekhar - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Sahil Prajapati - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily reminder for Khusbu Nishad at time - 22:00 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Khusbu Nishad - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Vijaykumar Jogdand - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Kevinkumar Patel - Asia/Dubai
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Rijul Mamidwar - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Dev Virani - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Rohan - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Dayal _kv - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for daljit.jasrotia@hotmail.com - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Bradly Sam - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for KAMLESH SHETH - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Risshi P Parmar - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for vikas mehta - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for AC Chaursiya - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Yes No - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Nitin Solanki - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Jinudas Ks - Asia/Riyadh
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for divyansh verma - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919972656450 - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Sarfraz Mehmood - Europe/London
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919891185565 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Ritesh Panday - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919597979703 - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Chirag Gohel - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Aswin Raj - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Aditya Suryawanshi - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for harsha vanapalli - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919691443438 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919849973377 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Nitesh Kumar - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Swetha Vijayakumar - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for pratixa patel - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Alexander Naffah - Europe/London
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Navratan Organics - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +917875581143 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Rajendra Kumar - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for arjun pasi - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for AMAR SURDE - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Shree Ram - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for muthuscorpion.sethu@gmail.com - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Rahul Arya - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Shilpa Naik - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Pooja Jaiswal - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for chanti 1988 - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Rohit Sharma - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Dean Fahy - Europe/London
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for ROKTIM SAHA - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Tejas Sura - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Rohan Bania - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +917654290341 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for a@b.com - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Akshat Surana - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Pradumn Biradar - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +918532906086 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919727922407 - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for KANTI KUMAR BM - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +917806945731 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for manju.hh010@gmail.com - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Ranjan Sethi - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +918058777683 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for sunil.pandvd41@gmail.com - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Sibi MP - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Daddy Preyer - Africa/Lagos
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919013272821 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily reminder for sumair793@gmail.com at time - 21:17 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for sumair793@gmail.com - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Umar Rashid - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Shailesh chauhan - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for khaleel Sargiro - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Jovann Philip - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for M.S prakash - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for vani raparthi - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Mohammed Shareef - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919214421168 - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Tomi Mertz - America/Boise
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Khushpreet Kaur - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for PRAVEEN MINJ - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Praveen xavier - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Neela Srinivasulu - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919099265258 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Tanya Bharti - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Rajesh Patel - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +917433005501 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +918943905683 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Jewel Jacob - Asia/Calcutta
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for +919466779402 - Asia/Kolkata
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for tracyinmel@gmail.com - Australia/Melbourne
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/11/2023, 11:58:23 PM [info]  Message :  Enabling daily backup for Kevin Gillett - Europe/London
+7/11/2023, 11:58:23 PM [info]  Message :  -----------------------------------
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Jewel Jacob
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Rajesh Patel
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Tanya Bharti
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Neela Srinivasulu
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Praveen xavier
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - PRAVEEN MINJ
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Khushpreet Kaur
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Mohammed Shareef
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - vani raparthi
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - M.S prakash
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Jovann Philip
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - khaleel Sargiro
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Shailesh chauhan
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Umar Rashid
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Sibi MP
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Ranjan Sethi
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - KANTI KUMAR BM
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Pradumn Biradar
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Akshat Surana
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Rohan Bania
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Tejas Sura
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - ROKTIM SAHA
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Rohit Sharma
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - chanti 1988
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Pooja Jaiswal
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Shilpa Naik
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Rahul Arya
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Shree Ram
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - AMAR SURDE
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - arjun pasi
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Rajendra Kumar
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Navratan Organics
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - pratixa patel
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Swetha Vijayakumar
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Nitesh Kumar
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - harsha vanapalli
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Aditya Suryawanshi
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Aswin Raj
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Chirag Gohel
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Ritesh Panday
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - divyansh verma
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Nitin Solanki
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Yes No
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - AC Chaursiya
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - vikas mehta
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Risshi P Parmar
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - KAMLESH SHETH
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Bradly Sam
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Dayal _kv
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Rohan
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Dev Virani
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Rijul Mamidwar
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Vijaykumar Jogdand
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Khusbu Nishad
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Sahil Prajapati
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Chandra Shekhar
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Neel Mehta
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Anudeep Royal
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - DILIP GOSALIA
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - ashu mohmad
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - sheetal Kshirsagar
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Megha Elsa Shibu
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Suresh
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - MAHAMMAD ASLAM VAJRALA
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Thiyagarajan Elumalai
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - priyanshu sahni
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - P kishor Kishor
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Gursewak Arora
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - tej narayan
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - RAJESH BAMNIYA
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - ShivaShankar TJ
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Paresh Vishnu
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Manikanta
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - SUNIL KUMAR PASUPULETI
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Mukesh Solanki
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Ashok kumar
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Abhishek Singh
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Senthil R
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - sanjoy sen
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Pravin Ghorpade
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Parixit Patel
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Desi Spoon
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - sunny debnath
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Pawan Kumar
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Alok Alok
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - hema latha
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Gurpreet Brar
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Kh Mohamed rafiq
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - VINOD ROHILLA
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - YK Joshi
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Bijay Yadav
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - tree2 box
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Billy Muldoon
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Jerin Ck
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Gobinda Bishi
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Bharat Sutharr
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Subhash Magar
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Punmabhai Chudhari
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Neeraj Kumar
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Nagarajan B
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - vimal jain
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Darling Vamsi
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - KUMAR MANGALAM
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - undefined
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Kavi Nilavan
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - T Tirumalesh
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - null
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Sanjay Murali
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Eswaramoorthy .K
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Adiya Tripathi
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - nitin tulsyan
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - undefined
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - SANJAY BEHERA
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Parthiban S
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Mounika Pasupuleti
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Sunil Kumar Pasupuleti
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - undefined
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - undefined
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Joshua Mohan
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Ashok B Chowdhury
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Govind Koppisetty
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Dushyant Waghmare
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - DINESH DINO
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - undefined
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - undefined
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Sreekuttan Vn
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - undefined
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - dynamic work
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Bhavana Chinnam
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Mr. Arjun Kumar
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Emily Allen
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - undefined
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Krrish Sharma
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - undefined
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Krrish Sharma
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - undefined
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - Sakeena Banu
+7/12/2023, 12:01:00 AM [info]  Message :  sending daily backup notification to  - 19-R-04C3 Manikanta
+7/12/2023, 12:01:01 AM [info]  Message :  sending daily backup notification to  - Deep Jyoti Das
+7/12/2023, 12:01:01 AM [info]  Message :  sending daily backup notification to  - Dilip Rajbhar
+7/12/2023, 12:01:01 AM [info]  Message :  sending daily backup notification to  - Dinesh Waradkar
+7/12/2023, 12:01:01 AM [info]  Message :  sending daily backup notification to  - Nitin Phanse
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  sending daily backup notification to  - sridevi pasupuleti
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  sending daily backup notification to  - undefined
+7/12/2023, 12:01:01 AM [info]  Message :  sending daily backup notification to  - undefined
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  sending daily backup notification to  - Bhavana chinnam
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  sending daily backup notification to  - undefined
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"1ed8ece5-aa3a-4e02-a0b8-07aa521357ff","external_id":null}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+7/12/2023, 12:01:01 AM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}

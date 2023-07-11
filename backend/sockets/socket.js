@@ -20,6 +20,10 @@ module.exports = function socket(io) {
       io.to(socket.id).emit("refreshUsers", data);
     });
 
+    socket.on("refreshSendNotifications", (data) => {
+      io.to(socket.id).emit("refreshSendNotifications", data);
+    });
+
     socket.on("disconnect", (data) => {
       delete socketUsers[socket.id];
       logger.warn("CLIENT DISCONNECTED with ID -  " + socket.id);

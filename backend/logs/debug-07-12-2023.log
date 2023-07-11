@@ -1,0 +1,182 @@
+7/12/2023, 12:02:43 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 12:02:44 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/12/2023, 12:02:44 AM [debug]  Message :  CLIENT CONNECTED with ID -  lZagcDXN3x-TphUYAAAB
+7/12/2023, 12:02:44 AM [debug]  Message :  CLIENT CONNECTED with ID -  LgbCkQWX_MqCjmYHAAAD
+7/12/2023, 12:03:19 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  LgbCkQWX_MqCjmYHAAAD
+7/12/2023, 12:03:20 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  lZagcDXN3x-TphUYAAAB
+7/12/2023, 12:03:20 AM [debug]  Message :  CLIENT CONNECTED with ID -  aOr-OU2lNzUmR_lBAAAF
+7/12/2023, 12:03:21 AM [debug]  Message :  CLIENT CONNECTED with ID -  wIQzO2UQwwIufcrnAAAH
+7/12/2023, 4:24:52 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  wIQzO2UQwwIufcrnAAAH
+7/12/2023, 4:24:53 AM [error]  Message :  unauthorized, there is no access token but refesh token
+7/12/2023, 4:24:55 AM [debug]  Message :  CLIENT CONNECTED with ID -  U0cmsKT3JjnKgBFNAAAJ
+7/12/2023, 4:25:45 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 4:25:45 AM [debug]  Message :  CLIENT CONNECTED with ID -  Jna6tTwCO1M23zptAAAB
+7/12/2023, 4:25:45 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/12/2023, 4:25:47 AM [debug]  Message :  CLIENT CONNECTED with ID -  lDUHgl8QXBqKdWvdAAAD
+7/12/2023, 4:25:53 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 4:25:53 AM [debug]  Message :  CLIENT CONNECTED with ID -  4g-LvmVy-Cw-Ph40AAAB
+7/12/2023, 4:25:53 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/12/2023, 4:25:54 AM [debug]  Message :  CLIENT CONNECTED with ID -  OC84fjI3FSMeTm1NAAAD
+7/12/2023, 4:26:16 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 4:26:17 AM [debug]  Message :  CLIENT CONNECTED with ID -  h2TI1A8zKmC0wkkHAAAB
+7/12/2023, 4:26:17 AM [debug]  Message :  CLIENT CONNECTED with ID -  shbZcE16LOl5uxdKAAAD
+7/12/2023, 4:26:17 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/12/2023, 4:26:51 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 4:26:52 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/12/2023, 4:26:53 AM [debug]  Message :  CLIENT CONNECTED with ID -  Mq2t-ciYbBnqAKMwAAAB
+7/12/2023, 4:26:53 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 23:58 - Asia/Kolkata
+7/12/2023, 4:26:53 AM [info]  Message :  Enabling daily backup for Sunil Kumar - Asia/Kolkata
+7/12/2023, 4:26:53 AM [info]  Message :  -----------------------------------
+7/12/2023, 4:26:56 AM [debug]  Message :  CLIENT CONNECTED with ID -  wQwBWirIcYQYJvtVAAAD
+7/12/2023, 4:27:00 AM [info]  Message :  sending daily backup notification to  - Sunil Kumar
+7/12/2023, 4:27:00 AM [info]  Message :  {"id":"981a568c-ab97-495f-8624-97e6d70185d1","external_id":null}
+7/12/2023, 4:32:41 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 4:32:41 AM [debug]  Message :  CLIENT CONNECTED with ID -  jHjnXEprOFwr3qv8AAAB
+7/12/2023, 4:32:42 AM [debug]  Message :  CLIENT CONNECTED with ID -  XkqUUHg3Xol18dRUAAAD
+7/12/2023, 4:32:42 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/12/2023, 4:32:43 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 23:58 - Asia/Kolkata
+7/12/2023, 4:32:43 AM [info]  Message :  Enabling daily backup for Sunil Kumar - Asia/Kolkata
+7/12/2023, 4:32:43 AM [info]  Message :  -----------------------------------
+7/12/2023, 4:33:00 AM [info]  Message :  sending daily backup notification to  - Sunil Kumar
+7/12/2023, 4:33:00 AM [info]  Message :  {"id":"def6cc3d-66bf-4631-908d-a2aa8ab1336a","external_id":null}
+7/12/2023, 4:33:02 AM [info]  Message :  {"id":"98576128-0b37-4e3c-b52d-66d42a2ed636","external_id":null} BACKUP SUCCESS
+7/12/2023, 4:33:30 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 4:33:31 AM [debug]  Message :  CLIENT CONNECTED with ID -  h12dlmCmW1c6aAHtAAAB
+7/12/2023, 4:33:31 AM [debug]  Message :  CLIENT CONNECTED with ID -  edwrniy3YXIE6ip7AAAD
+7/12/2023, 4:33:31 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/12/2023, 4:33:32 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 23:58 - Asia/Kolkata
+7/12/2023, 4:33:32 AM [info]  Message :  Enabling daily backup for Sunil Kumar - Asia/Kolkata
+7/12/2023, 4:33:32 AM [info]  Message :  -----------------------------------
+7/12/2023, 4:34:00 AM [info]  Message :  sending daily backup notification to  - Sunil Kumar
+7/12/2023, 4:34:00 AM [info]  Message :  {"id":"21ea1002-cfaf-45f5-9892-ad5878dc0f20","external_id":null}
+7/12/2023, 4:36:31 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 4:36:32 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/12/2023, 4:36:32 AM [debug]  Message :  CLIENT CONNECTED with ID -  S8Hm3VjE6cx_DtbQAAAB
+7/12/2023, 4:36:33 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 23:58 - Asia/Kolkata
+7/12/2023, 4:36:33 AM [info]  Message :  Enabling daily backup for Sunil Kumar - Asia/Kolkata
+7/12/2023, 4:36:33 AM [info]  Message :  -----------------------------------
+7/12/2023, 4:36:33 AM [debug]  Message :  CLIENT CONNECTED with ID -  -vND7jy1UQhdAiigAAAD
+7/12/2023, 4:36:49 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 4:36:50 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/12/2023, 4:36:51 AM [debug]  Message :  CLIENT CONNECTED with ID -  C-0MY0_CAS7fIrJtAAAB
+7/12/2023, 4:36:51 AM [debug]  Message :  CLIENT CONNECTED with ID -  OUcHXRrlXIwNouSNAAAD
+7/12/2023, 4:36:51 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 23:58 - Asia/Kolkata
+7/12/2023, 4:36:51 AM [info]  Message :  Enabling daily backup for Sunil Kumar - Asia/Kolkata
+7/12/2023, 4:36:51 AM [info]  Message :  -----------------------------------
+7/12/2023, 4:37:00 AM [info]  Message :  sending daily backup notification to  - Sunil Kumar
+7/12/2023, 4:37:00 AM [info]  Message :  {"id":"4e313b53-4f05-4c9d-995e-896b44057202","external_id":null}
+7/12/2023, 4:37:02 AM [info]  Message :  {"id":"8db73d66-ea7b-426b-ba36-c5184b38d89c","external_id":null} BACKUP SUCCESS
+7/12/2023, 4:37:20 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 4:37:20 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/12/2023, 4:37:20 AM [debug]  Message :  CLIENT CONNECTED with ID -  Mir6sqtgaENOhwp7AAAB
+7/12/2023, 4:37:21 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 23:58 - Asia/Kolkata
+7/12/2023, 4:37:21 AM [info]  Message :  Enabling daily backup for Sunil Kumar - Asia/Kolkata
+7/12/2023, 4:37:21 AM [info]  Message :  -----------------------------------
+7/12/2023, 4:37:22 AM [debug]  Message :  CLIENT CONNECTED with ID -  dOYzUOHq55XRP2AkAAAD
+7/12/2023, 4:38:00 AM [info]  Message :  sending daily backup notification to  - Sunil Kumar
+7/12/2023, 4:38:00 AM [info]  Message :  {"id":"d2518c3b-707e-40be-a104-413b2226e2c8","external_id":null}
+7/12/2023, 4:38:03 AM [info]  Message :  {"id":"d5a1b52f-8dd9-4a34-b77a-4fa1a65de434","external_id":null} BACKUP SUCCESS
+7/12/2023, 4:38:24 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 4:38:24 AM [debug]  Message :  CLIENT CONNECTED with ID -  VQ8-PJUW7MSAMPhPAAAB
+7/12/2023, 4:38:25 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/12/2023, 4:38:25 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 23:58 - Asia/Kolkata
+7/12/2023, 4:38:25 AM [info]  Message :  Enabling daily backup for Sunil Kumar - Asia/Kolkata
+7/12/2023, 4:38:25 AM [info]  Message :  -----------------------------------
+7/12/2023, 4:38:26 AM [debug]  Message :  CLIENT CONNECTED with ID -  NgO6ZZ6n1Rs4QjxxAAAD
+7/12/2023, 4:39:00 AM [info]  Message :  sending daily backup notification to  - Sunil Kumar
+7/12/2023, 4:39:00 AM [info]  Message :  {"id":"e293ad00-b605-43b4-9d42-5540c4d9689e","external_id":null}
+7/12/2023, 4:39:18 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 4:39:18 AM [debug]  Message :  CLIENT CONNECTED with ID -  wBIFmI6BGjA-oxueAAAB
+7/12/2023, 4:39:18 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/12/2023, 4:39:19 AM [debug]  Message :  CLIENT CONNECTED with ID -  shEoc2-jEeYHLN_rAAAD
+7/12/2023, 4:39:19 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 23:58 - Asia/Kolkata
+7/12/2023, 4:39:19 AM [info]  Message :  Enabling daily backup for Sunil Kumar - Asia/Kolkata
+7/12/2023, 4:39:19 AM [info]  Message :  -----------------------------------
+7/12/2023, 4:40:00 AM [info]  Message :  sending daily backup notification to  - Sunil Kumar
+7/12/2023, 4:40:00 AM [info]  Message :  {"id":"1fd9328f-b038-4ef8-9c09-4dbbe54e5300","external_id":null}
+7/12/2023, 4:40:05 AM [info]  Message :  {"id":"4b95b0c7-e042-49d7-a56a-29cc13c82dc0","external_id":null} BACKUP SUCCESS
+7/12/2023, 4:42:27 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 4:42:27 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/12/2023, 4:42:28 AM [debug]  Message :  CLIENT CONNECTED with ID -  xDnrYdcVrGTGshHDAAAB
+7/12/2023, 4:42:28 AM [debug]  Message :  CLIENT CONNECTED with ID -  ulYyBath8Jkv8VRmAAAD
+7/12/2023, 4:42:28 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 23:58 - Asia/Kolkata
+7/12/2023, 4:42:28 AM [info]  Message :  Enabling daily backup for Sunil Kumar - Asia/Kolkata
+7/12/2023, 4:42:28 AM [info]  Message :  -----------------------------------
+7/12/2023, 4:43:15 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 4:43:15 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/12/2023, 4:43:16 AM [debug]  Message :  CLIENT CONNECTED with ID -  _HpevMaDi4p-krDMAAAB
+7/12/2023, 4:43:16 AM [debug]  Message :  CLIENT CONNECTED with ID -  nmRgf2gv9J02Tej1AAAD
+7/12/2023, 4:43:16 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 23:58 - Asia/Kolkata
+7/12/2023, 4:43:16 AM [info]  Message :  Enabling daily backup for Sunil Kumar - Asia/Kolkata
+7/12/2023, 4:43:16 AM [info]  Message :  -----------------------------------
+7/12/2023, 4:46:12 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 4:46:13 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/12/2023, 4:46:14 AM [debug]  Message :  CLIENT CONNECTED with ID -  j9Zx-mUlSjpvQ22cAAAB
+7/12/2023, 4:46:14 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 23:58 - Asia/Kolkata
+7/12/2023, 4:46:14 AM [info]  Message :  Enabling daily backup for Sunil Kumar - Asia/Kolkata
+7/12/2023, 4:46:14 AM [info]  Message :  -----------------------------------
+7/12/2023, 4:46:14 AM [debug]  Message :  CLIENT CONNECTED with ID -  FEz7O_i1lSXbhD32AAAD
+7/12/2023, 4:48:27 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 4:48:29 AM [debug]  Message :  CLIENT CONNECTED with ID -  l6lw_mRbpmt1-A2FAAAB
+7/12/2023, 4:48:29 AM [debug]  Message :  CLIENT CONNECTED with ID -  HBHK5J-wI2TIA296AAAD
+7/12/2023, 4:48:29 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/12/2023, 4:48:29 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 23:58 - Asia/Kolkata
+7/12/2023, 4:48:29 AM [info]  Message :  Enabling daily backup for Sunil Kumar - Asia/Kolkata
+7/12/2023, 4:48:29 AM [info]  Message :  -----------------------------------
+7/12/2023, 4:48:49 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 4:48:50 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/12/2023, 4:48:51 AM [debug]  Message :  CLIENT CONNECTED with ID -  DY3kJRK1V9AhWhlYAAAB
+7/12/2023, 4:48:51 AM [debug]  Message :  CLIENT CONNECTED with ID -  9oJbHhHI6AXlbWI7AAAD
+7/12/2023, 4:48:51 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 23:58 - Asia/Kolkata
+7/12/2023, 4:48:51 AM [info]  Message :  Enabling daily backup for Sunil Kumar - Asia/Kolkata
+7/12/2023, 4:48:51 AM [info]  Message :  -----------------------------------
+7/12/2023, 4:49:00 AM [info]  Message :  sending daily backup notification to  - Sunil Kumar
+7/12/2023, 4:49:00 AM [info]  Message :  {"id":"491a2e7f-2c01-43c0-909f-0931ad5e197d","external_id":null}
+7/12/2023, 4:49:04 AM [info]  Message :  {"id":"69d8581a-bae8-4baa-a0d6-1d47d4a83be5","external_id":null} BACKUP SUCCESS
+7/12/2023, 4:50:20 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 4:50:20 AM [debug]  Message :  CLIENT CONNECTED with ID -  U4zV1eX4tANidcPoAAAB
+7/12/2023, 4:50:21 AM [debug]  Message :  CLIENT CONNECTED with ID -  8Fo7FF-1cbEQfrEKAAAD
+7/12/2023, 4:50:21 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/12/2023, 4:50:22 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 23:58 - Asia/Kolkata
+7/12/2023, 4:50:22 AM [info]  Message :  Enabling daily backup for Sunil Kumar - Asia/Kolkata
+7/12/2023, 4:50:22 AM [info]  Message :  -----------------------------------
+7/12/2023, 4:51:00 AM [info]  Message :  sending daily backup notification to  - Sunil Kumar
+7/12/2023, 4:51:00 AM [info]  Message :  {"id":"3d44c191-5e3c-41ed-adaa-115713036d8e","external_id":null}
+7/12/2023, 4:51:02 AM [info]  Message :  {"id":"d328bb99-eed7-4bcf-b235-512bf42366ea","external_id":null} BACKUP SUCCESS
+7/12/2023, 4:54:13 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  U4zV1eX4tANidcPoAAAB
+7/12/2023, 4:55:09 AM [info]  Message :  Enabling daily reminder for sridevi pasupuleti at time - 11:17 - Asia/Kolkata
+7/12/2023, 4:55:09 AM [info]  Message :  Enabling daily backup for sridevi pasupuleti at 0:1 - Asia/Kolkata
+7/12/2023, 4:55:09 AM [info]  Message :  -----------------------------------
+7/12/2023, 4:55:44 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  8Fo7FF-1cbEQfrEKAAAD
+7/12/2023, 4:55:45 AM [debug]  Message :  CLIENT CONNECTED with ID -  nCC6HMVMTFSxShk3AAAF
+7/12/2023, 4:55:53 AM [info]  Message :  sending daily update notifications to users  - 
+7/12/2023, 4:55:53 AM [info]  Message :  undefined DAILY UPDATE
+7/12/2023, 4:56:22 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 4:56:22 AM [debug]  Message :  CLIENT CONNECTED with ID -  VcDowez5dGe3o3nqAAAB
+7/12/2023, 4:56:23 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/12/2023, 4:56:24 AM [info]  Message :  Enabling daily reminder for sridevi pasupuleti at time - 11:17 - Asia/Kolkata
+7/12/2023, 4:56:24 AM [info]  Message :  Enabling daily backup for sridevi pasupuleti - Asia/Kolkata
+7/12/2023, 4:56:24 AM [info]  Message :  -----------------------------------
+7/12/2023, 4:56:24 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 23:58 - Asia/Kolkata
+7/12/2023, 4:56:24 AM [info]  Message :  Enabling daily backup for Sunil Kumar - Asia/Kolkata
+7/12/2023, 4:56:24 AM [info]  Message :  -----------------------------------
+7/12/2023, 4:57:00 AM [info]  Message :  sending daily backup notification to  - Sunil Kumar
+7/12/2023, 4:57:00 AM [info]  Message :  sending daily backup notification to  - sridevi pasupuleti
+7/12/2023, 4:57:00 AM [info]  Message :  {"id":"c8375413-4326-4ea1-bc55-73ee9c59d1f5","external_id":null}
+7/12/2023, 4:57:00 AM [info]  Message :  {"id":"3fbaf67b-5453-4573-b955-b51dd8373ebc","external_id":null}
+7/12/2023, 4:57:03 AM [info]  Message :  {"id":"11427286-d1b0-4764-a2cd-8b487fee53d4","external_id":null} BACKUP SUCCESS
+7/12/2023, 4:57:08 AM [info]  Message :  {"id":"f2d304b8-b948-4d7f-863c-ba13afe85509","external_id":null} BACKUP SUCCESS
+7/12/2023, 4:57:29 AM [info]  Message :  server started on port number 3000 }
+7/12/2023, 4:57:30 AM [debug]  Message :  CLIENT CONNECTED with ID -  YT8ZUUEaCDsPUBQHAAAB
+7/12/2023, 4:57:30 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/12/2023, 4:57:31 AM [info]  Message :  Enabling daily reminder for sridevi pasupuleti at time - 11:17 - Asia/Kolkata
+7/12/2023, 4:57:31 AM [info]  Message :  Enabling daily backup for sridevi pasupuleti - Asia/Kolkata
+7/12/2023, 4:57:31 AM [info]  Message :  -----------------------------------
+7/12/2023, 4:57:31 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 23:58 - Asia/Kolkata
+7/12/2023, 4:57:31 AM [info]  Message :  Enabling daily backup for Sunil Kumar - Asia/Kolkata
+7/12/2023, 4:57:31 AM [info]  Message :  -----------------------------------
+7/12/2023, 4:58:00 AM [info]  Message :  sending daily backup notification to  - Sunil Kumar
+7/12/2023, 4:58:00 AM [info]  Message :  sending daily backup notification to  - sridevi pasupuleti
+7/12/2023, 4:58:00 AM [info]  Message :  {"id":"847abedc-d421-4dad-b7f2-9e317ad27902","external_id":null}
+7/12/2023, 4:58:00 AM [info]  Message :  {"id":"8734b42b-cd6b-4f2c-b63d-3f74b5d9e292","external_id":null}
+7/12/2023, 4:58:02 AM [info]  Message :  {"id":"b107a26a-577d-46dd-877d-618b46bb2ef7","external_id":null} BACKUP SUCCESS

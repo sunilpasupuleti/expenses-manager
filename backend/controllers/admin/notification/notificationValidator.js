@@ -1,7 +1,7 @@
 const { sendResponse, httpCodes } = require("../../../helpers/utility");
 
 module.exports = {
-  async validateSendNotificationToUsers(req, res, next) {
+  async validateSendDailyUpdateNotificationToUsers(req, res, next) {
     const { title, body, users } = req.body;
     if (!title) {
       return sendResponse(res, httpCodes.BAD_REQUEST, {

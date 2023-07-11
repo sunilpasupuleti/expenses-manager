@@ -1,5 +1,7 @@
 import {
+  Avatar,
   Box,
+  Button,
   Card,
   CardContent,
   Checkbox,
@@ -33,6 +35,8 @@ import { styled } from "styled-components";
 import Lottie from "react-lottie";
 import { useSpring, animated } from "@react-spring/web";
 import moment from "moment";
+import { SocketContext } from "../../../../services/Socket/Socket.context";
+import { DataArrayRounded } from "@mui/icons-material";
 
 const errors = {
   titleRequired: "Title required",
@@ -50,8 +54,16 @@ const commonInputFieldProps = {
 const defaultInputState = {
   title: {
     ...commonInputFieldProps,
+    value: "🤗Please update the APP🤗",
   },
   body: {
+    ...commonInputFieldProps,
+    value: "Latest version is now available, Thank you WEBWIZARD(SUNIL).",
+  },
+  bigPicture: {
+    ...commonInputFieldProps,
+  },
+  largeIcon: {
     ...commonInputFieldProps,
   },
 };
@@ -98,11 +110,14 @@ const NotificationLoaderContainer = styled.div`
 export const SendNotifications = ({ title }) => {
   const [inputs, setInputs] = useState(defaultInputState);
   const [loading, setLoading] = useState(false);
-  const { onSendNotificationToUsers, onGetActiveUsersList } =
+  const { onSendDailyUpdateNotificationToUsers, onGetActiveDevicesList } =
     useContext(NotificationContext);
 
-  const [activeUsers, setActiveUsers] = useState([]);
-  const [orgActiveUsers, setOrgActiveUsers] = useState([]);
+  const [activeDevices, setActiveDevices] = useState([]);
+  const [orgActiveDevices, setOrgActiveDevices] = useState([]);
+  const [allUsers, setAllUsers] = useState([]);
+
+  const { onEmitEvent, socket, onFetchEvent } = useContext(SocketContext);
 
   // for table of users
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -117,30 +132,27 @@ export const SendNotifications = ({ title }) => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = activeUsers.map((n) => n._id);
+      const newSelected = activeDevices.map((n) => n.uid);
       setSelectedUsers(newSelected);
       return;
     }
     setSelectedUsers([]);
   };
 
-  const handleClick = (event, name) => {
-    const selectedIndex = selectedUsers.indexOf(name);
-    let newSelected = [];
+  const handleClick = (event, uid) => {
+    let currentSelectedUsers = [...selectedUsers];
+    const alreadySelected = currentSelectedUsers.find((id) => id === uid);
 
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selectedUsers, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selectedUsers.slice(1));
-    } else if (selectedIndex === selectedUsers.length - 1) {
-      newSelected = newSelected.concat(selectedUsers.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selectedUsers.slice(0, selectedIndex),
-        selectedUsers.slice(selectedIndex + 1)
-      );
+    if (alreadySelected) {
+      currentSelectedUsers = selectedUsers.filter((id) => id !== uid);
+    } else {
+      activeDevices.filter((a) => {
+        if (a.uid === uid) {
+          currentSelectedUsers.push(uid);
+        }
+      });
     }
-    setSelectedUsers(newSelected);
+    setSelectedUsers(currentSelectedUsers);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -155,7 +167,7 @@ export const SendNotifications = ({ title }) => {
   const isSelected = (name) => selectedUsers.indexOf(name) !== -1;
 
   const onChangeSorting = (fieldToSort) => {
-    var currentActiveUsers = activeUsers;
+    var currentActiveUsers = activeDevices;
     let type = sort.type === "asc" ? "desc" : "asc";
     let fields = ["displayName", "email"];
     if (fields.includes(fieldToSort)) {
@@ -165,7 +177,7 @@ export const SendNotifications = ({ title }) => {
         type: type,
         field: fieldToSort,
       }));
-      setActiveUsers(sortedActiveUsers);
+      setActiveDevices(sortedActiveUsers);
     }
   };
 
@@ -173,20 +185,49 @@ export const SendNotifications = ({ title }) => {
 
   useEffect(() => {
     document.title = title;
-    getActiveUsers();
+    getActiveDevices();
   }, []);
 
-  const getActiveUsers = () => {
-    onGetActiveUsersList(
+  const getActiveDevices = () => {
+    onGetActiveDevicesList(
       (result) => {
-        if (result && result.activeUsers) {
-          let activeUsersList = _.orderBy(
-            result.activeUsers,
+        if (result && result.activeDevices) {
+          setAllUsers(result.users);
+          let actDevices = result.activeDevices;
+          let structuredDevicesList = [];
+
+          actDevices.forEach((a) => {
+            let tags = a.tags;
+            let obj = {
+              device: {
+                os: a.device_os,
+                model: a.device_model,
+              },
+              lastActive: moment
+                .unix(a.last_active)
+                .format("DD MMM YYYY, hh:mm:ss A"),
+            };
+            if (tags && tags.dailyUpdateUid) {
+              let user = result.users.find(
+                (u) => u.uid === tags.dailyUpdateUid
+              );
+              obj.displayName = user?.displayName;
+              obj.email = user?.email;
+              obj.phoneNumber = user?.phoneNumber;
+              obj.photoURL = user?.photoURL;
+              obj.providerId = user?.providerId;
+              obj.uid = user?.uid;
+              obj._id = user?._id;
+            }
+            structuredDevicesList.push(obj);
+          });
+          let activeDevicesList = _.orderBy(
+            structuredDevicesList,
             "displayName",
             "asc"
           );
-          setActiveUsers(activeUsersList);
-          setOrgActiveUsers(activeUsersList);
+          setActiveDevices(activeDevicesList);
+          setOrgActiveDevices(activeDevicesList);
         }
       },
       () => {
@@ -216,14 +257,14 @@ export const SendNotifications = ({ title }) => {
   const onChangeSearchKeyword = (e) => {
     let { target } = e;
     let value = target.value.toLowerCase();
-    setActiveUsers(orgActiveUsers);
+    setActiveDevices(orgActiveDevices);
 
     setSearchKeyword(target.value);
     if (value.length === 0) {
-      setActiveUsers(orgActiveUsers);
+      setActiveDevices(orgActiveDevices);
       return;
     }
-    let filteredData = orgActiveUsers.filter((user) => {
+    let filteredData = orgActiveDevices.filter((user) => {
       let m = user;
 
       let displayNameFound = m.displayName
@@ -233,18 +274,32 @@ export const SendNotifications = ({ title }) => {
       let phoneNumberFound = m.phoneNumber
         ? m.phoneNumber.toLowerCase().includes(value)
         : false;
-
+      let uidFound = m.uid ? m.uid.toLowerCase().includes(value) : false;
+      let providerIdFound = m.providerId
+        ? m.providerId.toLowerCase().includes(value)
+        : false;
       return (
         displayNameFound ||
         emailFound ||
         phoneNumberFound ||
-        m.uid.toLowerCase().includes(value)
+        uidFound ||
+        providerIdFound
       );
     });
-    setActiveUsers(filteredData);
+    setActiveDevices(filteredData);
   };
 
-  const onSubmitForm = (e) => {
+  const getBase64 = async (file) => {
+    return new Promise((resolve) => {
+      var reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = function () {
+        resolve(reader.result);
+      };
+    });
+  };
+
+  const onSubmitForm = async (e) => {
     e.preventDefault();
 
     let hadErrors = false;
@@ -260,7 +315,7 @@ export const SendNotifications = ({ title }) => {
       hadErrors = true;
     };
 
-    const { title, body } = inputs;
+    const { title, body, bigPicture, largeIcon } = inputs;
 
     if (!title.value.trim()) {
       setErrorMessage("title", errors.titleRequired);
@@ -276,19 +331,31 @@ export const SendNotifications = ({ title }) => {
       });
     }
 
+    console.log(selectedUsers);
+
+    let finalSelectedUsers = Array.from(new Set(selectedUsers));
+
+    console.log(finalSelectedUsers);
     let data = {
       title: title.value.trim(),
       body: body.value.trim(),
-      users: selectedUsers,
+      users: finalSelectedUsers,
     };
+
+    if (bigPicture.value) {
+      data.bigPicture = await getBase64(bigPicture.value);
+    }
+    if (largeIcon.value) {
+      data.largeIcon = await getBase64(largeIcon.value);
+    }
 
     if (!hadErrors) {
       setLoading(true);
-      onSendNotificationToUsers(
+      onSendDailyUpdateNotificationToUsers(
         data,
         () => {
+          onEmitEvent("refreshSendNotifications");
           setLoading(false);
-          getActiveUsers();
           setInputs(defaultInputState);
           setSearchKeyword("");
           setSelectedUsers([]);
@@ -301,6 +368,19 @@ export const SendNotifications = ({ title }) => {
       );
     }
   };
+
+  useEffect(() => {
+    if (socket) {
+      const eventHandler = (data) => {
+        getActiveDevices();
+      };
+      onFetchEvent("refreshSendNotifications", eventHandler);
+      return () => {
+        socket?.off("refreshSendNotifications", eventHandler);
+      };
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [onFetchEvent, socket]);
 
   const formContainerSprings = useSpring({
     from: { x: 250 },
@@ -387,6 +467,114 @@ export const SendNotifications = ({ title }) => {
                 />
               </Grid>
 
+              <Grid item md={6} sm={12}>
+                {/* big picture */}
+                <Grid container spacing={2} alignItems={"center"}>
+                  <Grid item md={6} sm={12}>
+                    <Button fullWidth variant="outlined" component="label">
+                      {inputs.bigPicture.value
+                        ? " Change Big Picture"
+                        : "Select Big Picture"}
+                      <input
+                        type="file"
+                        hidden
+                        accept="image/png, image/jpg, image/jpeg"
+                        onChange={(e) => {
+                          setInputs((p) => ({
+                            ...p,
+                            bigPicture: {
+                              ...p.bigPicture,
+                              value: e.target.files[0],
+                            },
+                          }));
+                        }}
+                      />
+                    </Button>
+                    {inputs.bigPicture.value && (
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        style={{
+                          backgroundColor: "tomato",
+                          color: "#fff",
+                          marginTop: 10,
+                        }}
+                        onClick={() =>
+                          setInputs((p) => ({
+                            ...p,
+                            bigPicture: { ...p.bigPicture, value: "" },
+                          }))
+                        }
+                      >
+                        Remove Big Picture
+                      </Button>
+                    )}
+                  </Grid>
+                  <Grid item md={6} sm={12}>
+                    {inputs.bigPicture.value && (
+                      <Avatar
+                        src={URL.createObjectURL(inputs.bigPicture.value)}
+                        sx={{ width: 200, height: 200 }}
+                      />
+                    )}
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              <Grid item md={6} sm={12}>
+                {/* large icon */}
+                <Grid container spacing={2} alignItems={"center"}>
+                  <Grid item md={6} sm={12}>
+                    <Button fullWidth variant="outlined" component="label">
+                      {inputs.largeIcon.value
+                        ? " Change Large Icon"
+                        : "Select Large Icon"}
+                      <input
+                        type="file"
+                        hidden
+                        accept="image/png, image/jpg, image/jpeg"
+                        onChange={(e) => {
+                          setInputs((p) => ({
+                            ...p,
+                            largeIcon: {
+                              ...p.largeIcon,
+                              value: e.target.files[0],
+                            },
+                          }));
+                        }}
+                      />
+                    </Button>
+                    {inputs.largeIcon.value && (
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        style={{
+                          backgroundColor: "tomato",
+                          color: "#fff",
+                          marginTop: 10,
+                        }}
+                        onClick={() =>
+                          setInputs((p) => ({
+                            ...p,
+                            largeIcon: { ...p.largeIcon, value: "" },
+                          }))
+                        }
+                      >
+                        Remove Large Icon
+                      </Button>
+                    )}
+                  </Grid>
+                  <Grid item md={6} sm={12}>
+                    {inputs.largeIcon.value && (
+                      <Avatar
+                        src={URL.createObjectURL(inputs.largeIcon.value)}
+                        sx={{ width: 200, height: 200 }}
+                      />
+                    )}
+                  </Grid>
+                </Grid>
+              </Grid>
+
               <Grid item md={12}>
                 <TextField
                   sx={{ mt: 2, ml: 1, width: "98%" }}
@@ -400,7 +588,7 @@ export const SendNotifications = ({ title }) => {
                   onChange={onChangeSearchKeyword}
                 />
               </Grid>
-              {activeUsers && activeUsers.length > 0 && (
+              {activeDevices && activeDevices.length > 0 && (
                 <Grid item md={12}>
                   <Toolbar
                     sx={{
@@ -445,11 +633,11 @@ export const SendNotifications = ({ title }) => {
                               color="primary"
                               indeterminate={
                                 selectedUsers.length > 0 &&
-                                selectedUsers.length < activeUsers.length
+                                selectedUsers.length < activeDevices.length
                               }
                               checked={
-                                activeUsers.length > 0 &&
-                                selectedUsers.length === activeUsers.length
+                                activeDevices.length > 0 &&
+                                selectedUsers.length === activeDevices.length
                               }
                               onChange={handleSelectAllClick}
                               inputProps={{
@@ -486,21 +674,22 @@ export const SendNotifications = ({ title }) => {
                               Email
                             </TableSortLabel>
                           </TableCell>
+                          <TableCell>Device</TableCell>
                           <TableCell>Phone Number</TableCell>
                           <TableCell>Image</TableCell>
                           <TableCell>UID & Provider Id</TableCell>
-                          <TableCell>Last Login</TableCell>
+                          <TableCell>Last Active</TableCell>
                         </TableRow>
                       </TableHead>
                       <TableBody>
                         {(rowsPerPage > 0
-                          ? activeUsers.slice(
+                          ? activeDevices.slice(
                               page * rowsPerPage,
                               page * rowsPerPage + rowsPerPage
                             )
-                          : activeUsers
+                          : activeDevices
                         ).map((user, index) => {
-                          const isItemSelected = isSelected(user._id);
+                          const isItemSelected = isSelected(user.uid);
                           const labelId = `enhanced-table-checkbox-${index}`;
                           let photoURL = null;
                           if (user.photoURL) {
@@ -512,8 +701,10 @@ export const SendNotifications = ({ title }) => {
                           }
                           return (
                             <TableRow
-                              onClick={(event) => handleClick(event, user._id)}
-                              key={user._id}
+                              onClick={(event) => {
+                                handleClick(event, user.uid);
+                              }}
+                              key={index}
                               sx={{
                                 "&:last-child td, &:last-child th": {
                                   border: 0,
@@ -540,6 +731,10 @@ export const SendNotifications = ({ title }) => {
                                 {user.email ? user.email : " - "}
                               </TableCell>
                               <TableCell>
+                                Model : {user.device.model} <br />
+                                Os : {user.device.os}
+                              </TableCell>
+                              <TableCell>
                                 {user.phoneNumber ? user.phoneNumber : "-"}
                               </TableCell>
                               {}
@@ -563,11 +758,7 @@ export const SendNotifications = ({ title }) => {
                                 {user.providerId?.toUpperCase()}
                               </TableCell>
                               <TableCell>
-                                {user.lastLogin
-                                  ? moment(user.lastLogin).format(
-                                      "MMM DD YYYY, hh:mm:ss A"
-                                    )
-                                  : "-"}
+                                {user.lastActive ? user.lastActive : "-"}
                               </TableCell>
                             </TableRow>
                           );
@@ -582,7 +773,7 @@ export const SendNotifications = ({ title }) => {
                               60,
                               { label: "All", value: -1 },
                             ]}
-                            count={activeUsers.length}
+                            count={activeDevices.length}
                             rowsPerPage={rowsPerPage}
                             page={page}
                             SelectProps={{
@@ -602,7 +793,7 @@ export const SendNotifications = ({ title }) => {
                 </Grid>
               )}
 
-              {(!activeUsers || activeUsers.length === 0) && (
+              {(!activeDevices || activeDevices.length === 0) && (
                 <LottieContainer>
                   <Box component="h3">There are no active users.</Box>
                   <Lottie

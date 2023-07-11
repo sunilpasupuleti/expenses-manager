@@ -57,6 +57,7 @@ module.exports = {
 
   async createBackup(req, res) {
     let user = req.user;
+
     let uid = user.uid;
     // send succesfull backup notification to user
     let sendNotification = req.query?.sendNotification;
@@ -107,7 +108,7 @@ module.exports = {
             },
           ],
         });
-        logger.info(JSON.stringify(res.body));
+        logger.info(JSON.stringify(res.body) + " BACKUP SUCCESS");
       } catch (err) {
         if (err instanceof OneSignal.HTTPError) {
           logger.error(err.body);
@@ -233,13 +234,22 @@ module.exports = {
       });
       structuredData.sheets = structuredSheets;
 
-      let userData = await Users.findOne({ uid: uid }).populate("backups");
-
+      let userData = await Users.findOne({ uid: uid });
       if (userData.backups && userData.backups.length >= 10) {
-        let lastBackup = userData.backups[0];
-        await Backups.findOneAndDelete({
-          _id: lastBackup._id,
+        let lastBackups = userData.backups.splice(9, userData.backups.length);
+        await Backups.deleteMany({
+          _id: { $in: lastBackups },
         });
+        await Users.findOneAndUpdate(
+          {
+            uid: user.uid,
+          },
+          {
+            $pull: {
+              backups: { $in: lastBackups },
+            },
+          }
+        );
       }
 
       Backups.create(structuredData)
