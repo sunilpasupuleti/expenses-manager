@@ -179,7 +179,10 @@ module.exports = {
 
       let userData = await Users.findOne({ uid: uid });
       if (userData.backups && userData.backups.length >= 10) {
-        let lastBackups = userData.backups.splice(9, userData.backups.length);
+        let requiredLength = 10;
+        let currentLength = userData.backups.length;
+        let spliceUntil = currentLength - requiredLength;
+        let lastBackups = userData.backups.splice(0, spliceUntil + 1);
         await Backups.deleteMany({
           _id: { $in: lastBackups },
         });
@@ -198,6 +201,7 @@ module.exports = {
       Backups.create(structuredData)
         .then((data) => {
           let backupId = data._id;
+
           Users.findOneAndUpdate(
             {
               uid: user.uid,
@@ -304,7 +308,10 @@ module.exports = {
     if (backupTempData && categories && sheets) {
       let userData = await Users.findOne({ uid: uid });
       if (userData.backups && userData.backups.length >= 10) {
-        let lastBackups = userData.backups.splice(9, userData.backups.length);
+        let requiredLength = 10;
+        let currentLength = userData.backups.length;
+        let spliceUntil = currentLength - requiredLength;
+        let lastBackups = userData.backups.splice(0, spliceUntil + 1);
         await Backups.deleteMany({
           _id: { $in: lastBackups },
         });
@@ -549,24 +556,6 @@ module.exports = {
         structuredSheets.push(sheet);
       });
       structuredData.sheets = structuredSheets;
-
-      let userData = await Users.findOne({ uid: uid });
-      if (userData.backups && userData.backups.length >= 10) {
-        let lastBackups = userData.backups.splice(9, userData.backups.length);
-        await Backups.deleteMany({
-          _id: { $in: lastBackups },
-        });
-        await Users.findOneAndUpdate(
-          {
-            uid: user.uid,
-          },
-          {
-            $pull: {
-              backups: { $in: lastBackups },
-            },
-          }
-        );
-      }
 
       BackupsTemp.findOneAndUpdate(
         {

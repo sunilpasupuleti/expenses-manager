@@ -40,9 +40,9 @@ var accessLogStream = rfs.createStream("api.log", {
   path: path.join(process.env.LOGPATH),
 });
 
-// app.use(morgan("dev", {}));
+app.use(morgan("dev", {}));
 
-// app.use(morgan("combined", { stream: accessLogStream }));
+app.use(morgan("combined", { stream: accessLogStream }));
 
 /**
  * Connect to database
@@ -172,36 +172,30 @@ server.listen(process.env.PORT || 8080, async () => {
 
       let display =
         userData.displayName || userData.email || userData.phoneNumber;
-      if (
-        !jobFoundDailyReminder &&
-        userData.dailyReminder &&
-        userData.dailyReminder.enabled &&
-        userData.dailyReminder.time
-      ) {
-        let dailyReminder = userData.dailyReminder;
-        let hr = dailyReminder.time.split(":")[0];
-        let min = dailyReminder.time.split(":")[1];
-        var rule = new schedule.RecurrenceRule();
-        rule.hour = hr;
-        rule.minute = min;
-        rule.tz = timeZone;
 
-        rule.dayOfWeek = new schedule.Range(0, 6);
-        let jobId = `${userData.uid}-daily-reminder`;
-        logger.info(
-          `Enabling daily reminder for ${display} at time - ${hr}:${min} - ${timeZone}`
-        );
+      let dailyReminder = userData.dailyReminder;
+      let hr = dailyReminder.time.split(":")[0];
+      let min = dailyReminder.time.split(":")[1];
+      var rule = new schedule.RecurrenceRule();
+      rule.hour = hr;
+      rule.minute = min;
+      rule.tz = timeZone;
 
-        schedule.scheduleJob(jobId, rule, function () {
-          sendDailyReminderNotification(userData);
-        });
-      }
+      rule.dayOfWeek = new schedule.Range(0, 6);
+      let jobId = `${userData.uid}-daily-reminder`;
+      logger.info(
+        `Enabling daily reminder for ${display} at time - ${hr}:${min} - ${timeZone}`
+      );
+
+      schedule.scheduleJob(jobId, rule, function () {
+        sendDailyReminderNotification(userData);
+      });
 
       if (!jobFoundDailyBackup && userData.dailyBackup) {
         var rule = new schedule.RecurrenceRule();
         // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
-        let hour = 00;
-        let minute = 01;
+        let hour = 11;
+        let minute = 50;
         rule.hour = hour;
         rule.tz = timeZone;
 

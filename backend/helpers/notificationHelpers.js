@@ -46,7 +46,7 @@ module.exports = {
         collapse_id: collapseId,
         buttons: [
           {
-            id: "yes",
+            id: "daily_reminder_yes",
             text: "Do it now",
           },
           {

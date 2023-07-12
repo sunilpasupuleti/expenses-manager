@@ -16,13 +16,10 @@ OneSignal.setNotificationWillShowInForegroundHandler(
 );
 
 OneSignal.setNotificationOpenedHandler(async notification => {
-  let data = notification?.notification?.additionalData;
   let action = notification.action;
   let actionID = Platform.OS === 'android' ? action.actionId : action.actionID;
-  console.log(`Action Type : ${actionID} with ${data.type}`);
-  if (data && data.type && data.type === 'daily-reminder') {
-    if (actionID === 'yes') {
-      Linking.openURL('expenses-manager://');
-    }
+  console.log(`Action Type : ${actionID} `);
+  if (actionID === 'daily_reminder_yes') {
+    Linking.openURL('expenses-manager://');
   }
 });
