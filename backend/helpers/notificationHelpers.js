@@ -2,6 +2,9 @@ const { getMessaging } = require("firebase-admin/messaging");
 const logger = require("../middleware/logger/logger");
 
 const OneSignal = require("onesignal-node");
+const {
+  createDailyBackupFromTempData,
+} = require("../controllers/backup/backupController");
 const client = new OneSignal.Client(
   process.env.ONE_SIGNAL_APP_ID,
   process.env.ONE_SIGNAL_API_KEY
@@ -9,11 +12,10 @@ const client = new OneSignal.Client(
 
 module.exports = {
   async sendDailyReminderNotification(data) {
-    logger.info(
-      "sending daily reminder notification to  - " + data.displayName
-    );
+    let display = data.displayName || data.email || data.phoneNumber;
+    logger.info("sending daily reminder notification to  - " + display);
     let title = "Reminder 🔔";
-    let body = `Have you recorded your transactions.. 🤔? If not 😕 do it now.`;
+    let body = `Have you recorded your transactions..🤔? If not 😕 do it now.`;
     let notificationData = {
       type: "daily-reminder",
       uid: data.uid,
@@ -74,16 +76,18 @@ module.exports = {
   },
 
   async sendDailyBackupNotification(data) {
-    logger.info("sending daily backup notification to  - " + data.displayName);
+    let display = data.displayName || data.email || data.phoneNumber;
 
-    let title = "Back Up 🔄";
-    let body = `Please wait while we are backing up your data......`;
+    logger.info("sending daily backup notification to  - " + display);
+
+    let title = "Backup Progressing 🔄";
+    let body = `Please hold on, we're currently backing up your data.`;
     let notificationData = {
       type: "daily-backup",
       uid: data.uid,
     };
     let bigPictureUrl = `${process.env.BACKEND_URL}/public/notification/daily_backup.jpeg`;
-    let largeIconUrl = `${process.env.BACKEND_URL}/public/notification/wallet.jpeg`;
+    let largeIconUrl = `${process.env.BACKEND_URL}/public/notification/backup.png`;
     let collapseId = "daily-backup";
 
     try {
@@ -117,6 +121,7 @@ module.exports = {
         ],
         data: notificationData,
       });
+      createDailyBackupFromTempData(data);
       logger.info(JSON.stringify(res.body));
     } catch (err) {
       if (err instanceof OneSignal.HTTPError) {

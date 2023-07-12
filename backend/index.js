@@ -157,68 +157,63 @@ server.listen(process.env.PORT || 8080, async () => {
   function activateNotifications() {
     users.forEach((d) => {
       let userData = d;
+      let timeZone = userData.timeZone ? userData.timeZone : "Asia/Kolkata";
+      let jobDailyReminderId = `${userData.uid}-daily-reminder`;
+      let jobKeyDailyReminderFound = Object.keys(jobs).filter(
+        (key) => key === jobDailyReminderId
+      )[0];
+      let jobFoundDailyReminder = jobs[jobKeyDailyReminderFound];
+
+      let jobDailyBackupId = `${userData.uid}-daily-backup`;
+      let jobKeyDailyBackupFound = Object.keys(jobs).filter(
+        (key) => key === jobDailyBackupId
+      )[0];
+      let jobFoundDailyBackup = jobs[jobKeyDailyBackupFound];
+
+      let display =
+        userData.displayName || userData.email || userData.phoneNumber;
       if (
-        userData.uid === "vx16QZaiJgci3iwUBIpsO62ArIO2" ||
-        userData.uid === "FYDRBr8A99NCPGauZ8YTKRJRQKH3"
+        !jobFoundDailyReminder &&
+        userData.dailyReminder &&
+        userData.dailyReminder.enabled &&
+        userData.dailyReminder.time
       ) {
-        let timeZone = userData.timeZone ? userData.timeZone : "Asia/Kolkata";
-        let jobDailyReminderId = `${userData.uid}-daily-reminder`;
-        let jobKeyDailyReminderFound = Object.keys(jobs).filter(
-          (key) => key === jobDailyReminderId
-        )[0];
-        let jobFoundDailyReminder = jobs[jobKeyDailyReminderFound];
+        let dailyReminder = userData.dailyReminder;
+        let hr = dailyReminder.time.split(":")[0];
+        let min = dailyReminder.time.split(":")[1];
+        var rule = new schedule.RecurrenceRule();
+        rule.hour = hr;
+        rule.minute = min;
+        rule.tz = timeZone;
 
-        let jobDailyBackupId = `${userData.uid}-daily-backup`;
-        let jobKeyDailyBackupFound = Object.keys(jobs).filter(
-          (key) => key === jobDailyBackupId
-        )[0];
-        let jobFoundDailyBackup = jobs[jobKeyDailyBackupFound];
+        rule.dayOfWeek = new schedule.Range(0, 6);
+        let jobId = `${userData.uid}-daily-reminder`;
+        logger.info(
+          `Enabling daily reminder for ${display} at time - ${hr}:${min} - ${timeZone}`
+        );
 
-        let display =
-          userData.displayName || userData.email || userData.phoneNumber;
-        if (
-          !jobFoundDailyReminder &&
-          userData.dailyReminder &&
-          userData.dailyReminder.enabled &&
-          userData.dailyReminder.time
-        ) {
-          let dailyReminder = userData.dailyReminder;
-          let hr = dailyReminder.time.split(":")[0];
-          let min = dailyReminder.time.split(":")[1];
-          var rule = new schedule.RecurrenceRule();
-          rule.hour = hr;
-          rule.minute = min;
-          rule.tz = timeZone;
+        schedule.scheduleJob(jobId, rule, function () {
+          sendDailyReminderNotification(userData);
+        });
+      }
 
-          rule.dayOfWeek = new schedule.Range(0, 6);
-          let jobId = `${userData.uid}-daily-reminder`;
-          logger.info(
-            `Enabling daily reminder for ${display} at time - ${hr}:${min} - ${timeZone}`
-          );
+      if (!jobFoundDailyBackup && userData.dailyBackup) {
+        var rule = new schedule.RecurrenceRule();
+        // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
+        let hour = 00;
+        let minute = 01;
+        rule.hour = hour;
+        rule.tz = timeZone;
 
-          schedule.scheduleJob(jobId, rule, function () {
-            sendDailyReminderNotification(userData);
-          });
-        }
+        rule.minute = minute;
+        rule.dayOfWeek = new schedule.Range(0, 6);
+        let jobId = `${userData.uid}-daily-backup`;
+        logger.info(`Enabling daily backup for ${display} - ${timeZone}`);
 
-        if (!jobFoundDailyBackup && userData.dailyBackup) {
-          var rule = new schedule.RecurrenceRule();
-          // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
-          let hour = 00;
-          let minute = 01;
-          rule.hour = hour;
-          rule.tz = timeZone;
-
-          rule.minute = minute;
-          rule.dayOfWeek = new schedule.Range(0, 6);
-          let jobId = `${userData.uid}-daily-backup`;
-          logger.info(`Enabling daily backup for ${display} - ${timeZone}`);
-
-          logger.info("-----------------------------------");
-          schedule.scheduleJob(jobId, rule, function () {
-            sendDailyBackupNotification(userData);
-          });
-        }
+        logger.info("-----------------------------------");
+        schedule.scheduleJob(jobId, rule, function () {
+          sendDailyBackupNotification(userData);
+        });
       }
     });
   }

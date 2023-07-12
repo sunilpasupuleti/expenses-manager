@@ -6,14 +6,10 @@ import {name as appName} from './app.json';
 import store from './src/store';
 import messaging from '@react-native-firebase/messaging';
 import AppFake from './AppFake';
-import {onBackgroundMessageReceivedHandler} from './src/components/fcm/one-signal';
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
   // use backgroundmessage handler from firebase because one signal does not support background listener
   console.log('HEADLESS BACKGROUND');
-  onBackgroundMessageReceivedHandler(remoteMessage);
-
-  // console.log('HEADLESS BACKGROUND: ', remoteMessage);
 });
 
 function HeadlessCheck({isHeadless}) {

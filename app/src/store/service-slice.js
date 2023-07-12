@@ -10,6 +10,7 @@ import {
   ONESIGNAL_APP_ID,
   WEB_CLIENT_ID,
 } from '../../config';
+import auth from '@react-native-firebase/auth';
 
 export const fetchChangesMade = createAsyncThunk(
   'service/fetchChangesMade',

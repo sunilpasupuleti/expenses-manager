@@ -18,6 +18,7 @@ export const SyncContext = createContext({
   restoreData: () => null,
   backUpAndRestore: () => null,
   onGetRestoreDates: () => null,
+  backUpTempData: () => null,
 });
 
 export const SyncContextProvider = ({children}) => {
@@ -27,6 +28,7 @@ export const SyncContextProvider = ({children}) => {
   const changesMade = useSelector(state => state.service.changesMade);
   const dispatch = useDispatch();
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
+  const appState = useSelector(state => state.service.appState);
 
   let {sendRequest} = useHttp();
 
@@ -39,6 +41,12 @@ export const SyncContextProvider = ({children}) => {
       }
     }
   }, [userData, changesMade.status]);
+
+  useEffect(() => {
+    if (userData && appState === 'inactive') {
+      backUpTempData();
+    }
+  }, [appState]);
 
   const backUpData = async (notify = true) => {
     if (!expensesData) {
@@ -62,8 +70,6 @@ export const SyncContextProvider = ({children}) => {
           data: {
             ...expensesData,
             categories: categories,
-            date: new Date(),
-            time: new Date(),
           },
           headers: {
             authorization: 'Bearer ' + jwtToken,
@@ -106,6 +112,36 @@ export const SyncContextProvider = ({children}) => {
         }),
       );
       console.log(e, 'error in backup');
+    }
+  };
+
+  // store for automatic backup
+  const backUpTempData = async (notify = true) => {
+    try {
+      let jwtToken = await auth().currentUser.getIdToken();
+      sendRequest(
+        {
+          type: 'POST',
+          url: BACKEND_URL + '/backup/temp',
+          data: {
+            ...expensesData,
+            categories: categories,
+          },
+          headers: {
+            authorization: 'Bearer ' + jwtToken,
+          },
+        },
+        {
+          successCallback: async () => {
+            console.log('Your data backed up temp data.');
+          },
+          errorCallback: err => {
+            console.log(err, 'error in backup temp ');
+          },
+        },
+      );
+    } catch (e) {
+      console.log(e, 'error in backup temp ');
     }
   };
 
@@ -211,6 +247,7 @@ export const SyncContextProvider = ({children}) => {
     <SyncContext.Provider
       value={{
         backUpData,
+        backUpTempData,
         restoreData,
         backUpAndRestore,
         onGetRestoreDates,

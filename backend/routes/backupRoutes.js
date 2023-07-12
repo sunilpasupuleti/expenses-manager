@@ -7,9 +7,13 @@ const {
   getBackups,
   getBackup,
   createBackup,
+  createBackupTemp,
 } = require("../controllers/backup/backupController");
 
 router.post("/", VerifyToken, createBackup);
+
+// to daily backup the data
+router.post("/temp", VerifyToken, createBackupTemp);
 
 router.get("/all", VerifyToken, getBackups);
 
