@@ -192,8 +192,8 @@ server.listen(process.env.PORT || 8080, async () => {
       if (!jobFoundDailyBackup && userData.dailyBackup) {
         var rule = new schedule.RecurrenceRule();
         // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
-        let hour = 11;
-        let minute = 50;
+        let hour = 00;
+        let minute = 01;
         rule.hour = hour;
         rule.tz = timeZone;
 
