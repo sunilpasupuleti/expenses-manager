@@ -43,7 +43,7 @@ export const SyncContextProvider = ({children}) => {
   }, [userData, changesMade.status]);
 
   useEffect(() => {
-    if (userData && appState === 'inactive') {
+    if (userData && (appState === 'inactive' || appState === 'background')) {
       backUpTempData();
     }
   }, [appState]);

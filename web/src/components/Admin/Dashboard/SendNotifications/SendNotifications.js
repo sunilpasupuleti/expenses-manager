@@ -18,6 +18,7 @@ import {
   TableSortLabel,
   TextField,
   Toolbar,
+  Tooltip,
   Typography,
   alpha,
 } from "@mui/material";
@@ -92,6 +93,8 @@ const TableProfileImage = styled.img`
   object-fit: cover;
   width: 100%;
   height: 100%;
+  border-radius: 50px;
+  cursor: pointer;
 `;
 
 const NotificationLoaderContainer = styled.div`
@@ -366,6 +369,18 @@ export const SendNotifications = ({ title }) => {
         false,
         true
       );
+    }
+  };
+
+  const copyContentToClipboard = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      showNotification({
+        message: "Text Copied",
+        status: "success",
+      });
+    } catch (err) {
+      console.error("Failed to copy: ", err);
     }
   };
 
@@ -675,9 +690,9 @@ export const SendNotifications = ({ title }) => {
                             </TableSortLabel>
                           </TableCell>
                           <TableCell>Device</TableCell>
-                          <TableCell>Phone Number</TableCell>
+                          <TableCell>Phone </TableCell>
                           <TableCell>Image</TableCell>
-                          <TableCell>UID & Provider Id</TableCell>
+                          <TableCell>UID </TableCell>
                           <TableCell>Last Active</TableCell>
                         </TableRow>
                       </TableHead>
@@ -754,8 +769,15 @@ export const SendNotifications = ({ title }) => {
                                 )}
                               </TableCell>
                               <TableCell>
-                                {user.uid} <br />{" "}
-                                {user.providerId?.toUpperCase()}
+                                <Tooltip
+                                  onClick={() =>
+                                    copyContentToClipboard(user.uid)
+                                  }
+                                  className="pointer"
+                                  title="copy"
+                                >
+                                  <strong>{user.uid}</strong>
+                                </Tooltip>
                               </TableCell>
                               <TableCell>
                                 {user.lastActive ? user.lastActive : "-"}

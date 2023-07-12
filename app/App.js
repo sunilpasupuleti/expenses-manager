@@ -33,10 +33,9 @@ import {
 } from './src/store/service-slice';
 import moment from 'moment';
 import SplashScreen from 'react-native-splash-screen';
-import './src/components/fcm/FCMService';
 import {fetchAppLock} from './src/store/applock-slice';
 import VersionCheck from 'react-native-version-check';
-import './src/components/fcm/one-signal';
+import './src/components/notifcications/one-signal';
 import OneSignal from 'react-native-onesignal';
 import remoteConfig from '@react-native-firebase/remote-config';
 

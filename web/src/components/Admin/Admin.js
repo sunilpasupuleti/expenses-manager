@@ -156,9 +156,7 @@ export const Admin = ({ title }) => {
         data,
         () => {
           setLoading(false);
-          redirect
-            ? navigate("/" + redirect)
-            : navigate("/dashboard/send-notifications");
+          redirect ? navigate("/" + redirect) : navigate("/dashboard/users");
         },
         () => {
           setLoading(false);

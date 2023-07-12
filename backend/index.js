@@ -1,7 +1,6 @@
 require("dotenv").config({ path: __dirname + `/config/.env` });
 const express = require("express");
 const cors = require("cors");
-const { getFirestore } = require("firebase-admin/firestore");
 const moment = require("moment");
 const logger = require("./middleware/logger/logger");
 const connectDB = require("./config/db");
@@ -19,7 +18,6 @@ const {
   sendDailyReminderNotification,
   sendDailyBackupNotification,
 } = require("./helpers/notificationHelpers");
-const { getMessaging } = require("firebase-admin/messaging");
 
 /**
  * Morgon

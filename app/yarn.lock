@@ -7049,6 +7049,11 @@
     "paths-js" "^0.4.10"
     "point-in-polygon" "^1.0.1"
 
+"react-native-cloud-store@^0.10.3":
+  "integrity" "sha512-CXw2zOYLjgO/7HpjyjiwLbhQX9RaC9nEsQQv5VIBjLfyJbMmwhkCiTS/T5pEpsCJXo8e3ShTZTJzrNwd4CLW9A=="
+  "resolved" "https://registry.npmjs.org/react-native-cloud-store/-/react-native-cloud-store-0.10.3.tgz"
+  "version" "0.10.3"
+
 "react-native-codegen@^0.71.5":
   "integrity" "sha512-rfsuc0zkuUuMjFnrT55I1mDZ+pBRp2zAiRwxck3m6qeGJBGK5OV5JH66eDQ4aa+3m0of316CqrJDRzVlYufzIg=="
   "resolved" "https://registry.npmjs.org/react-native-codegen/-/react-native-codegen-0.71.5.tgz"

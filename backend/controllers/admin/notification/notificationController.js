@@ -16,7 +16,7 @@ const writeFile = util.promisify(fs.writeFile);
 const readdir = util.promisify(fs.readdir);
 
 module.exports = {
-  async sendDailyUpdatesNotificationToUsers(req, res) {
+  async sendDailyUpdateNotificationsToUsers(req, res) {
     logger.info("sending daily update notifications to users  - ");
 
     let { title, body, users, bigPicture, largeIcon } = req.body;

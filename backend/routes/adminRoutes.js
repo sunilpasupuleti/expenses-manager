@@ -13,9 +13,10 @@ const {
   validateSendDailyUpdateNotificationToUsers,
 } = require("../controllers/admin/notification/notificationValidator");
 const {
-  sendDailyUpdatesNotificationToUsers,
+  sendDailyUpdateNotificationsToUsers,
   getActiveDevicesList,
 } = require("../controllers/admin/notification/notificationController");
+const { getUsers } = require("../controllers/admin/user/userController");
 
 // Get self user details after login
 router.route("/auth").get(VerifyAdminToken, getSelfUser);
@@ -29,6 +30,9 @@ router.route("/auth/refresh").get(refreshToken);
 // Signout
 router.route("/auth/signout").get(signout);
 
+// get Users list
+router.route("/user").get(VerifyAdminToken, getUsers);
+
 // Get active devices list for sending notification
 router
   .route("/notification/active-devices")
@@ -39,7 +43,7 @@ router
   .route("/notification")
   .post(
     validateSendDailyUpdateNotificationToUsers,
-    sendDailyUpdatesNotificationToUsers
+    sendDailyUpdateNotificationsToUsers
   );
 
 module.exports = router;

@@ -17,6 +17,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import NotificationIcon from "@mui/icons-material/Notifications";
+import UserIcon from "@mui/icons-material/Diversity3";
 import SignOutIcon from "@mui/icons-material/ExitToApp";
 import { useEffect } from "react";
 import { useContext } from "react";
@@ -104,6 +105,7 @@ export const Dashboard = ({ title }) => {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const { onLogout, userData } = useContext(AuthenticationContext);
+
   const navigate = useNavigate();
   const location = useLocation();
   const path = location.pathname;
@@ -168,6 +170,7 @@ export const Dashboard = ({ title }) => {
 
   const pathNames = {
     notification: "/dashboard/send-notifications",
+    users: "/dashboard/users",
   };
 
   return userData ? (
@@ -247,6 +250,19 @@ export const Dashboard = ({ title }) => {
         </DrawerHeader>
         <Divider />
         <List>
+          <ListItem
+            disablePadding
+            sx={ListItemStyles([pathNames.users])}
+            onClick={() => navigate(pathNames.users)}
+          >
+            <ListItemButton sx={ListItemButtonStyles}>
+              <ListItemIcon sx={ListItemIconStyles([pathNames.users])}>
+                <UserIcon />
+              </ListItemIcon>
+              <ListItemText primary={"Users"} sx={{ opacity: open ? 1 : 0 }} />
+            </ListItemButton>
+          </ListItem>
+
           <ListItem
             disablePadding
             sx={ListItemStyles([pathNames.notification])}
