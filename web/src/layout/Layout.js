@@ -12,6 +12,7 @@ import { Users } from "../components/Admin/Dashboard/Users/Users";
 import { AccountDeletionContextProvider } from "../services/AccountDeletion/AccountDeletion.context";
 import { Status } from "../components/AccountDeletion/Status/Status";
 import { AccountDeletion } from "../components/AccountDeletion/AccountDeletion";
+import { AccountDeletion as AdminAccountDeletion } from "../components/Admin/Dashboard/AccountDeletion/AccountDeletion";
 import { Deletion } from "../components/AccountDeletion/Deletion/Deletion";
 
 const Layout = (props) => {
@@ -35,6 +36,14 @@ const Layout = (props) => {
     return (
       <AccountDeletionContextProvider>
         <AccountDeletion title={title} />
+      </AccountDeletionContextProvider>
+    );
+  };
+
+  const AdminAccountDeletionElement = ({ title }) => {
+    return (
+      <AccountDeletionContextProvider>
+        <AdminAccountDeletion title={title} />
       </AccountDeletionContextProvider>
     );
   };
@@ -85,6 +94,10 @@ const Layout = (props) => {
             }
           >
             <Route path="users" element={<UsersElement title="Users" />} />
+            <Route
+              path="account-deletion"
+              element={<AdminAccountDeletionElement title="Account Deletion" />}
+            />
             <Route
               path="send-notifications"
               element={<SendNotificationsElement title="Send Notifications" />}

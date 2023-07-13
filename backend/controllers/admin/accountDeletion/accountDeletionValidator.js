@@ -67,6 +67,21 @@ module.exports = {
     next();
   },
 
+  async validateDeleteAccount(req, res, next) {
+    let requestId = req.params.requestId;
+
+    let requestAlreadyPresent = await AccountDeletion.findOne({
+      _id: requestId,
+    });
+
+    if (requestAlreadyPresent && requestAlreadyPresent.status === "deleted") {
+      return sendResponse(res, httpCodes.BAD_REQUEST, {
+        message: "The user was already deleted",
+      });
+    }
+    next();
+  },
+
   async validateGetStatus(req, res, next) {
     const { requestId, accountKey } = req.query;
 

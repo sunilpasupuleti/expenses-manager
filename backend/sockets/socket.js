@@ -24,6 +24,10 @@ module.exports = function socket(io) {
       io.to(socket.id).emit("refreshSendNotifications", data);
     });
 
+    socket.on("refreshAccountDeletion", (data) => {
+      io.to(socket.id).emit("refreshAccountDeletion", data);
+    });
+
     socket.on("disconnect", (data) => {
       delete socketUsers[socket.id];
       logger.warn("CLIENT DISCONNECTED with ID -  " + socket.id);

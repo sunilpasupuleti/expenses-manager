@@ -21,6 +21,7 @@ const {
   validateCreateRequest,
   validateRejectRequest,
   validateRequestId,
+  validateDeleteAccount,
 } = require("../controllers/admin/accountDeletion/accountDeletionValidator");
 const {
   createRequest,
@@ -89,6 +90,7 @@ router
     VerifyAdminToken,
     validateParamsObjectId("requestId"),
     validateRequestId,
+    validateDeleteAccount,
     deleteAccount
   );
 

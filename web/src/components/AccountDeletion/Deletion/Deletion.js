@@ -1,6 +1,6 @@
 import { Box, TextField } from "@mui/material";
 import { useContext, useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { styled } from "styled-components";
 import { LoadingButton } from "@mui/lab";
 import SubmitIcon from "@mui/icons-material/Send";
@@ -257,6 +257,17 @@ export const Deletion = ({ title }) => {
           >
             {!loading && "SUBMIT REQUEST"}
           </LoadingButton>
+          <Link
+            to={"/account-deletion/status"}
+            style={{
+              color: "var(--primary)",
+              textDecoration: "underline",
+              float: "right",
+              marginTop: 5,
+            }}
+          >
+            Want to check Deletion status? Click here
+          </Link>
         </Box>
       </animated.div>
     </>

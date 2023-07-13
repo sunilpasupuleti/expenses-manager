@@ -1,0 +1,10 @@
+7/13/2023, 10:16:05 PM [error]  Message :  ----- Reason -----
+7/13/2023, 10:16:05 PM [error]  Message :  Cannot read properties of null (reading 'user')
+7/13/2023, 10:16:07 PM [error]  Message :  ----- Reason -----
+7/13/2023, 10:16:07 PM [error]  Message :  Cannot read properties of null (reading 'user')
+7/13/2023, 10:27:21 PM [error]  Message :  ----- Reason -----
+7/13/2023, 10:27:21 PM [error]  Message :  Cannot read properties of null (reading 'user')
+7/13/2023, 10:28:07 PM [error]  Message :  Error occured while deleting user from firebase ReferenceError: rejectedReason is not defined
+7/13/2023, 10:28:50 PM [error]  Message :  ----- Reason -----
+7/13/2023, 10:28:50 PM [error]  Message :  Cannot read properties of null (reading 'uid')
+7/13/2023, 10:36:46 PM [error]  Message :  Error occured while deleting user from firebase ReferenceError: rejectedReason is not defined

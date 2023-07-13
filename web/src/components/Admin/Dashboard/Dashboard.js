@@ -19,6 +19,8 @@ import ListItemText from "@mui/material/ListItemText";
 import NotificationIcon from "@mui/icons-material/Notifications";
 import UserIcon from "@mui/icons-material/Diversity3";
 import SignOutIcon from "@mui/icons-material/ExitToApp";
+import DeletionIcon from "@mui/icons-material/AutoDelete";
+
 import { useEffect } from "react";
 import { useContext } from "react";
 import { AuthenticationContext } from "../../../services/Authentication/Authentication.context";
@@ -171,6 +173,7 @@ export const Dashboard = ({ title }) => {
   const pathNames = {
     notification: "/dashboard/send-notifications",
     users: "/dashboard/users",
+    accountDeletion: "/dashboard/account-deletion",
   };
 
   return userData ? (
@@ -274,6 +277,24 @@ export const Dashboard = ({ title }) => {
               </ListItemIcon>
               <ListItemText
                 primary={"Send Notifications"}
+                sx={{ opacity: open ? 1 : 0 }}
+              />
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem
+            disablePadding
+            sx={ListItemStyles([pathNames.accountDeletion])}
+            onClick={() => navigate(pathNames.accountDeletion)}
+          >
+            <ListItemButton sx={ListItemButtonStyles}>
+              <ListItemIcon
+                sx={ListItemIconStyles([pathNames.accountDeletion])}
+              >
+                <DeletionIcon />
+              </ListItemIcon>
+              <ListItemText
+                primary={"Account Deletion"}
                 sx={{ opacity: open ? 1 : 0 }}
               />
             </ListItemButton>

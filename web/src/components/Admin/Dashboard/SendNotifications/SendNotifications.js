@@ -334,11 +334,8 @@ export const SendNotifications = ({ title }) => {
       });
     }
 
-    console.log(selectedUsers);
-
     let finalSelectedUsers = Array.from(new Set(selectedUsers));
 
-    console.log(finalSelectedUsers);
     let data = {
       title: title.value.trim(),
       body: body.value.trim(),

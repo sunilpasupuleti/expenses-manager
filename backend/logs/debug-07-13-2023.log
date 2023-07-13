@@ -1,0 +1,218 @@
+7/13/2023, 8:55:59 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 8:56:00 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/13/2023, 8:56:09 PM [debug]  Message :  CLIENT CONNECTED with ID -  lNFrejKpHizL-0HIAAAB
+7/13/2023, 8:56:48 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  lNFrejKpHizL-0HIAAAB
+7/13/2023, 8:56:49 PM [debug]  Message :  CLIENT CONNECTED with ID -  5Rlwks8F4E8Tzc22AAAD
+7/13/2023, 8:57:05 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  5Rlwks8F4E8Tzc22AAAD
+7/13/2023, 8:57:06 PM [debug]  Message :  CLIENT CONNECTED with ID -  aFlzBZyVN9OhZgHzAAAF
+7/13/2023, 9:15:25 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 9:15:25 PM [debug]  Message :  CLIENT CONNECTED with ID -  x_ZuFwWnaaCJPgGJAAAB
+7/13/2023, 9:15:25 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/13/2023, 9:17:20 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  x_ZuFwWnaaCJPgGJAAAB
+7/13/2023, 9:17:20 PM [debug]  Message :  CLIENT CONNECTED with ID -  xWYLgT7JjuHAtDU2AAAD
+7/13/2023, 9:17:21 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  xWYLgT7JjuHAtDU2AAAD
+7/13/2023, 9:17:22 PM [debug]  Message :  CLIENT CONNECTED with ID -  jvUNcbZ8RM47woooAAAF
+7/13/2023, 9:19:25 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  jvUNcbZ8RM47woooAAAF
+7/13/2023, 9:19:26 PM [debug]  Message :  CLIENT CONNECTED with ID -  SlmmXAz9B2O0vL3CAAAH
+7/13/2023, 9:24:47 PM [debug]  Message :  CLIENT CONNECTED with ID -  jhVR0QToeXibsC2lAAAJ
+7/13/2023, 9:25:25 PM [debug]  Message :  CLIENT CONNECTED with ID -  3uw-Ppd9CH3wi4eQAAAL
+7/13/2023, 9:27:13 PM [debug]  Message :  CLIENT CONNECTED with ID -  vubGOpxfdu4DH-SPAAAN
+7/13/2023, 9:28:22 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 9:28:22 PM [debug]  Message :  CLIENT CONNECTED with ID -  aaR1C_p3S9lpp9sVAAAB
+7/13/2023, 9:28:23 PM [debug]  Message :  CLIENT CONNECTED with ID -  Kn5ozTvsup_vqI8HAAAD
+7/13/2023, 9:28:23 PM [debug]  Message :  CLIENT CONNECTED with ID -  IaMzJn50ETztwx7yAAAF
+7/13/2023, 9:28:23 PM [debug]  Message :  CLIENT CONNECTED with ID -  hOPaByWaaQnKFumlAAAH
+7/13/2023, 9:28:24 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/13/2023, 9:28:25 PM [debug]  Message :  CLIENT CONNECTED with ID -  ux3oDyVDu4wKjlDSAAAJ
+7/13/2023, 9:28:58 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 9:28:59 PM [debug]  Message :  CLIENT CONNECTED with ID -  wcTVPnYiAHDq2oW7AAAB
+7/13/2023, 9:28:59 PM [debug]  Message :  CLIENT CONNECTED with ID -  SegNNj3w-2YdvGcSAAAD
+7/13/2023, 9:28:59 PM [debug]  Message :  CLIENT CONNECTED with ID -  fIj1ToEerQGaTEMSAAAF
+7/13/2023, 9:28:59 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/13/2023, 9:29:00 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 9:29:00 PM [debug]  Message :  CLIENT CONNECTED with ID -  gGRDJeS-L7wCD5n7AAAB
+7/13/2023, 9:29:00 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/13/2023, 9:29:02 PM [debug]  Message :  CLIENT CONNECTED with ID -  TpwMHzkX_Jg9E6A4AAAD
+7/13/2023, 9:29:02 PM [debug]  Message :  CLIENT CONNECTED with ID -  PWs30MtUjJNSGzF0AAAF
+7/13/2023, 9:29:02 PM [debug]  Message :  CLIENT CONNECTED with ID -  BmYo8HthDjQRv48BAAAH
+7/13/2023, 9:29:02 PM [debug]  Message :  CLIENT CONNECTED with ID -  tKjqwInbZTvx9aTHAAAJ
+7/13/2023, 9:29:09 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  TpwMHzkX_Jg9E6A4AAAD
+7/13/2023, 9:29:09 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  tKjqwInbZTvx9aTHAAAJ
+7/13/2023, 9:29:09 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  BmYo8HthDjQRv48BAAAH
+7/13/2023, 9:29:09 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  PWs30MtUjJNSGzF0AAAF
+7/13/2023, 9:29:10 PM [debug]  Message :  CLIENT CONNECTED with ID -  hX08mPC3uAJld-qpAAAL
+7/13/2023, 10:02:46 PM [debug]  Message :  CLIENT CONNECTED with ID -  axnsA6843bLGOaqBAAAN
+7/13/2023, 10:02:55 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  hX08mPC3uAJld-qpAAAL
+7/13/2023, 10:02:55 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  axnsA6843bLGOaqBAAAN
+7/13/2023, 10:02:56 PM [debug]  Message :  CLIENT CONNECTED with ID -  6G_K7R7M84XvgSeyAAAP
+7/13/2023, 10:06:36 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  6G_K7R7M84XvgSeyAAAP
+7/13/2023, 10:06:36 PM [debug]  Message :  CLIENT CONNECTED with ID -  hwhXRs7CPPr1QxFWAAAR
+7/13/2023, 10:06:59 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  hwhXRs7CPPr1QxFWAAAR
+7/13/2023, 10:07:00 PM [debug]  Message :  CLIENT CONNECTED with ID -  tCnuIfunhR6zC6tVAAAT
+7/13/2023, 10:07:43 PM [debug]  Message :  CLIENT CONNECTED with ID -  weDzN3CVhR1cC5axAAAV
+7/13/2023, 10:10:27 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:10:27 PM [debug]  Message :  CLIENT CONNECTED with ID -  FRX657HNeipCC9fEAAAB
+7/13/2023, 10:10:28 PM [debug]  Message :  CLIENT CONNECTED with ID -  rSeYymR-i4XKkv9HAAAD
+7/13/2023, 10:10:28 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/13/2023, 10:10:29 PM [debug]  Message :  CLIENT CONNECTED with ID -  Bfdf9FDnKrjzTSqaAAAF
+7/13/2023, 10:11:03 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:11:04 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/13/2023, 10:11:04 PM [debug]  Message :  CLIENT CONNECTED with ID -  ABe15gKcU7zCmzZuAAAB
+7/13/2023, 10:11:04 PM [debug]  Message :  CLIENT CONNECTED with ID -  tW68fSigOU4-5EBoAAAD
+7/13/2023, 10:11:05 PM [debug]  Message :  CLIENT CONNECTED with ID -  7WZ1DER-d8OreTSXAAAF
+7/13/2023, 10:11:07 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:11:07 PM [debug]  Message :  CLIENT CONNECTED with ID -  Xu0hEPJQWqUXvTEEAAAB
+7/13/2023, 10:11:07 PM [debug]  Message :  CLIENT CONNECTED with ID -  2jz7M8klkFaWhrpBAAAD
+7/13/2023, 10:11:08 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/13/2023, 10:11:09 PM [debug]  Message :  CLIENT CONNECTED with ID -  zV6GRaww6mnJHvaDAAAF
+7/13/2023, 10:16:03 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  Xu0hEPJQWqUXvTEEAAAB
+7/13/2023, 10:16:03 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  2jz7M8klkFaWhrpBAAAD
+7/13/2023, 10:16:03 PM [debug]  Message :  CLIENT CONNECTED with ID -  iTScTAdt3VxFn1-oAAAH
+7/13/2023, 10:16:05 PM [error]  Message :  ----- Reason -----
+7/13/2023, 10:16:05 PM [error]  Message :  Cannot read properties of null (reading 'user')
+7/13/2023, 10:16:07 PM [error]  Message :  ----- Reason -----
+7/13/2023, 10:16:07 PM [error]  Message :  Cannot read properties of null (reading 'user')
+7/13/2023, 10:17:48 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  iTScTAdt3VxFn1-oAAAH
+7/13/2023, 10:17:49 PM [debug]  Message :  CLIENT CONNECTED with ID -  ksunZL3CmxqCtiejAAAJ
+7/13/2023, 10:19:06 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  zV6GRaww6mnJHvaDAAAF
+7/13/2023, 10:19:06 PM [debug]  Message :  CLIENT CONNECTED with ID -  4IwO8Gx61qXuxCRHAAAL
+7/13/2023, 10:22:18 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  4IwO8Gx61qXuxCRHAAAL
+7/13/2023, 10:22:19 PM [debug]  Message :  CLIENT CONNECTED with ID -  8gGYS1GLzQeD2r4nAAAN
+7/13/2023, 10:26:51 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  ksunZL3CmxqCtiejAAAJ
+7/13/2023, 10:26:52 PM [debug]  Message :  CLIENT CONNECTED with ID -  _eVDQEoSE__e9b57AAAP
+7/13/2023, 10:27:05 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  _eVDQEoSE__e9b57AAAP
+7/13/2023, 10:27:06 PM [debug]  Message :  CLIENT CONNECTED with ID -  nTSbXbFd7sDVb6aRAAAR
+7/13/2023, 10:27:21 PM [error]  Message :  ----- Reason -----
+7/13/2023, 10:27:21 PM [error]  Message :  Cannot read properties of null (reading 'user')
+7/13/2023, 10:28:02 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:28:02 PM [debug]  Message :  CLIENT CONNECTED with ID -  fZbBismNtxHGq8-LAAAB
+7/13/2023, 10:28:02 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/13/2023, 10:28:03 PM [debug]  Message :  CLIENT CONNECTED with ID -  xwTxtPWuoZpOW7pwAAAD
+7/13/2023, 10:28:03 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  fZbBismNtxHGq8-LAAAB
+7/13/2023, 10:28:03 PM [debug]  Message :  CLIENT CONNECTED with ID -  3ZgRQrEle5c47_elAAAF
+7/13/2023, 10:28:07 PM [error]  Message :  Error occured while deleting user from firebase ReferenceError: rejectedReason is not defined
+7/13/2023, 10:28:45 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:28:45 PM [debug]  Message :  CLIENT CONNECTED with ID -  pRTgOLBHSukc8ONUAAAB
+7/13/2023, 10:28:46 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/13/2023, 10:28:47 PM [debug]  Message :  CLIENT CONNECTED with ID -  kFJBoJVT81YaudDgAAAD
+7/13/2023, 10:28:50 PM [error]  Message :  ----- Reason -----
+7/13/2023, 10:28:50 PM [error]  Message :  Cannot read properties of null (reading 'uid')
+7/13/2023, 10:29:04 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:29:04 PM [debug]  Message :  CLIENT CONNECTED with ID -  mfxLhevviFiJBHO4AAAB
+7/13/2023, 10:29:05 PM [debug]  Message :  CLIENT CONNECTED with ID -  n3hlTaRHA7fQzKaPAAAD
+7/13/2023, 10:29:05 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/13/2023, 10:29:17 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:29:18 PM [debug]  Message :  CLIENT CONNECTED with ID -  yKsRGkpUxQ8KTPCAAAAB
+7/13/2023, 10:29:19 PM [debug]  Message :  CLIENT CONNECTED with ID -  zGc5LcSqJMI5EGWWAAAD
+7/13/2023, 10:29:22 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:29:23 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/13/2023, 10:29:23 PM [debug]  Message :  CLIENT CONNECTED with ID -  BaESOICZaf-PrMOmAAAB
+7/13/2023, 10:29:24 PM [debug]  Message :  CLIENT CONNECTED with ID -  DATn23Xcx9nPx5hFAAAD
+7/13/2023, 10:30:48 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:30:48 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/13/2023, 10:30:49 PM [debug]  Message :  CLIENT CONNECTED with ID -  v9H1q8vv8ns8vBaaAAAB
+7/13/2023, 10:30:50 PM [debug]  Message :  CLIENT CONNECTED with ID -  SwSyKsB-gTcbPrmFAAAD
+7/13/2023, 10:31:45 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:31:46 PM [debug]  Message :  CLIENT CONNECTED with ID -  I0j3Ah475aUO2W8dAAAB
+7/13/2023, 10:31:46 PM [debug]  Message :  CLIENT CONNECTED with ID -  c-FP0zVEvWij3ii-AAAD
+7/13/2023, 10:31:46 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/13/2023, 10:31:50 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:31:51 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/13/2023, 10:31:52 PM [debug]  Message :  CLIENT CONNECTED with ID -  aYS38UTyuKwfF4RZAAAB
+7/13/2023, 10:31:52 PM [debug]  Message :  CLIENT CONNECTED with ID -  ubY6hlg2htIJYxQmAAAD
+7/13/2023, 10:31:58 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:31:58 PM [debug]  Message :  CLIENT CONNECTED with ID -  DGC3v5C-wFts4h3bAAAB
+7/13/2023, 10:31:59 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/13/2023, 10:32:00 PM [debug]  Message :  CLIENT CONNECTED with ID -  orFIywHd9_C3wzQZAAAD
+7/13/2023, 10:32:01 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  DGC3v5C-wFts4h3bAAAB
+7/13/2023, 10:32:01 PM [debug]  Message :  CLIENT CONNECTED with ID -  OwS-xlks3vutKQHiAAAF
+7/13/2023, 10:32:03 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  OwS-xlks3vutKQHiAAAF
+7/13/2023, 10:32:04 PM [debug]  Message :  CLIENT CONNECTED with ID -  OHd6ASRH3vdnzw9gAAAH
+7/13/2023, 10:34:24 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  OHd6ASRH3vdnzw9gAAAH
+7/13/2023, 10:34:24 PM [debug]  Message :  CLIENT CONNECTED with ID -  szxzQuT9LzM8zKavAAAJ
+7/13/2023, 10:35:42 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:35:43 PM [debug]  Message :  CLIENT CONNECTED with ID -  BqnrAaDN44SWgVgoAAAB
+7/13/2023, 10:35:43 PM [debug]  Message :  CLIENT CONNECTED with ID -  IO1IMeaxREX-0DywAAAD
+7/13/2023, 10:35:43 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/13/2023, 10:36:16 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:36:17 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/13/2023, 10:36:17 PM [debug]  Message :  CLIENT CONNECTED with ID -  25vsHTQE9P2QozTmAAAB
+7/13/2023, 10:36:17 PM [debug]  Message :  CLIENT CONNECTED with ID -  0XgGueABzdVjqD_fAAAD
+7/13/2023, 10:36:36 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:36:37 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/13/2023, 10:36:37 PM [debug]  Message :  CLIENT CONNECTED with ID -  PdGSB_Rug9fNB0riAAAB
+7/13/2023, 10:36:38 PM [debug]  Message :  CLIENT CONNECTED with ID -  p93NeSf-TEC6MPFlAAAD
+7/13/2023, 10:36:46 PM [error]  Message :  Error occured while deleting user from firebase ReferenceError: rejectedReason is not defined
+7/13/2023, 10:37:33 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:37:34 PM [debug]  Message :  CLIENT CONNECTED with ID -  T_AHHieDEz2Gw7CRAAAB
+7/13/2023, 10:37:34 PM [debug]  Message :  CLIENT CONNECTED with ID -  r6ikf6BxOJu1b_p6AAAD
+7/13/2023, 10:37:39 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+7/13/2023, 10:37:56 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  r6ikf6BxOJu1b_p6AAAD
+7/13/2023, 10:37:57 PM [debug]  Message :  CLIENT CONNECTED with ID -  Tq41XDyD-BUbbiPJAAAF
+7/13/2023, 10:38:17 PM [debug]  Message :  CLIENT CONNECTED with ID -  CFkZGN9UIL8fxNZFAAAH
+7/13/2023, 10:38:42 PM [debug]  Message :  CLIENT CONNECTED with ID -  WHI1AERKfw1SnVX9AAAJ
+7/13/2023, 10:38:51 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  Tq41XDyD-BUbbiPJAAAF
+7/13/2023, 10:38:51 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  WHI1AERKfw1SnVX9AAAJ
+7/13/2023, 10:38:51 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  CFkZGN9UIL8fxNZFAAAH
+7/13/2023, 10:38:52 PM [debug]  Message :  CLIENT CONNECTED with ID -  2kwGYOcL7Ws2-BJqAAAL
+7/13/2023, 10:42:28 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  2kwGYOcL7Ws2-BJqAAAL
+7/13/2023, 10:42:28 PM [debug]  Message :  CLIENT CONNECTED with ID -  x2K6EqSPvyGPEkh4AAAN
+7/13/2023, 10:42:31 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  x2K6EqSPvyGPEkh4AAAN
+7/13/2023, 10:42:31 PM [debug]  Message :  CLIENT CONNECTED with ID -  99yn3AhjyDZ4knGMAAAP
+7/13/2023, 10:42:53 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  99yn3AhjyDZ4knGMAAAP
+7/13/2023, 10:42:54 PM [debug]  Message :  CLIENT CONNECTED with ID -  zSVsC5gnUK7mqdYIAAAR
+7/13/2023, 10:43:44 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:43:44 PM [debug]  Message :  CLIENT CONNECTED with ID -  9VWoviwsRmey3FDuAAAB
+7/13/2023, 10:43:45 PM [debug]  Message :  CLIENT CONNECTED with ID -  SncL1NIyDmjmXTRtAAAD
+7/13/2023, 10:43:45 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/13/2023, 10:43:47 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:43:47 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/13/2023, 10:43:48 PM [debug]  Message :  CLIENT CONNECTED with ID -  ChlpVw80JkzSLR3aAAAB
+7/13/2023, 10:43:48 PM [debug]  Message :  CLIENT CONNECTED with ID -  Rnyr65CPb8Q-FKhEAAAD
+7/13/2023, 10:44:49 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  Rnyr65CPb8Q-FKhEAAAD
+7/13/2023, 10:44:49 PM [debug]  Message :  CLIENT CONNECTED with ID -  _qNMVh-J4nvKgRAlAAAF
+7/13/2023, 10:45:22 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:45:23 PM [debug]  Message :  CLIENT CONNECTED with ID -  O9I1UvpbBkkHV0wHAAAB
+7/13/2023, 10:45:23 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/13/2023, 10:45:24 PM [debug]  Message :  CLIENT CONNECTED with ID -  LjMVPeO3fViHfgdLAAAD
+7/13/2023, 10:46:26 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  O9I1UvpbBkkHV0wHAAAB
+7/13/2023, 10:46:26 PM [debug]  Message :  CLIENT CONNECTED with ID -  CRzgk1i_Ir7t8ao6AAAF
+7/13/2023, 10:47:02 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  CRzgk1i_Ir7t8ao6AAAF
+7/13/2023, 10:47:02 PM [debug]  Message :  CLIENT CONNECTED with ID -  XLy1cmGjmP2v2n8JAAAH
+7/13/2023, 10:49:09 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  XLy1cmGjmP2v2n8JAAAH
+7/13/2023, 10:49:09 PM [debug]  Message :  CLIENT CONNECTED with ID -  YfW7yRsM2UqAZ5gqAAAJ
+7/13/2023, 10:49:29 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:49:30 PM [debug]  Message :  CLIENT CONNECTED with ID -  FvSa0KMMEa7ffDxSAAAC
+7/13/2023, 10:49:30 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/13/2023, 10:49:30 PM [debug]  Message :  CLIENT CONNECTED with ID -  0KrT2K26QepSRRyTAAAE
+7/13/2023, 10:49:36 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:49:37 PM [debug]  Message :  CLIENT CONNECTED with ID -  KoS2q2crEWjniUB-AAAB
+7/13/2023, 10:49:37 PM [debug]  Message :  CLIENT CONNECTED with ID -  2_Vi4NO6O_q4r-LdAAAD
+7/13/2023, 10:49:37 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/13/2023, 10:49:40 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  2_Vi4NO6O_q4r-LdAAAD
+7/13/2023, 10:49:40 PM [debug]  Message :  CLIENT CONNECTED with ID -  jEpin8hh6MmkByK8AAAF
+7/13/2023, 10:50:21 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:50:22 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/13/2023, 10:50:23 PM [debug]  Message :  CLIENT CONNECTED with ID -  cAbn2Bk4gIXbYpZVAAAB
+7/13/2023, 10:50:26 PM [debug]  Message :  CLIENT CONNECTED with ID -  XQYGZnjsPKHmRmuSAAAD
+7/13/2023, 10:50:33 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:50:33 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:50:34 PM [debug]  Message :  CLIENT CONNECTED with ID -  sGNoTerqcxLHqg-4AAAB
+7/13/2023, 10:50:40 PM [debug]  Message :  CLIENT CONNECTED with ID -  l33j0NHGk-W686IhAAAD
+7/13/2023, 10:50:40 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/13/2023, 10:50:44 PM [info]  Message :  server started on port number 3000 }
+7/13/2023, 10:50:44 PM [debug]  Message :  CLIENT CONNECTED with ID -  5VCEEji_wnJ5yXpUAAAB
+7/13/2023, 10:50:44 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/13/2023, 10:50:45 PM [debug]  Message :  CLIENT CONNECTED with ID -  q2u3Zi3YFwFzfqzQAAAD
+7/13/2023, 10:51:56 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  5VCEEji_wnJ5yXpUAAAB
+7/13/2023, 10:51:57 PM [debug]  Message :  CLIENT CONNECTED with ID -  JAZmNoqLVQQrljnqAAAF
+7/13/2023, 10:52:11 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  JAZmNoqLVQQrljnqAAAF
+7/13/2023, 10:52:11 PM [debug]  Message :  CLIENT CONNECTED with ID -  C171JOjLOIoWGvk4AAAH
+7/13/2023, 10:52:19 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  C171JOjLOIoWGvk4AAAH
+7/13/2023, 10:52:19 PM [debug]  Message :  CLIENT CONNECTED with ID -  XwqqfpJiAC-nUbGPAAAJ
+7/13/2023, 10:53:19 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  XwqqfpJiAC-nUbGPAAAJ
+7/13/2023, 10:53:19 PM [debug]  Message :  CLIENT CONNECTED with ID -  WXKLlUVfNmN_NCdBAAAL
+7/13/2023, 10:55:12 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  WXKLlUVfNmN_NCdBAAAL
+7/13/2023, 10:55:13 PM [debug]  Message :  CLIENT CONNECTED with ID -  f-nZM3uwM-YIuy_HAAAN
+7/13/2023, 10:55:52 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  q2u3Zi3YFwFzfqzQAAAD
+7/13/2023, 10:55:53 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  f-nZM3uwM-YIuy_HAAAN

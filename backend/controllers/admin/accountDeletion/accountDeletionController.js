@@ -19,7 +19,7 @@ module.exports = {
     let uid = req.params.accountKey;
     let { reason } = req.body;
 
-    let user = Users.findOne({
+    let user = await Users.findOne({
       uid: uid,
     });
 
@@ -49,7 +49,9 @@ module.exports = {
   },
 
   async getRequests(req, res) {
-    let requests = await AccountDeletion.find({}).populate("user");
+    let requests = await AccountDeletion.find({})
+      .populate("user")
+      .sort({ createdAt: -1 });
 
     return sendResponse(res, httpCodes.OK, {
       message: "Deletion requests",
@@ -97,7 +99,7 @@ module.exports = {
   },
 
   async rejectRequest(req, res) {
-    let requestId = req.params.id;
+    let requestId = req.params.requestId;
     let { rejectedReason } = req.body;
     AccountDeletion.findOneAndUpdate(
       {
@@ -117,11 +119,10 @@ module.exports = {
   },
 
   async deleteAccount(req, res) {
-    let requestId = req.params.id;
+    let requestId = req.params.requestId;
     let request = await AccountDeletion.findOne({ _id: requestId }).populate(
       "user"
     );
-
     let user = request.user;
 
     // delete user related files
@@ -162,9 +163,8 @@ module.exports = {
       .deleteUser(user.uid)
       .then(() => {
         // update status
-        let display = user.displayName || user.email || user.phoneNumber;
         let referenceData = {
-          name: display,
+          name: user.displayName,
           email: user.email,
           phoneNumber: user.phoneNumber,
         };
@@ -175,7 +175,6 @@ module.exports = {
           {
             $set: {
               status: "deleted",
-              rejectedReason: rejectedReason,
               referenceData: referenceData,
             },
           }
