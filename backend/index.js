@@ -170,24 +170,26 @@ server.listen(process.env.PORT || 8080, async () => {
 
       let display =
         userData.displayName || userData.email || userData.phoneNumber;
-
       let dailyReminder = userData.dailyReminder;
-      let hr = dailyReminder.time.split(":")[0];
-      let min = dailyReminder.time.split(":")[1];
-      var rule = new schedule.RecurrenceRule();
-      rule.hour = hr;
-      rule.minute = min;
-      rule.tz = timeZone;
 
-      rule.dayOfWeek = new schedule.Range(0, 6);
-      let jobId = `${userData.uid}-daily-reminder`;
-      logger.info(
-        `Enabling daily reminder for ${display} at time - ${hr}:${min} - ${timeZone}`
-      );
+      if (dailyReminder && dailyReminder.enabled) {
+        let hr = dailyReminder.time.split(":")[0];
+        let min = dailyReminder.time.split(":")[1];
+        var rule = new schedule.RecurrenceRule();
+        rule.hour = hr;
+        rule.minute = min;
+        rule.tz = timeZone;
 
-      schedule.scheduleJob(jobId, rule, function () {
-        sendDailyReminderNotification(userData);
-      });
+        rule.dayOfWeek = new schedule.Range(0, 6);
+        let jobId = `${userData.uid}-daily-reminder`;
+        logger.info(
+          `Enabling daily reminder for ${display} at time - ${hr}:${min} - ${timeZone}`
+        );
+
+        schedule.scheduleJob(jobId, rule, function () {
+          sendDailyReminderNotification(userData);
+        });
+      }
 
       if (!jobFoundDailyBackup && userData.dailyBackup) {
         var rule = new schedule.RecurrenceRule();
