@@ -36,6 +36,18 @@ module.exports = {
       });
     }
 
+    let requestAlreadyPresent = await AccountDeletion.findOne({
+      uid: accountKey,
+    });
+
+    if (requestAlreadyPresent) {
+      return sendResponse(res, httpCodes.BAD_REQUEST, {
+        message:
+          "A request was alredy present and the status is " +
+          requestAlreadyPresent.status?.toUpperCase(),
+      });
+    }
+
     if (!reason) {
       return sendResponse(res, httpCodes.BAD_REQUEST, {
         message: "Reason required",

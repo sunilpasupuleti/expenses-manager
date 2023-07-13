@@ -210,5 +210,5 @@ server.listen(process.env.PORT || 8080, async () => {
     });
   }
 
-  activateNotifications();
+  // activateNotifications();
 });
