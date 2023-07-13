@@ -9,6 +9,11 @@ import { SendNotifications } from "../components/Admin/Dashboard/SendNotificatio
 import { NotificationContextProvider } from "../services/Notification/Notification.context";
 import { UserContextProvider } from "../services/User/User.context";
 import { Users } from "../components/Admin/Dashboard/Users/Users";
+import { AccountDeletionContextProvider } from "../services/AccountDeletion/AccountDeletion.context";
+import { Status } from "../components/AccountDeletion/Status/Status";
+import { AccountDeletion } from "../components/AccountDeletion/AccountDeletion";
+import { Deletion } from "../components/AccountDeletion/Deletion/Deletion";
+
 const Layout = (props) => {
   const SendNotificationsElement = ({ title }) => {
     return (
@@ -26,11 +31,49 @@ const Layout = (props) => {
     );
   };
 
+  const AccountDeletionElement = ({ title }) => {
+    return (
+      <AccountDeletionContextProvider>
+        <AccountDeletion title={title} />
+      </AccountDeletionContextProvider>
+    );
+  };
+
+  const DeletionElement = ({ title }) => {
+    return (
+      <AccountDeletionContextProvider>
+        <Deletion title={title} />
+      </AccountDeletionContextProvider>
+    );
+  };
+
+  const StatusElement = ({ title }) => {
+    return (
+      <AccountDeletionContextProvider>
+        <Status title={title} />
+      </AccountDeletionContextProvider>
+    );
+  };
+
   return (
     <SocketContextProvider>
       <AuthenticationContextProvider>
         <Routes>
           <Route path="/" element={<Admin title="Admin" />} />
+          <Route
+            path="/account-deletion"
+            element={<AccountDeletionElement title="Account Deletion" />}
+          >
+            <Route
+              path=""
+              element={<DeletionElement title="Account Deletion" />}
+            />
+            <Route
+              path="status"
+              element={<StatusElement title="Deletion Status" />}
+            />
+          </Route>
+
           <Route path="/admin" element={<Admin title="Admin" />} />
           <Route
             path="/dashboard"

@@ -17,6 +17,19 @@ const {
   getActiveDevicesList,
 } = require("../controllers/admin/notification/notificationController");
 const { getUsers } = require("../controllers/admin/user/userController");
+const {
+  validateCreateRequest,
+  validateRejectRequest,
+  validateRequestId,
+} = require("../controllers/admin/accountDeletion/accountDeletionValidator");
+const {
+  createRequest,
+  getRequests,
+  rejectRequest,
+  deleteAccount,
+  getRequestStatus,
+} = require("../controllers/admin/accountDeletion/accountDeletionController");
+const { validateParamsObjectId } = require("../helpers/utility");
 
 // Get self user details after login
 router.route("/auth").get(VerifyAdminToken, getSelfUser);
@@ -45,5 +58,41 @@ router
     validateSendDailyUpdateNotificationToUsers,
     sendDailyUpdateNotificationsToUsers
   );
+
+/**
+ * Account Deletion
+ */
+
+// create request
+router
+  .route("/account-deletion/:accountKey")
+  .post(validateCreateRequest, createRequest);
+
+// get requests
+router.route("/account-deletion").get(VerifyAdminToken, getRequests);
+
+// reject request
+router
+  .route("/account-deletion/:requestId")
+  .put(
+    VerifyAdminToken,
+    validateParamsObjectId("requestId"),
+    validateRequestId,
+    validateRejectRequest,
+    rejectRequest
+  );
+
+// delete account
+router
+  .route("/account-deletion/:requestId")
+  .delete(
+    VerifyAdminToken,
+    validateParamsObjectId("requestId"),
+    validateRequestId,
+    deleteAccount
+  );
+
+// get request status
+router.route("/account-deletion/status").get(getRequestStatus);
 
 module.exports = router;

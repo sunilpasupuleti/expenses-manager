@@ -14,7 +14,6 @@ module.exports = {
   getJwt,
   cryptoDecrypt,
   cryptoEncrypt,
-  validateParamsObjectId,
   adminRole: "admin",
 };
 
@@ -39,23 +38,6 @@ function cryptoDecrypt(data) {
     process.env.AES_ENCRYPTION_KEY
   ).toString(crypto.enc.Utf8);
   return decryptToken;
-}
-
-function validateParamsObjectId(paramName) {
-  return (req, res, next) => {
-    let id = req.params.id;
-    if (paramName) {
-      id = req.params[paramName];
-    }
-    let validObjectId = ObjectId.isValid(id);
-    if (validObjectId) {
-      next();
-    } else {
-      return sendResponse(res, httpstatus.StatusCodes.BAD_REQUEST, {
-        message: "Invalid Param Id Cannot cast to mongoose",
-      });
-    }
-  };
 }
 
 function sendResponse(response, code = httpstatus.StatusCodes, data = {}) {

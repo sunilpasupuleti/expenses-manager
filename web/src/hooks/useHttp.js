@@ -45,7 +45,6 @@ const useHttp = () => {
       let type = requestConfig.type;
       let url = process.env.REACT_APP_BACKEND_URL + requestConfig.url;
       let data = requestConfig.data;
-
       let headers = {
         "Access-Control-Allow-Origin": "*",
         ...requestConfig.headers,
@@ -142,16 +141,16 @@ const useHttp = () => {
             } else {
               message = "Error in http call request";
             }
-
-            showNotification({
-              status: "error",
-              message: message,
-            });
+            notify &&
+              showNotification({
+                status: "error",
+                message: message,
+              });
           });
       } catch (err) {
         callbacks.errorCallback && callbacks.errorCallback();
         loader && hideLoader(dispatch);
-        showNotification({ status: "error", message: err });
+        notify && showNotification({ status: "error", message: err });
       }
     },
     [dispatch, navigate]
