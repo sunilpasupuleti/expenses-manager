@@ -135,23 +135,23 @@ export const SendNotifications = ({ title }) => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = activeDevices.map((n) => n.uid);
+      const newSelected = activeDevices.map((n) => n.playerId);
       setSelectedUsers(newSelected);
       return;
     }
     setSelectedUsers([]);
   };
 
-  const handleClick = (event, uid) => {
+  const handleClick = (event, playerId) => {
     let currentSelectedUsers = [...selectedUsers];
-    const alreadySelected = currentSelectedUsers.find((id) => id === uid);
+    const alreadySelected = currentSelectedUsers.find((id) => id === playerId);
 
     if (alreadySelected) {
-      currentSelectedUsers = selectedUsers.filter((id) => id !== uid);
+      currentSelectedUsers = selectedUsers.filter((id) => id !== playerId);
     } else {
       activeDevices.filter((a) => {
-        if (a.uid === uid) {
-          currentSelectedUsers.push(uid);
+        if (a.playerId === playerId) {
+          currentSelectedUsers.push(playerId);
         }
       });
     }
@@ -201,33 +201,34 @@ export const SendNotifications = ({ title }) => {
 
           actDevices.forEach((a) => {
             let tags = a.tags;
-            let obj = {
-              device: {
-                os: a.device_os,
-                model: a.device_model,
-              },
-              lastActive: moment
-                .unix(a.last_active)
-                .format("DD MMM YYYY, hh:mm:ss A"),
-            };
-            if (tags && tags.dailyUpdateUid) {
-              let user = result.users.find(
-                (u) => u.uid === tags.dailyUpdateUid
-              );
-              obj.displayName = user?.displayName;
-              obj.email = user?.email;
-              obj.phoneNumber = user?.phoneNumber;
-              obj.photoURL = user?.photoURL;
-              obj.providerId = user?.providerId;
-              obj.uid = user?.uid;
-              obj._id = user?._id;
+            if (a.id) {
+              let obj = {
+                device: {
+                  os: a.device_os,
+                  model: a.device_model,
+                },
+                playerId: a.id,
+                lastActive: moment
+                  .unix(a.last_active)
+                  .format("DD MMM YYYY, hh:mm:ss A"),
+              };
+              if (tags && tags.uid) {
+                let user = result.users.find((u) => u.uid === tags.uid);
+                obj.displayName = user?.displayName;
+                obj.email = user?.email;
+                obj.phoneNumber = user?.phoneNumber;
+                obj.photoURL = user?.photoURL;
+                obj.providerId = user?.providerId;
+                obj.uid = user?.uid;
+                obj._id = user?._id;
+              }
+              structuredDevicesList.push(obj);
             }
-            structuredDevicesList.push(obj);
           });
           let activeDevicesList = _.orderBy(
             structuredDevicesList,
-            "displayName",
-            "asc"
+            "lastActive",
+            "desc"
           );
           setActiveDevices(activeDevicesList);
           setOrgActiveDevices(activeDevicesList);
@@ -689,7 +690,7 @@ export const SendNotifications = ({ title }) => {
                           <TableCell>Device</TableCell>
                           <TableCell>Phone </TableCell>
                           <TableCell>Image</TableCell>
-                          <TableCell>UID </TableCell>
+                          <TableCell>UID or Player ID </TableCell>
                           <TableCell>Last Active</TableCell>
                         </TableRow>
                       </TableHead>
@@ -701,7 +702,7 @@ export const SendNotifications = ({ title }) => {
                             )
                           : activeDevices
                         ).map((user, index) => {
-                          const isItemSelected = isSelected(user.uid);
+                          const isItemSelected = isSelected(user.playerId);
                           const labelId = `enhanced-table-checkbox-${index}`;
                           let photoURL = null;
                           if (user.photoURL) {
@@ -714,7 +715,7 @@ export const SendNotifications = ({ title }) => {
                           return (
                             <TableRow
                               onClick={(event) => {
-                                handleClick(event, user.uid);
+                                handleClick(event, user.playerId);
                               }}
                               key={index}
                               sx={{
@@ -768,12 +769,16 @@ export const SendNotifications = ({ title }) => {
                               <TableCell>
                                 <Tooltip
                                   onClick={() =>
-                                    copyContentToClipboard(user.uid)
+                                    copyContentToClipboard(
+                                      user.uid ? user.uid : user.playerId
+                                    )
                                   }
                                   className="pointer"
                                   title="copy"
                                 >
-                                  <strong>{user.uid}</strong>
+                                  <strong>
+                                    {user.uid ? user.uid : user.playerId}
+                                  </strong>
                                 </Tooltip>
                               </TableCell>
                               <TableCell>

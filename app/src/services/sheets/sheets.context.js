@@ -155,7 +155,6 @@ export const SheetsContextProvider = ({children}) => {
     .getValue('GOOGLE_CLOUD_VISION_API_URL')
     .asString();
 
-  GOOGLE_CLOUD_VISION_API_URL;
   useEffect(() => {
     if (userData) {
       retrieveExpensesData();
@@ -293,6 +292,7 @@ export const SheetsContextProvider = ({children}) => {
     dispatch(
       loaderActions.showLoader({backdrop: true, loaderType: 'scanning'}),
     );
+
     let url = GOOGLE_CLOUD_VISION_API_URL + '?key=' + GOOGLE_API_KEY;
     sendRequest(
       {

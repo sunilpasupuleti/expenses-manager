@@ -25,7 +25,13 @@ import {useTheme} from 'styled-components/native';
 import {SettingsCardContent} from '../components/settings.styles';
 import {Text} from '../../../components/typography/text.component';
 import {useDispatch, useSelector} from 'react-redux';
-import {Alert, Platform, ScrollView, TouchableOpacity} from 'react-native';
+import {
+  Alert,
+  Linking,
+  Platform,
+  ScrollView,
+  TouchableOpacity,
+} from 'react-native';
 import {SheetsContext} from '../../../services/sheets/sheets.context';
 import {fetchExchangeRates} from '../../../store/service-slice';
 import moment from 'moment';
@@ -45,6 +51,10 @@ export const SettingsScreen = ({navigation}) => {
   );
 
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
+
+  const ACCOUNT_DELETION_URL = remoteConfig()
+    .getValue('ACCOUNT_DELETION_URL')
+    .asString();
 
   const isAppLockEnabled = useSelector(state => state.applock.enabled);
 
@@ -145,6 +155,21 @@ export const SettingsScreen = ({navigation}) => {
   const toggleSwithStyles = {
     backgroundColor: Platform.OS !== 'ios' && theme.colors.switchBg,
     padding: 3,
+  };
+  const onClickOpenAccountDeletion = () => {
+    let url = '';
+    if (userData && userData.uid) {
+      url = ACCOUNT_DELETION_URL + `?accountKey=${userData.uid}`;
+    } else {
+      url = ACCOUNT_DELETION_URL;
+    }
+    Linking.canOpenURL(url).then(supported => {
+      if (supported) {
+        Linking.openURL(url);
+      } else {
+        console.log("Don't know how to open URI: " + this.props.url);
+      }
+    });
   };
 
   return (
@@ -603,6 +628,34 @@ export const SettingsScreen = ({navigation}) => {
               <SettingHint>
                 When you sign out, your data will be immediately backed up.
               </SettingHint>
+            </SettingsCard>
+          </Spacer>
+
+          <Spacer size={'large'}>
+            <SettingsCard>
+              <SettingsCardContent
+                onPress={onClickOpenAccountDeletion}
+                padding={'15px'}>
+                <>
+                  <Setting justifyContent="space-between">
+                    <FlexRow>
+                      <SettingIconWrapper color="red">
+                        <Ionicons name="trash-outline" size={20} color="#fff" />
+                      </SettingIconWrapper>
+
+                      <SettingTitle>Account Deletion</SettingTitle>
+                    </FlexRow>
+                  </Setting>
+
+                  <Spacer size={'large'}>
+                    <SettingHint marginLeft="0px">
+                      All your data from our serves and your account will be
+                      deleted permanently. It may tike some time you can submit
+                      request and track the status.
+                    </SettingHint>
+                  </Spacer>
+                </>
+              </SettingsCardContent>
             </SettingsCard>
           </Spacer>
 

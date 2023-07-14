@@ -4,6 +4,7 @@ import {Alert, AppState} from 'react-native';
 import {loaderActions} from './loader-slice';
 import remoteConfig from '@react-native-firebase/remote-config';
 import {
+  ACCOUNT_DELETION_URL,
   BACKEND_URL,
   GOOGLE_API_KEY,
   GOOGLE_CLOUD_VISION_API_URL,
@@ -131,6 +132,7 @@ export const loadAppStatus = createAsyncThunk(
       GOOGLE_API_KEY: GOOGLE_API_KEY,
       GOOGLE_CLOUD_VISION_API_URL: GOOGLE_CLOUD_VISION_API_URL,
       ONE_SIGNAL_APP_ID: ONESIGNAL_APP_ID,
+      ACCOUNT_DELETION_URL: ACCOUNT_DELETION_URL,
     });
 
     const logged = await AsyncStorage.getItem(`@expenses-manager-logged`).then(

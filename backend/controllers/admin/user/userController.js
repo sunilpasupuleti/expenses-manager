@@ -4,8 +4,7 @@ const Users = require("../../../models/Users");
 
 module.exports = {
   async getUsers(req, res) {
-    let users = await Users.find({})
-    .sort({ displayName: 1 });
+    let users = await Users.find({}).sort({ createdAt: -1 });
     return sendResponse(res, httpCodes.OK, {
       message: "Users list",
       users: users,

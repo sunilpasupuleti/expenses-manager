@@ -340,8 +340,10 @@ export const AuthenticationContextProvider = ({children}) => {
     };
     let oneSignalTags = {
       uid: user.uid,
-      dailyUpdateUid: user.uid,
     };
+    if (transformedData.email) {
+      oneSignalTags.email = transformedData.email;
+    }
     OneSignal.sendTags(oneSignalTags);
 
     console.log(transformedData, 'transformed');
@@ -395,7 +397,7 @@ export const AuthenticationContextProvider = ({children}) => {
       dispatch(serviceActions.setAppStatus({authenticated: false}));
       dispatch(setChangesMade({status: false, loaded: true}));
     };
-    OneSignal.deleteTags(['uid']);
+    OneSignal.deleteTags(['uid', 'email', 'dailyUpdateUid']);
     if (auth().currentUser) {
       let jwtToken = await auth().currentUser.getIdToken();
       auth()

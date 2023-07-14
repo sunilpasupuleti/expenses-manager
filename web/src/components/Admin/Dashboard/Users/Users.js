@@ -135,7 +135,8 @@ export const Users = ({ title }) => {
     onGetUsers(
       (result) => {
         if (result && result.users) {
-          let usersList = _.orderBy(result.users, "displayName", "asc");
+          let usersList = result.users;
+          // let usersList = _.orderBy(result.users, "displayName", "asc");
           setUsers(usersList);
           setOrgUsers(usersList);
         }

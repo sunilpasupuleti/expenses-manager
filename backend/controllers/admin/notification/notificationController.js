@@ -96,24 +96,9 @@ module.exports = {
     }
 
     let collapseId = "daily-update";
-    let filters = [];
-    users.forEach((uid, index) => {
-      if (uid) {
-        let filter = {
-          field: "tag",
-          key: "uid",
-          relation: "=",
-          value: uid,
-        };
-        filters.push(filter);
-        if (users.length !== index + 1 && users[index + 1]) {
-          let filterOperator = {
-            operator: "OR",
-          };
-          filters.push(filterOperator);
-        }
-      }
-    });
+
+    let playerIds = users;
+
     try {
       client
         .createNotification({
@@ -122,6 +107,7 @@ module.exports = {
             en: title,
           },
           priority: 7,
+          include_player_ids: playerIds,
           android_accent_color: "5756d5",
           ios_sound: "notification_primary.wav",
           ios_attachments: {
@@ -136,7 +122,6 @@ module.exports = {
           },
           collapse_id: collapseId,
           buttons: [],
-          filters: filters,
         })
         .then((response) => {
           setTimeout(() => {
@@ -212,7 +197,7 @@ module.exports = {
         uid: 1,
         _id: 1,
       })
-      .sort({ displayName: 1 });
+      .sort({ createdAt: -1 });
     return sendResponse(res, httpCodes.OK, {
       message: "Active users list",
       activeDevices: activeDevices,
