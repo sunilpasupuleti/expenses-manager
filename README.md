@@ -96,6 +96,11 @@ https://play.google.com/store/apps/details?id=com.webwizard.expensesmanager
 
 ## Screenshots
 
+<div style="dispaly:flex;flex-direction : row;">
+  <img src="https://expenses-manager.webwizard.in/graphics/reduced/android/1.png"/>
+  <img src="https://expenses-manager.webwizard.in/graphics/reduced/ios/1.png"/>
+</div>
+
 ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/1.png)
 
 ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/2.png)
