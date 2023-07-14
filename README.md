@@ -96,6 +96,10 @@ https://play.google.com/store/apps/details?id=com.webwizard.expensesmanager
 
 ## Screenshots
 
+|                                     Solarized dark                                      |                                   Solarized Ocean                                   |
+| :-------------------------------------------------------------------------------------: | :---------------------------------------------------------------------------------: |
+| ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/1.png) | ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/ios/1.png) |
+
 ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/1.png)
 
 ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/2.png)
