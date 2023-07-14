@@ -62,6 +62,7 @@ jobs:
           script: |
             source ~/.bashrc
             source ~/.nvm/nvm.sh
+            sudo chown -hR ubuntu:ubuntu expenses-manager/
             npm -g install create-react-app
             rm -rf /var/www/html/expenses-manager
             mkdir /var/www/html/expenses-manager
