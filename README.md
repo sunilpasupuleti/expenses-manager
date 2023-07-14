@@ -98,7 +98,7 @@ https://play.google.com/store/apps/details?id=com.webwizard.expensesmanager
 
 Android  
 :-------------------------:
-![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/1.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/1.png)
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/1.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/2.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/3.png)
 
 ## Installation
 
