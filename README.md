@@ -102,6 +102,12 @@ Android
 ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/4.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/5.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/6.png)
 ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/7.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/8.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/9.png)
 
+IOS  
+:-------------------------:
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/ios/1.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/ios/2.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/ios/3.png)
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/ios/4.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/ios/5.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/ios/6.png)
+![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/ios/7.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/ios/8.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/ios/9.png)
+
 ## Installation
 
 \*\* You must have a google developer account to run this project.
