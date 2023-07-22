@@ -3,7 +3,7 @@ import {Button, Card, Divider, RadioButton, Switch} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Text} from '../../../../components/typography/text.component';
 import React from 'react';
-import {Platform, TouchableOpacity, View} from 'react-native';
+import {Platform, ScrollView, TouchableOpacity, View} from 'react-native';
 import {useTheme} from 'styled-components/native';
 import {useTheme as rnpUseTheme} from 'react-native-paper';
 
@@ -13,7 +13,6 @@ import {useContext} from 'react';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import _ from 'lodash';
 import {useEffect} from 'react';
-import DropDownPicker from 'react-native-dropdown-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
 import {
@@ -23,7 +22,8 @@ import {
 import {useDispatch} from 'react-redux';
 import {notificationActions} from '../../../../store/notification-slice';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
-import {MD3DarkTheme} from 'react-native-paper';
+import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
+import {MultipleSelectList} from 'react-native-dropdown-select-list';
 
 const onSetFromDate = () => {
   let date = new Date();
@@ -39,7 +39,6 @@ export const SheetExport = ({navigation, route}) => {
   const [categoryType, setCategoryType] = useState(null);
   const dispatch = useDispatch();
   const [categories, setCategories] = useState(null);
-  const [openDropdownPicker, setOpenDropdownPicker] = useState(false);
   const [dateFilter, setDateFilter] = useState(false);
 
   const [showPicker, setShowPicker] = useState({
@@ -51,16 +50,17 @@ export const SheetExport = ({navigation, route}) => {
   const [toDate, setToDate] = useState(new Date());
 
   const [items, setItems] = useState([]);
-  const [itemsColors, setItemColors] = useState([]);
 
   const {
     categories: allCategories,
     onExportDataToExcel,
     onExportDataToPdf,
   } = useContext(SheetsContext);
+
+  const {userAdditionalDetails} = useContext(AuthenticationContext);
+
   const theme = useTheme();
 
-  const rnpTheme = rnpUseTheme();
   const onCompleteExporting = () => {
     navigation.goBack();
   };
@@ -72,7 +72,6 @@ export const SheetExport = ({navigation, route}) => {
     setToDate(new Date());
     setCategoryType(null);
     setType(null);
-    setOpenDropdownPicker(false);
   };
 
   useEffect(() => {
@@ -82,8 +81,8 @@ export const SheetExport = ({navigation, route}) => {
       let colors = [];
       cat.forEach(item => {
         let obj = {
-          label: _.capitalize(item.name),
-          value: item.id,
+          value: _.capitalize(item.name),
+          key: item.id,
         };
         values.push(obj);
         let categoryObj = cat.filter(c => c.id === item.id)[0];
@@ -94,7 +93,6 @@ export const SheetExport = ({navigation, route}) => {
         }
       });
       setItems(values);
-      setItemColors(colors);
       setCategories([]);
     }
   }, [categoryType]);
@@ -298,9 +296,28 @@ export const SheetExport = ({navigation, route}) => {
     }
   }, [route.params]);
 
+  const returnDefaultOptions = () => {
+    let finalCategories = [];
+
+    if (categories) {
+      categories.forEach(c => {
+        let categoryFound = items.find(i => i.key === c);
+        if (categoryFound) {
+          finalCategories.push(categoryFound);
+        }
+      });
+    }
+    return finalCategories;
+  };
+
   return (
     <SafeArea mdBackground={true}>
-      <View style={{flex: 1, justifyContent: 'center'}}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          justifyContent: 'center',
+          marginTop: 50,
+        }}>
         <Card>
           <Card.Content>
             <RadioButton.Group
@@ -353,34 +370,24 @@ export const SheetExport = ({navigation, route}) => {
             {categoryType && (
               <>
                 <Spacer size={'large'} />
-                <DropDownPicker
+
+                <MultipleSelectList
+                  setSelected={val => setCategories(val)}
+                  data={items}
+                  label="Categories"
                   placeholder="Select categories (optional)"
-                  style={{
-                    borderWidth: 0.2,
-                    backgroundColor: rnpTheme.colors.background,
-                  }}
-                  open={openDropdownPicker}
-                  value={categories}
-                  items={items}
-                  setOpen={setOpenDropdownPicker}
-                  setValue={setCategories}
-                  setItems={setItems}
-                  multiple={true}
-                  mode="BADGE"
-                  textStyle={{
+                  notFoundText="No Categories Found"
+                  checkBoxStyles={{borderColor: theme.colors.brand.primary}}
+                  labelStyles={{color: theme.colors.text.primary}}
+                  dropdownTextStyles={{color: theme.colors.text.primary}}
+                  badgeStyles={{
+                    backgroundColor: theme.colors.brand.primary,
                     color: theme.colors.text.primary,
                   }}
-                  stickyHeader
-                  badgeDotColors={itemsColors}
-                  dropDownDirection="TOP"
-                  listParentContainerStyle={{
-                    backgroundColor: rnpTheme.colors.background,
+                  inputStyles={{
+                    color: theme.colors.text.primary,
                   }}
-                  dropDownContainerStyle={{
-                    backgroundColor: 'whitesmoke',
-                    borderWidth: 0.2,
-                    overflow: 'scroll',
-                  }}
+                  searchPlaceholder="Search Category"
                 />
               </>
             )}
@@ -618,7 +625,7 @@ export const SheetExport = ({navigation, route}) => {
             </Button>
           </Card.Actions>
         </Card>
-      </View>
+      </ScrollView>
     </SafeArea>
   );
 };

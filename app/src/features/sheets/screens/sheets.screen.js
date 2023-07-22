@@ -20,7 +20,7 @@ import {SheetsContext} from '../../../services/sheets/sheets.context';
 
 export const SheetsScreen = ({navigation}) => {
   const theme = useTheme();
-  const {sheets, onGoogleCloudVision} = useContext(SheetsContext);
+  const {sheets} = useContext(SheetsContext);
   const [searchKeyword, setSearchKeyword] = useState('');
 
   return (

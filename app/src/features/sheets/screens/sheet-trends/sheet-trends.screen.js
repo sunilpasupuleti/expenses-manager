@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useRef, useState} from 'react';
 import {useTheme} from 'styled-components/native';
 import _, {keys} from 'lodash';
 import {Dimensions, ScrollView, TouchableOpacity} from 'react-native';
@@ -22,8 +22,10 @@ import {
   StatsTitle,
   ToolTip,
 } from '../../components/sheet-stats/sheet-stats.styles';
+import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
 export const SheetTrendsScreen = ({navigation, route}) => {
   const theme = useTheme();
+  const {userAdditionalDetails} = useContext(AuthenticationContext);
 
   const chartConfig = {
     backgroundGradientFromOpacity: 0,

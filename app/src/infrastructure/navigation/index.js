@@ -6,7 +6,7 @@ import {AccountNavigator} from './account.navigator';
 import {AppNavigator} from './app.navigator';
 import {Loader} from '../../components/utility/Loader';
 import {useEffect} from 'react';
-import {navigationRef} from './rootnavigation';
+import {navigate, navigationRef} from './rootnavigation';
 import {useDispatch, useSelector} from 'react-redux';
 import {AppLockScreen} from '../../features/applock/screens/applock.screen';
 import {
@@ -21,6 +21,7 @@ import {
 } from 'react-native-paper';
 import merge from 'deepmerge';
 import {useColorScheme} from 'react-native';
+import {OnBoarding} from '../../features/onboarding/screens/onboarding.screen';
 
 export const Navigation = () => {
   const {enabled: isAppLockEnabled, appAuthStatus} = useSelector(
@@ -29,7 +30,6 @@ export const Navigation = () => {
 
   const appStatus = useSelector(state => state.service.appStatus);
   const appTheme = useSelector(state => state.service.theme);
-
   const {LightTheme, DarkTheme} = adaptNavigationTheme({
     reactNavigationLight: NavigationDefaultTheme,
     reactNavigationDark: NavigationDarkTheme,
@@ -53,7 +53,9 @@ export const Navigation = () => {
             ? CombinedLightTheme
             : CombinedDarkTheme
         }>
-        {isAppLockEnabled && !appAuthStatus ? (
+        {!appStatus.onBoarded ? (
+          <OnBoarding navigation={navigationRef} navigate={navigate} />
+        ) : isAppLockEnabled && !appAuthStatus ? (
           <AppLockScreen purpose={'secureapp'} />
         ) : appStatus.authenticated ? (
           <>

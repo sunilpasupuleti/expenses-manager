@@ -9,14 +9,22 @@ import {SettingsNavigator} from './settings.navigator';
 import {SheetsNavigator} from './sheets.navigator';
 import {AppLockScreen} from '../../features/applock/screens/applock.screen';
 import {ProfileContextProvider} from '../../services/profile/profile.context';
+import {SmsTransactions} from '../../components/utility/SmsTransactions';
+import {useTheme} from 'react-native-paper';
+import {SelectBaseCurrency} from '../../components/utility/SelectBaseCurrency';
 const Stack = createStackNavigator();
 
 export const AppNavigator = () => {
+  const theme = useTheme();
   return (
     <>
       <SheetsContextProvider>
         <SyncContextProvider>
           <ProfileContextProvider>
+            <SmsTransactions />
+
+            <SelectBaseCurrency />
+
             <Stack.Navigator
               screenOptions={{
                 headerShown: false,

@@ -77,6 +77,11 @@ module.exports = {
       timeZone: 1,
       dailyReminder: 1,
       dailyBackup: 1,
+      autoFetchTransactions: 1,
+      platform: 1,
+      model: 1,
+      brand: 1,
+      baseCurrency: 1,
     };
     Users.findOne({
       uid: user.uid,

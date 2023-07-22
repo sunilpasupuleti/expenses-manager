@@ -1,5 +1,5 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {Image, Keyboard, Platform, View} from 'react-native';
+import {Image, Keyboard, Platform, Pressable, View} from 'react-native';
 import {Button} from 'react-native-paper';
 import {useTheme} from 'styled-components/native';
 import {Spacer} from '../../../components/spacer/spacer.component';
@@ -11,21 +11,32 @@ import {
   AccountContainer,
   Hyperlink,
   LoginInput,
-  OtpStripInput,
-  OtpStrips,
 } from '../components/account.styles';
+import * as Animatable from 'react-native-animatable';
+import {
+  OTPContainer,
+  OTPinputContainer,
+  SplitBoxText,
+  SplitBoxes,
+  SplitBoxesFocused,
+  SplitOTPBoxesContainer,
+  TextInputHidden,
+} from '../components/phone-login.styles';
+import SmsListener from 'react-native-android-sms-listener';
 
 export const PhoneLoginScreen = ({navigation, route}) => {
   const [phone, setPhone] = useState({value: '91', error: false});
-  const [otp, setOtp] = useState({value: '------', error: false});
+  const [otp, setOtp] = useState({value: '', error: false, focused: false});
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
   const [mode, setMode] = useState('phone');
-
+  const maximumOtpLength = 6;
   const [confirmCode, setConfirmCode] = useState(null);
+  const [isPinReady, setIsPinReady] = useState(false);
+  const boxArray = new Array(maximumOtpLength).fill(0);
 
-  const otpInputsRef = useRef([]);
+  const otpInputRef = useRef();
 
   const theme = useTheme();
 
@@ -34,7 +45,7 @@ export const PhoneLoginScreen = ({navigation, route}) => {
   );
 
   const onResetAllValues = () => {
-    setOtp({value: '------', error: false});
+    setOtp({value: '', error: false});
     setError(null);
     setShowLoader(false);
   };
@@ -47,24 +58,10 @@ export const PhoneLoginScreen = ({navigation, route}) => {
     setMode(mode);
   };
 
-  useEffect(() => {
-    if (otp.value) {
-      setError(null);
-    }
-  }, [otp.value]);
-
-  useEffect(() => {
-    let showPhoneError = false;
-    if (phone.value === '') {
-      showPhoneError = true;
-    }
-    setPhone(p => ({...p, error: showPhoneError}));
-  }, [phone.value]);
-
   const onVerifyOtp = async () => {
     setError(null);
     setSuccess(null);
-    if (!otp.value || otp.value.length < 6 || otp.value.includes('-')) {
+    if (!otp.value || otp.value.length < 6) {
       return;
     }
     setShowLoader(true);
@@ -88,42 +85,26 @@ export const PhoneLoginScreen = ({navigation, route}) => {
       });
   };
 
-  function replaceAt(value, index, replacement) {
-    return (
-      value.substring(0, index) +
-      replacement +
-      value.substring(index + replacement.length)
-    );
-  }
-
   const onChangeOtpValue = (v, i) => {
-    let replaceValue = v;
-    if (replaceValue) {
-      if (otpInputsRef.current[i + 1]) otpInputsRef.current[i + 1].focus();
-    }
-    if (!replaceValue) {
-      if (otpInputsRef.current[i - 1]) otpInputsRef.current[i - 1].focus();
-      replaceValue = '-';
-    }
-    let otpValue = otp.value;
-    let value = replaceAt(otpValue, i, replaceValue);
-
-    setOtp(p => ({...p, value: value}));
+    setOtp(p => ({
+      ...p,
+      value: v.trim(),
+    }));
+    otpInputRef.current.focus();
   };
 
-  const onPressBackOtpValue = (key, i) => {
-    if (key === 'Backspace') {
-      let valueAtIndex = otp.value.at(i);
-      if (valueAtIndex === '-') {
-        if (otpInputsRef.current[i - 1]) otpInputsRef.current[i - 1].focus();
-      }
-    }
-    if (key !== 'Backspace' && key) {
-      let valueAtIndex = otp.value.at(i);
-      if (valueAtIndex) {
-        if (otpInputsRef.current[i + 1]) otpInputsRef.current[i + 1].focus();
-      }
-    }
+  const handleOnBlur = () => {
+    setOtp(p => ({
+      ...p,
+      focused: false,
+    }));
+  };
+
+  const handleOnFocus = () => {
+    setOtp(p => ({
+      ...p,
+      focused: true,
+    }));
   };
 
   const onClickSubmit = async (resend = false) => {
@@ -150,7 +131,6 @@ export const PhoneLoginScreen = ({navigation, route}) => {
         onChangeMode('otp');
         setSuccess(result);
         setConfirmCode(result.result);
-        otpInputsRef.current[0]?.focus();
       }
     }
     setShowLoader(false);
@@ -158,6 +138,71 @@ export const PhoneLoginScreen = ({navigation, route}) => {
       setError(result);
     }
   };
+
+  const boxDigit = (_, index) => {
+    const emptyInput = '';
+    let otpValue = otp.value[index];
+    const digit = otpValue || emptyInput;
+    const isCurrentValue = index === otp.value.length;
+    const isLastValue = index === maximumOtpLength - 1;
+    const isOtpComplete = otp.value.length === maximumOtpLength;
+
+    const isValueFocused = isCurrentValue || (isLastValue && isOtpComplete);
+    const StyledSplitBoxes =
+      (otp.focused && isValueFocused) || isPinReady
+        ? SplitBoxesFocused
+        : SplitBoxes;
+
+    return (
+      <StyledSplitBoxes key={index}>
+        <SplitBoxText>{digit}</SplitBoxText>
+      </StyledSplitBoxes>
+    );
+  };
+
+  useEffect(() => {
+    if (otp.value) {
+      setError(null);
+    }
+    if (otp.value.length === maximumOtpLength) {
+      setIsPinReady(true);
+      Keyboard.dismiss();
+    }
+
+    return () => {
+      setIsPinReady(false);
+    };
+  }, [otp.value]);
+
+  useEffect(() => {
+    let showPhoneError = false;
+    if (phone.value === '') {
+      showPhoneError = true;
+    }
+    setPhone(p => ({...p, error: showPhoneError}));
+  }, [phone.value]);
+
+  useEffect(() => {
+    let smsSubscription = null;
+    if (Platform.OS === 'android') {
+      // auto verifying otp
+      smsSubscription = SmsListener.addListener(message => {
+        if (message && message.body) {
+          let fetchedOtp = /\d{6}/g.exec(message.body);
+          if (fetchedOtp && fetchedOtp[0]) {
+            setOtp(p => ({
+              ...p,
+              value: fetchedOtp[0],
+            }));
+          }
+        }
+      });
+    }
+    return () => {
+      smsSubscription && smsSubscription.remove();
+    };
+  }, []);
+
   return (
     <SafeArea>
       <View
@@ -165,16 +210,23 @@ export const PhoneLoginScreen = ({navigation, route}) => {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Image
+        <Animatable.Image
+          animation={'slideInRight'}
           style={{
-            width: 160,
-            height: 160,
+            width: 100,
+            height: 100,
             borderRadius: 100,
-            borderColor: '#ddd',
-            borderWidth: 1,
+            marginBottom: 30,
+            marginTop: 30,
           }}
-          source={require('../../../../assets/login-screen.png')}
+          source={require('../../../../assets/wallet.jpeg')}
         />
+        <Text
+          fontfamily="bodyBold"
+          color={theme.colors.text.primary}
+          fontsize="25px">
+          Expenses Manager
+        </Text>
       </View>
 
       <Text
@@ -184,6 +236,7 @@ export const PhoneLoginScreen = ({navigation, route}) => {
         fontsize="25px">
         Expenses manager
       </Text>
+
       {mode === 'phone' && (
         <AccountContainer>
           {error && (
@@ -253,31 +306,30 @@ export const PhoneLoginScreen = ({navigation, route}) => {
           {success && success.message && (
             <SuccessMessage fontsize="15px">{success.message}</SuccessMessage>
           )}
+          <Spacer size="medium" />
           {/* <Hyperlink onPress={() => onClickSubmit(true)}>
             Otp not received? Resend Otp
           </Hyperlink> */}
 
-          <OtpStrips>
-            {[...Array(6)].map((x, i) => {
-              return (
-                <OtpStripInput
-                  key={i}
-                  autoComplete="sms-otp"
-                  textContentType="oneTimeCode"
-                  selectionColor={theme.colors.brand.primary}
-                  value={
-                    otp.value?.charAt(i) === '-' ? '' : otp.value.charAt(i)
-                  }
-                  onChangeText={n => {
-                    onChangeOtpValue(n.trim(), i);
-                  }}
-                  onKeyPress={n => onPressBackOtpValue(n.nativeEvent.key, i)}
-                  ref={el => (otpInputsRef.current[i] = el)}
-                />
-              );
-            })}
-          </OtpStrips>
-
+          <OTPContainer onPress={Keyboard.dismiss}>
+            <OTPinputContainer>
+              <SplitOTPBoxesContainer>
+                {boxArray.map(boxDigit)}
+              </SplitOTPBoxesContainer>
+              <TextInputHidden
+                value={otp.value}
+                onChangeText={onChangeOtpValue}
+                maxLength={maximumOtpLength}
+                ref={otpInputRef}
+                keyboardType="numeric"
+                autoFocus
+                textContentType="oneTimeCode"
+                autoComplete="one-time-code"
+                onBlur={handleOnBlur}
+                onFocus={handleOnFocus}
+              />
+            </OTPinputContainer>
+          </OTPContainer>
           <Spacer size={'xlarge'} />
 
           <AccountContainer>

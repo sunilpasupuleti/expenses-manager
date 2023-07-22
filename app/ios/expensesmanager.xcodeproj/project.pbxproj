@@ -53,6 +53,7 @@
 		D668738D2A40B7AF000E22A1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D668738C2A40B7AF000E22A1 /* GoogleService-Info.plist */; };
 		D6C6D9212A59ADEF00BAC333 /* notification_primary.wav in Resources */ = {isa = PBXBuildFile; fileRef = D6C6D9202A59ADEF00BAC333 /* notification_primary.wav */; };
 		D6C6D9232A59BBF900BAC333 /* notification_secondary.wav in Resources */ = {isa = PBXBuildFile; fileRef = D6C6D9222A59BBF900BAC333 /* notification_secondary.wav */; };
+		D6C7D42C2A62FFC400F10475 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6C7D42B2A62FFC400F10475 /* File.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -109,6 +110,7 @@
 		D61867B92A598A0C0059C9A3 /* OneSignalNotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = OneSignalNotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		D61867BB2A598A0C0059C9A3 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
 		D61867BD2A598A0C0059C9A3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D62050CF2A62EEBD00E98BD2 /* expensesmanager-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "expensesmanager-Bridging-Header.h"; sourceTree = "<group>"; };
 		D630F25A2A36EC6C008B81E1 /* RNReactNativeHapticFeedback.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RNReactNativeHapticFeedback.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D630F2672A36EEEC008B81E1 /* RNReactNativeHapticFeedback.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RNReactNativeHapticFeedback.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D667166A2A38778800F60FBE /* Montserrat_500Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Montserrat_500Medium.ttf; path = "../../assets/allfonts with vector icons also/Montserrat_500Medium.ttf"; sourceTree = "<group>"; };
@@ -148,6 +150,7 @@
 		D6C6D91F2A598B7D00BAC333 /* OneSignalNotificationServiceExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OneSignalNotificationServiceExtension.entitlements; sourceTree = "<group>"; };
 		D6C6D9202A59ADEF00BAC333 /* notification_primary.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = notification_primary.wav; path = ../assets/notification_primary.wav; sourceTree = "<group>"; };
 		D6C6D9222A59BBF900BAC333 /* notification_secondary.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = notification_secondary.wav; path = ../assets/notification_secondary.wav; sourceTree = "<group>"; };
+		D6C7D42B2A62FFC400F10475 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -234,6 +237,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				D6C7D42B2A62FFC400F10475 /* File.swift */,
 				D6C6D9222A59BBF900BAC333 /* notification_secondary.wav */,
 				D6C6D9202A59ADEF00BAC333 /* notification_primary.wav */,
 				D668738C2A40B7AF000E22A1 /* GoogleService-Info.plist */,
@@ -245,6 +249,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				D62050CF2A62EEBD00E98BD2 /* expensesmanager-Bridging-Header.h */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -404,7 +409,7 @@
 						TestTargetID = 13B07F861A680F5B00A75B9A;
 					};
 					13B07F861A680F5B00A75B9A = {
-						LastSwiftMigration = 1120;
+						LastSwiftMigration = 1430;
 					};
 					D61867B82A598A0C0059C9A3 = {
 						CreatedOnToolsVersion = 14.3.1;
@@ -691,6 +696,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */,
+				D6C7D42C2A62FFC400F10475 /* File.swift in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -723,6 +729,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 5B7EB9410499542E8C5724F5 /* Pods-expensesmanager-expensesmanagerTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -750,6 +757,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 89C6BE57DB24E9ADA2F236DE /* Pods-expensesmanager-expensesmanagerTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = expensesmanagerTests/Info.plist;
@@ -794,6 +802,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.webwizard.expensesmanager;
 				PRODUCT_NAME = expensesmanager;
+				SWIFT_OBJC_BRIDGING_HEADER = "expensesmanager-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -823,6 +832,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.webwizard.expensesmanager;
 				PRODUCT_NAME = expensesmanager;
+				SWIFT_OBJC_BRIDGING_HEADER = "expensesmanager-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};

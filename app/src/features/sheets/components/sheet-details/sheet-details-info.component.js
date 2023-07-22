@@ -31,6 +31,7 @@ import {
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {useDispatch} from 'react-redux';
 import {notificationActions} from '../../../../store/notification-slice';
+import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
 moment.suppressDeprecationWarnings = true;
 
 export const SheetDetailsInfo = ({
@@ -47,6 +48,7 @@ export const SheetDetailsInfo = ({
     categories,
     onChangeSheetType,
   } = useContext(SheetsContext);
+  const {userAdditionalDetails} = useContext(AuthenticationContext);
 
   const dispatch = useDispatch();
 

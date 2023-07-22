@@ -119,5 +119,17 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<!-- show user icloud container folder -->
+	<key>NSUbiquitousContainers</key>
+    <dict>
+        <key>[THIS_IS_CONTAINER_ID_YOU_CHECKED_ABOVE]</key>
+        <dict>
+            <key>NSUbiquitousContainerIsDocumentScopePublic</key>
+            <true/>
+            <key>NSUbiquitousContainerName</key>
+            <string>[THIS_IS_THE_NAME_SHOWED_IN_ICLOUD_DRIVE]</string>
+        </dict>
+    </dict>
+
 </dict>
 </plist>

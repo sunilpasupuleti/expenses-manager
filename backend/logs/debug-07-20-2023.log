@@ -1,0 +1,22 @@
+7/20/2023, 8:17:56 PM [info]  Message :  server started on port number 3000 }
+7/20/2023, 8:17:57 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/20/2023, 8:19:19 PM [info]  Message :  Daily Backup disabled for - vx16QZaiJgci3iwUBIpsO62ArIO2 
+7/20/2023, 8:19:19 PM [info]  Message :  -----------------------------------
+7/20/2023, 8:19:32 PM [info]  Message :  Enabling daily backup for Sunil Kumar at 0:1
+7/20/2023, 8:19:32 PM [info]  Message :  -----------------------------------
+7/20/2023, 8:19:36 PM [info]  Message :  server started on port number 3000 }
+7/20/2023, 8:19:38 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+7/20/2023, 8:35:24 PM [info]  Message :  ---------------------
+7/20/2023, 10:28:02 PM [info]  Message :  Enabling daily reminder for +919885560882 at time - 07:48 - Asia/Kolkata
+7/20/2023, 10:28:02 PM [info]  Message :  Enabling daily backup for +919885560882 at 0:1 - Asia/Kolkata
+7/20/2023, 10:28:02 PM [info]  Message :  -----------------------------------
+7/20/2023, 10:34:42 PM [info]  Message :  Destroying daily backup hQ3DMmqzuHRX6hQatJ9tQjIpal73
+7/20/2023, 10:34:42 PM [info]  Message :  Destroying daily reminder hQ3DMmqzuHRX6hQatJ9tQjIpal73
+7/20/2023, 10:34:42 PM [info]  Message :  ---------------------
+7/20/2023, 11:18:53 PM [info]  Message :  Enabling daily reminder for sridevi pasupuleti at time - 05:26 - Asia/Kolkata
+7/20/2023, 11:18:53 PM [info]  Message :  Enabling daily backup for sridevi pasupuleti at 0:1 - Asia/Kolkata
+7/20/2023, 11:18:53 PM [info]  Message :  -----------------------------------
+7/21/2023, 12:04:03 AM [info]  Message :  sending daily backup notification to  - sridevi pasupuleti
+7/21/2023, 12:04:03 AM [info]  Message :  {"id":"3129696e-74af-46db-b41b-04d1009fa9fc","external_id":null}
+7/21/2023, 12:04:04 AM [info]  Message :  Daily Backup created successfully
+7/21/2023, 12:04:05 AM [info]  Message :  {"id":"51344d27-7e77-42de-ada9-f3d3e41ef587","external_id":null} BACKUP SUCCESS

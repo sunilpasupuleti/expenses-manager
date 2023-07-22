@@ -23,6 +23,7 @@ import {SheetsContext} from '../../../../services/sheets/sheets.context';
 
 import {SheetDetailsInfo} from '../sheet-details/sheet-details-info.component';
 import {SheetExport} from '../sheet-export/sheet-export.component';
+import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
 
 export const SheetStatsDetailsScreen = ({navigation, route}) => {
   const [sheet, setSheet] = useState(null);
@@ -32,6 +33,7 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
   const [groupedSheetDetails, setGroupedSheetDetails] = useState(null);
   const {onExportDataToExcel} = useContext(SheetsContext);
   const theme = useTheme();
+  const {userAdditionalDetails} = useContext(AuthenticationContext);
 
   useEffect(() => {
     let {sheet: ps, sheetDetails: psd, category: pc} = route.params;

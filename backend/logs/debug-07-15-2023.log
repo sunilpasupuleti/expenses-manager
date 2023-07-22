@@ -1,0 +1,22 @@
+7/15/2023, 8:00:46 PM [info]  Message :  server started on port number 3000 }
+7/15/2023, 8:00:47 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+7/16/2023, 12:15:41 AM [info]  Message :  ---------------------
+7/16/2023, 12:16:28 AM [info]  Message :  Enabling daily backup for sunil.pandvd41@gmail.com at 0:1 - Asia/Kolkata
+7/16/2023, 12:16:28 AM [info]  Message :  -----------------------------------
+7/16/2023, 12:21:36 AM [info]  Message :  Destroying daily backup tLet7AuUa0MSXEjy2O5XM9hGHQ73
+7/16/2023, 12:21:36 AM [info]  Message :  ---------------------
+7/16/2023, 5:05:02 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 13:00 - Asia/Kolkata
+7/16/2023, 5:05:02 AM [info]  Message :  Enabling daily backup for Sunil Kumar at 0:1 - Asia/Kolkata
+7/16/2023, 5:05:02 AM [info]  Message :  -----------------------------------
+7/16/2023, 10:59:23 AM [info]  Message :  canceling the previous daily reminder notification
+7/16/2023, 10:59:23 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 13:00 - Asia/Kolkata
+7/16/2023, 10:59:23 AM [info]  Message :  canceling the previous backup notification
+7/16/2023, 10:59:23 AM [info]  Message :  Enabling daily backup for Sunil Kumar at 0:1 - Asia/Kolkata
+7/16/2023, 10:59:23 AM [info]  Message :  -----------------------------------
+7/16/2023, 11:40:21 AM [info]  Message :  canceling the previous daily reminder notification
+7/16/2023, 11:40:21 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 13:00 - Asia/Kolkata
+7/16/2023, 11:40:21 AM [info]  Message :  canceling the previous backup notification
+7/16/2023, 11:40:21 AM [info]  Message :  Enabling daily backup for Sunil Kumar at 0:1 - Asia/Kolkata
+7/16/2023, 11:40:21 AM [info]  Message :  -----------------------------------
+7/16/2023, 1:00:00 PM [info]  Message :  sending daily reminder notification to  - Sunil Kumar
+7/16/2023, 1:00:01 PM [info]  Message :  {"id":"6dbeb4fb-9ec0-41f2-82ea-c3a567aa1927","external_id":null}

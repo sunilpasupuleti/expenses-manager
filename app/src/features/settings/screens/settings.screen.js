@@ -44,6 +44,10 @@ import {applockActions} from '../../../store/applock-slice';
 import {View} from 'react-native';
 import remoteConfig from '@react-native-firebase/remote-config';
 import {Button} from 'react-native-paper';
+import Share from 'react-native-share';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {GetCurrencySymbol} from '../../../components/symbol.currency';
+import Clipboard from '@react-native-community/clipboard';
 
 export const SettingsScreen = ({navigation}) => {
   const {onLogout, userData, userAdditionalDetails} = useContext(
@@ -56,6 +60,10 @@ export const SettingsScreen = ({navigation}) => {
     .getValue('ACCOUNT_DELETION_URL')
     .asString();
 
+  const APP_STORE_URL = remoteConfig().getValue('APP_STORE_URL').asString();
+
+  const PLAY_STORE_URL = remoteConfig().getValue('PLAY_STORE_URL').asString();
+
   const isAppLockEnabled = useSelector(state => state.applock.enabled);
 
   const [isDailyBackUpEnabled, setIsDailyBackUpEnabled] = useState(
@@ -63,6 +71,13 @@ export const SettingsScreen = ({navigation}) => {
       ? userAdditionalDetails.dailyBackup
       : null,
   );
+
+  const [isAutoFetchTransactionsEnabled, setIsAutoFetchTransactionsEnabled] =
+    useState(
+      userAdditionalDetails?.autoFetchTransactions
+        ? userAdditionalDetails.autoFetchTransactions
+        : null,
+    );
 
   let date = new Date();
   if (userAdditionalDetails?.dailyReminder?.enabled) {
@@ -88,12 +103,17 @@ export const SettingsScreen = ({navigation}) => {
     onExportAllDataToPdf,
     onUpdateDailyReminder,
     onUpdateDailyBackup,
+    onUpdateAutoFetchTransactions,
+    setBaseCurrency,
   } = useContext(SheetsContext);
+
   const changesMade = useSelector(state => state.service.changesMade.status);
 
   const [profilePictureLoading, setProfilePictureLoading] = useState(false);
   const dispatch = useDispatch();
   const theme = useTheme();
+
+  const [reloadImageKey, setReloadImageKey] = useState('rendomid');
 
   useEffect(() => {
     navigation.setOptions({
@@ -110,6 +130,12 @@ export const SettingsScreen = ({navigation}) => {
       headerLeft: () => null,
     });
   }, []);
+
+  useEffect(() => {
+    if (userData) {
+      setReloadImageKey(new Date());
+    }
+  }, [userData]);
 
   const onSetScreenLock = async () => {
     if (isAppLockEnabled) {
@@ -144,6 +170,20 @@ export const SettingsScreen = ({navigation}) => {
       Alert.alert(
         userData.uid,
         `This is the secrey key of your account in order to contact with admin in case of any issues with your account. Please, do Not share this ID with anyone.`,
+        [
+          {
+            text: 'OK',
+            style: 'cancel',
+          },
+
+          {
+            text: 'COPY TO CLOPBOARD',
+            style: 'cancel',
+            onPress: () => {
+              Clipboard.setString(userData.uid);
+            },
+          },
+        ],
       );
     }
   };
@@ -172,6 +212,56 @@ export const SettingsScreen = ({navigation}) => {
     });
   };
 
+  const onClickChangeBaseCurrency = () => {
+    setBaseCurrency({
+      dialog: true,
+      currency: userAdditionalDetails.baseCurrency,
+    });
+  };
+
+  const onShareApp = async () => {
+    let url = Platform.OS === 'ios' ? APP_STORE_URL : PLAY_STORE_URL;
+    Share.open({
+      title: 'Expenses Manager by Webwizard',
+      message:
+        'Take control of your budget! Install Expenses Manager today for easy tracking of your income and expenses ',
+      url: url,
+    }).catch(err => {
+      console.log(err, 'error while sharing the app ');
+    });
+  };
+
+  const onReviewApp = async () => {
+    const openStore = () => {
+      if (Platform.OS !== 'ios') {
+        Linking.openURL(PLAY_STORE_URL)
+          .then(() => {
+            AsyncStorage.setItem(`@expenses-manager-review`, 'reviewed');
+          })
+          .catch(err => Alert.alert('Please check for Google Play Store'));
+      } else {
+        Linking.openURL(APP_STORE_URL)
+          .then(() => {
+            AsyncStorage.removeItem(`@expenses-manager-first-launch-date`);
+          })
+          .catch(err => Alert.alert('Please check for the App Store'));
+      }
+    };
+    Alert.alert(
+      'Rate us ⭐️',
+      'Are you enjoying Expenses Manager? Would you like to share your review with us? This will help and motivate us a lot.',
+      [
+        {
+          text: 'No Thanks!',
+          onPress: () => console.log('No Thanks Pressed'),
+          style: 'cancel',
+        },
+        {text: 'Sure', onPress: openStore},
+      ],
+      {cancelable: false},
+    );
+  };
+
   return (
     <SafeArea>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -194,9 +284,7 @@ export const SettingsScreen = ({navigation}) => {
                             uri: userData.photoURL.startsWith(
                               `public/users/${userData.uid}`,
                             )
-                              ? `${BACKEND_URL}/${
-                                  userData.photoURL
-                                }?time=${new Date()}`
+                              ? `${BACKEND_URL}/${userData.photoURL}?time=${reloadImageKey}`
                               : userData.photoURL,
                           }}
                         />
@@ -298,6 +386,7 @@ export const SettingsScreen = ({navigation}) => {
                       }}
                     />
                   </Setting>
+
                   {isDailyReminderEnabled.enabled && (
                     <Spacer size={'large'}>
                       <FlexRow justifyContent="space-between">
@@ -480,6 +569,37 @@ export const SettingsScreen = ({navigation}) => {
                 </Setting>
               </SettingsCardContent>
 
+              <SettingsCardContent onPress={onClickChangeBaseCurrency}>
+                <Setting justifyContent="space-between">
+                  <FlexRow>
+                    <SettingIconWrapper color={theme.colors.brand.secondary}>
+                      <MaterialCommunityIcons
+                        name="cash"
+                        size={20}
+                        color="#fefefe"
+                      />
+                    </SettingIconWrapper>
+
+                    <SettingTitle>Change Base Currency</SettingTitle>
+                  </FlexRow>
+
+                  <Spacer position={'right'}>
+                    <SettingTitle
+                      style={{fontWeight: 'bold'}}
+                      color={theme.colors.brand.primary}>
+                      {userAdditionalDetails &&
+                      userAdditionalDetails.baseCurrency
+                        ? `${
+                            userAdditionalDetails.baseCurrency
+                          } (${GetCurrencySymbol(
+                            userAdditionalDetails.baseCurrency,
+                          )})`
+                        : '-'}
+                    </SettingTitle>
+                  </Spacer>
+                </Setting>
+              </SettingsCardContent>
+
               <SettingsCardContent onPress={onFetchExchangeRates}>
                 <Setting justifyContent="space-between">
                   <FlexRow>
@@ -531,20 +651,7 @@ export const SettingsScreen = ({navigation}) => {
                   </FlexRow>
                 </Setting>
               </SettingsCardContent>
-            </SettingsCard>
-          </Spacer>
 
-          {/* another card for json imports */}
-          <Spacer size={'large'}>
-            <SettingsCard>
-              <Spacer size={'large'}>
-                <SettingHint marginLeft="10px">
-                  If you have this exported JSON file, you can easily import all
-                  the data from it in the future. You may transfer this file to
-                  a user who is also using this app or use it to read the data
-                  on another device.
-                </SettingHint>
-              </Spacer>
               <SettingsCardContent onPress={onExportData}>
                 <Setting justifyContent="space-between">
                   <FlexRow>
@@ -568,11 +675,92 @@ export const SettingsScreen = ({navigation}) => {
                   </FlexRow>
                 </Setting>
               </SettingsCardContent>
+
+              <Spacer size={'large'}>
+                <SettingHint marginLeft="10px">
+                  You can quickly import all the data from this exported JSON
+                  file in the future if you have it. You can use this file to
+                  read the data on another device or to send it to a user who is
+                  also using this app.
+                </SettingHint>
+              </Spacer>
             </SettingsCard>
           </Spacer>
 
-          {/* another card for logout */}
           <Spacer size={'xlarge'}>
+            <SettingsCard>
+              <SettingsCardContent onPress={onRevealSecretKey}>
+                <Setting justifyContent="space-between">
+                  <FlexRow>
+                    <SettingIconWrapper color="#F47C7C">
+                      <Ionicons name="ios-key-outline" size={20} color="#fff" />
+                    </SettingIconWrapper>
+
+                    <SettingTitle>Reveal your account key</SettingTitle>
+                  </FlexRow>
+                </Setting>
+              </SettingsCardContent>
+
+              <SettingsCardContent onPress={onShareApp}>
+                <Setting justifyContent="space-between">
+                  <FlexRow>
+                    <SettingIconWrapper color={theme.colors.brand.primary}>
+                      <Ionicons
+                        name="share-social-outline"
+                        size={20}
+                        color="#fff"
+                      />
+                    </SettingIconWrapper>
+
+                    <SettingTitle>Share the App</SettingTitle>
+                  </FlexRow>
+                </Setting>
+              </SettingsCardContent>
+
+              <SettingsCardContent onPress={onReviewApp}>
+                <Setting justifyContent="space-between">
+                  <FlexRow>
+                    <SettingIconWrapper color={'gold'}>
+                      <MaterialCommunityIcons
+                        name="star-check"
+                        size={20}
+                        color="#fff"
+                      />
+                    </SettingIconWrapper>
+
+                    <SettingTitle>Review the App</SettingTitle>
+                  </FlexRow>
+                </Setting>
+              </SettingsCardContent>
+
+              <SettingsCardContent
+                onPress={onClickOpenAccountDeletion}
+                padding={'15px'}>
+                <>
+                  <Setting justifyContent="space-between">
+                    <FlexRow>
+                      <SettingIconWrapper color="red">
+                        <Ionicons name="trash-outline" size={20} color="#fff" />
+                      </SettingIconWrapper>
+
+                      <SettingTitle>Account Deletion</SettingTitle>
+                    </FlexRow>
+                  </Setting>
+
+                  <Spacer size={'large'}>
+                    <SettingHint marginLeft="0px">
+                      Your account and all of your data from our services will
+                      be permanently destroyed. You can submit a request and
+                      check the status to see if your information has been
+                      deleted, but it might take some time.
+                    </SettingHint>
+                  </Spacer>
+                </>
+              </SettingsCardContent>
+            </SettingsCard>
+          </Spacer>
+
+          <Spacer size={'large'}>
             <SettingsCard>
               <SettingsCardContent>
                 <Setting justifyContent="space-between">
@@ -596,17 +784,50 @@ export const SettingsScreen = ({navigation}) => {
                 </Setting>
               </SettingsCardContent>
 
-              <SettingsCardContent onPress={onRevealSecretKey}>
-                <Setting justifyContent="space-between">
-                  <FlexRow>
-                    <SettingIconWrapper color="#F47C7C">
-                      <Ionicons name="ios-key-outline" size={20} color="#fff" />
-                    </SettingIconWrapper>
+              {Platform.OS === 'android' && (
+                <SettingsCardContent>
+                  <>
+                    <Setting justifyContent="space-between">
+                      <FlexRow>
+                        <SettingIconWrapper color="#489456">
+                          <MaterialCommunityIcons
+                            name="message"
+                            size={20}
+                            color="#fff"
+                          />
+                        </SettingIconWrapper>
 
-                    <SettingTitle>Reveal your account key</SettingTitle>
-                  </FlexRow>
-                </Setting>
-              </SettingsCardContent>
+                        <SettingTitle>Auto-Fetch Transactions</SettingTitle>
+                      </FlexRow>
+
+                      <ToggleSwitch
+                        style={toggleSwithStyles}
+                        value={isAutoFetchTransactionsEnabled}
+                        onValueChange={() => {
+                          if (isAutoFetchTransactionsEnabled) {
+                            onUpdateAutoFetchTransactions(false, () =>
+                              setIsAutoFetchTransactionsEnabled(false),
+                            );
+                          }
+                          if (!isAutoFetchTransactionsEnabled) {
+                            onUpdateAutoFetchTransactions(true, () => {
+                              setIsAutoFetchTransactionsEnabled(true);
+                            });
+                          }
+                        }}
+                      />
+                    </Setting>
+
+                    <Spacer size={'large'}>
+                      <SettingHint marginLeft="0px">
+                        Transactions will automatically be retrieved from SMS,
+                        and a dialogue box to add or delete them will be
+                        displayed.
+                      </SettingHint>
+                    </Spacer>
+                  </>
+                </SettingsCardContent>
+              )}
 
               <SettingsCardContent
                 onPress={() =>
@@ -628,50 +849,6 @@ export const SettingsScreen = ({navigation}) => {
               <SettingHint>
                 When you sign out, your data will be immediately backed up.
               </SettingHint>
-            </SettingsCard>
-          </Spacer>
-
-          <Spacer size={'large'}>
-            <SettingsCard>
-              <SettingsCardContent
-                onPress={onClickOpenAccountDeletion}
-                padding={'15px'}>
-                <>
-                  <Setting justifyContent="space-between">
-                    <FlexRow>
-                      <SettingIconWrapper color="red">
-                        <Ionicons name="trash-outline" size={20} color="#fff" />
-                      </SettingIconWrapper>
-
-                      <SettingTitle>Account Deletion</SettingTitle>
-                    </FlexRow>
-                  </Setting>
-
-                  <Spacer size={'large'}>
-                    <SettingHint marginLeft="0px">
-                      All your data from our serves and your account will be
-                      deleted permanently. It may tike some time you can submit
-                      request and track the status.
-                    </SettingHint>
-                  </Spacer>
-                </>
-              </SettingsCardContent>
-            </SettingsCard>
-          </Spacer>
-
-          <Spacer size={'large'}>
-            <SettingsCard>
-              <SettingsCardContent>
-                <SettingHint>
-                  <Text fontsize="12px" color="red">
-                    CURRENCY RATES :
-                  </Text>{' '}
-                  The most recent currency exchange rates are only available
-                  every two hours. The most recent exchange rates will be
-                  displayed if you click the fetch latest button between now and
-                  then.
-                </SettingHint>
-              </SettingsCardContent>
             </SettingsCard>
           </Spacer>
         </MainWrapper>

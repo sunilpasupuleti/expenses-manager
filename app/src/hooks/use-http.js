@@ -1,3 +1,4 @@
+import {useNetInfo} from '@react-native-community/netinfo';
 import axios from 'axios';
 import {useCallback, useEffect, useState} from 'react';
 
@@ -38,6 +39,7 @@ const useHttp = () => {
           setError('Invalid http call request');
           return;
         }
+
         request
           .then(res => {
             setIsLoading(false);
@@ -62,7 +64,8 @@ const useHttp = () => {
             } else if (err.response && err.response.statusText) {
               message = err.response.statusText;
             } else {
-              message = 'Error in http call request';
+              message =
+                'Check your Internet Connection or Error occured in calling the API';
             }
             console.log(err);
             console.log(message || err, 'error in http call');

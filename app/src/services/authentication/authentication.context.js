@@ -13,15 +13,19 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import useHttp from '../../hooks/use-http';
-import {Alert, Platform} from 'react-native';
+import {Alert, Linking, PermissionsAndroid, Platform} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   resetPinCodeInternalStates,
   deleteUserPinCode,
 } from '@haskkor/react-native-pincode';
-import NetInfo, {useNetInfo} from '@react-native-community/netinfo';
+import NetInfo from '@react-native-community/netinfo';
 import appleAuth from '@invertase/react-native-apple-authentication';
 import OneSignal from 'react-native-onesignal';
+import moment from 'moment';
+import InAppReview from 'react-native-in-app-review';
+import {getCurrencies, getLocales, getTimeZone} from 'react-native-localize';
+import DeviceInfo from 'react-native-device-info';
 
 GoogleSignin.configure({
   webClientId: remoteConfig().getValue('WEB_CLIENT_ID').asString(),
@@ -60,11 +64,19 @@ export const AuthenticationContextProvider = ({children}) => {
 
   useEffect(() => {
     console.log(
+      'BACKEND URL -',
       BACKEND_URL,
-      '-',
-      Intl.DateTimeFormat().resolvedOptions().timeZone,
+      '- TIMEZONE -',
+      getTimeZone(),
+      '- CURRENCIES -',
+      getCurrencies(),
+      '- LANGUAGE -',
+      getLocales()[0] && getLocales()[0].languageTag,
     );
-    AsyncStorage.setItem('@expenses-manager-backend-url', BACKEND_URL);
+    checkSmsReadPermission();
+    checkSmsReceivePermission();
+
+    checkFirstLaunch();
 
     const unsubcribe = auth().onAuthStateChanged(async user => {
       if (user && authFlag) {
@@ -99,6 +111,7 @@ export const AuthenticationContextProvider = ({children}) => {
         if (cachedUserData) {
           cachedUserData = JSON.parse(cachedUserData);
           setUserData(cachedUserData);
+          setUserAdditionalDetails(cachedUserData);
         }
       }
     });
@@ -108,6 +121,123 @@ export const AuthenticationContextProvider = ({children}) => {
       netEvent();
     };
   }, []);
+
+  const checkSmsReadPermission = async () => {
+    try {
+      let granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_SMS,
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('READ_SMS permissions granted Check Sms', granted);
+      } else {
+        // Alert.alert(
+        //   'READ_SMS permissions denied',
+        //   'Please enable it from permissions -> SMS > Allow to automatically add transactions by auto-reading SMS, Please restart the app after granting permission.',
+        //   [
+        //     {
+        //       text: 'No Thanks!',
+        //       style: 'cancel',
+        //     },
+
+        //     {
+        //       text: 'Grant Permission',
+        //       onPress: () => {
+        //         Linking.openSettings();
+        //       },
+        //     },
+        //   ],
+        // );
+        console.log('READ_SMS permissions denied');
+      }
+    } catch (err) {
+      Alert.alert(err);
+    }
+  };
+
+  const checkSmsReceivePermission = async () => {
+    try {
+      let granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.RECEIVE_SMS,
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log(
+          'RECEIVE_SMS permissions granted Check Sms Received',
+          granted,
+        );
+      } else {
+        // Alert.alert(
+        //   'RECEIVE_SMS permissions denied',
+        //   'Please enable it from permissions -> SMS > Allow to automatically add transactions by auto-reading SMS, Please restart the app after granting permission.',
+        //   [
+        //     {
+        //       text: 'No Thanks!',
+        //       style: 'cancel',
+        //     },
+
+        //     {
+        //       text: 'Grant Permission',
+        //       onPress: () => {
+        //         Linking.openSettings();
+        //       },
+        //     },
+        //   ],
+        // );
+        console.log('RECEIVE_SMS permissions denied');
+      }
+    } catch (err) {
+      Alert.alert(err);
+    }
+  };
+
+  const checkFirstLaunch = () => {
+    DeviceInfo.getFirstInstallTime()
+      .then(dte => {
+        let firstInstallDate = dte;
+        let dateAfter3Days = moment(firstInstallDate).add(3, 'days');
+        let isAfter3Days = moment().isAfter(dateAfter3Days);
+        if (isAfter3Days) {
+          requestAppReview();
+        }
+      })
+      .catch(err => {
+        console.log(err, 'Error in getting first install time');
+      });
+  };
+
+  const requestAppReview = async () => {
+    let appReviewAvailable = InAppReview.isAvailable();
+    if (appReviewAvailable) {
+      InAppReview.RequestInAppReview()
+        .then(hasFlowFinishedSuccessfully => {
+          // when return true in android it means user finished or close review flow
+          if (Platform.OS === 'ios') {
+            // when return true in ios it means review flow lanuched to user.
+            console.log(
+              'InAppReview in ios has launched successfully',
+              hasFlowFinishedSuccessfully,
+            );
+          } else {
+            console.log('InAppReview in android', hasFlowFinishedSuccessfully);
+          }
+
+          if (hasFlowFinishedSuccessfully) {
+            // again set the variable to current Date
+            AsyncStorage.setItem('@expenses-manager-review', 'reviewed');
+
+            // do something for ios
+            // do something for android
+          }
+        })
+        .catch(err => {
+          console.log(error, 'Error while in app review');
+        });
+    } else {
+      Alert.alert(
+        'Does not support',
+        'In App Review not supported by this device',
+      );
+    }
+  };
 
   const onGoogleAuthentication = async () => {
     dispatch(loaderActions.showLoader({backdrop: true}));
@@ -324,7 +454,7 @@ export const AuthenticationContextProvider = ({children}) => {
         console.log(err);
       });
     let user = data.user;
-    let timeZone = await Intl.DateTimeFormat().resolvedOptions().timeZone;
+    let timeZone = await getTimeZone();
     let transformedData = {
       displayName: user.displayName,
       email: user.email,
@@ -337,6 +467,8 @@ export const AuthenticationContextProvider = ({children}) => {
       timeZone: timeZone,
       lastLogin: new Date(),
       platform: Platform.OS,
+      model: DeviceInfo.getModel(),
+      brand: DeviceInfo.getBrand(),
     };
     let oneSignalTags = {
       uid: user.uid,
@@ -390,6 +522,7 @@ export const AuthenticationContextProvider = ({children}) => {
       await resetPinCodeInternalStates();
       await AsyncStorage.removeItem('@expenses-manager-user');
       await AsyncStorage.removeItem('@expenses-manager-logged');
+      await AsyncStorage.removeItem('@expenses-manager-removed-transactions');
       authFlag = true;
       setUserData(null);
       setUserAdditionalDetails(null);

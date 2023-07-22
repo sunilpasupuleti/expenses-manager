@@ -44,16 +44,16 @@ module.exports = {
           en: body,
         },
         collapse_id: collapseId,
-        buttons: [
-          {
-            id: "daily_reminder_yes",
-            text: "Do it now",
-          },
-          {
-            id: "no",
-            text: "Later",
-          },
-        ],
+        // buttons: [
+        //   {
+        //     id: "daily_reminder_yes",
+        //     text: "Do it now",
+        //   },
+        //   {
+        //     id: "no",
+        //     text: "Later",
+        //   },
+        // ],
         filters: [
           {
             field: "tag",

@@ -36,6 +36,7 @@ import {CategoryColor} from '../../../categories/components/categories.styles';
 import _ from 'lodash';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {DashboardAddButton, SheetDetailsAddIcon} from './sheet-details.styles';
+import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
 
 export const SheetDetailsDashboard = ({navigation, route}) => {
   const theme = useTheme();
@@ -45,6 +46,8 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
   const [activeType, setActiveType] = useState('income');
   const [groupedDetails, setGroupedDetails] = useState(null);
   const [sortedByPercentages, setSortedByPercentages] = useState(null);
+
+  const {userAdditionalDetails} = useContext(AuthenticationContext);
 
   const getTotalIncome = () => {
     let sheetDetails = sheet.details;

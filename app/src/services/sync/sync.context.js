@@ -12,6 +12,16 @@ import {SheetsContext} from '../sheets/sheets.context';
 import useHttp from '../../hooks/use-http';
 import auth from '@react-native-firebase/auth';
 import remoteConfig from '@react-native-firebase/remote-config';
+import {
+  defaultICloudContainerPath,
+  isICloudAvailable,
+  readFile,
+  readDir,
+  writeFile,
+  unlink,
+} from 'react-native-cloud-store';
+import moment from 'moment';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 export const SyncContext = createContext({
   backUpData: () => null,
@@ -19,6 +29,10 @@ export const SyncContext = createContext({
   backUpAndRestore: () => null,
   onGetRestoreDates: () => null,
   backUpTempData: () => null,
+  onBackupToiCloud: () => null,
+  onRestoreFromiCloud: () => null,
+  onGetRestoresFromiCloud: successCallBack => null,
+  onDeleteBackupFromiCloud: () => null,
 });
 
 export const SyncContextProvider = ({children}) => {
@@ -31,6 +45,7 @@ export const SyncContextProvider = ({children}) => {
   const appState = useSelector(state => state.service.appState);
 
   let {sendRequest} = useHttp();
+  const netInfo = useNetInfo();
 
   useEffect(() => {
     if (userData) {
@@ -243,6 +258,187 @@ export const SyncContextProvider = ({children}) => {
     });
   };
 
+  const onBackupToiCloud = async () => {
+    if (!expensesData) {
+      dispatch(
+        notificationActions.showToast({
+          status: 'error',
+          message: 'There is no data to create back up.',
+        }),
+      );
+      return;
+    }
+
+    let data = {
+      ...expensesData,
+      categories: categories,
+    };
+
+    dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'backup'}));
+
+    try {
+      if ((await isICloudAvailable()) && defaultICloudContainerPath) {
+        const fileName = `transactions-${moment()}.json`;
+        let path = `${defaultICloudContainerPath}/Documents/${fileName}`;
+        await writeFile(path, JSON.stringify(data))
+          .then(() => {
+            dispatch(loaderActions.hideLoader());
+            dispatch(
+              notificationActions.showToast({
+                status: 'success',
+                message: 'Your data backed up safely to iCloud.',
+              }),
+            );
+
+            console.log('Successfully backed up data to iCloud');
+          })
+          .catch(err => {
+            console.log(err, 'Error occured while backing into iCloud');
+            throw err.message;
+          });
+      } else {
+        throw 'Error occured while backing up to iCloud';
+      }
+    } catch (e) {
+      console.log(e, 'Error in syncing to iCloud');
+      dispatch(loaderActions.hideLoader());
+      dispatch(
+        notificationActions.showToast({
+          status: 'error',
+          message: JSON.stringify(e),
+        }),
+      );
+    }
+  };
+
+  const onRestoreFromiCloud = async fileName => {
+    try {
+      dispatch(
+        loaderActions.showLoader({backdrop: true, loaderType: 'backup'}),
+      );
+
+      if ((await isICloudAvailable()) && defaultICloudContainerPath) {
+        await readFile(fileName)
+          .then(content => {
+            let data = JSON.parse(content);
+            if (data.sheets && data.categories) {
+              dispatch(loaderActions.hideLoader());
+
+              onSaveExpensesData(data).then(() => {
+                dispatch(setChangesMade({status: true})); // set changes made to true so that backup occurs only if some changes are made
+                dispatch(
+                  notificationActions.showToast({
+                    status: 'success',
+                    message: 'Data has been restored successfully from iCloud.',
+                  }),
+                );
+              });
+            } else {
+              dispatch(
+                notificationActions.showToast({
+                  status: 'error',
+                  message: 'Empty file or corrupted data file from iCloud.',
+                }),
+              );
+            }
+          })
+          .catch(err => {
+            console.log(err, 'Error occured while restoring from  iCloud');
+            throw err.message;
+          });
+      } else {
+        throw 'Error occured while restoring data from iCloud';
+      }
+    } catch (e) {
+      console.log(e, 'Error in restoring from iCloud');
+      dispatch(loaderActions.hideLoader());
+      dispatch(
+        notificationActions.showToast({
+          status: 'error',
+          message: JSON.stringify(e),
+        }),
+      );
+    }
+  };
+
+  const onDeleteBackupFromiCloud = async fileName => {
+    try {
+      dispatch(
+        loaderActions.showLoader({backdrop: true, loaderType: 'backup'}),
+      );
+
+      if ((await isICloudAvailable()) && defaultICloudContainerPath) {
+        await unlink(fileName)
+          .then(() => {
+            dispatch(loaderActions.hideLoader());
+            dispatch(
+              notificationActions.showToast({
+                status: 'success',
+                message: 'Backup file deleted successfully from iCloud.',
+              }),
+            );
+          })
+          .catch(err => {
+            console.log(err, 'Error occured while restoring from  iCloud');
+            throw err.message;
+          });
+      } else {
+        throw 'Error occured while deleting data from iCloud';
+      }
+    } catch (e) {
+      console.log(e, 'Error in deleting from iCloud');
+      dispatch(loaderActions.hideLoader());
+      dispatch(
+        notificationActions.showToast({
+          status: 'error',
+          message: JSON.stringify(e),
+        }),
+      );
+    }
+  };
+
+  const onGetRestoresFromiCloud = async (successCallBack = () => {}) => {
+    try {
+      dispatch(
+        loaderActions.showLoader({backdrop: true, loaderType: 'backup'}),
+      );
+      if (
+        (await isICloudAvailable()) &&
+        defaultICloudContainerPath + '/Documents'
+      ) {
+        await readDir(defaultICloudContainerPath + '/Documents')
+          .then(files => {
+            if (!files || files.length === 0) {
+              dispatch(
+                notificationActions.showToast({
+                  status: 'info',
+                  message: 'There are no files to show from iCloud',
+                }),
+              );
+            } else {
+              successCallBack(files.reverse());
+            }
+
+            dispatch(loaderActions.hideLoader());
+          })
+          .catch(e => {
+            throw e;
+          });
+      } else {
+        throw 'Error occured while reading files from iCloud ';
+      }
+    } catch (e) {
+      console.log(e, 'Error in reading files from iCloud');
+      dispatch(loaderActions.hideLoader());
+      dispatch(
+        notificationActions.showToast({
+          status: 'error',
+          message: JSON.stringify(e),
+        }),
+      );
+    }
+  };
+
   return (
     <SyncContext.Provider
       value={{
@@ -251,6 +447,10 @@ export const SyncContextProvider = ({children}) => {
         restoreData,
         backUpAndRestore,
         onGetRestoreDates,
+        onBackupToiCloud,
+        onGetRestoresFromiCloud,
+        onRestoreFromiCloud,
+        onDeleteBackupFromiCloud,
       }}>
       {children}
     </SyncContext.Provider>

@@ -21,6 +21,8 @@ import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
 import {Text} from '../../../../components/typography/text.component';
 import {Spacer} from '../../../../components/spacer/spacer.component';
+import {getCurrencies} from 'react-native-localize';
+import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
 
 export const AddSheetScreen = ({navigation, route}) => {
   const theme = useTheme();
@@ -28,10 +30,20 @@ export const AddSheetScreen = ({navigation, route}) => {
   const [sheetName, setSheetName] = useState(null);
   const [editMode, setEditMode] = useState(false);
   const [editSheet, setEditSheet] = useState(null);
-  const [selectedCurrency, setSelectedCurrency] = useState('INR');
+
   const [showTotalBalance, setShowTotalBalance] = useState(true);
 
+  const {userAdditionalDetails} = useContext(AuthenticationContext);
+
   const {onSaveSheet, onEditSheet} = useContext(SheetsContext);
+
+  const [selectedCurrency, setSelectedCurrency] = useState(
+    userAdditionalDetails && userAdditionalDetails.baseCurrency
+      ? userAdditionalDetails.baseCurrency
+      : getCurrencies()[0]
+      ? getCurrencies()[0]
+      : 'INR',
+  );
 
   useEffect(() => {
     navigation.setOptions({

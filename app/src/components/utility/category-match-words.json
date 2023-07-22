@@ -1013,16 +1013,6 @@
   ],
   "home": [
     {
-      "word": "amount",
-      "score": 4375800,
-      "tags": ["n"]
-    },
-    {
-      "word": "balance",
-      "score": 4375800,
-      "tags": ["n"]
-    },
-    {
       "word": "mak",
       "score": 12800,
       "tags": [

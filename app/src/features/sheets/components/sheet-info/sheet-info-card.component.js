@@ -19,8 +19,10 @@ import {
   GetCurrencySymbol,
 } from '../../../../components/symbol.currency';
 import {Spacer} from '../../../../components/spacer/spacer.component';
+import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
 export const SheetInfoCard = ({sheet = {}, currentLength, index}) => {
-  const {sheets} = useContext(SheetsContext);
+  const {userAdditionalDetails} = useContext(AuthenticationContext);
+
   return (
     <>
       <FlexRow justifyContent="space-between">

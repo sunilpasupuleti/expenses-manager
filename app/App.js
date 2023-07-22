@@ -38,6 +38,7 @@ import VersionCheck from 'react-native-version-check';
 import './src/components/notifcications/one-signal';
 import OneSignal from 'react-native-onesignal';
 import remoteConfig from '@react-native-firebase/remote-config';
+import {GetCurrencySymbol} from './src/components/symbol.currency';
 
 moment.suppressDeprecationWarnings = true;
 if (Platform.OS === 'android') {
@@ -74,7 +75,7 @@ const App = () => {
     if (Platform.OS === 'ios') {
       iosStateListener = AppState.addEventListener('change', nextAppState => {
         if (nextAppState === 'active') {
-          // checkAppUpdateNeeded();
+          checkAppUpdateNeeded();
         }
         dispatch(setAppState({state: nextAppState}));
       });

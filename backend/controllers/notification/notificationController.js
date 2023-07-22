@@ -154,6 +154,7 @@ module.exports = {
     const { fcmToken, enabled, timeZone } = req.body;
 
     let { uid } = req.user;
+
     if (!uid || typeof enabled !== "boolean" || !fcmToken || !timeZone) {
       return sendResponse(res, httpCodes.BAD_REQUEST, {
         message: "all fields are required",

@@ -5,10 +5,12 @@ import {loaderActions} from './loader-slice';
 import remoteConfig from '@react-native-firebase/remote-config';
 import {
   ACCOUNT_DELETION_URL,
+  APP_STORE_URL,
   BACKEND_URL,
   GOOGLE_API_KEY,
   GOOGLE_CLOUD_VISION_API_URL,
   ONESIGNAL_APP_ID,
+  PLAY_STORE_URL,
   WEB_CLIENT_ID,
 } from '../../config';
 import auth from '@react-native-firebase/auth';
@@ -116,6 +118,17 @@ export const setTheme = createAsyncThunk(
   },
 );
 
+export const setOnBoarding = createAsyncThunk(
+  'service/setOnBoarding',
+  async status => {
+    await AsyncStorage.setItem(
+      '@expenses-manager-onboarded',
+      JSON.stringify(status),
+    );
+    return status;
+  },
+);
+
 export const setAppState = createAsyncThunk(
   'service/setAppState',
   async ({state}) => {
@@ -126,32 +139,45 @@ export const setAppState = createAsyncThunk(
 export const loadAppStatus = createAsyncThunk(
   'service/loadAppStatus',
   async () => {
-    await remoteConfig().setDefaults({
-      BACKEND_URL: BACKEND_URL,
-      WEB_CLIENT_ID: WEB_CLIENT_ID,
-      GOOGLE_API_KEY: GOOGLE_API_KEY,
-      GOOGLE_CLOUD_VISION_API_URL: GOOGLE_CLOUD_VISION_API_URL,
-      ONE_SIGNAL_APP_ID: ONESIGNAL_APP_ID,
-      ACCOUNT_DELETION_URL: ACCOUNT_DELETION_URL,
-    });
+    await remoteConfig().fetch(30 * 60);
+    await remoteConfig()
+      .setDefaults({
+        BACKEND_URL: BACKEND_URL,
+        WEB_CLIENT_ID: WEB_CLIENT_ID,
+        GOOGLE_API_KEY: GOOGLE_API_KEY,
+        GOOGLE_CLOUD_VISION_API_URL: GOOGLE_CLOUD_VISION_API_URL,
+        ONE_SIGNAL_APP_ID: ONESIGNAL_APP_ID,
+        ACCOUNT_DELETION_URL: ACCOUNT_DELETION_URL,
+        APP_STORE_URL: APP_STORE_URL,
+        PLAY_STORE_URL: PLAY_STORE_URL,
+      })
+      .then(() => {
+        remoteConfig().fetchAndActivate();
+      })
+      .then(fetchedRemotely => {
+        if (fetchedRemotely) {
+          console.log('Configs were retrieved from the backend and activated.');
+        } else {
+          console.log(
+            'No configs were fetched from the backend, and the local configs were already activated',
+          );
+        }
+      });
 
     const logged = await AsyncStorage.getItem(`@expenses-manager-logged`).then(
       d => {
         return JSON.parse(d);
       },
     );
-    let fetchedRemotely = await remoteConfig().fetchAndActivate();
-    // let fetchedRemotely = null;
-    if (fetchedRemotely) {
-      console.log('Configs were retrieved from the backend and activated.');
-    } else {
-      console.log(
-        'No configs were fetched from the backend, and the local configs were already activated',
-      );
-    }
+
+    const onBoarded = JSON.parse(
+      await AsyncStorage.getItem('@expenses-manager-onboarded'),
+    );
+
     let data = {
       hideSplashScreen: true,
       authenticated: false,
+      onBoarded: onBoarded,
     };
     if (logged) data.authenticated = true;
 
@@ -172,6 +198,7 @@ const serviceSlice = createSlice({
     appStatus: {
       hideSplashScreen: false,
       authenticated: false,
+      onBoarded: false,
     },
   },
   reducers: {
@@ -202,6 +229,13 @@ const serviceSlice = createSlice({
 
     builder.addCase(setTheme.fulfilled, (state, action) => {
       state.theme = action.payload;
+    });
+
+    builder.addCase(setOnBoarding.fulfilled, (state, action) => {
+      state.appStatus = {
+        ...state.appStatus,
+        onBoarded: action.payload,
+      };
     });
 
     builder.addCase(setAppState.fulfilled, (state, action) => {

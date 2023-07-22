@@ -83,6 +83,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   const {categories, onSaveSheetDetails, onEditSheetDetails, onSaveCategory} =
     useContext(SheetsContext);
 
+  const {userAdditionalDetails} = useContext(AuthenticationContext);
+
   // inputs states
   const [amount, setAmount] = useState(0);
   const [notes, setNotes] = useState(null);
@@ -206,17 +208,13 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
         setActiveType(sheetDetail.type);
         setDate(new Date(sheetDetail.date));
         let imageUrl = null;
-        console.log(sheetDetail.image);
         if (sheetDetail.image && sheetDetail.image.url) {
-          console.log(userData.uid, sheet.id, sheetDetail.id);
           if (
             sheetDetail.image.url.startsWith(
               `public/users/${userData.uid}/${sheet.id}/${sheetDetail.id}`,
             )
           ) {
             imageUrl = `${BACKEND_URL}/${sheetDetail.image.url}`;
-
-            console.log(imageUrl);
           } else {
             imageUrl = sheetDetail.image.url;
           }
@@ -274,6 +272,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     if (showTime) {
       sheetDetail.time = time.toString();
     }
+
     onSaveSheetDetails(sheet, sheetDetail, updatedSheet => {
       navigation.navigate('SheetDetailsHome', {
         screen: 'Transactions',

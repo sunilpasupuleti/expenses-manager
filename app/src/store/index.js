@@ -3,6 +3,7 @@ import applockSlice from './applock-slice';
 import loaderSlice from './loader-slice';
 import notificationSlice from './notification-slice';
 import serviceSlice from './service-slice';
+import smsTransactionsSlice from './smsTransactions-slice';
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     notification: notificationSlice.reducer,
     service: serviceSlice.reducer,
     applock: applockSlice.reducer,
+    smsTransactions: smsTransactionsSlice.reducer,
   },
 });
 

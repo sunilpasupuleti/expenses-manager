@@ -9,6 +9,7 @@ import {AuthenticationContext} from '../authentication/authentication.context';
 import {notificationActions} from '../../store/notification-slice';
 import {Alert} from 'react-native';
 import {setChangesMade} from '../../store/service-slice';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 export const ProfileContext = createContext({
   onUpdateProfile: (data, successCallBack, errorCallback) => null,
@@ -20,6 +21,7 @@ export const ProfileContextProvider = ({children}) => {
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
   const dispatch = useDispatch();
   const {sendRequest} = useHttp();
+  const netInfo = useNetInfo();
 
   const {userData, onLogout, onGetUserDetails} = useContext(
     AuthenticationContext,

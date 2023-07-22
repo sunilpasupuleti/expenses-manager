@@ -7,7 +7,7 @@ import {notificationActions} from '../../store/notification-slice';
 import {setChangesMade} from '../../store/service-slice';
 import {AuthenticationContext} from '../authentication/authentication.context';
 import {saveCategoryRequest, saveSheetRequest} from './sheets.service';
-import {Alert, PermissionsAndroid, Platform} from 'react-native';
+import {Alert, Linking, PermissionsAndroid, Platform} from 'react-native';
 import Share from 'react-native-share';
 import DocumentPicker from 'react-native-document-picker';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -22,12 +22,18 @@ import {zip} from 'react-native-zip-archive';
 import auth from '@react-native-firebase/auth';
 import messaging from '@react-native-firebase/messaging';
 import remoteConfig from '@react-native-firebase/remote-config';
-
 import {
   GetCurrencyLocalString,
   GetCurrencySymbol,
 } from '../../components/symbol.currency';
 import {useTheme} from 'styled-components/native';
+import SmsAndroid from 'react-native-get-sms-android';
+import {smsTransactionsActions} from '../../store/smsTransactions-slice';
+import {getTimeZone} from 'react-native-localize';
+import {getTransactionInfo} from 'transaction-sms-parser';
+import SmsListener from 'react-native-android-sms-listener';
+import {useNetInfo} from '@react-native-community/netinfo';
+
 const defaultCategories = {
   expense: [
     {
@@ -135,18 +141,35 @@ export const SheetsContext = createContext({
   onGoogleCloudVision: (base64, callback) => null,
   onUpdateDailyReminder: (dailyReminder, callback) => null,
   onUpdateDailyBackup: (enabled, callback) => null,
+  onUpdateAutoFetchTransactions: (enabled, callback) => null,
+  onUpdateBaseCurrency: (currency, callback) => null,
+
+  getMessages: () => {},
+
+  baseCurrency: {},
+  setBaseCurrency: null,
 });
 
 export const SheetsContextProvider = ({children}) => {
   const [sheets, setSheets] = useState([]);
   const [categories, setCategories] = useState(defaultCategories);
   const [expensesData, setExpensesData] = useState(null);
-  const {userData, onSetUserAdditionalDetails} = useContext(
-    AuthenticationContext,
-  );
+
+  const [autoFetchTransactionsOpened, setAutoFetchTransactionsOpened] =
+    useState(false);
+
+  const {userData, onSetUserAdditionalDetails, userAdditionalDetails} =
+    useContext(AuthenticationContext);
   const {sendRequest} = useHttp();
+  const netInfo = useNetInfo();
+
   const dispatch = useDispatch();
   const theme = useTheme();
+
+  const [baseCurrency, setBaseCurrency] = useState({
+    dialog: false,
+    currency: null,
+  });
 
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
 
@@ -161,6 +184,305 @@ export const SheetsContextProvider = ({children}) => {
     }
   }, [userData]);
 
+  useEffect(() => {
+    let smsSubscription;
+    if (userAdditionalDetails) {
+      if (
+        Platform.OS === 'android' &&
+        userAdditionalDetails.autoFetchTransactions &&
+        userAdditionalDetails.baseCurrency &&
+        !autoFetchTransactionsOpened
+      ) {
+        setTimeout(() => {
+          setAutoFetchTransactionsOpened(true);
+          getMessages();
+        }, 1000 * 10);
+      }
+
+      if (
+        Platform.OS === 'android' &&
+        userAdditionalDetails.autoFetchTransactions &&
+        userAdditionalDetails.baseCurrency
+      ) {
+        smsSubscription = SmsListener.addListener(message => {
+          if (message) {
+            getMessageFromListener(message);
+          }
+        });
+      }
+
+      if (!userAdditionalDetails.baseCurrency) {
+        setBaseCurrency({
+          dialog: true,
+          currency: null,
+        });
+      }
+    }
+
+    return () => {
+      smsSubscription && smsSubscription.remove();
+    };
+  }, [userAdditionalDetails]);
+
+  const showAlertStoragePermission = () => {
+    Alert.alert(
+      'Storage permissions Denied!',
+      'Please enable it from permissions -> Storage > Allow to save the files to your device',
+      [
+        {
+          text: 'No Thanks!',
+          style: 'cancel',
+        },
+
+        {
+          text: 'Grant Permission',
+          onPress: () => {
+            Linking.openSettings();
+          },
+        },
+      ],
+    );
+  };
+
+  const getMessageFromListener = async message => {
+    try {
+      let granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_SMS,
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('READ_SMS permissions granted', granted);
+        var todayStartDate = new Date();
+        var todayEndDate = new Date();
+
+        todayStartDate.setHours(0);
+        todayStartDate.setMinutes(0);
+        todayStartDate.setSeconds(0);
+        todayStartDate = Date.parse(todayStartDate.toISOString());
+
+        todayEndDate.setHours(23);
+        todayEndDate.setMinutes(59);
+        todayEndDate.setSeconds(0);
+        todayEndDate = Date.parse(todayEndDate.toISOString());
+
+        // create transactions category
+        let categoryName = 'no category';
+
+        let removedTransactionsData = JSON.parse(
+          await AsyncStorage.getItem('@expenses-manager-removed-transactions'),
+        );
+
+        if (removedTransactionsData && removedTransactionsData.date) {
+          let todayDate = moment().format('DD-MM-YYYY').toString();
+          let date = removedTransactionsData.date;
+          if (todayDate !== date) {
+            await AsyncStorage.removeItem(
+              '@expenses-manager-removed-transactions',
+            );
+          }
+        }
+
+        let removedTransactions =
+          removedTransactionsData && removedTransactionsData.transactions
+            ? removedTransactionsData.transactions
+            : [];
+        let finalMessages = [];
+        let index = 0;
+
+        let transactionInfo = getTransactionInfo(message.body);
+        let amount = transactionInfo.transactionAmount;
+        let body = message.body;
+        let receivedDate = message.timestamp;
+
+        if (amount !== null && amount) {
+          amount = parseFloat(amount);
+          let categoryType =
+            transactionInfo.transactionType === 'debit' ? 'expense' : 'income';
+
+          let selectedCategory = categories[categoryType].find(
+            c => c.name.toLowerCase() === categoryName,
+          );
+
+          let obj = {
+            body: body,
+            date: receivedDate,
+            amount: amount,
+            category: selectedCategory,
+            address: message.address,
+            categoryType: categoryType,
+            _id: message._id,
+            id: index,
+          };
+          finalMessages.push(obj);
+        }
+
+        if (finalMessages && finalMessages.length > 0) {
+          let messagesWithoutRemovedTransactions = [];
+
+          // console.log(finalMessages, removedTransactions);
+          finalMessages.forEach((m, index) => {
+            let alreadyExists = removedTransactions.find(
+              t => t.body === m.body,
+            );
+
+            if (!alreadyExists) {
+              messagesWithoutRemovedTransactions.push(m);
+            }
+          });
+          if (messagesWithoutRemovedTransactions.length > 0) {
+            dispatch(
+              smsTransactionsActions.setTransactions(
+                messagesWithoutRemovedTransactions,
+              ),
+            );
+          }
+        }
+      } else {
+        console.log('READ_SMS permissions denied');
+      }
+    } catch (err) {
+      Alert.alert(err);
+    }
+  };
+
+  const getMessages = async () => {
+    try {
+      let granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_SMS,
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('READ_SMS permissions granted', granted);
+        var todayStartDate = new Date();
+        var todayEndDate = new Date();
+
+        todayStartDate.setHours(0);
+        todayStartDate.setMinutes(0);
+        todayStartDate.setSeconds(0);
+        todayStartDate = Date.parse(todayStartDate.toISOString());
+
+        todayEndDate.setHours(23);
+        todayEndDate.setMinutes(59);
+        todayEndDate.setSeconds(0);
+        todayEndDate = Date.parse(todayEndDate.toISOString());
+
+        // create transactions category
+        let categoryName = 'no category';
+
+        let removedTransactionsData = JSON.parse(
+          await AsyncStorage.getItem('@expenses-manager-removed-transactions'),
+        );
+
+        if (removedTransactionsData && removedTransactionsData.date) {
+          let todayDate = moment().format('DD-MM-YYYY').toString();
+          let date = removedTransactionsData.date;
+          if (todayDate !== date) {
+            await AsyncStorage.removeItem(
+              '@expenses-manager-removed-transactions',
+            );
+          }
+        }
+
+        SmsAndroid.list(
+          JSON.stringify({
+            box: 'inbox',
+            // minDate: todayStartDate,
+            // maxDate: todayEndDate,
+          }),
+          fail => {
+            console.log('failed with error : ' + fail);
+          },
+          (count, smsList) => {
+            var messages = JSON.parse(smsList);
+            let removedTransactions =
+              removedTransactionsData && removedTransactionsData.transactions
+                ? removedTransactionsData.transactions
+                : [];
+            let finalMessages = [];
+            let index = 0;
+            // remove if any duplicates
+            let uniqueMessages = _.uniqBy(messages, m => {
+              return m.body;
+            });
+
+            uniqueMessages.forEach(message => {
+              let transactionInfo = getTransactionInfo(message.body);
+              let amount = transactionInfo.transactionAmount;
+              let body = message.body;
+              let receivedDate = message.date;
+
+              if (amount !== null && amount) {
+                amount = parseFloat(amount);
+                let categoryType =
+                  transactionInfo.transactionType === 'debit'
+                    ? 'expense'
+                    : 'income';
+
+                let selectedCategory = categories[categoryType].find(
+                  c => c.name.toLowerCase() === categoryName,
+                );
+
+                let obj = {
+                  body: body,
+                  date: receivedDate,
+                  amount: amount,
+                  category: selectedCategory,
+                  address: message.address,
+                  categoryType: categoryType,
+                  _id: message._id,
+                  id: index,
+                };
+                index++;
+                finalMessages.push(obj);
+              }
+            });
+
+            if (finalMessages && finalMessages.length > 0) {
+              let messagesWithoutRemovedTransactions = [];
+
+              // console.log(finalMessages, removedTransactions);
+              finalMessages.forEach((m, index) => {
+                let alreadyExists = removedTransactions.find(
+                  t => t.body === m.body,
+                );
+
+                if (!alreadyExists) {
+                  messagesWithoutRemovedTransactions.push(m);
+                }
+              });
+              if (messagesWithoutRemovedTransactions.length > 0) {
+                dispatch(
+                  smsTransactionsActions.setTransactions(
+                    messagesWithoutRemovedTransactions,
+                  ),
+                );
+              }
+            }
+          },
+        );
+      } else {
+        Alert.alert(
+          'READ_SMS permissions denied',
+          'Please enable it from permissions -> SMS > Allow to automatically add transactions by auto-reading SMS, Please restart the app after granting permission.',
+          [
+            {
+              text: 'No Thanks!',
+              style: 'cancel',
+            },
+
+            {
+              text: 'Grant Permission',
+              onPress: () => {
+                Linking.openSettings();
+              },
+            },
+          ],
+        );
+        console.log('READ_SMS permissions denied');
+      }
+    } catch (err) {
+      Alert.alert(err);
+    }
+  };
+
   const onUpdateDailyReminder = async (
     dailyReminder,
     callback = () => null,
@@ -174,7 +496,7 @@ export const SheetsContextProvider = ({children}) => {
         fcmToken = t;
       })
       .catch(err => {});
-    let timeZone = await Intl.DateTimeFormat().resolvedOptions().timeZone;
+    let timeZone = await getTimeZone();
 
     let data = {...dailyReminder, fcmToken: fcmToken, timeZone: timeZone};
     data.time = `${moment(data.time).format('HH')}:${moment(data.time).format(
@@ -235,7 +557,6 @@ export const SheetsContextProvider = ({children}) => {
         fcmToken = t;
       })
       .catch(err => {});
-
     sendRequest(
       {
         type: 'POST',
@@ -243,6 +564,7 @@ export const SheetsContextProvider = ({children}) => {
         data: {
           enabled: enabled,
           fcmToken: fcmToken,
+          timeZone: getTimeZone(),
         },
         headers: {
           authorization: 'Bearer ' + jwtToken,
@@ -269,6 +591,113 @@ export const SheetsContextProvider = ({children}) => {
         },
         errorCallback: err => {
           dispatch(loaderActions.hideLoader());
+          dispatch(
+            notificationActions.showToast({
+              status: 'error',
+              message: err,
+            }),
+          );
+        },
+      },
+    );
+  };
+
+  const onUpdateAutoFetchTransactions = async (
+    enabled,
+    callback = () => null,
+  ) => {
+    dispatch(loaderActions.showLoader({backdrop: true}));
+    let jwtToken = await auth().currentUser.getIdToken();
+    let transformedData = {
+      autoFetchTransactions: enabled,
+    };
+
+    sendRequest(
+      {
+        type: 'POST',
+        url: BACKEND_URL + '/user',
+        data: transformedData,
+        headers: {
+          authorization: 'Bearer ' + jwtToken,
+        },
+      },
+
+      {
+        successCallback: res => {
+          if (enabled && Platform.OS === 'android') {
+            setTimeout(() => {
+              getMessages();
+            }, 1000 * 5);
+          }
+          callback();
+          if (res.user) {
+            onSetUserAdditionalDetails(res.user);
+          } else {
+            onSetUserAdditionalDetails(p => ({
+              ...p,
+              autoFetchTransactions: enabled,
+            }));
+          }
+          dispatch(loaderActions.hideLoader());
+          dispatch(
+            notificationActions.showToast({
+              status: 'success',
+              message: 'Auto Fetch Transactions updated successfully',
+            }),
+          );
+        },
+        errorCallback: err => {
+          dispatch(loaderActions.hideLoader());
+          dispatch(
+            notificationActions.showToast({
+              status: 'error',
+              message: err,
+            }),
+          );
+        },
+      },
+    );
+  };
+
+  const onUpdateBaseCurrency = async (
+    currency,
+    callback = () => null,
+    errorCallback = () => null,
+  ) => {
+    let jwtToken = await auth().currentUser.getIdToken();
+    let transformedData = {
+      baseCurrency: currency,
+    };
+    sendRequest(
+      {
+        type: 'POST',
+        url: BACKEND_URL + '/user',
+        data: transformedData,
+        headers: {
+          authorization: 'Bearer ' + jwtToken,
+        },
+      },
+
+      {
+        successCallback: res => {
+          callback();
+          if (res.user) {
+            onSetUserAdditionalDetails(res.user);
+          } else {
+            onSetUserAdditionalDetails(p => ({
+              ...p,
+              baseCurrency: currency,
+            }));
+          }
+          dispatch(
+            notificationActions.showToast({
+              status: 'success',
+              message: 'Base Currency updated successfully',
+            }),
+          );
+        },
+        errorCallback: err => {
+          errorCallback();
           dispatch(
             notificationActions.showToast({
               status: 'error',
@@ -498,7 +927,6 @@ export const SheetsContextProvider = ({children}) => {
 
           setSheets(sortedSheets);
         }
-
         if (value.categories) {
           setCategories(value.categories);
         }
@@ -511,6 +939,10 @@ export const SheetsContextProvider = ({children}) => {
   };
 
   const onSaveSheet = async (sheet, callback = () => null) => {
+    let showTransactions = false;
+    if (!sheets || sheets.length === 0) {
+      showTransactions = true;
+    }
     saveSheetRequest(sheet, sheets)
       .then(async result => {
         const updatedSheets = [...sheets, sheet];
@@ -522,6 +954,16 @@ export const SheetsContextProvider = ({children}) => {
         onSaveExpensesData(updatedExpensesData).then(() => {
           onSetChangesMade(true); // set changes made to true so that backup occurs only if some changes are made
           callback();
+          // show transaction messages if new sheet added
+          if (
+            showTransactions &&
+            Platform.OS === 'android' &&
+            userAdditionalDetails.autoFetchTransactions
+          ) {
+            setTimeout(() => {
+              getMessages();
+            }, 1000 * 5);
+          }
         });
       })
       .catch(err => {
@@ -604,7 +1046,12 @@ export const SheetsContextProvider = ({children}) => {
           errorCallback: err => {
             console.log('Error in uploading the bill ', err);
             dispatch(loaderActions.hideLoader());
-            Alert.alert('Error in uploading the bill ' + err);
+            dispatch(
+              notificationActions.showToast({
+                message: 'Error in uploading the bill ' + err,
+                status: 'error',
+              }),
+            );
           },
         },
       );
@@ -748,7 +1195,12 @@ export const SheetsContextProvider = ({children}) => {
             errorCallback: err => {
               console.log('Error in uploading the bill ', err);
               dispatch(loaderActions.hideLoader());
-              Alert.alert('Error in uploading the bill ' + err);
+              dispatch(
+                notificationActions.showToast({
+                  message: 'Error in uploading the bill ' + err,
+                  status: 'error',
+                }),
+              );
             },
           },
         );
@@ -1194,7 +1646,7 @@ export const SheetsContextProvider = ({children}) => {
             );
           });
       } else {
-        Alert.alert('Permission denied');
+        showAlertStoragePermission();
       }
     }
   };
@@ -1373,10 +1825,7 @@ export const SheetsContextProvider = ({children}) => {
           });
       } else {
         dispatch(loaderActions.hideLoader());
-
-        Alert.alert(
-          'Permission denied! Please enable permission from app settings',
-        );
+        showAlertStoragePermission();
       }
     }
   };
@@ -1569,7 +2018,6 @@ export const SheetsContextProvider = ({children}) => {
       dispatch(loaderActions.hideLoader());
       return;
     }
-
     if (file.filePath) {
       if (Platform.OS === 'ios') {
         Share.open({
@@ -1588,21 +2036,15 @@ export const SheetsContextProvider = ({children}) => {
         try {
           const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-            {
-              title: 'Storage Permission Required',
-              message: 'App needs access to your storage to download file',
-            },
           );
-
           if (granted === PermissionsAndroid.RESULTS.GRANTED) {
             if (!config || !config.sharing) {
               downloadPdf(file.filePath, callback);
             }
           } else {
             dispatch(loaderActions.hideLoader());
-            Alert.alert(
-              'Storage Permission not granted, please enable in app settings',
-            );
+
+            showAlertStoragePermission();
           }
         } catch (err) {
           dispatch(loaderActions.hideLoader());
@@ -2090,10 +2532,7 @@ export const SheetsContextProvider = ({children}) => {
           });
       } else {
         dispatch(loaderActions.hideLoader());
-
-        Alert.alert(
-          'Permission denied. Please enable permission from the app settings',
-        );
+        showAlertStoragePermission();
       }
     }
   };
@@ -2164,6 +2603,11 @@ export const SheetsContextProvider = ({children}) => {
         onExportAllDataToPdf,
         onUpdateDailyReminder,
         onUpdateDailyBackup,
+        onUpdateAutoFetchTransactions,
+        getMessages,
+        baseCurrency,
+        setBaseCurrency,
+        onUpdateBaseCurrency,
       }}>
       {children}
     </SheetsContext.Provider>
