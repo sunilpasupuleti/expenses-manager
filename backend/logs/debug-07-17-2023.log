@@ -1,7 +1,0 @@
-7/17/2023, 11:08:41 AM [info]  Message :  server started on port number 3000 }
-7/17/2023, 11:08:42 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
-7/17/2023, 12:56:35 PM [info]  Message :  Enabling daily reminder for Mounika Pasupuleti at time - 21:00 - Asia/Kolkata
-7/17/2023, 12:56:36 PM [info]  Message :  Enabling daily backup for Mounika Pasupuleti at 0:1 - Asia/Kolkata
-7/17/2023, 12:56:36 PM [info]  Message :  -----------------------------------
-7/17/2023, 9:00:03 PM [info]  Message :  sending daily reminder notification to  - Mounika Pasupuleti
-7/17/2023, 9:00:04 PM [info]  Message :  {"id":"39029496-7a2b-4d98-978c-3ee7eda308e1","external_id":null}

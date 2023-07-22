@@ -1,9 +1,0 @@
-7/16/2023, 1:58:26 PM [info]  Message :  server started on port number 3000 }
-7/16/2023, 1:58:28 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
-7/16/2023, 2:08:00 PM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 13:00 - Asia/Kolkata
-7/16/2023, 2:08:00 PM [info]  Message :  Enabling daily backup for Sunil Kumar at 0:1 - Asia/Kolkata
-7/16/2023, 2:08:00 PM [info]  Message :  -----------------------------------
-7/17/2023, 12:06:21 AM [info]  Message :  sending daily backup notification to  - Sunil Kumar
-7/17/2023, 12:06:21 AM [info]  Message :  {"id":"69937ec9-f57c-42a8-b3e4-7eb6d9c544ee","external_id":null}
-7/17/2023, 12:23:10 AM [info]  Message :  Daily Backup created successfully
-7/17/2023, 12:23:10 AM [info]  Message :  {"id":"f277b03f-fc0b-4da6-bd2b-9502e83dff5d","external_id":null} BACKUP SUCCESS
