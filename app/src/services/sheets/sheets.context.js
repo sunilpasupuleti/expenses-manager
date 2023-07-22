@@ -292,7 +292,6 @@ export const SheetsContextProvider = ({children}) => {
         let amount = transactionInfo.transactionAmount;
         let body = message.body;
         let receivedDate = message.timestamp;
-
         if (amount !== null && amount) {
           amount = parseFloat(amount);
           let categoryType =
@@ -384,8 +383,8 @@ export const SheetsContextProvider = ({children}) => {
         SmsAndroid.list(
           JSON.stringify({
             box: 'inbox',
-            // minDate: todayStartDate,
-            // maxDate: todayEndDate,
+            minDate: todayStartDate,
+            maxDate: todayEndDate,
           }),
           fail => {
             console.log('failed with error : ' + fail);
@@ -1608,46 +1607,38 @@ export const SheetsContextProvider = ({children}) => {
         });
     }
     if (Platform.OS === 'android') {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        {
-          title: 'Expenses Manager wants to save your transactions file',
-          message: 'Your app needs permission.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
+      // const granted = await PermissionsAndroid.request(
+      //   PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      // );
 
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        var toSaveData = JSON.stringify(data);
-        const dirs = RNFetchBlob.fs.dirs;
-        var path = dirs.DownloadDir + `/transactions-${moment()}.json`;
-
-        RNFetchBlob.fs
-          .writeFile(path, toSaveData)
-          .then(res => {
-            console.log('successfully exported file');
-            dispatch(
-              notificationActions.showToast({
-                status: 'success',
-                message:
-                  'Your file is exported successfully. Please check the downloads folder for the file.',
-              }),
-            );
-          })
-          .catch(err => {
-            console.log(err, 'err in exporting file');
-            dispatch(
-              notificationActions.showToast({
-                status: 'error',
-                message: 'Something error occured while exporting the data',
-              }),
-            );
-          });
-      } else {
-        showAlertStoragePermission();
-      }
+      // if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      var toSaveData = JSON.stringify(data);
+      const dirs = RNFetchBlob.fs.dirs;
+      var path = dirs.DownloadDir + `/transactions-${moment()}.json`;
+      RNFetchBlob.fs
+        .writeFile(path, toSaveData)
+        .then(res => {
+          console.log('successfully exported file');
+          dispatch(
+            notificationActions.showToast({
+              status: 'success',
+              message:
+                'Your file is exported successfully. Please check the downloads folder for the file.',
+            }),
+          );
+        })
+        .catch(err => {
+          console.log(err, 'err in exporting file');
+          dispatch(
+            notificationActions.showToast({
+              status: 'error',
+              message: 'Something error occured while exporting the data',
+            }),
+          );
+        });
+      // } else {
+      //   showAlertStoragePermission();
+      // }
     }
   };
 
@@ -1766,67 +1757,66 @@ export const SheetsContextProvider = ({children}) => {
         });
     }
     if (Platform.OS === 'android') {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        {
-          title: 'Expenses Manager wants to save your transactions file',
-          message: 'Your app needs permission.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
+      // const granted = await PermissionsAndroid.request(
+      //   PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      //   {
+      //     title: 'Expenses Manager wants to save your transactions file',
+      //     message: 'Your app needs permission.',
+      //     buttonNeutral: 'Ask Me Later',
+      //     buttonNegative: 'Cancel',
+      //     buttonPositive: 'OK',
+      //   },
+      // );
 
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        const dirs = RNFetchBlob.fs.dirs;
+      // if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      const dirs = RNFetchBlob.fs.dirs;
 
-        let path;
+      let path;
 
-        path = dirs.DownloadDir + `/transactions-${moment()}.xlsx`;
-        if (config && config.sharing) {
-          path = dirs.CacheDir + `/transactions-${moment()}.xlsx`;
-        }
+      path = dirs.DownloadDir + `/transactions-${moment()}.xlsx`;
+      if (config && config.sharing) {
+        path = dirs.CacheDir + `/transactions-${moment()}.xlsx`;
+      }
 
-        RNFS.writeFile(path, wbout, 'ascii')
-          .then(r => {
-            let finalPath = 'file://' + path;
-            if (config && config.sharing) {
-              Share.open({
-                url: finalPath,
-                subject: 'Transaction file - Excel',
-                title: 'Transactions Excel File',
-              }).catch(err => {
-                console.log(err, 'error while sharing the data - android');
-              });
-            }
+      RNFS.writeFile(path, wbout, 'ascii')
+        .then(r => {
+          let finalPath = 'file://' + path;
+          if (config && config.sharing) {
+            Share.open({
+              url: finalPath,
+              subject: 'Transaction file - Excel',
+              title: 'Transactions Excel File',
+            }).catch(err => {
+              console.log(err, 'error while sharing the data - android');
+            });
+          }
 
-            dispatch(loaderActions.hideLoader());
-            callback();
-            if (!config || !config.sharing) {
-              dispatch(
-                notificationActions.showToast({
-                  status: 'success',
-                  message:
-                    'Your file is exported successfully. Please check the downloads folder for the file.',
-                }),
-              );
-            }
-          })
-          .catch(err => {
-            dispatch(loaderActions.hideLoader());
-
-            console.log(err, 'Error in exporting excel');
+          dispatch(loaderActions.hideLoader());
+          callback();
+          if (!config || !config.sharing) {
             dispatch(
               notificationActions.showToast({
-                status: 'error',
-                message: 'Something error occured while exporting the file.',
+                status: 'success',
+                message:
+                  'Your file is exported successfully. Please check the downloads folder for the file.',
               }),
             );
-          });
-      } else {
-        dispatch(loaderActions.hideLoader());
-        showAlertStoragePermission();
-      }
+          }
+        })
+        .catch(err => {
+          dispatch(loaderActions.hideLoader());
+          console.log(err, 'Error in exporting excel');
+          dispatch(
+            notificationActions.showToast({
+              status: 'error',
+              message: 'Something error occured while exporting the file.',
+            }),
+          );
+        });
+      // } else {
+      //   dispatch(loaderActions.hideLoader());
+      //   showAlertStoragePermission();
+      // }
     }
   };
 
@@ -2034,18 +2024,18 @@ export const SheetsContextProvider = ({children}) => {
         dispatch(loaderActions.hideLoader());
       } else {
         try {
-          const granted = await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-          );
-          if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-            if (!config || !config.sharing) {
-              downloadPdf(file.filePath, callback);
-            }
-          } else {
-            dispatch(loaderActions.hideLoader());
-
-            showAlertStoragePermission();
+          // const granted = await PermissionsAndroid.request(
+          //   PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          // );
+          // if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          if (!config || !config.sharing) {
+            downloadPdf(file.filePath, callback);
           }
+          // } else {
+          //   dispatch(loaderActions.hideLoader());
+
+          //   showAlertStoragePermission();
+          // }
         } catch (err) {
           dispatch(loaderActions.hideLoader());
           console.warn(err, 'error occured storage');
@@ -2492,48 +2482,48 @@ export const SheetsContextProvider = ({children}) => {
         });
     }
     if (Platform.OS === 'android') {
-      const granted = await PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-        {
-          title: 'Expenses Manager wants to save your transactions file',
-          message: 'Your app needs permission.',
-          buttonNeutral: 'Ask Me Later',
-          buttonNegative: 'Cancel',
-          buttonPositive: 'OK',
-        },
-      );
+      // const granted = await PermissionsAndroid.request(
+      //   PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+      //   {
+      //     title: 'Expenses Manager wants to save your transactions file',
+      //     message: 'Your app needs permission.',
+      //     buttonNeutral: 'Ask Me Later',
+      //     buttonNegative: 'Cancel',
+      //     buttonPositive: 'OK',
+      //   },
+      // );
 
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        const dirs = RNFetchBlob.fs.dirs;
+      // if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      const dirs = RNFetchBlob.fs.dirs;
 
-        let path = dirs.DownloadDir + `/transactions-${moment()}.xlsx`;
-        RNFS.writeFile(path, wbout, 'ascii')
-          .then(r => {
-            dispatch(loaderActions.hideLoader());
+      let path = dirs.DownloadDir + `/transactions-${moment()}.xlsx`;
+      RNFS.writeFile(path, wbout, 'ascii')
+        .then(r => {
+          dispatch(loaderActions.hideLoader());
 
-            dispatch(
-              notificationActions.showToast({
-                status: 'success',
-                message:
-                  'Your file is exported successfully. Please check the downloads folder for the file.',
-              }),
-            );
-          })
-          .catch(err => {
-            dispatch(loaderActions.hideLoader());
+          dispatch(
+            notificationActions.showToast({
+              status: 'success',
+              message:
+                'Your file is exported successfully. Please check the downloads folder for the file.',
+            }),
+          );
+        })
+        .catch(err => {
+          dispatch(loaderActions.hideLoader());
 
-            console.log(err, 'Error in exporting excel');
-            dispatch(
-              notificationActions.showToast({
-                status: 'error',
-                message: 'Something error occured while exporting the file.',
-              }),
-            );
-          });
-      } else {
-        dispatch(loaderActions.hideLoader());
-        showAlertStoragePermission();
-      }
+          console.log(err, 'Error in exporting excel');
+          dispatch(
+            notificationActions.showToast({
+              status: 'error',
+              message: 'Something error occured while exporting the file.',
+            }),
+          );
+        });
+      // } else {
+      //   dispatch(loaderActions.hideLoader());
+      //   showAlertStoragePermission();
+      // }
     }
   };
 

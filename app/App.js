@@ -17,6 +17,7 @@ import {
   DeviceEventEmitter,
   Linking,
   LogBox,
+  PermissionsAndroid,
   Platform,
   StatusBar,
   useColorScheme,

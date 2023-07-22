@@ -8,7 +8,13 @@ Expenses Manager has been crafted to keep track of your spending effortlessly, w
 
 ## APK
 
+GOOGLE PLAY STORE
+
 https://play.google.com/store/apps/details?id=com.webwizard.expensesmanager
+
+APP STORE
+
+https://apps.apple.com/in/app/expenses-manager-by-webwizard/id6450874945
 
 ## Screenshots
 
@@ -29,6 +35,10 @@ IOS
 - Data Encryption
 
   Your data is encrypted safely, no one else can read it.
+
+- Automatic add transactions from SMS
+
+  Enable auto-fetch transactions in settings, and watch as the app automatically reads and displays transactional messages from your SMS. Say goodbye to manual input - effortlessly add transactions to your account with just a pop-up! Enjoy seamless financial management like never before!
 
 - Smart Scanning
 
