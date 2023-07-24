@@ -13,27 +13,27 @@ export const Screenshots = (props) => {
   };
 
   let androidImages = [
-    require("../../../assets/screenshots/android/1.png"),
-    require("../../../assets/screenshots/android/2.png"),
-    require("../../../assets/screenshots/android/3.png"),
-    require("../../../assets/screenshots/android/4.png"),
-    require("../../../assets/screenshots/android/5.png"),
-    require("../../../assets/screenshots/android/6.png"),
-    require("../../../assets/screenshots/android/7.png"),
-    require("../../../assets/screenshots/android/8.png"),
-    require("../../../assets/screenshots/android/9.png"),
+    require("../../../assets/webp/screenshots/android/1.webp"),
+    require("../../../assets/webp/screenshots/android/2.webp"),
+    require("../../../assets/webp/screenshots/android/3.webp"),
+    require("../../../assets/webp/screenshots/android/4.webp"),
+    require("../../../assets/webp/screenshots/android/5.webp"),
+    require("../../../assets/webp/screenshots/android/6.webp"),
+    require("../../../assets/webp/screenshots/android/7.webp"),
+    require("../../../assets/webp/screenshots/android/8.webp"),
+    require("../../../assets/webp/screenshots/android/9.webp"),
   ];
 
   let iosImages = [
-    require("../../../assets/screenshots/ios/1.png"),
-    require("../../../assets/screenshots/ios/2.png"),
-    require("../../../assets/screenshots/ios/3.png"),
-    require("../../../assets/screenshots/ios/4.png"),
-    require("../../../assets/screenshots/ios/5.png"),
-    require("../../../assets/screenshots/ios/6.png"),
-    require("../../../assets/screenshots/ios/7.png"),
-    require("../../../assets/screenshots/ios/8.png"),
-    require("../../../assets/screenshots/ios/9.png"),
+    require("../../../assets/webp/screenshots/ios/1.webp"),
+    require("../../../assets/webp/screenshots/ios/2.webp"),
+    require("../../../assets/webp/screenshots/ios/3.webp"),
+    require("../../../assets/webp/screenshots/ios/4.webp"),
+    require("../../../assets/webp/screenshots/ios/5.webp"),
+    require("../../../assets/webp/screenshots/ios/6.webp"),
+    require("../../../assets/webp/screenshots/ios/7.webp"),
+    require("../../../assets/webp/screenshots/ios/8.webp"),
+    require("../../../assets/webp/screenshots/ios/9.webp"),
   ];
 
   return (

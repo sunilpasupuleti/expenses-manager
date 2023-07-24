@@ -9,10 +9,10 @@ export const Download = (props) => {
   return (
     <ScrollElement className={styles.section} id="download" name="download">
       <div className={styles.androidMock}>
-        <img src={require("../../../assets/mocks/android.png")} />
+        <img src={require("../../../assets/webp/mocks/android.webp")} />
       </div>
       <div className={styles.iosMock}>
-        <img src={require("../../../assets/mocks/ios.png")} />
+        <img src={require("../../../assets/webp/mocks/ios.webp")} />
       </div>
 
       <div className={styles.content}>

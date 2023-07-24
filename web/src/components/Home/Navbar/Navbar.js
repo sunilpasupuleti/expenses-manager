@@ -37,7 +37,7 @@ export const Navbar = (props) => {
         <div className={styles.logo}>
           <img
             className={styles.logoImage}
-            src={require("../../../assets/icon.png")}
+            src={require("../../../assets/icon.jpeg")}
             alt="icon"
           />
           <ScrollLink

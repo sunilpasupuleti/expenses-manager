@@ -34,7 +34,7 @@ export const Banner = (props) => {
       </div>
       <div className={styles.right}>
         <div className={styles.mock}>
-          <img src={require("../../../assets/mocks/merged.png")} />
+          <img src={require("../../../assets/webp/mocks/merged.webp")} />
         </div>
       </div>
     </ScrollElement>
