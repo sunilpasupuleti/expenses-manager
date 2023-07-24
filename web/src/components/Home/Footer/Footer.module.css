@@ -1,0 +1,118 @@
+.navbar {
+  bottom: 0;
+  width: 100%;
+  padding: 25px 0px 0px 0px;
+  transition: all 0.3s ease;
+  background-color: #232322;
+  min-height: 100vh;
+}
+
+.content {
+  max-width: 1250px;
+  margin: auto;
+  padding: 0px 30px;
+  display: grid;
+  grid-template-columns: 60% 40%;
+  gap: 2rem;
+}
+
+.titleSection,
+.contactSection {
+  padding-top: 5rem;
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: lighter;
+  color: #fff;
+}
+
+.subtitle {
+  margin-top: 1rem;
+  font-weight: normal;
+  color: #aaa;
+  font-size: 1rem;
+}
+
+.contactSection .title {
+  font-size: 1.5rem;
+  font-weight: lighter;
+  color: #aaa;
+}
+
+.contactSection .subtitle {
+  font-size: 1rem;
+  font-weight: lighter;
+  color: #aaa;
+}
+
+.contactSection .mail {
+  margin-top: 0.5rem;
+}
+
+.contactSection .mail a {
+  color: #fff;
+  transition: all 0.3s ease;
+}
+
+.contactSection .mail a:hover {
+  color: var(--secondary);
+}
+
+.socialButtonsContainer {
+  margin-top: 3rem;
+}
+
+.socialButtonsContainer .title {
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+.socialButtons {
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.socialButtons .button {
+  height: 40px;
+  width: 40px;
+}
+
+.socialButtons .button a {
+  color: #fff;
+  font-size: 2.3rem;
+
+  transition: all 0.3s ease;
+}
+
+.socialButtons .button img {
+  width: 100%;
+  height: 100%;
+}
+
+.copyRightContainer {
+  padding: 5rem 30px;
+  text-align: center;
+  max-width: 1250px;
+  margin: auto;
+}
+
+.copyRightContainer .copyright {
+  color: #aaa;
+  font-weight: lighter;
+  font-size: 0.8rem;
+}
+
+.copyRightContainer .privacyLink {
+  color: #aaa;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 868px) {
+  .content {
+    grid-template-columns: 100%;
+    gap: 0rem;
+  }
+}

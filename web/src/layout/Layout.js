@@ -14,6 +14,7 @@ import { Status } from "../components/AccountDeletion/Status/Status";
 import { AccountDeletion } from "../components/AccountDeletion/AccountDeletion";
 import { AccountDeletion as AdminAccountDeletion } from "../components/Admin/Dashboard/AccountDeletion/AccountDeletion";
 import { Deletion } from "../components/AccountDeletion/Deletion/Deletion";
+import { Home } from "../components/Home/Home";
 
 const Layout = (props) => {
   const SendNotificationsElement = ({ title }) => {
@@ -68,7 +69,7 @@ const Layout = (props) => {
     <SocketContextProvider>
       <AuthenticationContextProvider>
         <Routes>
-          <Route path="/" element={<Admin title="Admin" />} />
+          <Route path="/" element={<Home title="Expenses Manager" />} />
           <Route
             path="/account-deletion"
             element={<AccountDeletionElement title="Account Deletion" />}

@@ -2,7 +2,8 @@
   /* colors */
   --hue-color: 344;
   --primary: #5756d5;
-  --secondary: #607d8b;
+  --secondary: #ac9dd3;
+  --landing: #7b2cbe;
   --title-color: #313b47;
   --text-color: #000;
   --body-color: #fff;
@@ -80,10 +81,15 @@ body {
   overflow-x: hidden;
   position: relative;
 }
+
+body.fixed {
+  height: 100vh;
+  overflow: hidden;
+}
+
 html,
 body {
   scroll-behavior: smooth;
-  width: 100vw;
 }
 
 button {

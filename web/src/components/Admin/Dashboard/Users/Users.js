@@ -177,12 +177,17 @@ export const Users = ({ title }) => {
       let providerIdFound = m.providerId
         ? m.providerId.toLowerCase().includes(value)
         : false;
+      let platformFound = m.platform
+        ? m.platform.toLowerCase().includes(value)
+        : false;
+
       return (
         displayNameFound ||
         emailFound ||
         phoneNumberFound ||
         uidFound ||
-        providerIdFound
+        providerIdFound ||
+        platformFound
       );
     });
     setUsers(filteredData);
@@ -357,7 +362,10 @@ export const Users = ({ title }) => {
                             </Tooltip>
                           </TableCell>
                           <TableCell>
-                            {user.platform ? user.platform.toUpperCase() : "-"}
+                            {user.brand ? user.brand.toUpperCase() : ""} (
+                            {user.platform ? user.platform.toUpperCase() : "-"})
+                            <br />
+                            {user.model ? " -" + user.model.toUpperCase() : ""}
                           </TableCell>
                           <TableCell>
                             {user.phoneNumber ? user.phoneNumber : "-"}

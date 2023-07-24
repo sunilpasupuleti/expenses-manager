@@ -1,0 +1,106 @@
+.section {
+  height: 100vh;
+  background-color: whitesmoke;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+}
+
+.androidMock {
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+  height: 100vh;
+}
+
+.iosMock {
+  position: absolute;
+  left: 0px;
+  bottom: 0px;
+  height: 100vh;
+}
+
+.androidMock img,
+.iosMock img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.title {
+  font-size: 3.5rem;
+  font-weight: 300;
+}
+
+.subtitle {
+  margin-top: 1rem;
+  font-weight: normal;
+  font-size: 1rem;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttons .button {
+  width: 250px;
+}
+
+.buttons .button img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.content {
+  width: 50%;
+}
+
+@media (max-width: 868px) {
+  .content {
+    width: 90%;
+  }
+  .title {
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1rem;
+  }
+
+  .buttons {
+    margin-bottom: 12rem;
+  }
+
+  .androidMock {
+    position: absolute;
+    bottom: 0px;
+    height: 50vh;
+    width: 200px;
+  }
+
+  .iosMock {
+    position: absolute;
+    bottom: 0px;
+    width: 200px;
+    height: 50vh;
+  }
+
+  .androidMock img,
+  .iosMock img {
+    object-fit: contain;
+  }
+}
+
+@media (max-width: 390px) {
+  .iosMock {
+    width: 200px;
+  }
+  .androidMock {
+    width: 200px;
+  }
+}

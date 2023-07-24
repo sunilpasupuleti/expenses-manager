@@ -195,6 +195,7 @@ module.exports = {
         providerId: 1,
         lastLogin: 1,
         uid: 1,
+        platform: 1,
         _id: 1,
       })
       .sort({ createdAt: -1 });

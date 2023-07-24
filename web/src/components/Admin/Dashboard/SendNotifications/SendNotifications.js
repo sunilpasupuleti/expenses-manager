@@ -221,6 +221,7 @@ export const SendNotifications = ({ title }) => {
                 obj.providerId = user?.providerId;
                 obj.uid = user?.uid;
                 obj._id = user?._id;
+                obj.platform = user?.platform;
               }
               structuredDevicesList.push(obj);
             }
@@ -282,12 +283,17 @@ export const SendNotifications = ({ title }) => {
       let providerIdFound = m.providerId
         ? m.providerId.toLowerCase().includes(value)
         : false;
+      let platformFound = m.platform
+        ? m.platform.toLowerCase().includes(value)
+        : false;
+
       return (
         displayNameFound ||
         emailFound ||
         phoneNumberFound ||
         uidFound ||
-        providerIdFound
+        providerIdFound ||
+        platformFound
       );
     });
     setActiveDevices(filteredData);
