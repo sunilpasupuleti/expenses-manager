@@ -25,7 +25,7 @@ const {
 let logsPath = __dirname + "/logs";
 if (!fs.existsSync(logsPath)) {
   fs.mkdirSync(logsPath);
-  fs.writeFileSync(apiLogsPath, "");
+  fs.writeFileSync(logsPath, "");
 }
 
 let apiLogsPath = __dirname + "/logs/api.log";

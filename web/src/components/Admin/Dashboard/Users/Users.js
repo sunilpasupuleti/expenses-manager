@@ -28,12 +28,11 @@ import TablePaginationActions from "@mui/material/TablePagination/TablePaginatio
 import * as AnimationData from "../../../../assets/lottie/no_users.json";
 import { styled } from "styled-components";
 import Lottie from "react-lottie";
-import { useSpring, animated } from "@react-spring/web";
 import { UserContext } from "../../../../services/User/User.context";
 import moment from "moment";
 import { useSelector } from "react-redux";
 import ViewIcon from "@mui/icons-material/RemoveRedEye";
-import ContentPasteIcon from "@mui/icons-material/ContentPaste";
+import NavigationTransition from "../../../../shared/NavigationTransition/NavigationTransition";
 
 const LottieContainer = styled.div`
   height: 300px;
@@ -80,7 +79,7 @@ const DialogProfileImage = styled.img`
   cursor: pointer;
 `;
 
-export const Users = ({ title }) => {
+const Users = ({ title }) => {
   const { onGetUsers } = useContext(UserContext);
   const isLoading = useSelector((state) => state.loader.isLoading);
 
@@ -193,11 +192,6 @@ export const Users = ({ title }) => {
     setUsers(filteredData);
   };
 
-  const containerSprings = useSpring({
-    from: { x: 250 },
-    to: { x: 0 },
-  });
-
   const onCloseDialog = () => {
     setSelectedUser(null);
     setDialog(false);
@@ -239,7 +233,7 @@ export const Users = ({ title }) => {
   };
 
   return isLoading ? null : (
-    <animated.div style={containerSprings}>
+    <NavigationTransition>
       <Card>
         <CardContent>
           <Box>
@@ -363,7 +357,8 @@ export const Users = ({ title }) => {
                           </TableCell>
                           <TableCell>
                             {user.brand ? user.brand.toUpperCase() : ""} (
-                            {user.platform ? user.platform.toUpperCase() : "-"})
+                            {user.platform ? user.platform.toUpperCase() : "-"}
+                            )
                             <br />
                             {user.model ? " -" + user.model.toUpperCase() : ""}
                           </TableCell>
@@ -604,6 +599,8 @@ export const Users = ({ title }) => {
           </DialogContent>
         </Dialog>
       )}
-    </animated.div>
+    </NavigationTransition>
   );
 };
+
+export default Users;

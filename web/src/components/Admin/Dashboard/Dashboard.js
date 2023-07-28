@@ -103,7 +103,7 @@ const HeaderLogo = scStyled.img`
   margin-right : 0.5rem;
 `;
 
-export const Dashboard = ({ title }) => {
+const Dashboard = ({ title }) => {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const { onLogout, userData } = useContext(AuthenticationContext);
@@ -325,3 +325,4 @@ export const Dashboard = ({ title }) => {
     </Box>
   ) : null;
 };
+export default Dashboard;

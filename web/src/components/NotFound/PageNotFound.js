@@ -15,7 +15,7 @@ const LottieContainer = styled.div`
   }
 `;
 
-export const PageNotFound = ({ title }) => {
+const PageNotFound = ({ title }) => {
   useEffect(() => {
     document.title = title;
   }, []);
@@ -32,3 +32,5 @@ export const PageNotFound = ({ title }) => {
     </LottieContainer>
   );
 };
+
+export default PageNotFound;

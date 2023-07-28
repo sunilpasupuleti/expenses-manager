@@ -152,7 +152,7 @@ export const loadAppStatus = createAsyncThunk(
         PLAY_STORE_URL: PLAY_STORE_URL,
       })
       .then(() => {
-        remoteConfig().fetchAndActivate();
+        // remoteConfig().fetchAndActivate();
       })
       .then(fetchedRemotely => {
         if (fetchedRemotely) {

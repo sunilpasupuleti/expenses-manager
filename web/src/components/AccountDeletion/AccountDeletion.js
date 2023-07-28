@@ -33,7 +33,7 @@ const MainContainer = styled.div`
   }
 `;
 
-export const AccountDeletion = ({ title }) => {
+const AccountDeletion = ({ title }) => {
   const logoImageSprings = useSpring({
     from: { x: -250 },
     to: { x: 0 },
@@ -58,3 +58,5 @@ export const AccountDeletion = ({ title }) => {
     </Grid>
   );
 };
+
+export default AccountDeletion;

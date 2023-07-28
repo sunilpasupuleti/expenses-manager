@@ -41,6 +41,8 @@ import { AccountDeletionContext } from "../../../../services/AccountDeletion/Acc
 import { SocketContext } from "../../../../services/Socket/Socket.context";
 import { LoadingButton } from "@mui/lab";
 import { hideLoader, showLoader } from "../../../../shared/Loader/Loader";
+import navigationTransition from "../../../../shared/NavigationTransition/NavigationTransition";
+import NavigationTransition from "../../../../shared/NavigationTransition/NavigationTransition";
 
 const LottieContainer = styled.div`
   height: 300px;
@@ -87,7 +89,7 @@ const DialogProfileImage = styled.img`
   cursor: pointer;
 `;
 
-export const AccountDeletion = ({ title }) => {
+const AccountDeletion = ({ title }) => {
   const { onGetRequests, onDeleteAccount, onRejectRequest } = useContext(
     AccountDeletionContext
   );
@@ -290,7 +292,7 @@ export const AccountDeletion = ({ title }) => {
   }, [onFetchEvent, socket]);
 
   return isLoading ? null : (
-    <animated.div style={containerSprings}>
+    <NavigationTransition>
       <Card>
         <CardContent>
           <Box>
@@ -584,6 +586,8 @@ export const AccountDeletion = ({ title }) => {
           </Box>
         </Dialog>
       )}
-    </animated.div>
+    </NavigationTransition>
   );
 };
+
+export default AccountDeletion;

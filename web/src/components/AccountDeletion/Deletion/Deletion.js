@@ -63,7 +63,7 @@ const Message = styled.h1`
   color: ${(props) => (props.status === "success" ? "#198754;" : "tomato;")};
 `;
 
-export const Deletion = ({ title }) => {
+const Deletion = ({ title }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [inputs, setInputs] = useState(defaultInputState);
@@ -273,3 +273,5 @@ export const Deletion = ({ title }) => {
     </>
   );
 };
+
+export default Deletion;

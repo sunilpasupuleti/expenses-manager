@@ -210,7 +210,6 @@ export const SheetsContextProvider = ({children}) => {
           }
         });
       }
-
       if (!userAdditionalDetails.baseCurrency) {
         setBaseCurrency({
           dialog: true,

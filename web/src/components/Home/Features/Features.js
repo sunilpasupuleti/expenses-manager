@@ -1,12 +1,22 @@
 import styles from "./Features.module.css";
-
 import Scroll from "react-scroll";
+import { useScroll, useTransform, motion } from "framer-motion";
+import { useRef } from "react";
+
 const ScrollElement = Scroll.Element;
 
-export const Features = (props) => {
+export const Features = ({}) => {
+  let ref = useRef();
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["end end", "start start"],
+  });
+
+  const y1 = useTransform(scrollYProgress, (value) => value);
+
   return (
-    <ScrollElement className={styles.section} id="features" name="features">
-      <div>
+    <motion.div className={styles.section} ref={ref} style={{ y: y1 }}>
+      <ScrollElement id="features" name="features">
         <h1 className={styles.title}>Features offered by us</h1>
         <h5 className={styles.subtitle}>
           Just the right features to help you stay on track!
@@ -112,7 +122,7 @@ export const Features = (props) => {
             </p>
           </div>
         </div>
-      </div>
-    </ScrollElement>
+      </ScrollElement>
+    </motion.div>
   );
 };

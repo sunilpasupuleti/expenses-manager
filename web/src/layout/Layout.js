@@ -1,22 +1,26 @@
-import { Outlet, Route, Routes } from "react-router-dom";
+import { Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { GetAuthGuard } from "./Guards";
 import { Admin } from "../components/Admin/Admin";
-import { Dashboard } from "../components/Admin/Dashboard/Dashboard";
 import { SocketContextProvider } from "../services/Socket/Socket.context";
 import { AuthenticationContextProvider } from "../services/Authentication/Authentication.context";
-import { PageNotFound } from "../components/NotFound/PageNotFound";
-import { SendNotifications } from "../components/Admin/Dashboard/SendNotifications/SendNotifications";
+import SendNotifications from "../components/Admin/Dashboard/SendNotifications/SendNotifications";
 import { NotificationContextProvider } from "../services/Notification/Notification.context";
 import { UserContextProvider } from "../services/User/User.context";
-import { Users } from "../components/Admin/Dashboard/Users/Users";
 import { AccountDeletionContextProvider } from "../services/AccountDeletion/AccountDeletion.context";
-import { Status } from "../components/AccountDeletion/Status/Status";
-import { AccountDeletion } from "../components/AccountDeletion/AccountDeletion";
-import { AccountDeletion as AdminAccountDeletion } from "../components/Admin/Dashboard/AccountDeletion/AccountDeletion";
-import { Deletion } from "../components/AccountDeletion/Deletion/Deletion";
-import { Home } from "../components/Home/Home";
+
+import PageNotFound from "../components/NotFound/PageNotFound";
+import Dashboard from "../components/Admin/Dashboard/Dashboard";
+import Users from "../components/Admin/Dashboard/Users/Users";
+import Status from "../components/AccountDeletion/Status/Status";
+import AccountDeletion from "../components/AccountDeletion/AccountDeletion";
+import AdminAccountDeletion from "../components/Admin/Dashboard/AccountDeletion/AccountDeletion";
+import Deletion from "../components/AccountDeletion/Deletion/Deletion";
+import Home from "../components/Home/Home";
+import { AnimatePresence } from "framer-motion";
 
 const Layout = (props) => {
+  const location = useLocation();
+
   const SendNotificationsElement = ({ title }) => {
     return (
       <NotificationContextProvider>
@@ -68,48 +72,54 @@ const Layout = (props) => {
   return (
     <SocketContextProvider>
       <AuthenticationContextProvider>
-        <Routes>
-          <Route path="/" element={<Home title="Expenses Manager" />} />
-          <Route
-            path="/account-deletion"
-            element={<AccountDeletionElement title="Account Deletion" />}
-          >
+        <AnimatePresence mode="wait">
+          <Routes key={location.pathname} location={location}>
+            <Route path="/" element={<Home title="Expenses Manager" />} />
             <Route
-              path=""
-              element={<DeletionElement title="Account Deletion" />}
-            />
-            <Route
-              path="status"
-              element={<StatusElement title="Deletion Status" />}
-            />
-          </Route>
-
-          <Route path="/admin" element={<Admin title="Admin" />} />
-          <Route
-            path="/dashboard"
-            element={
-              <GetAuthGuard
-                component={<Dashboard title="Dashboard" />}
-                to={"/admin"}
+              path="/account-deletion"
+              element={<AccountDeletionElement title="Account Deletion" />}
+            >
+              <Route
+                path=""
+                element={<DeletionElement title="Account Deletion" />}
               />
-            }
-          >
-            <Route path="users" element={<UsersElement title="Users" />} />
-            <Route
-              path="account-deletion"
-              element={<AdminAccountDeletionElement title="Account Deletion" />}
-            />
-            <Route
-              path="send-notifications"
-              element={<SendNotificationsElement title="Send Notifications" />}
-            />
-          </Route>
-          <Route path="*" element={<PageNotFound title="Page Not Found" />} />
-        </Routes>
+              <Route
+                path="status"
+                element={<StatusElement title="Deletion Status" />}
+              />
+            </Route>
 
-        <main>
-          <Outlet />
-        </main>
+            <Route path="/admin" element={<Admin title="Admin" />} />
+            <Route
+              path="/dashboard"
+              element={
+                <GetAuthGuard
+                  component={<Dashboard title="Dashboard" />}
+                  to={"/admin"}
+                />
+              }
+            >
+              <Route path="users" element={<UsersElement title="Users" />} />
+              <Route
+                path="account-deletion"
+                element={
+                  <AdminAccountDeletionElement title="Account Deletion" />
+                }
+              />
+              <Route
+                path="send-notifications"
+                element={
+                  <SendNotificationsElement title="Send Notifications" />
+                }
+              />
+            </Route>
+            <Route path="*" element={<PageNotFound title="Page Not Found" />} />
+          </Routes>
+
+          <main>
+            <Outlet />
+          </main>
+        </AnimatePresence>
       </AuthenticationContextProvider>
     </SocketContextProvider>
   );

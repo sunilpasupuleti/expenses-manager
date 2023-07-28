@@ -1348,12 +1348,24 @@
   resolved "https://registry.npmjs.org/@emotion/hash/-/hash-0.9.1.tgz"
   integrity sha512-gJB6HLm5rYwSLI6PQa+X1t5CFGrv1J1TWG+sOyMCeKz2ojaj6Fnl/rZEspogG+cvqbt4AE/2eIyD2QfLKTBNlQ==
 
+"@emotion/is-prop-valid@^0.8.2":
+  version "0.8.8"
+  resolved "https://registry.npmjs.org/@emotion/is-prop-valid/-/is-prop-valid-0.8.8.tgz"
+  integrity sha512-u5WtneEAr5IDG2Wv65yhunPSMLIpuKsbuOktRojfrEiEvRyC85LgPMZI63cr7NUqT8ZIGdSVg8ZKGxIug4lXcA==
+  dependencies:
+    "@emotion/memoize" "0.7.4"
+
 "@emotion/is-prop-valid@^1.2.1":
   version "1.2.1"
   resolved "https://registry.npmjs.org/@emotion/is-prop-valid/-/is-prop-valid-1.2.1.tgz"
   integrity sha512-61Mf7Ufx4aDxx1xlDeOm8aFFigGHE4z+0sKCa+IHCeZKiyP9RLD0Mmx7m8b9/Cf37f7NAvQOOJAbQQGVr5uERw==
   dependencies:
     "@emotion/memoize" "^0.8.1"
+
+"@emotion/memoize@0.7.4":
+  version "0.7.4"
+  resolved "https://registry.npmjs.org/@emotion/memoize/-/memoize-0.7.4.tgz"
+  integrity sha512-Ja/Vfqe3HpuzRsG1oBtWTHk2PGZ7GR+2Vz5iYGelAw8dx32K0y7PjVuxK6z1nMpZOqAFsRUPCkK1YjJ56qJlgw==
 
 "@emotion/memoize@^0.8.1":
   version "0.8.1"
@@ -1995,7 +2007,7 @@
 
 "@npmcli/config@^6.2.1":
   version "6.2.1"
-  resolved "https://registry.yarnpkg.com/@npmcli/config/-/config-6.2.1.tgz#954cc09b727b6bfc087cb1d2a48994dc342e45cc"
+  resolved "https://registry.npmjs.org/@npmcli/config/-/config-6.2.1.tgz"
   integrity sha512-Cj/OrSbrLvnwWuzquFCDTwFN8QmR+SWH6qLNCBttUreDkKM5D5p36SeSMbcEUiCGdwjUrVy2yd8C0REwwwDPEw==
   dependencies:
     "@npmcli/map-workspaces" "^3.0.2"
@@ -2165,6 +2177,14 @@
     "@react-spring/shared" "~9.7.3"
     "@react-spring/types" "~9.7.3"
 
+"@react-spring/parallax@^9.7.3":
+  version "9.7.3"
+  resolved "https://registry.npmjs.org/@react-spring/parallax/-/parallax-9.7.3.tgz"
+  integrity sha512-Qm7l0aw2rDMXMg9H4KqgbSuDd/y3YErQezoc6o/NvQj53Gt4lUKC2rHmlD9R+ae8rqiagYaS1q8iPCN3P3wuAg==
+  dependencies:
+    "@react-spring/shared" "~9.7.3"
+    "@react-spring/web" "~9.7.3"
+
 "@react-spring/shared@~9.7.3":
   version "9.7.3"
   resolved "https://registry.npmjs.org/@react-spring/shared/-/shared-9.7.3.tgz"
@@ -2177,7 +2197,7 @@
   resolved "https://registry.npmjs.org/@react-spring/types/-/types-9.7.3.tgz"
   integrity sha512-Kpx/fQ/ZFX31OtlqVEFfgaD1ACzul4NksrvIgYfIFq9JpDHFwQkMVZ10tbo0FU/grje4rcL4EIrjekl3kYwgWw==
 
-"@react-spring/web@^9.7.2":
+"@react-spring/web@^9.7.3", "@react-spring/web@~9.7.3":
   version "9.7.3"
   resolved "https://registry.npmjs.org/@react-spring/web/-/web-9.7.3.tgz"
   integrity sha512-BXt6BpS9aJL/QdVqEIX9YoUy8CE6TJrU0mNCqSoxdXlIeNcEBWOfIyE6B14ENNsyQKS3wOWkiJfco0tCr/9tUg==
@@ -3230,7 +3250,7 @@ ansi-styles@^5.0.0:
 
 ansi-styles@^6.1.0:
   version "6.2.1"
-  resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-6.2.1.tgz#0e62320cf99c21afff3b3012192546aacbfb05c5"
+  resolved "https://registry.npmjs.org/ansi-styles/-/ansi-styles-6.2.1.tgz"
   integrity sha512-bN798gFfQX+viw3R7yrGWRqnrN2oRkEkUjjl4JNn4E8GxxbjtG3FbrEIIY3l8/hrwUwIeCZvi4QuOTP4MErVug==
 
 any-promise@^1.0.0:
@@ -5501,6 +5521,15 @@ fraction.js@^4.2.0:
   resolved "https://registry.npmjs.org/fraction.js/-/fraction.js-4.2.0.tgz"
   integrity sha512-MhLuK+2gUcnZe8ZHlaaINnQLl0xRIGRfcGk2yl8xoQAfHrSsL3rYu6FCmBdkdbhc9EPlwyGHewaRsvwRMJtAlA==
 
+framer-motion@^10.13.1:
+  version "10.13.1"
+  resolved "https://registry.npmjs.org/framer-motion/-/framer-motion-10.13.1.tgz"
+  integrity sha512-uiKsaLEoySeln3eOPy8wUB3FkNtRRiVga5xJOkgs7C0sHVyvpJajXJFSoabt+emBojgnMQY0epnjl0ppoYPxkQ==
+  dependencies:
+    tslib "^2.4.0"
+  optionalDependencies:
+    "@emotion/is-prop-valid" "^0.8.2"
+
 fresh@0.5.2:
   version "0.5.2"
   resolved "https://registry.npmjs.org/fresh/-/fresh-0.5.2.tgz"
@@ -5527,7 +5556,7 @@ fs-extra@^9.0.0, fs-extra@^9.0.1:
 
 fs-minipass@^2.0.0:
   version "2.1.0"
-  resolved "https://registry.yarnpkg.com/fs-minipass/-/fs-minipass-2.1.0.tgz#7f5036fdbf12c63c169190cbe4199c852271f9fb"
+  resolved "https://registry.npmjs.org/fs-minipass/-/fs-minipass-2.1.0.tgz"
   integrity sha512-V/JgOLFCS+R6Vcq0slCuaeWEdNC3ouDlJMNIsacH2VtALiu9mV4LPrHc5cDl8k5aw6J8jwgWWpiTo5RYhmIzvg==
   dependencies:
     minipass "^3.0.0"
@@ -7663,7 +7692,7 @@ minipass-sized@^1.0.3:
 
 minipass@^3.0.0:
   version "3.3.6"
-  resolved "https://registry.yarnpkg.com/minipass/-/minipass-3.3.6.tgz#7bba384db3a1520d18c9c0e5251c3444e95dd94a"
+  resolved "https://registry.npmjs.org/minipass/-/minipass-3.3.6.tgz"
   integrity sha512-DxiNidxSEK+tHG6zOIklvNOwm3hvCrbUrdtzY74U6HKTJxvIDfOUL5W5P2Ghd3DTkhhKPYGqeNUIh5qcM4YBfw==
   dependencies:
     yallist "^4.0.0"
@@ -7802,7 +7831,7 @@ node-releases@^2.0.12:
 
 nopt@^6.0.0:
   version "6.0.0"
-  resolved "https://registry.yarnpkg.com/nopt/-/nopt-6.0.0.tgz#245801d8ebf409c6df22ab9d95b65e1309cdb16d"
+  resolved "https://registry.npmjs.org/nopt/-/nopt-6.0.0.tgz"
   integrity sha512-ZwLpbTgdhuZUnZzjd7nb1ZV+4DoiC6/sfiVKok72ym/4Tlf+DFdlHYmT2JPmcNNWV6Pi3SDf1kT+A4r9RTuT9g==
   dependencies:
     abbrev "^1.0.0"
@@ -7997,7 +8026,7 @@ npm@^9.7.1:
 
 npmlog@^6.0.0:
   version "6.0.2"
-  resolved "https://registry.yarnpkg.com/npmlog/-/npmlog-6.0.2.tgz#c8166017a42f2dea92d6453168dd865186a70830"
+  resolved "https://registry.npmjs.org/npmlog/-/npmlog-6.0.2.tgz"
   integrity sha512-/vBvz5Jfr9dT/aFWd0FIRf+T/Q2WBsLENygUaFUqstqsycmZAP/t5BvFJTK0viFmSUxiUKTUplWy5vt+rvKIxg==
   dependencies:
     are-we-there-yet "^3.0.0"
@@ -9203,6 +9232,11 @@ react-error-overlay@^6.0.11:
   resolved "https://registry.npmjs.org/react-error-overlay/-/react-error-overlay-6.0.11.tgz"
   integrity sha512-/6UZ2qgEyH2aqzYZgQPxEnz33NJ2gNsnHA2o5+o4wW9bLM/JYQitNP9xPhsXwC08hMMovfGe/8retsdDsczPRg==
 
+react-intersection-observer@^9.5.2:
+  version "9.5.2"
+  resolved "https://registry.npmjs.org/react-intersection-observer/-/react-intersection-observer-9.5.2.tgz"
+  integrity sha512-EmoV66/yvksJcGa1rdW0nDNc4I1RifDWkT50gXSFnPLYQ4xUptuDD4V7k+Rj1OgVAlww628KLGcxPXFlOkkU/Q==
+
 react-is@^16.13.1, react-is@^16.7.0:
   version "16.13.1"
   resolved "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"
@@ -9315,7 +9349,7 @@ react-scripts@5.0.1:
 
 react-scroll@^1.8.9:
   version "1.8.9"
-  resolved "https://registry.yarnpkg.com/react-scroll/-/react-scroll-1.8.9.tgz#96f8a82f882b187970c2338759225c7e619d915b"
+  resolved "https://registry.npmjs.org/react-scroll/-/react-scroll-1.8.9.tgz"
   integrity sha512-9m7ztraiX/l6L7erzYAD3fhnveNckei6/NkWfqwN2e0FRdoE2W6Pk4oi2Nah7mWpPCPAeIgegfaqZACTimPOwg==
   dependencies:
     lodash.throttle "^4.1.1"
@@ -10147,7 +10181,7 @@ string-natural-compare@^3.0.1:
 
 string-width@^5.0.1, string-width@^5.1.2:
   version "5.1.2"
-  resolved "https://registry.yarnpkg.com/string-width/-/string-width-5.1.2.tgz#14f8daec6d81e7221d2a357e668cab73bdbca794"
+  resolved "https://registry.npmjs.org/string-width/-/string-width-5.1.2.tgz"
   integrity sha512-HnLOCR3vjcY8beoNLtcjZ5/nxn2afmME6lhrDrebokqMap+XbeW8n9TXpPDOqdGK5qcI3oT0GKTW6wC7EMiVqA==
   dependencies:
     eastasianwidth "^0.2.0"
@@ -10625,7 +10659,7 @@ tslib@^1.8.1:
   resolved "https://registry.npmjs.org/tslib/-/tslib-1.14.1.tgz"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
-tslib@^2.0.3, tslib@^2.5.0:
+tslib@^2.0.3, tslib@^2.4.0, tslib@^2.5.0:
   version "2.5.3"
   resolved "https://registry.npmjs.org/tslib/-/tslib-2.5.3.tgz"
   integrity sha512-mSxlJJwl3BMEQCUNnxXBU9jP4JBktcEGhURcPR6VQVlnP0FdDEsIaz0C35dXNGLyRfrATNofF0F5p2KPxQgB+w==

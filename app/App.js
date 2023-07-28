@@ -40,6 +40,7 @@ import './src/components/notifcications/one-signal';
 import OneSignal from 'react-native-onesignal';
 import remoteConfig from '@react-native-firebase/remote-config';
 import {GetCurrencySymbol} from './src/components/symbol.currency';
+import {TourGuideProvider} from 'rn-tourguide';
 
 moment.suppressDeprecationWarnings = true;
 if (Platform.OS === 'android') {
@@ -140,7 +141,10 @@ const App = () => {
   };
 
   return (
-    <>
+    <TourGuideProvider
+      {...{borderRadius: 16}}
+      dismissOnPress={false}
+      preventOutsideInteraction>
       <ThemeProvider
         theme={
           appTheme === 'automatic'
@@ -193,7 +197,7 @@ const App = () => {
             : '#000'
         }
       />
-    </>
+    </TourGuideProvider>
   );
 };
 

@@ -65,7 +65,7 @@ const Message = styled.h1`
       : "tomato;"};
 `;
 
-export const Status = ({ title }) => {
+const Status = ({ title }) => {
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [inputs, setInputs] = useState(defaultInputState);
@@ -264,3 +264,5 @@ export const Status = ({ title }) => {
     </>
   );
 };
+
+export default Status;

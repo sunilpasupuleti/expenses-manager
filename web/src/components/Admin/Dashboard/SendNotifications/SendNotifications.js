@@ -34,10 +34,9 @@ import * as AnimationData from "../../../../assets/lottie/no_users.json";
 import * as NotificationAnimationData from "../../../../assets/lottie/sending_notifications.json";
 import { styled } from "styled-components";
 import Lottie from "react-lottie";
-import { useSpring, animated } from "@react-spring/web";
 import moment from "moment";
 import { SocketContext } from "../../../../services/Socket/Socket.context";
-import { DataArrayRounded } from "@mui/icons-material";
+import NavigationTransition from "../../../../shared/NavigationTransition/NavigationTransition";
 
 const errors = {
   titleRequired: "Title required",
@@ -110,7 +109,7 @@ const NotificationLoaderContainer = styled.div`
   }
 `;
 
-export const SendNotifications = ({ title }) => {
+const SendNotifications = ({ title }) => {
   const [inputs, setInputs] = useState(defaultInputState);
   const [loading, setLoading] = useState(false);
   const { onSendDailyUpdateNotificationToUsers, onGetActiveDevicesList } =
@@ -401,11 +400,6 @@ export const SendNotifications = ({ title }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [onFetchEvent, socket]);
 
-  const formContainerSprings = useSpring({
-    from: { x: 250 },
-    to: { x: 0 },
-  });
-
   return loading ? (
     <NotificationLoaderContainer>
       <Box component="h2">Sending Notifications..</Box>
@@ -419,7 +413,7 @@ export const SendNotifications = ({ title }) => {
       />
     </NotificationLoaderContainer>
   ) : (
-    <animated.div style={formContainerSprings}>
+    <NavigationTransition>
       <Card>
         <CardContent>
           <Box
@@ -840,6 +834,8 @@ export const SendNotifications = ({ title }) => {
           </Box>
         </CardContent>
       </Card>
-    </animated.div>
+    </NavigationTransition>
   );
 };
+
+export default SendNotifications;

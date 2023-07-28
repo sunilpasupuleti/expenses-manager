@@ -1,15 +1,18 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Navbar } from "./Navbar/Navbar";
 import { Banner } from "./Banner/Banner";
 import { Download } from "./Download/Download";
 import { Features } from "./Features/Features";
 import { Screenshots } from "./Screenshots/Screenshots";
 import { Footer } from "./Footer/Footer";
+import { useScroll, useTransform } from "framer-motion";
+import { useInView } from "react-intersection-observer";
 
-export const Home = ({ title }) => {
+const Home = ({ title }) => {
   useEffect(() => {
     document.title = title;
   }, []);
+
   return (
     <>
       <Navbar />
@@ -21,3 +24,5 @@ export const Home = ({ title }) => {
     </>
   );
 };
+
+export default Home;

@@ -6,6 +6,7 @@ import { loaderActions } from "../../store/Loader.slice";
 import { styled } from "styled-components";
 import Lottie from "react-lottie";
 import * as animationData from "../../assets/lottie/loading.json";
+import NavigationTransition from "../NavigationTransition/NavigationTransition";
 
 export const showLoader = (dispatch) => {
   dispatch(loaderActions.showLoader());
