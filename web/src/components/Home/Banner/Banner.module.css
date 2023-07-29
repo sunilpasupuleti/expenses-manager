@@ -32,6 +32,24 @@
   justify-content: center;
 }
 
+.buttonsContainer {
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.buttonsContainer .iconButton {
+  height: 50px;
+  width: 50px;
+  margin-left: 2rem;
+}
+
+.buttonsContainer .iconButton img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
 .getButton {
   padding: 1rem;
   width: 200px;
@@ -41,7 +59,6 @@
   border: 2px solid var(--secondary);
   color: var(--landing);
   background-color: #fff;
-  margin-top: 2rem;
   font-weight: 500;
   transition: all 0.3s ease;
 }
@@ -106,6 +123,10 @@
   .quote .highlight {
     font-weight: 500;
     color: #fff;
+  }
+
+  .buttonsContainer .iconButton {
+    margin-left: 1rem;
   }
 }
 

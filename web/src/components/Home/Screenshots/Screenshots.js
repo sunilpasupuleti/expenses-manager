@@ -1,6 +1,6 @@
 import { Box, Tab, Tabs, Typography } from "@mui/material";
 import styles from "./Screenshots.module.css";
-
+import { useScroll, useTransform, motion } from "framer-motion";
 import Scroll from "react-scroll";
 import { useState } from "react";
 import { TabContext, TabList, TabPanel } from "@mui/lab";
@@ -36,6 +36,12 @@ export const Screenshots = (props) => {
     require("../../../assets/webp/screenshots/ios/9.webp"),
   ];
 
+  const animations = {
+    initial: { opacity: 0, x: -100 },
+    animate: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: -100 },
+  };
+
   return (
     <ScrollElement
       className={styles.section}
@@ -63,9 +69,18 @@ export const Screenshots = (props) => {
             <div className={styles.images}>
               {androidImages.map((image, index) => {
                 return (
-                  <div className={styles.image} key={index}>
+                  <motion.div
+                    animate={{ x: 0, opacity: 1, scale: 1 }}
+                    transition={{
+                      duration: 0.7,
+                    }}
+                    initial={{ x: -100, opacity: 0, scale: 0.5 }}
+                    whileHover={{ scale: 1.2 }}
+                    className={styles.image}
+                    key={index}
+                  >
                     <img src={image} alt="screenshot" />
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>
@@ -74,9 +89,18 @@ export const Screenshots = (props) => {
             <div className={styles.images}>
               {iosImages.map((image, index) => {
                 return (
-                  <div className={styles.image} key={index}>
+                  <motion.div
+                    animate={{ x: 0, opacity: 1, scale: 1 }}
+                    transition={{
+                      duration: 0.7,
+                    }}
+                    initial={{ x: -100, opacity: 0, scale: 0.5 }}
+                    whileHover={{ scale: 1.2 }}
+                    className={styles.image}
+                    key={index}
+                  >
                     <img src={image} alt="screenshot" />
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>

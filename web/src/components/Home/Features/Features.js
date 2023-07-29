@@ -7,15 +7,9 @@ const ScrollElement = Scroll.Element;
 
 export const Features = ({}) => {
   let ref = useRef();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["end end", "start start"],
-  });
-
-  const y1 = useTransform(scrollYProgress, (value) => value);
 
   return (
-    <motion.div className={styles.section} ref={ref} style={{ y: y1 }}>
+    <motion.div className={styles.section} ref={ref}>
       <ScrollElement id="features" name="features">
         <h1 className={styles.title}>Features offered by us</h1>
         <h5 className={styles.subtitle}>
