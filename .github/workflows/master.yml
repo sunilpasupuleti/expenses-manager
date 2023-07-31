@@ -75,8 +75,10 @@ jobs:
 
 
             cd /home/ubuntu/expenses-manager/backend/
-            sudo cp -r public/ /home/ubuntu/
-            sudo rm -rf public/
+
+            docker stop expenses-manager-backend
+            docker rm  expenses-manager-backend
+            docker rmi expenses-manager-backend
             rm config/.env
             rm config/expensesmanager.json
             touch config/.env
@@ -85,4 +87,5 @@ jobs:
             echo "${{secrets.EXPENSES_MANAGER_JSON}}" | base64 --decode > config/expensesmanager.json
             npm install -f
             cd ..
-            docker compose up -d --build
+
+            docker compose up -d
