@@ -75,6 +75,8 @@ jobs:
 
 
             cd /home/ubuntu/expenses-manager/backend/
+            sudo cp -r public /home/ubuntu/
+            sudo rm -rf public
             rm config/.env
             rm config/expensesmanager.json
             touch config/.env
