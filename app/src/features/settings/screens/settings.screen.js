@@ -203,13 +203,8 @@ export const SettingsScreen = ({navigation}) => {
     } else {
       url = ACCOUNT_DELETION_URL;
     }
-    Linking.canOpenURL(url).then(supported => {
-      if (supported) {
-        Linking.openURL(url);
-      } else {
-        console.log("Don't know how to open URI: " + this.props.url);
-      }
-    });
+
+    Linking.openURL(url);
   };
 
   const onClickChangeBaseCurrency = () => {

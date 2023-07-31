@@ -383,7 +383,7 @@ export const SmsTransactions = () => {
                       );
                       setSelectedCategory({
                         key: id,
-                        value: category.name,
+                        value: category?.name,
                       });
                     }}
                     data={categoryItems}

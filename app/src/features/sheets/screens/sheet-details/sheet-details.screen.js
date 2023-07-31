@@ -6,7 +6,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-
 import {
   FlatList,
   TouchableNativeFeedback,
@@ -63,8 +62,12 @@ export const SheetDetailsScreen = ({navigation, route}) => {
   const theme = useTheme();
   const [searchKeyword, setSearchKeyword] = useState('');
 
-  const {getSheetById, calculateBalance, onGoogleCloudVision} =
-    useContext(SheetsContext);
+  const {
+    getSheetById,
+    calculateBalance,
+    onGoogleCloudVision,
+    onSmartScanReceipt,
+  } = useContext(SheetsContext);
   let menuRef = useRef();
   let cameraRef = useRef();
   const dispatch = useDispatch();
@@ -323,12 +326,12 @@ export const SheetDetailsScreen = ({navigation, route}) => {
         let base64 = 'data:' + response.assets[0].type + ';base64,';
         let base64Data = response.assets[0].base64;
 
-        onGoogleCloudVision(base64Data, fetchedData => {
+        onSmartScanReceipt(base64Data, fetchedData => {
           if (fetchedData) {
             fetchedData.image = base64 + base64Data;
           }
           navigation.navigate('AddSheetDetail', {
-            gcpVision: true,
+            smartScan: true,
             sheetDetail: fetchedData,
             sheet: sheet,
           });

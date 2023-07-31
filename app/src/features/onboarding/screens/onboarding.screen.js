@@ -3,13 +3,13 @@
 /* eslint-disable react/react-in-jsx-scope */
 import {Image, Platform} from 'react-native';
 import {Text} from '../../../components/typography/text.component';
-import {SafeArea} from '../../../components/utility/safe-area.component';
 import Onboarding from 'react-native-onboarding-swiper';
 import {useTheme} from 'styled-components/native';
 import {useRef} from 'react';
 import {useDispatch} from 'react-redux';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {setOnBoarding} from '../../../store/service-slice';
+import {Button} from 'react-native-paper';
 
 export const OnBoarding = ({navigation, navigate}) => {
   let theme = useTheme();
@@ -157,18 +157,9 @@ export const OnBoarding = ({navigation, navigate}) => {
 
   const Done = ({isLight, ...props}) => {
     return (
-      <MaterialCommunityIcons
-        name={'check-all'}
-        size={20}
-        style={{
-          backgroundColor: '#fff',
-          padding: 10,
-          borderRadius: 50,
-          marginRight: 10,
-        }}
-        color={theme.colors.brand.primary}
-        {...props}
-      />
+      <Button icon={'check-bold'} textColor="#fff" onPress={onDone}>
+        <Text color="#fff">Done</Text>
+      </Button>
     );
   };
 

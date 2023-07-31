@@ -1,9 +1,20 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {Image, Keyboard, Platform, Pressable, View} from 'react-native';
+import {
+  Image,
+  Keyboard,
+  Platform,
+  Pressable,
+  View,
+  useColorScheme,
+} from 'react-native';
 import {Button} from 'react-native-paper';
 import {useTheme} from 'styled-components/native';
 import {Spacer} from '../../../components/spacer/spacer.component';
-import {ErrorMessage, SuccessMessage} from '../../../components/styles';
+import {
+  ErrorMessage,
+  FlexRow,
+  SuccessMessage,
+} from '../../../components/styles';
 import {Text} from '../../../components/typography/text.component';
 import {SafeArea} from '../../../components/utility/safe-area.component';
 import {AuthenticationContext} from '../../../services/authentication/authentication.context';
@@ -13,6 +24,7 @@ import {
   LoginInput,
 } from '../components/account.styles';
 import * as Animatable from 'react-native-animatable';
+import CountryPicker, {DARK_THEME} from 'react-native-country-picker-modal';
 import {
   OTPContainer,
   OTPinputContainer,
@@ -23,9 +35,11 @@ import {
   TextInputHidden,
 } from '../components/phone-login.styles';
 import SmsListener from 'react-native-android-sms-listener';
+import {getCountry} from 'react-native-localize';
+import {useSelector} from 'react-redux';
 
 export const PhoneLoginScreen = ({navigation, route}) => {
-  const [phone, setPhone] = useState({value: '91', error: false});
+  const [phone, setPhone] = useState({value: '', error: false});
   const [otp, setOtp] = useState({value: '', error: false, focused: false});
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -35,6 +49,19 @@ export const PhoneLoginScreen = ({navigation, route}) => {
   const [confirmCode, setConfirmCode] = useState(null);
   const [isPinReady, setIsPinReady] = useState(false);
   const boxArray = new Array(maximumOtpLength).fill(0);
+  const themeType = useColorScheme();
+  const appTheme = useSelector(state => state.service.theme);
+  const [countryCode, setCountryCode] = useState(getCountry());
+  const [country, setCountry] = useState(null);
+
+  let darkMode =
+    appTheme === 'automatic'
+      ? themeType === 'light'
+        ? false
+        : true
+      : appTheme === 'light'
+      ? false
+      : true;
 
   const otpInputRef = useRef();
 
@@ -50,9 +77,14 @@ export const PhoneLoginScreen = ({navigation, route}) => {
     setShowLoader(false);
   };
 
+  const onChangeCountry = value => {
+    setCountryCode(value.cca2);
+    setCountry(value);
+  };
+
   const onChangeMode = mode => {
     if (mode === 'phone') {
-      setPhone({value: '91', error: false});
+      setPhone({value: '', error: false});
     }
     onResetAllValues();
     setMode(mode);
@@ -123,8 +155,8 @@ export const PhoneLoginScreen = ({navigation, route}) => {
     }
     setShowLoader(true);
     let result;
-    let number = '+' + phone.value;
-
+    let number = '+' + country.callingCode[0] + phone.value;
+    console.log(number);
     if (mode === 'phone') {
       result = await onSignInWithMobile(number, resend);
       if (result && result.status) {
@@ -167,6 +199,7 @@ export const PhoneLoginScreen = ({navigation, route}) => {
     if (otp.value.length === maximumOtpLength) {
       setIsPinReady(true);
       Keyboard.dismiss();
+      onVerifyOtp();
     }
 
     return () => {
@@ -179,7 +212,7 @@ export const PhoneLoginScreen = ({navigation, route}) => {
     if (phone.value === '') {
       showPhoneError = true;
     }
-    setPhone(p => ({...p, error: showPhoneError}));
+    setPhone(p => ({...p, error: false}));
   }, [phone.value]);
 
   useEffect(() => {
@@ -207,6 +240,7 @@ export const PhoneLoginScreen = ({navigation, route}) => {
     <SafeArea>
       <View
         style={{
+          flex: 1,
           justifyContent: 'center',
           alignItems: 'center',
         }}>
@@ -229,14 +263,6 @@ export const PhoneLoginScreen = ({navigation, route}) => {
         </Text>
       </View>
 
-      <Text
-        fontfamily="bodyBold"
-        style={{textAlign: 'center'}}
-        color="#000"
-        fontsize="25px">
-        Expenses manager
-      </Text>
-
       {mode === 'phone' && (
         <AccountContainer>
           {error && (
@@ -246,31 +272,48 @@ export const PhoneLoginScreen = ({navigation, route}) => {
             <SuccessMessage fontsize="15px">{success.message}</SuccessMessage>
           )}
 
-          <LoginInput
-            theme={{roundness: 10}}
-            autoFocus
-            selectionColor={theme.colors.brand.primary}
-            mode="outlined"
-            returnKeyType="done"
-            onChangeText={n => setPhone(p => ({...p, value: n.trim()}))}
-            value={phone.value}
-            placeholder="Ex: 91 XXXXXXXXXX"
-            keyboardType="phone-pad"
-            right={
-              phone.value && (
-                <LoginInput.Icon
-                  icon="close-circle"
-                  iconColor="#bbb"
-                  onPress={() => setPhone(p => ({...p, value: ''}))}
-                />
-              )
-            }
-            left={<LoginInput.Icon icon="phone" iconColor="#bbb" />}
-          />
+          <FlexRow style={{height: 60}}>
+            <CountryPicker
+              countryCode={countryCode}
+              withFilter
+              withCallingCodeButton
+              withEmoji
+              withCloseButton
+              withAlphaFilter
+              withFlagButton
+              withModal={true}
+              theme={darkMode ? DARK_THEME : {}}
+              containerButtonStyle={{
+                padding: 10,
+                marginTop: 5,
+              }}
+              onSelect={onChangeCountry}
+            />
+
+            <LoginInput
+              theme={{roundness: 0}}
+              selectionColor={theme.colors.brand.primary}
+              mode="outlined"
+              returnKeyType="done"
+              maxLength={10}
+              onChangeText={n => setPhone(p => ({...p, value: n.trim()}))}
+              value={phone.value}
+              style={{width: '100%'}}
+              placeholder="Enter your mobile number"
+              keyboardType="phone-pad"
+              right={
+                phone.value && (
+                  <LoginInput.Icon
+                    icon="close-circle"
+                    iconColor="#bbb"
+                    onPress={() => setPhone(p => ({...p, value: ''}))}
+                  />
+                )
+              }
+            />
+          </FlexRow>
+
           <Spacer size={'large'} />
-          <Text fontsize="14px" color="#aaa">
-            Note : Enter mobile number with country code
-          </Text>
 
           {phone.error && (
             <ErrorMessage fontsize="13px">Mobile number required</ErrorMessage>

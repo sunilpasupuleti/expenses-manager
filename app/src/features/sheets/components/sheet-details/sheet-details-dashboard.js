@@ -200,9 +200,7 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
         backgroundColor: theme.colors.bg.primary,
       }}>
       {sheet && (
-        <ScrollView
-          style={{marginBottom: 60}}
-          showsHorizontalScrollIndicator={false}>
+        <ScrollView showsHorizontalScrollIndicator={false}>
           <MainWrapper>
             <LinearGradient
               start={{x: 0, y: 0}}

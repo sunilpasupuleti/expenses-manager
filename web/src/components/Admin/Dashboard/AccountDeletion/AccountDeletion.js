@@ -43,6 +43,7 @@ import { LoadingButton } from "@mui/lab";
 import { hideLoader, showLoader } from "../../../../shared/Loader/Loader";
 import navigationTransition from "../../../../shared/NavigationTransition/NavigationTransition";
 import NavigationTransition from "../../../../shared/NavigationTransition/NavigationTransition";
+import Swal from "sweetalert2";
 
 const LottieContainer = styled.div`
   height: 300px;
@@ -212,20 +213,29 @@ const AccountDeletion = ({ title }) => {
   });
 
   const onAcceptRequest = (request) => {
-    showLoader(dispatch);
-    onDeleteAccount(
-      request._id,
-      () => {
-        onEmitEvent("refreshAccountDeletion");
-        hideLoader(dispatch);
-        setSearchKeyword("");
-      },
-      () => {
-        hideLoader(dispatch);
-      },
-      false,
-      true
-    );
+    Swal.fire({
+      title: "Are you sure you want to delete the account?",
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      confirmButtonColor: "tomato",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        showLoader(dispatch);
+        onDeleteAccount(
+          request._id,
+          () => {
+            onEmitEvent("refreshAccountDeletion");
+            hideLoader(dispatch);
+            setSearchKeyword("");
+          },
+          () => {
+            hideLoader(dispatch);
+          },
+          false,
+          true
+        );
+      }
+    });
   };
 
   const onClickRejectRequest = (e) => {
@@ -374,7 +384,7 @@ const AccountDeletion = ({ title }) => {
                       let photoURL = null;
                       if (user && user.photoURL) {
                         photoURL = user.photoURL.startsWith(
-                          `public/users/${user.uid}`
+                          `public/users/${user?.uid}`
                         )
                           ? `${process.env.REACT_APP_BACKEND_URL}/${user.photoURL}`
                           : user.photoURL;
@@ -430,7 +440,7 @@ const AccountDeletion = ({ title }) => {
                             )}
                           </TableCell>
                           <TableCell>
-                            <strong>{user.uid}</strong>
+                            <strong>{user?.uid}</strong>
                           </TableCell>
                           <TableCell>
                             {moment(request.createdAt).format(

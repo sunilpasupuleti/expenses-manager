@@ -17,6 +17,7 @@ export const TextInputHidden = styled(TextInput)`
   position: absolute;
   opacity: 0;
   width: 100%;
+  background-color: transparent;
 `;
 
 export const SplitOTPBoxesContainer = styled.Pressable`
@@ -36,7 +37,6 @@ export const SplitBoxes = styled.View`
 export const SplitBoxText = styled.Text`
   font-size: 20px;
   text-align: center;
-  color: #e5e5e5;
 `;
 
 export const SplitBoxesFocused = styled(SplitBoxes)`

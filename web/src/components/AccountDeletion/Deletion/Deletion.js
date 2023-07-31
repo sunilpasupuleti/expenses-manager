@@ -152,7 +152,7 @@ const Deletion = ({ title }) => {
             setRequestId(data.requestId);
           }
           setInputs(defaultInputState);
-          navigate("/account-deletion");
+
           setLoading(false);
         },
         (data) => {

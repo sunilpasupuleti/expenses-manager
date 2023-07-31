@@ -90,7 +90,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   const [notes, setNotes] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [editMode, setEditMode] = useState(false);
-  const [gcpVisionMode, setGcpVisionMode] = useState(false);
+  const [smartScanMode, setSmartScanMode] = useState(false);
   const [selectedImage, setSelectedImage] = useState({
     url: null,
   });
@@ -168,10 +168,10 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     if (route.params.selectedCategory) {
       setCategories(route.params.selectedCategory);
     }
-    if (route.params && route.params.gcpVision) {
+    if (route.params && route.params.smartScan) {
       let sheetDetail = route.params.sheetDetail;
       if (sheetDetail) {
-        setGcpVisionMode(true);
+        setSmartScanMode(true);
         setAmount(sheetDetail.amount);
         setNotes(sheetDetail.notes);
         setSelectedImage({
@@ -447,7 +447,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   return (
     <SafeArea>
       <MainWrapper>
-        {!editMode && !gcpVisionMode && (
+        {!editMode && !smartScanMode && (
           <CategoryTabs
             setActiveType={onSetActiveType}
             activeType={activeType}

@@ -9,6 +9,8 @@ import {
   BACKEND_URL,
   GOOGLE_API_KEY,
   GOOGLE_CLOUD_VISION_API_URL,
+  MINDEE_API_KEY,
+  MINDEE_API_URL,
   ONESIGNAL_APP_ID,
   PLAY_STORE_URL,
   WEB_CLIENT_ID,
@@ -150,9 +152,11 @@ export const loadAppStatus = createAsyncThunk(
         ACCOUNT_DELETION_URL: ACCOUNT_DELETION_URL,
         APP_STORE_URL: APP_STORE_URL,
         PLAY_STORE_URL: PLAY_STORE_URL,
+        MINDEE_API_KEY: MINDEE_API_KEY,
+        MINDEE_API_URL: MINDEE_API_URL,
       })
       .then(() => {
-        // remoteConfig().fetchAndActivate();
+        remoteConfig().fetchAndActivate();
       })
       .then(fetchedRemotely => {
         if (fetchedRemotely) {

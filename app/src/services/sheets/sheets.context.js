@@ -32,7 +32,7 @@ import {smsTransactionsActions} from '../../store/smsTransactions-slice';
 import {getTimeZone} from 'react-native-localize';
 import {getTransactionInfo} from 'transaction-sms-parser';
 import SmsListener from 'react-native-android-sms-listener';
-import {useNetInfo} from '@react-native-community/netinfo';
+import exampleData from '../../components/utility/mindee-response.json';
 
 const defaultCategories = {
   expense: [
@@ -143,9 +143,8 @@ export const SheetsContext = createContext({
   onUpdateDailyBackup: (enabled, callback) => null,
   onUpdateAutoFetchTransactions: (enabled, callback) => null,
   onUpdateBaseCurrency: (currency, callback) => null,
-
+  onSmartScanReceipt: (base64, callback) => null,
   getMessages: () => {},
-
   baseCurrency: {},
   setBaseCurrency: null,
 });
@@ -161,7 +160,6 @@ export const SheetsContextProvider = ({children}) => {
   const {userData, onSetUserAdditionalDetails, userAdditionalDetails} =
     useContext(AuthenticationContext);
   const {sendRequest} = useHttp();
-  const netInfo = useNetInfo();
 
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -172,6 +170,8 @@ export const SheetsContextProvider = ({children}) => {
   });
 
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
+  const MINDEE_API_KEY = remoteConfig().getValue('MINDEE_API_KEY').asString();
+  const MINDEE_API_URL = remoteConfig().getValue('MINDEE_API_URL').asString();
 
   const GOOGLE_API_KEY = remoteConfig().getValue('GOOGLE_API_KEY').asString();
   const GOOGLE_CLOUD_VISION_API_URL = remoteConfig()
@@ -222,26 +222,6 @@ export const SheetsContextProvider = ({children}) => {
       smsSubscription && smsSubscription.remove();
     };
   }, [userAdditionalDetails]);
-
-  const showAlertStoragePermission = () => {
-    Alert.alert(
-      'Storage permissions Denied!',
-      'Please enable it from permissions -> Storage > Allow to save the files to your device',
-      [
-        {
-          text: 'No Thanks!',
-          style: 'cancel',
-        },
-
-        {
-          text: 'Grant Permission',
-          onPress: () => {
-            Linking.openSettings();
-          },
-        },
-      ],
-    );
-  };
 
   const getMessageFromListener = async message => {
     try {
@@ -771,6 +751,80 @@ export const SheetsContextProvider = ({children}) => {
     );
   };
 
+  const onSmartScanReceipt = async (base64, callback = () => null) => {
+    if (!base64) {
+      Alert.alert('Required base64 string');
+      return;
+    }
+    dispatch(
+      loaderActions.showLoader({backdrop: true, loaderType: 'scanning'}),
+    );
+
+    let url = MINDEE_API_URL;
+    let formData = new FormData();
+    formData.append('document', base64);
+
+    sendRequest(
+      {
+        type: 'POST',
+        url: url,
+        headers: {
+          Authorization: `Token ${MINDEE_API_KEY}`,
+          'Content-Type': 'multipart/form-data',
+        },
+        data: formData,
+        // extra data to use-http hook
+      },
+      {
+        successCallback: receivedResponse => {
+          dispatch(loaderActions.hideLoader());
+          if (
+            receivedResponse.api_request &&
+            receivedResponse.api_request.status &&
+            receivedResponse.api_request.status === 'success' &&
+            receivedResponse.document &&
+            receivedResponse.document.inference &&
+            receivedResponse.document.inference.prediction
+          ) {
+            let {total_amount, date, supplier_name, category} =
+              receivedResponse.document.inference.prediction;
+            let amount = total_amount.value ? total_amount.value : 0;
+            let fetchedDate = date.value;
+            let notes = supplier_name.value;
+            let fetchedCategory = category.value;
+            let extractedData = {
+              amount: amount,
+              date: fetchedDate,
+              notes: notes,
+              category: fetchedCategory,
+              type: 'expense',
+            };
+            callback(extractedData);
+          } else {
+            console.log(receivedResponse.api_request);
+            dispatch(
+              notificationActions.showToast({
+                status: 'warning',
+                message: 'Something error occured while extracting text!',
+              }),
+            );
+          }
+        },
+        errorCallback: err => {
+          console.log(err, ' Error in scanning receipt');
+          dispatch(loaderActions.hideLoader());
+          dispatch(
+            notificationActions.showToast({
+              status: 'warning',
+              message: 'Something error occured while extracting text!',
+            }),
+          );
+        },
+      },
+    );
+  };
+
+  // for google cloud vision
   const onExtractAndFilterText = result => {
     let text = result.fullTextAnnotation.text;
     function findTotalAmount() {
@@ -2597,6 +2651,7 @@ export const SheetsContextProvider = ({children}) => {
         baseCurrency,
         setBaseCurrency,
         onUpdateBaseCurrency,
+        onSmartScanReceipt,
       }}>
       {children}
     </SheetsContext.Provider>

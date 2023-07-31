@@ -111,15 +111,19 @@ process.on("SIGINT", function () {
  * Create Server
  */
 
+let productionMode = true;
+
 const https_options = {
   ca: fs.readFileSync("./config/ssl/ca_bundle.crt"),
   key: fs.readFileSync("./config/ssl/private.key"),
   cert: fs.readFileSync("./config/ssl/certificate.crt"),
 };
 
-// const server = require("http").Server(app);
+const httpServer = require("http").Server(app);
 
-const server = require("https").createServer(https_options, app);
+const httpsServer = require("https").createServer(https_options, app);
+
+let server = productionMode ? httpsServer : httpServer;
 
 const io = socketIo(server, {
   cors: {
@@ -130,6 +134,7 @@ const io = socketIo(server, {
   },
   allowEIO3: true,
 });
+
 require("./sockets/socket")(io);
 
 server.listen(process.env.PORT || 8080, async () => {
@@ -212,5 +217,7 @@ server.listen(process.env.PORT || 8080, async () => {
     });
   }
 
-  activateNotifications();
+  if (productionMode) {
+    activateNotifications();
+  }
 });

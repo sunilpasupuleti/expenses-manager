@@ -1,4 +1,5 @@
 export const colors = {
+  darkMode: false,
   brand: {
     primary: '#5756d5',
     primaryHex: 'rgb(87,86,213)',
@@ -61,6 +62,7 @@ export const colors = {
 
 export const darkModeColors = {
   ...colors,
+  darkMode: true,
   brand: {
     ...colors.brand,
     secondary: 'rgba(28, 28, 68, 3)',

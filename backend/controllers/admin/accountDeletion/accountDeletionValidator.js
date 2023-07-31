@@ -38,6 +38,7 @@ module.exports = {
 
     let requestAlreadyPresent = await AccountDeletion.findOne({
       uid: accountKey,
+      status: { $ne: "rejected" },
     });
 
     if (requestAlreadyPresent) {
