@@ -73,8 +73,11 @@ export const AuthenticationContextProvider = ({children}) => {
       '- LANGUAGE -',
       getLocales()[0] && getLocales()[0].languageTag,
     );
-    checkSmsReadPermission();
-    checkSmsReceivePermission();
+
+    if (Platform.OS === 'android') {
+      checkSmsReadPermission();
+      checkSmsReceivePermission();
+    }
 
     checkFirstLaunch();
 
