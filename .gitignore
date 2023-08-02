@@ -68,6 +68,6 @@ yarn-error.log
 .metro-health-check*
 
 # ignore ssl
-/backend/config/ssl/
-/backend/public/users/
-
+backend/config/ssl/
+backend/public/users/
+backend/config/AuthKey_78MHH3V4YC.p8
