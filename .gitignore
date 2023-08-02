@@ -69,4 +69,5 @@ yarn-error.log
 
 # ignore ssl
 /backend/config/ssl/
+/backend/public/users/
 
