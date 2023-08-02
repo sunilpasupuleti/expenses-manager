@@ -8,6 +8,10 @@ Expenses Manager has been crafted to keep track of your spending effortlessly, w
 
 ## APK
 
+WEB
+
+https://expenses-manager.webwizard.in
+
 GOOGLE PLAY STORE
 
 https://play.google.com/store/apps/details?id=com.webwizard.expensesmanager
@@ -122,7 +126,7 @@ IOS
 
 \*\* You must have a google developer account to run this project.
 
-If you already have a developer account dont forgot to link billing account, becausesome api's that we use like Google Cloud Vision requires.
+If you already have a developer account dont forgot to link billing account, because some api's and features that we use
 
 you can check the Google Cloud Vision API pricing from https://cloud.google.com/vision/
 
@@ -137,8 +141,6 @@ you can check the Google Cloud Vision API pricing from https://cloud.google.com/
 
    Cloud Messaging
 
-   Cloud Vision Api
-
    Android Device Verification
 
 5. Go to https://console.firebase.google.com/ and navigate to the project you have created
@@ -151,13 +153,9 @@ you can check the Google Cloud Vision API pricing from https://cloud.google.com/
 
    Phone
 
+   Apple (For IOS Apple Authentication)
+
 7. Enable Following services from firebase
-
-   Firestore Database
-
-   Realtime Database
-
-   Storage
 
    Cloud Messaging
 
@@ -167,27 +165,58 @@ you can check the Google Cloud Vision API pricing from https://cloud.google.com/
 
 9. From Project Settings link your project to Android and IOS
 
-10. Huff, I know its lot, Finally lets move to next part. How to run locally
+10. Huff, I know its lot, Finally lets move to next part. How to run the project locally
 
 ## Config Files
 
 To run this project, you will need to add the following configuration files to the Project.
 
-- Create .env file in root of BACKEND directory with following values
+- Create .env file in the path /backend/config/.env with following values
 
 ```bash
   PORT=3000
-  FIREBASE_DATABASE_URL=https://<firebase database url provided to you from FIREBASE.>/
-  FIREBASE_STORAGE_BUCKET=<firebase storage bucket url Ex : teest-da065.appspot.com>
+  FIREBASE_DATABASE_URL=<Your Firebase Database URL>
+  FIREBASE_STORAGE_BUCKET=<Firebase storage bucker>
+  LOGPATH=logs
+  MONGO_DATABASE_DEV=development
+  MONGO_DATABASE_PRODUCTION=production
+  MONGO_DATABASE_URL=mongodb+srv://yoururlhere/<database>?retryWrites=true&w=majority (include <database> in url to changee according to production mode)
+  ADMIN_EMAIL=admin@gmail.com (to login to dashboard credentials)
+  ADMIN_PASSWORD=Admin@123
+  ADMIN_NAME=Sunil Kumar Pasupuleti
+  AES_ENCRYPTION_KEY=expensesmanager
+  JWT_SECRET=expensesmanager
+  FRONTEND_URL=https://ec2.webwizard.in
+  BACKEND_URL=https://ec2.webwizard.in:3000
+  CORS_ORIGIN_URL=https://ec2.webwizard.in,http://ec2.webwizard.in,http://localhost:4200,https://expenses-manager.webwizard.in,http://65.1.150.254
+  ONE_SIGNAL_APP_ID=your one signal app Id in order to send custom notifications
+  ONE_SIGNAL_API_KEY=one signal api key
+  ONE_SIGNAL_DAILY_BACKUP_CHANNEL_ID=Channel ID for daily backup android
+  ONE_SIGNAL_DAILY_REMINDER_CHANNEL_ID=Channel Id for daily reminder android
+  ONE_SIGNAL_DAILY_UPDATES_CHANNEL_ID=Channel Id for daily updated android
+
 ```
 
-- Create config.js file in root of APP directory with following values
+- Create config.js file in path /app/config.js directory with following values
 
 ```bash
  export const BACKEND_URL ='http://<your backend url where u have hosted or started>';
  export const WEB_CLIENT_ID = '<Web client id from Firebase console>';
  export const GOOGLE_API_KEY = 'Credentials/API we have created in the installation step from Google Cloud Platform';
  export const GOOGLE_CLOUD_VISION_API_URL ='https://vision.googleapis.com/v1/images:annotate';
+export const BACKEND_URL = 'https://ec2.webwizard.in:3000';
+export const WEB_CLIENT_ID =
+  '4544693826-dcfvcng0op5c5me3homei0mcki4k6ue9.apps.googleusercontent.com';
+export const MINDEE_API_URL =
+  'https://api.mindee.net/v1/products/mindee/expense_receipts/v5/predict' (Smart scan receipt using MINDEE);
+export const MINDEE_API_KEY = MIndee api key here;
+export const ONESIGNAL_APP_ID = One signal app id to register;
+export const ACCOUNT_DELETION_URL =
+  'https://expenses-manager.webwizard.in/#/account-deletion';
+export const APP_STORE_URL =
+  'https://apps.apple.com/us/app/expenses-manager-by-webwizard/id6450874945';
+export const PLAY_STORE_URL =
+  'https://play.google.com/store/apps/details?id=com.webwizard.expensesmanager';
 
 ```
 
@@ -210,15 +239,27 @@ Go to the 'APP' directory
 
 ```bash
   cd app
-  npm install
+  npm install -f
 ```
 
 Go to the 'BACKEND' directory
 
 ```bash
   cd backend
-  npm install
+  npm install -f
+  npm run dev
 ```
+
+Go to the 'WEB' directory
+
+```bash
+  cd web
+  npm install -f
+  npm run start
+```
+
+You can access your ADMIN DASHBOARD to manage users from this url
+http://localhost:4200/#/admin
 
 Start the app
 
@@ -238,9 +279,9 @@ Run the emulator or connect the physical android device and go to APP directory
 
 ## Tech Stack
 
-**Client:** React Native, Redux, Firebase, GCP
+**Client:** React Native, Redux, Firebase, GCP, One Signal for Notification, Mindeee For Smart Scan Receipt
 
-**Server:** Node, Express, CRON JS, Firebase Admin Sdk, Cloud Messaging
+**Server:** Node, Express, Scheduler, Firebase Admin Sdk, Cloud Messaging, One Signal
 
 ## More Projects
 

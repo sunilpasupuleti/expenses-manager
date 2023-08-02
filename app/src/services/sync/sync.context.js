@@ -21,7 +21,6 @@ import {
   unlink,
 } from 'react-native-cloud-store';
 import moment from 'moment';
-import {useNetInfo} from '@react-native-community/netinfo';
 
 export const SyncContext = createContext({
   backUpData: () => null,
@@ -45,7 +44,6 @@ export const SyncContextProvider = ({children}) => {
   const appState = useSelector(state => state.service.appState);
 
   let {sendRequest} = useHttp();
-  const netInfo = useNetInfo();
 
   useEffect(() => {
     if (userData) {
@@ -275,10 +273,9 @@ export const SyncContextProvider = ({children}) => {
     };
 
     dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'backup'}));
-
     try {
       if ((await isICloudAvailable()) && defaultICloudContainerPath) {
-        const fileName = `transactions-${moment()}.json`;
+        const fileName = `transactions-${moment()}.txt`;
         let path = `${defaultICloudContainerPath}/Documents/${fileName}`;
         await writeFile(path, JSON.stringify(data))
           .then(() => {

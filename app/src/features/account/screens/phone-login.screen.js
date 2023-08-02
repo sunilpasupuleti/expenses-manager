@@ -24,7 +24,10 @@ import {
   LoginInput,
 } from '../components/account.styles';
 import * as Animatable from 'react-native-animatable';
-import CountryPicker, {DARK_THEME} from 'react-native-country-picker-modal';
+import CountryPicker, {
+  DARK_THEME,
+  getCallingCode,
+} from 'react-native-country-picker-modal';
 import {
   OTPContainer,
   OTPinputContainer,
@@ -37,6 +40,7 @@ import {
 import SmsListener from 'react-native-android-sms-listener';
 import {getCountry} from 'react-native-localize';
 import {useSelector} from 'react-redux';
+import {ScrollView} from 'react-native-gesture-handler';
 
 export const PhoneLoginScreen = ({navigation, route}) => {
   const [phone, setPhone] = useState({value: '', error: false});
@@ -44,7 +48,7 @@ export const PhoneLoginScreen = ({navigation, route}) => {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
-  const [mode, setMode] = useState('phone');
+  const [mode, setMode] = useState('otp');
   const maximumOtpLength = 6;
   const [confirmCode, setConfirmCode] = useState(null);
   const [isPinReady, setIsPinReady] = useState(false);
@@ -85,6 +89,8 @@ export const PhoneLoginScreen = ({navigation, route}) => {
   const onChangeMode = mode => {
     if (mode === 'phone') {
       setPhone({value: '', error: false});
+      setSuccess('');
+      setError('');
     }
     onResetAllValues();
     setMode(mode);
@@ -154,9 +160,11 @@ export const PhoneLoginScreen = ({navigation, route}) => {
       }
     }
     setShowLoader(true);
+    getCallingCode();
+    let callCode = await getCallingCode(countryCode);
     let result;
-    let number = '+' + country.callingCode[0] + phone.value;
-    console.log(number);
+    let number = '+' + callCode + phone.value;
+
     if (mode === 'phone') {
       result = await onSignInWithMobile(number, resend);
       if (result && result.status) {
@@ -238,162 +246,170 @@ export const PhoneLoginScreen = ({navigation, route}) => {
 
   return (
     <SafeArea>
-      <View
-        style={{
+      <ScrollView
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{
           flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
         }}>
-        <Animatable.Image
-          animation={'slideInRight'}
+        <View
           style={{
-            width: 100,
-            height: 100,
-            borderRadius: 100,
-            marginBottom: 30,
-            marginTop: 30,
-          }}
-          source={require('../../../../assets/wallet.jpeg')}
-        />
-        <Text
-          fontfamily="bodyBold"
-          color={theme.colors.text.primary}
-          fontsize="25px">
-          Expenses Manager
-        </Text>
-      </View>
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <Animatable.Image
+            animation={'slideInRight'}
+            style={{
+              width: 100,
+              height: 100,
+              borderRadius: 100,
+              marginBottom: 30,
+              marginTop: 30,
+            }}
+            source={require('../../../../assets/wallet.jpeg')}
+          />
+          <Text
+            fontfamily="bodyBold"
+            color={theme.colors.text.primary}
+            fontsize="25px">
+            Expenses Manager
+          </Text>
+        </View>
 
-      {mode === 'phone' && (
-        <AccountContainer>
-          {error && (
-            <ErrorMessage fontsize="13px">{error.message}</ErrorMessage>
-          )}
-          {success && success.message && (
-            <SuccessMessage fontsize="15px">{success.message}</SuccessMessage>
-          )}
-
-          <FlexRow style={{height: 60}}>
-            <CountryPicker
-              countryCode={countryCode}
-              withFilter
-              withCallingCodeButton
-              withEmoji
-              withCloseButton
-              withAlphaFilter
-              withFlagButton
-              withModal={true}
-              theme={darkMode ? DARK_THEME : {}}
-              containerButtonStyle={{
-                padding: 10,
-                marginTop: 5,
-              }}
-              onSelect={onChangeCountry}
-            />
-
-            <LoginInput
-              theme={{roundness: 0}}
-              selectionColor={theme.colors.brand.primary}
-              mode="outlined"
-              returnKeyType="done"
-              maxLength={10}
-              onChangeText={n => setPhone(p => ({...p, value: n.trim()}))}
-              value={phone.value}
-              style={{width: '100%'}}
-              placeholder="Enter your mobile number"
-              keyboardType="phone-pad"
-              right={
-                phone.value && (
-                  <LoginInput.Icon
-                    icon="close-circle"
-                    iconColor="#bbb"
-                    onPress={() => setPhone(p => ({...p, value: ''}))}
-                  />
-                )
-              }
-            />
-          </FlexRow>
-
-          <Spacer size={'large'} />
-
-          {phone.error && (
-            <ErrorMessage fontsize="13px">Mobile number required</ErrorMessage>
-          )}
-
-          <Spacer size={'xlarge'} />
-
-          <Button
-            theme={{roundness: 10}}
-            mode="contained"
-            style={{height: 40}}
-            buttonColor={theme.colors.brand.primary}
-            textColor="#fff"
-            onPress={() => onClickSubmit(false)}
-            loading={showLoader}
-            disabled={showLoader}>
-            {showLoader ? 'SENDING OTP' : ' SEND OTP'}
-          </Button>
-          <Spacer size={'large'} />
-          <Hyperlink onPress={() => navigation.goBack()}>
-            Go back to login screen ?
-          </Hyperlink>
-        </AccountContainer>
-      )}
-
-      {mode === 'otp' && (
-        <>
-          <Spacer size={'xlarge'} />
-
-          {error && (
-            <ErrorMessage fontsize="13px">{error.message}</ErrorMessage>
-          )}
-          {success && success.message && (
-            <SuccessMessage fontsize="15px">{success.message}</SuccessMessage>
-          )}
-          <Spacer size="medium" />
-          {/* <Hyperlink onPress={() => onClickSubmit(true)}>
-            Otp not received? Resend Otp
-          </Hyperlink> */}
-
-          <OTPContainer onPress={Keyboard.dismiss}>
-            <OTPinputContainer>
-              <SplitOTPBoxesContainer>
-                {boxArray.map(boxDigit)}
-              </SplitOTPBoxesContainer>
-              <TextInputHidden
-                value={otp.value}
-                onChangeText={onChangeOtpValue}
-                maxLength={maximumOtpLength}
-                ref={otpInputRef}
-                keyboardType="numeric"
-                autoFocus
-                textContentType="oneTimeCode"
-                autoComplete="one-time-code"
-                onBlur={handleOnBlur}
-                onFocus={handleOnFocus}
-              />
-            </OTPinputContainer>
-          </OTPContainer>
-          <Spacer size={'xlarge'} />
-
+        {mode === 'phone' && (
           <AccountContainer>
+            {error && (
+              <ErrorMessage fontsize="13px">{error.message}</ErrorMessage>
+            )}
+            {success && success.message && (
+              <SuccessMessage fontsize="15px">{success.message}</SuccessMessage>
+            )}
+
+            <FlexRow style={{height: 60}}>
+              <CountryPicker
+                countryCode={countryCode}
+                withFilter
+                withCallingCodeButton
+                withEmoji
+                withCloseButton
+                withAlphaFilter
+                withFlagButton
+                withModal={true}
+                theme={darkMode ? DARK_THEME : {}}
+                containerButtonStyle={{
+                  padding: 10,
+                  marginTop: 5,
+                }}
+                onSelect={onChangeCountry}
+              />
+
+              <LoginInput
+                theme={{roundness: 0}}
+                selectionColor={theme.colors.brand.primary}
+                mode="outlined"
+                returnKeyType="done"
+                maxLength={10}
+                onChangeText={n => setPhone(p => ({...p, value: n.trim()}))}
+                value={phone.value}
+                style={{width: '100%'}}
+                placeholder="Enter your mobile number"
+                keyboardType="phone-pad"
+                right={
+                  phone.value && (
+                    <LoginInput.Icon
+                      icon="close-circle"
+                      iconColor="#bbb"
+                      onPress={() => setPhone(p => ({...p, value: ''}))}
+                    />
+                  )
+                }
+              />
+            </FlexRow>
+
+            <Spacer size={'large'} />
+
+            {phone.error && (
+              <ErrorMessage fontsize="13px">
+                Mobile number required
+              </ErrorMessage>
+            )}
+
+            <Spacer size={'xlarge'} />
+
             <Button
+              theme={{roundness: 10}}
               mode="contained"
               style={{height: 40}}
               buttonColor={theme.colors.brand.primary}
               textColor="#fff"
-              onPress={onVerifyOtp}
+              onPress={() => onClickSubmit(false)}
               loading={showLoader}
               disabled={showLoader}>
-              {showLoader ? 'VERIFYING OTP' : ' VERIFY OTP'}
+              {showLoader ? 'SENDING OTP' : ' SEND OTP'}
             </Button>
             <Spacer size={'large'} />
-
-            <Hyperlink onPress={() => onChangeMode('phone')}>
-              Change number?
+            <Hyperlink onPress={() => navigation.goBack()}>
+              Go back to login screen ?
             </Hyperlink>
           </AccountContainer>
-        </>
-      )}
+        )}
+
+        {mode === 'otp' && (
+          <>
+            <Spacer size={'xlarge'} />
+
+            {error && (
+              <ErrorMessage fontsize="13px">{error.message}</ErrorMessage>
+            )}
+            {success && success.message && (
+              <SuccessMessage fontsize="15px">{success.message}</SuccessMessage>
+            )}
+            <Spacer size="medium" />
+            {/* <Hyperlink onPress={() => onClickSubmit(true)}>
+            Otp not received? Resend Otp
+          </Hyperlink> */}
+
+            <OTPContainer onPress={Keyboard.dismiss}>
+              <OTPinputContainer>
+                <SplitOTPBoxesContainer>
+                  {boxArray.map(boxDigit)}
+                </SplitOTPBoxesContainer>
+                <TextInputHidden
+                  value={otp.value}
+                  onChangeText={onChangeOtpValue}
+                  maxLength={maximumOtpLength}
+                  ref={otpInputRef}
+                  keyboardType="numeric"
+                  autoFocus
+                  textContentType="oneTimeCode"
+                  autoComplete="one-time-code"
+                  onBlur={handleOnBlur}
+                  onFocus={handleOnFocus}
+                />
+              </OTPinputContainer>
+            </OTPContainer>
+            <Spacer size={'xlarge'} />
+
+            <AccountContainer>
+              <Button
+                mode="contained"
+                style={{height: 40}}
+                buttonColor={theme.colors.brand.primary}
+                textColor="#fff"
+                onPress={onVerifyOtp}
+                loading={showLoader}
+                disabled={showLoader}>
+                {showLoader ? 'VERIFYING OTP' : ' VERIFY OTP'}
+              </Button>
+              <Spacer size={'large'} />
+
+              <Hyperlink onPress={() => onChangeMode('phone')}>
+                Change number?
+              </Hyperlink>
+            </AccountContainer>
+          </>
+        )}
+      </ScrollView>
     </SafeArea>
   );
 };

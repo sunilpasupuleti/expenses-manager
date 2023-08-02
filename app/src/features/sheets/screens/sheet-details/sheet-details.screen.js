@@ -23,7 +23,6 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
-
 import {useDispatch} from 'react-redux';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {FlexRow} from '../../../../components/styles';

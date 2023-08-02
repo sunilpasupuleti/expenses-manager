@@ -3,7 +3,8 @@ export const colors = {
   brand: {
     primary: '#5756d5',
     primaryHex: 'rgb(87,86,213)',
-    secondary: 'rgb(204, 204, 238)',
+    secondary: '#CCCCEE',
+    secondaryHex: 'rgb(204, 204, 238)',
     muted: '#c6daf7',
   },
 

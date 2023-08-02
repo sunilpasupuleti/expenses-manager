@@ -2,6 +2,7 @@ import React from 'react';
 import {TextInput} from 'react-native-paper';
 import styled from 'styled-components/native';
 import {colors} from '../../../infrastructure/theme/colors';
+import {Text} from '../../../components/typography/text.component';
 
 export const OTPContainer = styled.Pressable`
   align-items: center;
@@ -30,11 +31,11 @@ export const SplitBoxes = styled.View`
   border-color: ${colors.brand.secondary};
   border-width: 2px;
   border-radius: 5px;
-  padding: 10px;
+  padding: 15px;
   min-width: 45px;
 `;
 
-export const SplitBoxText = styled.Text`
+export const SplitBoxText = styled(Text)`
   font-size: 20px;
   text-align: center;
 `;

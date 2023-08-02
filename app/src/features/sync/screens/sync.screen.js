@@ -24,12 +24,8 @@ import {
 import {SettingsCardContent} from '../../settings/components/settings.styles';
 import {loaderActions} from '../../../store/loader-slice';
 import {notificationActions} from '../../../store/notification-slice';
-import {
-  defaultICloudContainerPath,
-  isICloudAvailable,
-  readDir,
-} from 'react-native-cloud-store';
 import {getTimeZone} from 'react-native-localize';
+import _ from 'lodash';
 
 export const SyncScreen = ({navigation, route}) => {
   const theme = useTheme();
@@ -42,7 +38,7 @@ export const SyncScreen = ({navigation, route}) => {
     onBackupToiCloud,
     onDeleteBackupFromiCloud,
   } = useContext(SyncContext);
-  const {onLogout, userData} = useContext(AuthenticationContext);
+  const {onLogout} = useContext(AuthenticationContext);
 
   const [showModal, setShowModal] = useState(false);
   const [showiCloudModal, setShowiCloudModal] = useState(false);
@@ -150,6 +146,7 @@ export const SyncScreen = ({navigation, route}) => {
         };
         structuredFiles.push(obj);
       });
+      structuredFiles = _.sortBy(structuredFiles, 'date').reverse();
       setiCloudRestoreDates(structuredFiles);
       if (type && type === 'delete') {
         setShowiCloudDeleteModal(true);
@@ -164,6 +161,12 @@ export const SyncScreen = ({navigation, route}) => {
       'Are your sure?',
       'Are you sure you want to remove this backup file from your iCloud?',
       [
+        // The "No" button
+        // Does nothing but dismiss the dialog when tapped
+        {
+          text: 'No',
+        },
+
         // The "Yes" button
         {
           text: 'Yes',
@@ -171,11 +174,6 @@ export const SyncScreen = ({navigation, route}) => {
             setShowiCloudDeleteModal(false);
             onDeleteBackupFromiCloud(file);
           },
-        },
-        // The "No" button
-        // Does nothing but dismiss the dialog when tapped
-        {
-          text: 'No',
         },
       ],
     );
@@ -214,7 +212,6 @@ export const SyncScreen = ({navigation, route}) => {
                     <Ionicons name="chevron-forward" size={25} color="#aaa" />
                   </Setting>
                 </SettingsCardContent>
-
                 <SettingsCardContent
                   onPress={() => getRestoreDatesFromiCloud('delete')}>
                   <Setting justifyContent="space-between">
@@ -407,7 +404,7 @@ export const SyncScreen = ({navigation, route}) => {
                       .format('hh:mm:ss A');
 
                     return (
-                      <View style={{padding: 15}}>
+                      <View style={{padding: 15}} key={i}>
                         <FlexRow justifyContent="space-between">
                           <View>
                             <Text style={{padding: 5}}>{backup.name}</Text>

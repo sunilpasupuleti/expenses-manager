@@ -1,11 +1,11 @@
 package com.webwizard.expensesmanager;
 
+import android.os.Bundle; // added this.
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactActivityDelegate;
 
-import android.os.Bundle; // added this.
 import org.devio.rn.splashscreen.SplashScreen; // added this.
 
 // added for android app state

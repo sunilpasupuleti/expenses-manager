@@ -1,8 +1,11 @@
 import OneSignal from 'react-native-onesignal';
 import {Linking, Platform} from 'react-native';
 
-//Prompt for push on iOS
-OneSignal.promptForPushNotificationsWithUserResponse(response => {});
+try {
+  OneSignal.promptForPushNotificationsWithUserResponse(response => {});
+} catch (e) {
+  console.log(e, 'error in one signal');
+}
 
 // called in foreground state when app is in open
 OneSignal.setNotificationWillShowInForegroundHandler(
