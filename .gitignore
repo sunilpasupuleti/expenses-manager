@@ -61,8 +61,9 @@ yarn-error.log
 *.jsbundle
 
 # Ruby / CocoaPods
-/app/ios/Pods/
-/app/vendor/bundle/
+app/ios/Pods/
+app/vendor/bundle/
+app/config.js
 
 # Temporary files created by Metro to check the health of the file watcher
 .metro-health-check*
@@ -71,3 +72,4 @@ yarn-error.log
 backend/config/ssl/
 backend/public/users/
 backend/config/AuthKey_78MHH3V4YC.p8
+backend/config/expensesmanager.json
