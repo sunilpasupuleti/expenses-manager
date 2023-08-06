@@ -81,9 +81,8 @@ jobs:
             docker rmi expenses-manager-backend
             rm config/.env
             rm config/expensesmanager.json
-            rm config/ssl/ca_bundle.crt
-            rm config/ssl/certificate.crt
-            rm config/ssl/private.crt
+            rm -rf config/ssl
+            mkdir config/ssl
 
             touch config/.env
             touch config/expensesmanager.json
