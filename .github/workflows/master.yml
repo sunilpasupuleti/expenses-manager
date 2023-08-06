@@ -93,9 +93,9 @@ jobs:
 
             echo "${{secrets.BACKEND_ENV_FILE}}" | base64 --decode > config/.env
             echo "${{secrets.EXPENSES_MANAGER_JSON}}" | base64 --decode > config/expensesmanager.json
-            echo "${{secrets.SSL_CA_BUNDLE}}" | base64 --decode > config/ssl/ca_bundle.crt
-            echo "${{secrets.SSL_PRIVATE}}" | base64 --decode > config/ssl/private.key
-            echo "${{secrets.SSL_CERTIFICATE}}" | base64 --decode > config/ssl/certificate.crt
+            echo "${{secrets.SSL_CA_BUNDLE}}" > config/ssl/ca_bundle.crt
+            echo "${{secrets.SSL_PRIVATE}}" > config/ssl/private.key
+            echo "${{secrets.SSL_CERTIFICATE}}" > config/ssl/certificate.crt
 
             npm install -f
             cd ..
