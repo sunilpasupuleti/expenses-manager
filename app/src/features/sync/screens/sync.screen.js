@@ -254,11 +254,7 @@ export const SyncScreen = ({navigation, route}) => {
                 <Setting justifyContent="space-between">
                   <FlexRow>
                     <SettingIconWrapper color="#4FBA97">
-                      <Ionicons
-                        name="ios-sync-outline"
-                        size={20}
-                        color="#fff"
-                      />
+                      <Ionicons name="sync-outline" size={20} color="#fff" />
                     </SettingIconWrapper>
                     <SettingTitle>Restore latest data</SettingTitle>
                   </FlexRow>
@@ -280,17 +276,17 @@ export const SyncScreen = ({navigation, route}) => {
             </SettingsCard>
           </Spacer>
 
-          <Text variant="caption" style={styles.hint}>
+          <Text variantType="caption" style={styles.hint}>
             <Text style={styles.hintHeading}> BACKUP : </Text> Your data will be
             backed up.
           </Text>
-          <Text variant="caption" style={styles.hint}>
+          <Text variantType="caption" style={styles.hint}>
             <Text style={styles.hintHeading}> RESTORE :</Text> Data from your
             most recent backup will be recovered. If you make any new changes,
             please create a backup in order to prevent data loss.
           </Text>
 
-          <Text variant="caption" style={styles.hint}>
+          <Text variantType="caption" style={styles.hint}>
             <Text style={styles.hintHeading}>RESTORE FROM SPECIFIC DATE :</Text>{' '}
             You have the option to recover your data from the past 10 backups.
           </Text>

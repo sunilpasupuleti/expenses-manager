@@ -44,6 +44,7 @@ import { hideLoader, showLoader } from "../../../../shared/Loader/Loader";
 import navigationTransition from "../../../../shared/NavigationTransition/NavigationTransition";
 import NavigationTransition from "../../../../shared/NavigationTransition/NavigationTransition";
 import Swal from "sweetalert2";
+import { getFirebaseAccessUrl } from "../../../../utility/helper";
 
 const LottieContainer = styled.div`
   height: 300px;
@@ -384,9 +385,9 @@ const AccountDeletion = ({ title }) => {
                       let photoURL = null;
                       if (user && user.photoURL) {
                         photoURL = user.photoURL.startsWith(
-                          `public/users/${user?.uid}`
+                          `users/${user?.uid}`
                         )
-                          ? `${process.env.REACT_APP_BACKEND_URL}/${user.photoURL}`
+                          ? getFirebaseAccessUrl(user.photoURL)
                           : user.photoURL;
                       }
                       return (

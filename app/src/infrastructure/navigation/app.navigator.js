@@ -12,6 +12,7 @@ import {ProfileContextProvider} from '../../services/profile/profile.context';
 import {SmsTransactions} from '../../components/utility/SmsTransactions';
 import {useTheme} from 'react-native-paper';
 import {SelectBaseCurrency} from '../../components/utility/SelectBaseCurrency';
+import {SettingsContextProvider} from '../../services/settings/settings.context';
 const Stack = createStackNavigator();
 
 export const AppNavigator = () => {
@@ -19,32 +20,34 @@ export const AppNavigator = () => {
   return (
     <>
       <SheetsContextProvider>
-        <SyncContextProvider>
-          <ProfileContextProvider>
-            <SmsTransactions />
+        <SettingsContextProvider>
+          <SyncContextProvider>
+            <ProfileContextProvider>
+              <SmsTransactions />
 
-            <SelectBaseCurrency />
+              <SelectBaseCurrency />
 
-            <Stack.Navigator
-              screenOptions={{
-                headerShown: false,
-              }}>
-              <Stack.Screen name="Sheets" component={SheetsNavigator} />
-              <Stack.Screen
-                options={{
-                  headerMode: 'screen',
-                  gestureResponseDistance:
-                    Dimensions.get('window').height - 200,
-                  ...TransitionPresets.ModalPresentationIOS,
-                }}
-                name="Settings"
-                component={SettingsNavigator}
-              />
+              <Stack.Navigator
+                screenOptions={{
+                  headerShown: false,
+                }}>
+                <Stack.Screen name="Sheets" component={SheetsNavigator} />
+                <Stack.Screen
+                  options={{
+                    headerMode: 'screen',
+                    gestureResponseDistance:
+                      Dimensions.get('window').height - 200,
+                    ...TransitionPresets.ModalPresentationIOS,
+                  }}
+                  name="Settings"
+                  component={SettingsNavigator}
+                />
 
-              <Stack.Screen name="Applock" component={AppLockScreen} />
-            </Stack.Navigator>
-          </ProfileContextProvider>
-        </SyncContextProvider>
+                <Stack.Screen name="Applock" component={AppLockScreen} />
+              </Stack.Navigator>
+            </ProfileContextProvider>
+          </SyncContextProvider>
+        </SettingsContextProvider>
       </SheetsContextProvider>
 
       <Notification />

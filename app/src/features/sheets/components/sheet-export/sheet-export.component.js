@@ -24,6 +24,7 @@ import {notificationActions} from '../../../../store/notification-slice';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
 import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
 import {MultipleSelectList} from 'react-native-dropdown-select-list';
+import {getFirebaseAccessUrl} from '../../../../components/utility/helper';
 
 const onSetFromDate = () => {
   let date = new Date();
@@ -216,6 +217,7 @@ export const SheetExport = ({navigation, route}) => {
         TITLE: d.notes,
         CATEGORY: d.category.name,
         DATE: date,
+        IMAGE: d.image?.url ? getFirebaseAccessUrl(d.image.url) : '-',
         [amount]: d.type === 'expense' ? -d.amount : d.amount,
       };
       structuredDetails.push(detail);
@@ -224,6 +226,7 @@ export const SheetExport = ({navigation, route}) => {
     let extraCells = [
       ['', '', '', '', '', ''],
       [
+        '',
         '',
         '',
         '',
@@ -236,12 +239,14 @@ export const SheetExport = ({navigation, route}) => {
         '',
         '',
         '',
+        '',
         'TOTAL EXPENSES ',
         GetCurrencySymbol(sheet.currency) +
           ' ' +
           GetCurrencyLocalString(totalExpense),
       ],
       [
+        '',
         '',
         '',
         '',

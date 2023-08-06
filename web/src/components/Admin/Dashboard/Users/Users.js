@@ -33,6 +33,7 @@ import moment from "moment";
 import { useSelector } from "react-redux";
 import ViewIcon from "@mui/icons-material/RemoveRedEye";
 import NavigationTransition from "../../../../shared/NavigationTransition/NavigationTransition";
+import { getFirebaseAccessUrl } from "../../../../utility/helper";
 
 const LottieContainer = styled.div`
   height: 300px;
@@ -203,8 +204,8 @@ const Users = ({ title }) => {
     };
     let photoURL = null;
     if (user.photoURL) {
-      photoURL = user.photoURL.startsWith(`public/users/${user.uid}`)
-        ? `${process.env.REACT_APP_BACKEND_URL}/${user.photoURL}`
+      photoURL = user.photoURL.startsWith(`users/${user?.uid}`)
+        ? getFirebaseAccessUrl(user.photoURL)
         : user.photoURL;
     }
     data.photoURL = photoURL;
@@ -322,9 +323,9 @@ const Users = ({ title }) => {
                       let photoURL = null;
                       if (user.photoURL) {
                         photoURL = user.photoURL.startsWith(
-                          `public/users/${user.uid}`
+                          `users/${user?.uid}`
                         )
-                          ? `${process.env.REACT_APP_BACKEND_URL}/${user.photoURL}`
+                          ? getFirebaseAccessUrl(user.photoURL)
                           : user.photoURL;
                       }
                       return (

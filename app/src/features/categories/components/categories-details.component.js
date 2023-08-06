@@ -1,6 +1,6 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import React, {useContext, useEffect, useState} from 'react';
-import {Platform, ScrollView} from 'react-native';
+import {FlatList, Platform, ScrollView} from 'react-native';
 import {Card, Divider} from 'react-native-paper';
 import {Spacer} from '../../../components/spacer/spacer.component';
 import {TouchableHighlightWithColor} from '../../../components/styles';
@@ -61,7 +61,6 @@ export const CategoriesDetails = ({
                     <Text fontfamily="heading">{c.name}</Text>
                   </CategoryItem>
                   <Spacer size={'small'} />
-                  <Divider />
                 </Card.Content>
               </TouchableHighlightWithColor>
             );

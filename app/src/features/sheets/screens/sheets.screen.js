@@ -1,5 +1,4 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import React, {useContext, useRef, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
@@ -38,7 +37,7 @@ export const SheetsScreen = ({navigation}) => {
 
           <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
             <UpperIcon
-              name="md-cog-outline"
+              name="cog-outline"
               size={30}
               color={theme.colors.brand.primary}
             />
@@ -72,7 +71,7 @@ export const SheetsScreen = ({navigation}) => {
         <SheetsInfo navigation={navigation} searchKeyword={searchKeyword} />
 
         <NewSheet onPress={() => navigation.navigate('AddSheet')}>
-          <AddSheetIcon name="md-add-outline" size={25} color="#fff" />
+          <AddSheetIcon name="add-outline" size={25} color="#fff" />
         </NewSheet>
       </MainWrapper>
     </SafeArea>

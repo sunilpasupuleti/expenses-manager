@@ -303,7 +303,7 @@ export const AddCategoryScreen = ({navigation, route}) => {
                     width: 40,
                   }}>
                   <Iconicons
-                    name="ios-color-palette"
+                    name="color-palette"
                     size={25}
                     color={categoryColor}
                   />

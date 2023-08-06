@@ -22,13 +22,7 @@ import {
 } from '../../components/sheet-details/sheet-details.styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {
-  Alert,
-  PermissionsAndroid,
-  Platform,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Alert, Platform, TouchableOpacity, View} from 'react-native';
 import moment from 'moment';
 import Haptics from 'react-native-haptic-feedback';
 import {ScrollView} from 'react-native';
@@ -59,6 +53,7 @@ import {loaderActions} from '../../../../store/loader-slice';
 import remoteConfig from '@react-native-firebase/remote-config';
 import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
+import {getFirebaseAccessUrl} from '../../../../components/utility/helper';
 
 export const AddSheetDetailScreen = ({navigation, route}) => {
   const theme = useTheme();
@@ -83,8 +78,6 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   const {categories, onSaveSheetDetails, onEditSheetDetails, onSaveCategory} =
     useContext(SheetsContext);
 
-  const {userAdditionalDetails} = useContext(AuthenticationContext);
-
   // inputs states
   const [amount, setAmount] = useState(0);
   const [notes, setNotes] = useState(null);
@@ -94,9 +87,6 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   const [selectedImage, setSelectedImage] = useState({
     url: null,
   });
-  const {userData} = useContext(AuthenticationContext);
-
-  const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
 
   const [imageChanged, setImageChanged] = useState(false);
 
@@ -209,15 +199,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
         setDate(new Date(sheetDetail.date));
         let imageUrl = null;
         if (sheetDetail.image && sheetDetail.image.url) {
-          if (
-            sheetDetail.image.url.startsWith(
-              `public/users/${userData.uid}/${sheet.id}/${sheetDetail.id}`,
-            )
-          ) {
-            imageUrl = `${BACKEND_URL}/${sheetDetail.image.url}`;
-          } else {
-            imageUrl = sheetDetail.image.url;
-          }
+          imageUrl = getFirebaseAccessUrl(sheetDetail.image.url);
         }
         setSelectedImage({
           ...sheetDetail?.image,
@@ -359,15 +341,19 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
         response.assets[0] &&
         response.assets[0].base64
       ) {
-        let base64 = 'data:' + response.assets[0].type + ';base64,';
-        let base64Data = base64 + response.assets[0].base64;
+        let onlyBase64 = response.assets[0].base64;
+        let pictureType = response.assets[0].type;
+        let pictureExtension = pictureType.split('/')[1];
+        let base64 = 'data:' + pictureType + ';base64,' + onlyBase64;
+        let uri = response.assets[0].uri;
         if (editMode) {
           setImageChanged(true);
         }
         setSelectedImage({
-          type: response.assets[0].type,
-          base64: base64Data,
-          url: base64Data,
+          type: pictureType,
+          uri: uri,
+          url: base64,
+          extension: pictureExtension,
         });
       }
     });
@@ -389,18 +375,19 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     if (image && image.url) {
       // Getting the extention of the file
       // get bytes
+      setOpen(false);
       dispatch(
         loaderActions.showLoader({
           backdrop: true,
           loaderType: 'image_upload',
         }),
       );
-
+      let imageURL = image.url;
       RNFetchBlob.config({
         fileCache: true,
         appendExt: image.extension,
       })
-        .fetch('GET', image.url)
+        .fetch('GET', imageURL)
         .then(res => {
           saveToCameraRoll(res.data);
         })
@@ -417,17 +404,15 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       const saveToCameraRoll = url => {
         CameraRoll.save(url)
           .then(() => {
-            setOpen(false);
             dispatch(
               notificationActions.showToast({
                 status: 'success',
-                message: 'Image saved to your Gallery/Photos',
+                message: 'Image saved to your Camera Roll/ Photos',
               }),
             );
             dispatch(loaderActions.hideLoader());
           })
           .catch(err => {
-            setOpen(false);
             dispatch(
               notificationActions.showToast({
                 status: 'error',
@@ -540,15 +525,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                 </CategoryItem>
               ) : (
                 <CategoryItem>
-                  <CategoryColor color={'#aaa'}>
-                    {/* {selectedCategory && selectedCategory.icon && (
-                    <MaterialCommunityIcon
-                      name={selectedCategory.icon}
-                      size={16}
-                      color="#fff"
-                    />
-                  )} */}
-                  </CategoryColor>
+                  <CategoryColor color={'#aaa'} />
 
                   <Spacer position={'left'} size={'medium'} />
                   <Text fontfamily="heading">
@@ -857,7 +834,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
             >
               <Dialog.Title style={{textAlign: 'center'}}>
                 <Ionicons
-                  name="ios-alert-circle-outline"
+                  name="alert-circle-outline"
                   size={30}
                   color="tomato"
                 />

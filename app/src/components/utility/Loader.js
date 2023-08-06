@@ -1,9 +1,8 @@
 import React, {useEffect, useState} from 'react';
-import {Animated, StyleSheet, View} from 'react-native';
+import {Animated} from 'react-native';
 import {useSelector} from 'react-redux';
 import styled from 'styled-components/native';
 import Lottie from 'lottie-react-native';
-import {Text} from '../typography/text.component';
 
 import backup from '../../../assets/lottie/backup.json';
 import excel from '../../../assets/lottie/excel.json';

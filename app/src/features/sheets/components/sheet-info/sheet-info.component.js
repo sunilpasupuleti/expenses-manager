@@ -251,17 +251,16 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
                                   );
                                 }}>
                                 <TouchableHighlightWithColor
+                                  style={{
+                                    backgroundColor: theme.colors.bg.card,
+                                    borderRadius: 10,
+                                  }}
                                   onLongPress={() => onLongPressActions(item)}
                                   padding={'0px'}
-                                  onPress={
-                                    () =>
-                                      navigation.navigate('SheetDetailsHome', {
-                                        sheet: item,
-                                      })
-
-                                    // navigation.navigate('SheetDetails', {
-                                    //   sheet: item,
-                                    // })
+                                  onPress={() =>
+                                    navigation.navigate('SheetDetailsHome', {
+                                      sheet: item,
+                                    })
                                   }>
                                   <SheetInfoCard
                                     sheet={item}
@@ -317,16 +316,16 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
                             );
                           }}>
                           <TouchableHighlightWithColor
+                            style={{
+                              backgroundColor: theme.colors.bg.card,
+                              borderRadius: 10,
+                            }}
                             onLongPress={() => onLongPressActions(item)}
                             padding={'0px'}
-                            onPress={
-                              () =>
-                                navigation.navigate('SheetDetailsHome', {
-                                  sheet: item,
-                                })
-                              // navigation.navigate('SheetDetails', {
-                              //   sheet: item,
-                              // })
+                            onPress={() =>
+                              navigation.navigate('SheetDetailsHome', {
+                                sheet: item,
+                              })
                             }>
                             <SheetInfoCard
                               sheet={item}
@@ -392,16 +391,16 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
                               );
                             }}>
                             <TouchableHighlightWithColor
+                              style={{
+                                backgroundColor: theme.colors.bg.card,
+                                borderRadius: 10,
+                              }}
                               onLongPress={() => onLongPressActions(item)}
                               padding={'0px'}
-                              onPress={
-                                () =>
-                                  navigation.navigate('SheetDetailsHome', {
-                                    sheet: item,
-                                  })
-                                // navigation.navigate('SheetDetails', {
-                                //   sheet: item,
-                                // })
+                              onPress={() =>
+                                navigation.navigate('SheetDetailsHome', {
+                                  sheet: item,
+                                })
                               }>
                               <SheetInfoCard
                                 sheet={item}

@@ -43,12 +43,12 @@ import {useSelector} from 'react-redux';
 import {ScrollView} from 'react-native-gesture-handler';
 
 export const PhoneLoginScreen = ({navigation, route}) => {
-  const [phone, setPhone] = useState({value: '', error: false});
+  const [phone, setPhone] = useState({valreacue: '', error: false});
   const [otp, setOtp] = useState({value: '', error: false, focused: false});
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [showLoader, setShowLoader] = useState(false);
-  const [mode, setMode] = useState('otp');
+  const [mode, setMode] = useState('phone');
   const maximumOtpLength = 6;
   const [confirmCode, setConfirmCode] = useState(null);
   const [isPinReady, setIsPinReady] = useState(false);
@@ -160,7 +160,6 @@ export const PhoneLoginScreen = ({navigation, route}) => {
       }
     }
     setShowLoader(true);
-    getCallingCode();
     let callCode = await getCallingCode(countryCode);
     let result;
     let number = '+' + callCode + phone.value;

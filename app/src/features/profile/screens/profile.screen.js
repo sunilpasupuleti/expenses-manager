@@ -18,14 +18,15 @@ import {
 import {Spacer} from '../../../components/spacer/spacer.component';
 import {Alert, ScrollView} from 'react-native';
 import {ProfileContext} from '../../../services/profile/profile.context';
-import remoteConfig from '@react-native-firebase/remote-config';
+
 import {launchImageLibrary} from 'react-native-image-picker';
 import {loaderActions} from '../../../store/loader-slice';
 import RNFetchBlob from 'rn-fetch-blob';
 import {notificationActions} from '../../../store/notification-slice';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
-import auth from '@react-native-firebase/auth';
+
 import _ from 'lodash';
+import {getFirebaseAccessUrl} from '../../../components/utility/helper';
 
 const defaultInputState = {
   displayName: {
@@ -62,12 +63,12 @@ export const ProfileScreen = ({navigation, route}) => {
 
   const [loading, setLoading] = useState(false);
 
-  const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
-
   const [buttonLoading, setButtonLoading] = useState({
     update: false,
     remove: false,
   });
+
+  const [reloadImageKey, setReloadImageKey] = useState('rendomid');
 
   const [previewImage, setPreviewImage] = useState(null);
 
@@ -91,6 +92,8 @@ export const ProfileScreen = ({navigation, route}) => {
 
   useEffect(() => {
     if (userData) {
+      setReloadImageKey(Date.now());
+
       let values = {};
       let {displayName, phoneNumber, email} = userData;
       if (displayName) {
@@ -238,14 +241,17 @@ export const ProfileScreen = ({navigation, route}) => {
         response.assets[0] &&
         response.assets[0].base64
       ) {
-        let base64 =
-          'data:' +
-          response.assets[0].type +
-          ';base64,' +
-          response.assets[0].base64;
+        let onlyBase64 = response.assets[0].base64;
+        let pictureType = response.assets[0].type;
+        let uri = response.assets[0].uri;
+        let pictureExtension = pictureType.split('/')[1];
+        let base64 = 'data:' + pictureType + ';base64,' + onlyBase64;
         let data = {
+          onlyBase64: onlyBase64,
           base64: base64,
-          type: response.assets[0].type,
+          uri: uri,
+          type: pictureType,
+          extension: pictureExtension,
         };
         setPreviewImage(data);
       }
@@ -257,9 +263,7 @@ export const ProfileScreen = ({navigation, route}) => {
 
   const onClickUploadProfilePicture = async () => {
     let data = {
-      photo: {
-        ...previewImage,
-      },
+      ...previewImage,
     };
     const showRemoveButtonLoader = status => {
       setButtonLoading({
@@ -294,13 +298,13 @@ export const ProfileScreen = ({navigation, route}) => {
     if (userData && userData.photoURL) {
       // Getting the extention of the file
       // get bytes
-      let photoURL = userData.photoURL.startsWith(
-        `public/users/${userData.uid}`,
-      )
-        ? `${BACKEND_URL}/${userData.photoURL}`
-        : userData.photoURL;
-
-      let extension = photoURL.split('profile.');
+      let photoURL = userData.photoURL;
+      let extension;
+      if (photoURL && photoURL.startsWith('users/')) {
+        photoURL = getFirebaseAccessUrl(userData.photoURL);
+        let extRegex = /\.(png|jpe?g|gif|bmp|webp)/i;
+        extension = photoURL.match(extRegex)?.[0];
+      }
 
       dispatch(
         loaderActions.showLoader({
@@ -311,7 +315,7 @@ export const ProfileScreen = ({navigation, route}) => {
 
       RNFetchBlob.config({
         fileCache: true,
-        appendExt: extension[1],
+        appendExt: extension,
       })
         .fetch('GET', photoURL)
         .then(res => {
@@ -379,10 +383,10 @@ export const ProfileScreen = ({navigation, route}) => {
                       onLoadStart={() => setProfilePictureLoading(true)}
                       onLoad={() => setProfilePictureLoading(false)}
                       source={{
-                        uri: userData.photoURL.startsWith(
-                          `public/users/${userData.uid}`,
-                        )
-                          ? `${BACKEND_URL}/${userData.photoURL}`
+                        uri: userData.photoURL.startsWith('users/')
+                          ? `${getFirebaseAccessUrl(
+                              userData.photoURL,
+                            )}&time=${reloadImageKey}`
                           : userData.photoURL,
                       }}
                     />
@@ -465,21 +469,22 @@ export const ProfileScreen = ({navigation, route}) => {
                   </Button>
                 )}
 
-                {userData.photoURL && (
-                  <Button
-                    theme={{roundness: 10}}
-                    mode="flat"
-                    style={{
-                      height: 40,
-                      width: buttonLoading.remove ? '100%' : 'auto',
-                    }}
-                    icon={'download'}
-                    onPress={downloadProfilePicture}
-                    buttonColor={theme.colors.brand.secondary}
-                    textColor="#fff">
-                    Download Picture
-                  </Button>
-                )}
+                {userData.photoURL &&
+                  userData.photoURL.startsWith('users/') && (
+                    <Button
+                      theme={{roundness: 10}}
+                      mode="flat"
+                      style={{
+                        height: 40,
+                        width: buttonLoading.remove ? '100%' : 'auto',
+                      }}
+                      icon={'download'}
+                      onPress={downloadProfilePicture}
+                      buttonColor={theme.colors.brand.secondary}
+                      textColor="#fff">
+                      Download Picture
+                    </Button>
+                  )}
               </ProfileImageButtonContainer>
             )}
 

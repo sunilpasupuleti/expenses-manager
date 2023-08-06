@@ -45,6 +45,7 @@ export const AuthenticationContext = createContext({
   onLogout: () => null,
   onSetUserAdditionalDetails: data => null,
   onGetUserDetails: (successCallBack, errorCallback) => null,
+  onUpdateUserDetails: (data, successCallBack, errorCallback) => null,
   fetchedUserDetails: false,
 });
 
@@ -600,6 +601,43 @@ export const AuthenticationContextProvider = ({children}) => {
     );
   };
 
+  const onUpdateUserDetails = async (
+    data,
+    successCallBack = () => {},
+    errorCallback = () => {},
+  ) => {
+    let jwtToken = await auth().currentUser.getIdToken();
+    sendRequest(
+      {
+        type: 'POST',
+        url: BACKEND_URL + '/user',
+        data: data,
+        headers: {
+          authorization: 'Bearer ' + jwtToken,
+        },
+      },
+      {
+        successCallback: async result => {
+          if (result.user) {
+            setUserData(result.user);
+            setUserAdditionalDetails(result.user);
+            await AsyncStorage.setItem(
+              '@expenses-manager-user',
+              JSON.stringify(result.user),
+            );
+          }
+          successCallBack(result);
+          dispatch(loaderActions.hideLoader());
+        },
+        errorCallback: err => {
+          errorCallback();
+          dispatch(loaderActions.hideLoader());
+          console.log(err, ' error while updating user details to backend.');
+        },
+      },
+    );
+  };
+
   return (
     <AuthenticationContext.Provider
       value={{
@@ -617,6 +655,7 @@ export const AuthenticationContextProvider = ({children}) => {
         onSetUserAdditionalDetails,
         userAdditionalDetails,
         onGetUserDetails,
+        onUpdateUserDetails,
       }}>
       {children}
     </AuthenticationContext.Provider>

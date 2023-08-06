@@ -135,7 +135,7 @@ export const AddSheetScreen = ({navigation, route}) => {
         </Spacer>
 
         <AdvancedSettingsContainer>
-          <Text variant="caption" color="#aaa" fontsize="14px">
+          <Text variantType="caption" color="#aaa" fontsize="14px">
             ADVANCED SETTINGS
           </Text>
           <AdvancedSettings theme={{roundness: 5}}>

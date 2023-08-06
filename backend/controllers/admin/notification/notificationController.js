@@ -1,4 +1,8 @@
-const { sendResponse, httpCodes } = require("../../../helpers/utility");
+const {
+  sendResponse,
+  httpCodes,
+  getFirebaseAccessUrl,
+} = require("../../../helpers/utility");
 const logger = require("../../../middleware/logger/logger");
 const Users = require("../../../models/Users");
 const { getMessaging } = require("firebase-admin/messaging");
@@ -7,6 +11,7 @@ const fs = require("fs");
 const path = require("path");
 const util = require("util");
 const OneSignal = require("onesignal-node");
+const { storage } = require("firebase-admin");
 const client = new OneSignal.Client(
   process.env.ONE_SIGNAL_APP_ID,
   process.env.ONE_SIGNAL_API_KEY
@@ -14,6 +19,12 @@ const client = new OneSignal.Client(
 
 const writeFile = util.promisify(fs.writeFile);
 const readdir = util.promisify(fs.readdir);
+
+function base64ToBuffer(base64String) {
+  const base64Data = base64String.replace(/^data:image\/\w+;base64,/, "");
+  const buffer = Buffer.from(base64Data, "base64");
+  return buffer;
+}
 
 module.exports = {
   async sendDailyUpdateNotificationsToUsers(req, res) {
@@ -28,44 +39,42 @@ module.exports = {
 
     // delete old uploaded daily update files from dashboard
     try {
-      let files = await readdir(process.cwd() + "/public/notification");
-      //  big picture images
-      let bigPictureFileExists = files.filter((fileName) =>
-        fileName.includes("daily_update_big_picture")
-      );
-      bigPictureFileExists.forEach((fileName) => {
-        let path = `${process.cwd()}/public/notification/${fileName}`;
-        if (fs.existsSync(path)) {
-          fs.unlinkSync(path);
-        }
+      let [files] = await storage().bucket().getFiles({
+        prefix: "notification",
       });
-      // large icon images
-      let largeIconFileExists = files.filter((fileName) =>
-        fileName.includes("daily_update_large_icon")
-      );
-      largeIconFileExists.forEach((fileName) => {
-        let path = `${process.cwd()}/public/notification/${fileName}`;
-        if (fs.existsSync(path)) {
-          fs.unlinkSync(path);
+      for (const file of files) {
+        const fileNameWithoutExtension = file.name
+          .split(".")
+          .slice(0, -1)
+          .join(".");
+        //  big picture images
+        if (fileNameWithoutExtension.includes("daily_update_big_picture")) {
+          await file.delete();
         }
-      });
+        // large icon images
+        if (fileNameWithoutExtension.includes("daily_update_large_icon")) {
+          await file.delete();
+        }
+      }
     } catch (e) {
       logger.error("Error in reading files " + e);
     }
 
     if (bigPicture) {
-      var base64Data = bigPicture.split(";base64,").pop();
       let pictureExtension = bigPicture.substring(
         "data:image/".length,
         bigPicture.indexOf(";base64")
       );
       let pictureName = `daily_update_big_picture.${pictureExtension}`;
-      bigPicturePath = `public/notification/${pictureName}`;
+      bigPicturePath = `notification/${pictureName}`;
+
       try {
-        await writeFile(bigPicturePath, base64Data, {
-          encoding: "base64",
+        const buffer = base64ToBuffer(bigPicture);
+        const file = storage().bucket().file(bigPicturePath);
+        await file.save(buffer, {
+          contentType: `image/${pictureExtension}`,
         });
-        bigPictureUrl = `${process.env.BACKEND_URL}/${bigPicturePath}`;
+        bigPictureUrl = getFirebaseAccessUrl(bigPicturePath);
       } catch (e) {
         return sendResponse(res, httpCodes.INTERNAL_SERVER_ERROR, {
           message:
@@ -75,18 +84,19 @@ module.exports = {
     }
 
     if (largeIcon) {
-      var base64Data = largeIcon.split(";base64,").pop();
       let pictureExtension = largeIcon.substring(
         "data:image/".length,
         largeIcon.indexOf(";base64")
       );
       let pictureName = `daily_update_large_icon.${pictureExtension}`;
-      largeIconPath = `public/notification/${pictureName}`;
+      largeIconPath = `notification/${pictureName}`;
       try {
-        await writeFile(largeIconPath, base64Data, {
-          encoding: "base64",
+        const buffer = base64ToBuffer(largeIcon);
+        const file = storage().bucket().file(largeIconPath);
+        await file.save(buffer, {
+          contentType: `image/${pictureExtension}`,
         });
-        largeIconUrl = `${process.env.BACKEND_URL}/${largeIconPath}`;
+        largeIconUrl = getFirebaseAccessUrl(largeIconPath);
       } catch (e) {
         return sendResponse(res, httpCodes.INTERNAL_SERVER_ERROR, {
           message:

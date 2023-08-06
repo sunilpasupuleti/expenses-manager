@@ -149,9 +149,9 @@ export const SheetDetailsInfo = ({
                         underlayColor: '#eee',
                         onLongPress: () => {
                           menuRefs.current[index].open();
-                          Haptics.trigger('impactMedium', {
-                            ignoreAndroidSystemSettings: true,
-                          });
+                          // Haptics.trigger('impactMedium', {
+                          //   ignoreAndroidSystemSettings: true,
+                          // });
                         },
                         onPress: () => {
                           menuRefs.current[index].close();
@@ -191,7 +191,7 @@ export const SheetDetailsInfo = ({
                   <MenuOptions
                     optionsContainerStyle={{
                       marginLeft: 10,
-                      marginTop: 35,
+                      marginTop: 0,
                       borderRadius: 10,
                       minWidth: 250,
                     }}>

@@ -14,6 +14,29 @@ const logger = require("../../../middleware/logger/logger");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 
+async function deleteUserFiles(folderName) {
+  let bucket = firebaseAdmin.storage().bucket();
+  try {
+    const [files] = await bucket.getFiles({ prefix: folderName });
+
+    if (files.length === 0) {
+      console.log(`Folder "${folderName}" does not exist.`);
+      return;
+    }
+
+    const deletePromises = files.map((file) => file.delete());
+
+    // Wait for all the files to be deleted
+    await Promise.all(deletePromises);
+
+    console.log(
+      `Folder "${folderName}" and its contents deleted successfully.`
+    );
+  } catch (error) {
+    console.error("Error occurred:", error);
+  }
+}
+
 module.exports = {
   async createRequest(req, res) {
     let uid = req.params.accountKey;
@@ -126,16 +149,7 @@ module.exports = {
     let user = request.user;
 
     // delete user related files
-    let currentDirectory = process.cwd() + "/";
-    let userFolderPath = path.join(
-      currentDirectory,
-      `/public/users/${user.uid}/`
-    );
-    if (fs.existsSync(userFolderPath)) {
-      fsExtra.emptyDirSync(userFolderPath);
-      fsExtra.rmdirSync(userFolderPath);
-    }
-
+    await deleteUserFiles(`users/${user.uid}`);
     // delete user tempBackUpdata
     await BackupsTemp.findOneAndDelete({
       uid: user.uid,

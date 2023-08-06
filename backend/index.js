@@ -18,6 +18,7 @@ const {
   sendDailyReminderNotification,
   sendDailyBackupNotification,
 } = require("./helpers/notificationHelpers");
+const { storage } = require("firebase-admin");
 
 /**
  * Morgon
@@ -152,6 +153,8 @@ server.listen(process.env.PORT || 8080, async () => {
     storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
   });
 
+  // await uploadFolderToFirebaseCloudStorage(__dirname + "/public", "");
+
   // In case if server restarts reschedule all the jobs with which user have dialy reminder and abckup enabled
 
   let jobs = schedule.scheduledJobs;
@@ -221,3 +224,30 @@ server.listen(process.env.PORT || 8080, async () => {
     activateNotifications();
   }
 });
+// let bucket = storage().bucket();
+// async function uploadFolderToFirebaseCloudStorage(
+//   folderPath,
+//   destinationPath
+// ) {
+//   const folderContents = fs.readdirSync(folderPath);
+
+//   for (const file of folderContents) {
+//     const filePath = path.join(folderPath, file);
+
+//     if (fs.statSync(filePath).isDirectory()) {
+//       // Recursively upload sub-folders
+//       const subfolderDestination = path.join(destinationPath, file);
+//       await uploadFolderToFirebaseCloudStorage(
+//         filePath,
+//         subfolderDestination
+//       );
+//     } else {
+//       // Upload individual file
+//       const fileDestination = path.join(destinationPath, file);
+//       await bucket.upload(filePath, {
+//         destination: fileDestination,
+//       });
+//       console.log(`File uploaded: ${fileDestination}`);
+//     }
+//   }
+// }

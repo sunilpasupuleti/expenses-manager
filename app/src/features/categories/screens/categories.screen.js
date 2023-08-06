@@ -121,7 +121,7 @@ export const CategoriesScreen = ({navigation}) => {
             navigation.navigate('AddCategory', {type: activeType})
           }>
           <AddNewCategoryIcon
-            name="md-add-circle-outline"
+            name="add-circle-outline"
             size={25}
             color={theme.colors.brand.primary}
           />

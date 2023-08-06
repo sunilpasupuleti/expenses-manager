@@ -17,7 +17,6 @@ import {
   DeviceEventEmitter,
   Linking,
   LogBox,
-  PermissionsAndroid,
   Platform,
   StatusBar,
   useColorScheme,
@@ -41,6 +40,7 @@ import OneSignal from 'react-native-onesignal';
 import remoteConfig from '@react-native-firebase/remote-config';
 import {GetCurrencySymbol} from './src/components/symbol.currency';
 import {TourGuideProvider} from 'rn-tourguide';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 moment.suppressDeprecationWarnings = true;
 if (Platform.OS === 'android') {
@@ -141,10 +141,7 @@ const App = () => {
   };
 
   return (
-    <TourGuideProvider
-      {...{borderRadius: 16}}
-      dismissOnPress={false}
-      preventOutsideInteraction>
+    <GestureHandlerRootView style={{flex: 1}}>
       <ThemeProvider
         theme={
           appTheme === 'automatic'
@@ -197,7 +194,7 @@ const App = () => {
             : '#000'
         }
       />
-    </TourGuideProvider>
+    </GestureHandlerRootView>
   );
 };
 

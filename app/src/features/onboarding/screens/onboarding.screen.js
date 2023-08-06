@@ -1,15 +1,24 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/react-in-jsx-scope */
-import {Image, Platform} from 'react-native';
-import {Text} from '../../../components/typography/text.component';
+import {Image, Platform, TouchableOpacity, View} from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
-import {useTheme} from 'styled-components/native';
+import styled, {useTheme} from 'styled-components/native';
 import {useRef} from 'react';
 import {useDispatch} from 'react-redux';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {setOnBoarding} from '../../../store/service-slice';
-import {Button} from 'react-native-paper';
+import {FlexRow} from '../../../components/styles';
+import {Spacer} from '../../../components/spacer/spacer.component';
+import {Text} from '../../../components/typography/text.component';
+
+const GetStartedButton = styled(TouchableOpacity)`
+  background-color: #fff;
+  border-radius: 50px;
+  width: 180px;
+  padding: 10px 20px;
+  margin-right: 10px;
+`;
 
 export const OnBoarding = ({navigation, navigate}) => {
   let theme = useTheme();
@@ -140,26 +149,56 @@ export const OnBoarding = ({navigation, navigate}) => {
 
   const Next = ({isLight, ...props}) => {
     return (
-      <MaterialCommunityIcons
-        name={'arrow-right'}
-        size={20}
+      <TouchableOpacity
         style={{
           backgroundColor: '#fff',
           padding: 10,
           borderRadius: 50,
           marginRight: 10,
         }}
-        color={theme.colors.brand.primary}
-        {...props}
+        {...props}>
+        <MaterialCommunityIcons
+          name={'arrow-right'}
+          size={20}
+          color={theme.colors.brand.primary}
+        />
+      </TouchableOpacity>
+    );
+  };
+
+  const Dot = ({selected, ...props}) => {
+    return (
+      <View
+        style={{
+          left: -100,
+          height: 10,
+          width: 10,
+          borderColor: selected ? theme.colors.brand.primary : '#6570a4',
+          margin: 7,
+          backgroundColor: selected ? '#fff' : '#aaa',
+          borderWidth: 1,
+          borderRadius: 50,
+        }}
       />
     );
   };
 
   const Done = ({isLight, ...props}) => {
     return (
-      <Button icon={'check-bold'} textColor="#fff" onPress={onDone}>
-        <Text color="#fff">Done</Text>
-      </Button>
+      <GetStartedButton onPress={onDone}>
+        <FlexRow justifyContent="center">
+          <Text fontsize="18px" color={theme.colors.brand.primary}>
+            Get Started
+          </Text>
+          <Spacer position="left" size="large">
+            <MaterialCommunityIcons
+              name={'arrow-right'}
+              size={20}
+              color={theme.colors.brand.primary}
+            />
+          </Spacer>
+        </FlexRow>
+      </GetStartedButton>
     );
   };
 
@@ -168,6 +207,9 @@ export const OnBoarding = ({navigation, navigate}) => {
       controlStatusBar={false}
       NextButtonComponent={Next}
       DoneButtonComponent={Done}
+      bottomBarColor={theme.colors.brand.primary}
+      showSkip={false}
+      DotComponent={Dot}
       skipToPage={pages.length - 1}
       onDone={onDone}
       ref={onBoardingRef}

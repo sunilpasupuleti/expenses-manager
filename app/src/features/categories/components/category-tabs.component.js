@@ -45,9 +45,9 @@ export const CategoryTabs = ({
   }
 
   useEffect(() => {
-    Haptics.trigger('impactMedium', {
-      ignoreAndroidSystemSettings: true,
-    });
+    // Haptics.trigger('impactMedium', {
+    //   ignoreAndroidSystemSettings: true,
+    // });
     if (animation) {
       runAnimation();
     }

@@ -38,6 +38,7 @@ import moment from "moment";
 import { SocketContext } from "../../../../services/Socket/Socket.context";
 import NavigationTransition from "../../../../shared/NavigationTransition/NavigationTransition";
 import { useSelector } from "react-redux";
+import { getFirebaseAccessUrl } from "../../../../utility/helper";
 
 const errors = {
   titleRequired: "Title required",
@@ -418,414 +419,411 @@ const SendNotifications = ({ title }) => {
     </NotificationLoaderContainer>
   ) : isLoading ? null : (
     <NavigationTransition>
-      {activeDevices && activeDevices.length > 0 && (
-        <Card>
-          <CardContent>
+      <Card>
+        <CardContent>
+          <Box
+            component="form"
+            noValidate
+            onSubmit={onSubmitForm.bind(this)}
+            sx={{ mt: 5 }}
+          >
             <Box
-              component="form"
-              noValidate
-              onSubmit={onSubmitForm.bind(this)}
-              sx={{ mt: 5 }}
+              display="flex"
+              flexWrap="wrap"
+              justifyContent="space-between"
+              alignItems="center"
             >
-              <Box
-                display="flex"
-                flexWrap="wrap"
-                justifyContent="space-between"
-                alignItems="center"
+              <Typography
+                sx={{ fontSize: 18 }}
+                color="text.primary"
+                gutterBottom
               >
-                <Typography
-                  sx={{ fontSize: 18 }}
-                  color="text.primary"
-                  gutterBottom
-                >
-                  {_.upperCase("Send Notifications to active users")}
-                </Typography>
-                <LoadingButton
-                  type="submit"
-                  loadingPosition="end"
-                  endIcon={<NotificationIcon />}
-                  color="primary"
-                  loading={loading}
-                  loadingIndicator={"Sending Notifications..."}
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  {!loading && "Send Notifications"}
-                </LoadingButton>
-              </Box>
-
-              <Grid container spacing={2}>
-                <Grid item md={6}>
-                  <TextField
-                    error={inputs.title.error}
-                    helperText={inputs.title.errorMessage}
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="title"
-                    label="Notification Title"
-                    name="title"
-                    value={inputs.title.value}
-                    onChange={onValueChangeHandler}
-                  />
-                </Grid>
-
-                <Grid item md={6} sm={12}>
-                  <TextField
-                    error={inputs.body.error}
-                    helperText={inputs.body.errorMessage}
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="body"
-                    label="Notification Body"
-                    name="body"
-                    value={inputs.body.value}
-                    onChange={onValueChangeHandler}
-                  />
-                </Grid>
-
-                <Grid item md={6} sm={12}>
-                  {/* big picture */}
-                  <Grid container spacing={2} alignItems={"center"}>
-                    <Grid item md={6} sm={12}>
-                      <Button fullWidth variant="outlined" component="label">
-                        {inputs.bigPicture.value
-                          ? " Change Big Picture"
-                          : "Select Big Picture"}
-                        <input
-                          type="file"
-                          hidden
-                          accept="image/png, image/jpg, image/jpeg"
-                          onChange={(e) => {
-                            setInputs((p) => ({
-                              ...p,
-                              bigPicture: {
-                                ...p.bigPicture,
-                                value: e.target.files[0],
-                              },
-                            }));
-                          }}
-                        />
-                      </Button>
-                      {inputs.bigPicture.value && (
-                        <Button
-                          fullWidth
-                          variant="contained"
-                          style={{
-                            backgroundColor: "tomato",
-                            color: "#fff",
-                            marginTop: 10,
-                          }}
-                          onClick={() =>
-                            setInputs((p) => ({
-                              ...p,
-                              bigPicture: { ...p.bigPicture, value: "" },
-                            }))
-                          }
-                        >
-                          Remove Big Picture
-                        </Button>
-                      )}
-                    </Grid>
-                    <Grid item md={6} sm={12}>
-                      {inputs.bigPicture.value && (
-                        <Avatar
-                          src={URL.createObjectURL(inputs.bigPicture.value)}
-                          sx={{ width: 200, height: 200 }}
-                        />
-                      )}
-                    </Grid>
-                  </Grid>
-                </Grid>
-
-                <Grid item md={6} sm={12}>
-                  {/* large icon */}
-                  <Grid container spacing={2} alignItems={"center"}>
-                    <Grid item md={6} sm={12}>
-                      <Button fullWidth variant="outlined" component="label">
-                        {inputs.largeIcon.value
-                          ? " Change Large Icon"
-                          : "Select Large Icon"}
-                        <input
-                          type="file"
-                          hidden
-                          accept="image/png, image/jpg, image/jpeg"
-                          onChange={(e) => {
-                            setInputs((p) => ({
-                              ...p,
-                              largeIcon: {
-                                ...p.largeIcon,
-                                value: e.target.files[0],
-                              },
-                            }));
-                          }}
-                        />
-                      </Button>
-                      {inputs.largeIcon.value && (
-                        <Button
-                          fullWidth
-                          variant="contained"
-                          style={{
-                            backgroundColor: "tomato",
-                            color: "#fff",
-                            marginTop: 10,
-                          }}
-                          onClick={() =>
-                            setInputs((p) => ({
-                              ...p,
-                              largeIcon: { ...p.largeIcon, value: "" },
-                            }))
-                          }
-                        >
-                          Remove Large Icon
-                        </Button>
-                      )}
-                    </Grid>
-                    <Grid item md={6} sm={12}>
-                      {inputs.largeIcon.value && (
-                        <Avatar
-                          src={URL.createObjectURL(inputs.largeIcon.value)}
-                          sx={{ width: 200, height: 200 }}
-                        />
-                      )}
-                    </Grid>
-                  </Grid>
-                </Grid>
-
-                <Grid item md={12}>
-                  <TextField
-                    sx={{ mt: 2, ml: 1, width: "98%" }}
-                    variant="standard"
-                    size="medium"
-                    fullWidth
-                    id="search"
-                    placeholder="Search by keyword"
-                    name="search"
-                    value={searchKeyword}
-                    onChange={onChangeSearchKeyword}
-                  />
-                </Grid>
-                {activeDevices && activeDevices.length > 0 && (
-                  <Grid item md={12}>
-                    <Toolbar
-                      sx={{
-                        pl: { sm: 2 },
-                        pr: { xs: 1, sm: 1 },
-                        ...(selectedUsers.length > 0 && {
-                          bgcolor: (theme) =>
-                            alpha(
-                              theme.palette.primary.main,
-                              theme.palette.action.activatedOpacity
-                            ),
-                        }),
-                      }}
-                    >
-                      {selectedUsers.length > 0 ? (
-                        <Typography
-                          sx={{ flex: "1 1 100%" }}
-                          color="inherit"
-                          variant="subtitle1"
-                          component="div"
-                        >
-                          {selectedUsers.length} Selected Users
-                        </Typography>
-                      ) : (
-                        <Typography
-                          sx={{ flex: "1 1 100%" }}
-                          variant="h6"
-                          id="tableTitle"
-                          component="div"
-                        >
-                          Select Users
-                        </Typography>
-                      )}
-                    </Toolbar>
-
-                    <TableContainer component={Paper} sx={{ mt: 4 }}>
-                      <Table sx={{ minWidth: 750 }}>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell padding="checkbox">
-                              <Checkbox
-                                color="primary"
-                                indeterminate={
-                                  selectedUsers.length > 0 &&
-                                  selectedUsers.length < activeDevices.length
-                                }
-                                checked={
-                                  activeDevices.length > 0 &&
-                                  selectedUsers.length === activeDevices.length
-                                }
-                                onChange={handleSelectAllClick}
-                                inputProps={{
-                                  "aria-label": "select all users",
-                                }}
-                              />
-                            </TableCell>
-
-                            <TableCell>
-                              {" "}
-                              <TableSortLabel
-                                direction={
-                                  sort.type && sort.type === "desc"
-                                    ? "asc"
-                                    : "desc"
-                                }
-                                active
-                                onClick={() => onChangeSorting("displayName")}
-                              >
-                                Name
-                              </TableSortLabel>
-                            </TableCell>
-                            <TableCell>
-                              {" "}
-                              <TableSortLabel
-                                direction={
-                                  sort.type && sort.type === "desc"
-                                    ? "asc"
-                                    : "desc"
-                                }
-                                active
-                                onClick={() => onChangeSorting("email")}
-                              >
-                                Email
-                              </TableSortLabel>
-                            </TableCell>
-                            <TableCell>Device</TableCell>
-                            <TableCell>Phone </TableCell>
-                            <TableCell>Image</TableCell>
-                            <TableCell>UID or Player ID </TableCell>
-                            <TableCell>Last Active</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {(rowsPerPage > 0
-                            ? activeDevices.slice(
-                                page * rowsPerPage,
-                                page * rowsPerPage + rowsPerPage
-                              )
-                            : activeDevices
-                          ).map((user, index) => {
-                            const isItemSelected = isSelected(user.playerId);
-                            const labelId = `enhanced-table-checkbox-${index}`;
-                            let photoURL = null;
-                            if (user.photoURL) {
-                              photoURL = user.photoURL.startsWith(
-                                `public/users/${user.uid}`
-                              )
-                                ? `${process.env.REACT_APP_BACKEND_URL}/${user.photoURL}`
-                                : user.photoURL;
-                            }
-                            return (
-                              <TableRow
-                                onClick={(event) => {
-                                  handleClick(event, user.playerId);
-                                }}
-                                key={index}
-                                sx={{
-                                  "&:last-child td, &:last-child th": {
-                                    border: 0,
-                                  },
-                                  cursor: "pointer",
-                                  ":hover": {
-                                    background: "var(--primary-rgba)",
-                                  },
-                                }}
-                              >
-                                <TableCell padding="checkbox">
-                                  <Checkbox
-                                    color="primary"
-                                    checked={isItemSelected}
-                                    inputProps={{
-                                      "aria-labelledby": labelId,
-                                    }}
-                                  />
-                                </TableCell>
-                                <TableCell>
-                                  {user.displayName ? user.displayName : " - "}
-                                </TableCell>
-                                <TableCell>
-                                  {user.email ? user.email : " - "}
-                                </TableCell>
-                                <TableCell>
-                                  Model : {user.device.model} <br />
-                                  Os : {user.device.os}
-                                </TableCell>
-                                <TableCell>
-                                  {user.phoneNumber ? user.phoneNumber : "-"}
-                                </TableCell>
-                                {}
-                                <TableCell>
-                                  {photoURL ? (
-                                    <TableProfileContainer
-                                      onClick={() => window.open(photoURL)}
-                                    >
-                                      <TableProfileImage
-                                        referrerPolicy="no-referrer"
-                                        src={photoURL}
-                                        alt="Profile Image"
-                                      />
-                                    </TableProfileContainer>
-                                  ) : (
-                                    "-"
-                                  )}
-                                </TableCell>
-                                <TableCell>
-                                  <Tooltip
-                                    onClick={() =>
-                                      copyContentToClipboard(
-                                        user.uid ? user.uid : user.playerId
-                                      )
-                                    }
-                                    className="pointer"
-                                    title="copy"
-                                  >
-                                    <strong>
-                                      {user.uid ? user.uid : user.playerId}
-                                    </strong>
-                                  </Tooltip>
-                                </TableCell>
-                                <TableCell>
-                                  {user.lastActive ? user.lastActive : "-"}
-                                </TableCell>
-                              </TableRow>
-                            );
-                          })}
-                        </TableBody>
-                        <TableFooter>
-                          <TableRow>
-                            <TablePagination
-                              rowsPerPageOptions={[
-                                20,
-                                40,
-                                60,
-                                { label: "All", value: -1 },
-                              ]}
-                              count={activeDevices.length}
-                              rowsPerPage={rowsPerPage}
-                              page={page}
-                              SelectProps={{
-                                inputProps: {
-                                  "aria-label": "rows per page",
-                                },
-                                native: true,
-                              }}
-                              onPageChange={handleChangePage}
-                              onRowsPerPageChange={handleChangeRowsPerPage}
-                              ActionsComponent={TablePaginationActions}
-                            />
-                          </TableRow>
-                        </TableFooter>
-                      </Table>
-                    </TableContainer>
-                  </Grid>
-                )}
-              </Grid>
+                {_.upperCase("Send Notifications to active users")}
+              </Typography>
+              <LoadingButton
+                type="submit"
+                loadingPosition="end"
+                endIcon={<NotificationIcon />}
+                color="primary"
+                loading={loading}
+                loadingIndicator={"Sending Notifications..."}
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                {!loading && "Send Notifications"}
+              </LoadingButton>
             </Box>
-          </CardContent>
-        </Card>
-      )}
+            <Grid container spacing={2}>
+              <Grid item md={6}>
+                <TextField
+                  error={inputs.title.error}
+                  helperText={inputs.title.errorMessage}
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="title"
+                  label="Notification Title"
+                  name="title"
+                  value={inputs.title.value}
+                  onChange={onValueChangeHandler}
+                />
+              </Grid>
+
+              <Grid item md={6} sm={12}>
+                <TextField
+                  error={inputs.body.error}
+                  helperText={inputs.body.errorMessage}
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="body"
+                  label="Notification Body"
+                  name="body"
+                  value={inputs.body.value}
+                  onChange={onValueChangeHandler}
+                />
+              </Grid>
+
+              <Grid item md={6} sm={12}>
+                {/* big picture */}
+                <Grid container spacing={2} alignItems={"center"}>
+                  <Grid item md={6} sm={12}>
+                    <Button fullWidth variant="outlined" component="label">
+                      {inputs.bigPicture.value
+                        ? " Change Big Picture"
+                        : "Select Big Picture"}
+                      <input
+                        type="file"
+                        hidden
+                        accept="image/png, image/jpg, image/jpeg"
+                        onChange={(e) => {
+                          setInputs((p) => ({
+                            ...p,
+                            bigPicture: {
+                              ...p.bigPicture,
+                              value: e.target.files[0],
+                            },
+                          }));
+                        }}
+                      />
+                    </Button>
+                    {inputs.bigPicture.value && (
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        style={{
+                          backgroundColor: "tomato",
+                          color: "#fff",
+                          marginTop: 10,
+                        }}
+                        onClick={() =>
+                          setInputs((p) => ({
+                            ...p,
+                            bigPicture: { ...p.bigPicture, value: "" },
+                          }))
+                        }
+                      >
+                        Remove Big Picture
+                      </Button>
+                    )}
+                  </Grid>
+                  <Grid item md={6} sm={12}>
+                    {inputs.bigPicture.value && (
+                      <Avatar
+                        src={URL.createObjectURL(inputs.bigPicture.value)}
+                        sx={{ width: 200, height: 200 }}
+                      />
+                    )}
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              <Grid item md={6} sm={12}>
+                {/* large icon */}
+                <Grid container spacing={2} alignItems={"center"}>
+                  <Grid item md={6} sm={12}>
+                    <Button fullWidth variant="outlined" component="label">
+                      {inputs.largeIcon.value
+                        ? " Change Large Icon"
+                        : "Select Large Icon"}
+                      <input
+                        type="file"
+                        hidden
+                        accept="image/png, image/jpg, image/jpeg"
+                        onChange={(e) => {
+                          setInputs((p) => ({
+                            ...p,
+                            largeIcon: {
+                              ...p.largeIcon,
+                              value: e.target.files[0],
+                            },
+                          }));
+                        }}
+                      />
+                    </Button>
+                    {inputs.largeIcon.value && (
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        style={{
+                          backgroundColor: "tomato",
+                          color: "#fff",
+                          marginTop: 10,
+                        }}
+                        onClick={() =>
+                          setInputs((p) => ({
+                            ...p,
+                            largeIcon: { ...p.largeIcon, value: "" },
+                          }))
+                        }
+                      >
+                        Remove Large Icon
+                      </Button>
+                    )}
+                  </Grid>
+                  <Grid item md={6} sm={12}>
+                    {inputs.largeIcon.value && (
+                      <Avatar
+                        src={URL.createObjectURL(inputs.largeIcon.value)}
+                        sx={{ width: 200, height: 200 }}
+                      />
+                    )}
+                  </Grid>
+                </Grid>
+              </Grid>
+
+              <Grid item md={12}>
+                <TextField
+                  sx={{ mt: 2, ml: 1, width: "98%" }}
+                  variant="standard"
+                  size="medium"
+                  fullWidth
+                  id="search"
+                  placeholder="Search by keyword"
+                  name="search"
+                  value={searchKeyword}
+                  onChange={onChangeSearchKeyword}
+                />
+              </Grid>
+              {activeDevices && activeDevices.length > 0 && (
+                <Grid item md={12}>
+                  <Toolbar
+                    sx={{
+                      pl: { sm: 2 },
+                      pr: { xs: 1, sm: 1 },
+                      ...(selectedUsers.length > 0 && {
+                        bgcolor: (theme) =>
+                          alpha(
+                            theme.palette.primary.main,
+                            theme.palette.action.activatedOpacity
+                          ),
+                      }),
+                    }}
+                  >
+                    {selectedUsers.length > 0 ? (
+                      <Typography
+                        sx={{ flex: "1 1 100%" }}
+                        color="inherit"
+                        variant="subtitle1"
+                        component="div"
+                      >
+                        {selectedUsers.length} Selected Users
+                      </Typography>
+                    ) : (
+                      <Typography
+                        sx={{ flex: "1 1 100%" }}
+                        variant="h6"
+                        id="tableTitle"
+                        component="div"
+                      >
+                        Select Users
+                      </Typography>
+                    )}
+                  </Toolbar>
+
+                  <TableContainer component={Paper} sx={{ mt: 4 }}>
+                    <Table sx={{ minWidth: 750 }}>
+                      <TableHead>
+                        <TableRow>
+                          <TableCell padding="checkbox">
+                            <Checkbox
+                              color="primary"
+                              indeterminate={
+                                selectedUsers.length > 0 &&
+                                selectedUsers.length < activeDevices.length
+                              }
+                              checked={
+                                activeDevices.length > 0 &&
+                                selectedUsers.length === activeDevices.length
+                              }
+                              onChange={handleSelectAllClick}
+                              inputProps={{
+                                "aria-label": "select all users",
+                              }}
+                            />
+                          </TableCell>
+
+                          <TableCell>
+                            {" "}
+                            <TableSortLabel
+                              direction={
+                                sort.type && sort.type === "desc"
+                                  ? "asc"
+                                  : "desc"
+                              }
+                              active
+                              onClick={() => onChangeSorting("displayName")}
+                            >
+                              Name
+                            </TableSortLabel>
+                          </TableCell>
+                          <TableCell>
+                            {" "}
+                            <TableSortLabel
+                              direction={
+                                sort.type && sort.type === "desc"
+                                  ? "asc"
+                                  : "desc"
+                              }
+                              active
+                              onClick={() => onChangeSorting("email")}
+                            >
+                              Email
+                            </TableSortLabel>
+                          </TableCell>
+                          <TableCell>Device</TableCell>
+                          <TableCell>Phone </TableCell>
+                          <TableCell>Image</TableCell>
+                          <TableCell>UID or Player ID </TableCell>
+                          <TableCell>Last Active</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {(rowsPerPage > 0
+                          ? activeDevices.slice(
+                              page * rowsPerPage,
+                              page * rowsPerPage + rowsPerPage
+                            )
+                          : activeDevices
+                        ).map((user, index) => {
+                          const isItemSelected = isSelected(user.playerId);
+                          const labelId = `enhanced-table-checkbox-${index}`;
+                          let photoURL = null;
+                          if (user.photoURL) {
+                            photoURL = user.photoURL.startsWith(
+                              `users/${user?.uid}`
+                            )
+                              ? getFirebaseAccessUrl(user.photoURL)
+                              : user.photoURL;
+                          }
+                          return (
+                            <TableRow
+                              onClick={(event) => {
+                                handleClick(event, user.playerId);
+                              }}
+                              key={index}
+                              sx={{
+                                "&:last-child td, &:last-child th": {
+                                  border: 0,
+                                },
+                                cursor: "pointer",
+                                ":hover": {
+                                  background: "var(--primary-rgba)",
+                                },
+                              }}
+                            >
+                              <TableCell padding="checkbox">
+                                <Checkbox
+                                  color="primary"
+                                  checked={isItemSelected}
+                                  inputProps={{
+                                    "aria-labelledby": labelId,
+                                  }}
+                                />
+                              </TableCell>
+                              <TableCell>
+                                {user.displayName ? user.displayName : " - "}
+                              </TableCell>
+                              <TableCell>
+                                {user.email ? user.email : " - "}
+                              </TableCell>
+                              <TableCell>
+                                Model : {user.device.model} <br />
+                                Os : {user.device.os}
+                              </TableCell>
+                              <TableCell>
+                                {user.phoneNumber ? user.phoneNumber : "-"}
+                              </TableCell>
+                              {}
+                              <TableCell>
+                                {photoURL ? (
+                                  <TableProfileContainer
+                                    onClick={() => window.open(photoURL)}
+                                  >
+                                    <TableProfileImage
+                                      referrerPolicy="no-referrer"
+                                      src={photoURL}
+                                      alt="Profile Image"
+                                    />
+                                  </TableProfileContainer>
+                                ) : (
+                                  "-"
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                <Tooltip
+                                  onClick={() =>
+                                    copyContentToClipboard(
+                                      user.uid ? user.uid : user.playerId
+                                    )
+                                  }
+                                  className="pointer"
+                                  title="copy"
+                                >
+                                  <strong>
+                                    {user.uid ? user.uid : user.playerId}
+                                  </strong>
+                                </Tooltip>
+                              </TableCell>
+                              <TableCell>
+                                {user.lastActive ? user.lastActive : "-"}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                      <TableFooter>
+                        <TableRow>
+                          <TablePagination
+                            rowsPerPageOptions={[
+                              20,
+                              40,
+                              60,
+                              { label: "All", value: -1 },
+                            ]}
+                            count={activeDevices.length}
+                            rowsPerPage={rowsPerPage}
+                            page={page}
+                            SelectProps={{
+                              inputProps: {
+                                "aria-label": "rows per page",
+                              },
+                              native: true,
+                            }}
+                            onPageChange={handleChangePage}
+                            onRowsPerPageChange={handleChangeRowsPerPage}
+                            ActionsComponent={TablePaginationActions}
+                          />
+                        </TableRow>
+                      </TableFooter>
+                    </Table>
+                  </TableContainer>
+                </Grid>
+              )}
+            </Grid>
+          </Box>
+        </CardContent>
+      </Card>
 
       {(!activeDevices || activeDevices.length === 0) && (
         <LottieContainer>

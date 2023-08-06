@@ -45,11 +45,18 @@ export const TransactionsCount = styled(Text).attrs({
 `;
 
 export const SwipeableView = styled.View`
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 70px;
+  width: 75px;
   height: 100%;
   padding: 5px;
+`;
+
+export const SwipeTouchableView = styled.TouchableOpacity`
+  flex: 1;
+  justify-content: center;
+  padding-left: 20;
 `;
 
 export const SheetInfoWrapper = styled.View`

@@ -4,6 +4,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {
+  FlatList,
   ScrollView,
   TouchableNativeFeedback,
   TouchableOpacity,
@@ -84,11 +85,12 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
   useEffect(() => {
     if (routeIsFocused) {
       let sDetails = sheet.details;
-
       let expense = sDetails.filter(s => s.type === 'expense');
       let income = sDetails.filter(s => s.type === 'income');
 
-      if (income.length === 0) {
+      if (income.length > expense.length) {
+        setActiveType('income');
+      } else {
         setActiveType('expense');
       }
       navigation.setOptions({
@@ -346,7 +348,7 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                                     <Text
                                       fontsize="16px"
                                       fontfamily="heading"
-                                      color="#292929">
+                                      color="grey">
                                       {details.percentage}%
                                     </Text>
                                   </FlexRow>

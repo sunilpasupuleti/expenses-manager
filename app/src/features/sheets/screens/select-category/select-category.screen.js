@@ -175,7 +175,7 @@ export const SelectCategoryScreen = ({navigation, route}) => {
             })
           }>
           <AddNewCategoryIcon
-            name="md-add-circle-outline"
+            name="add-circle-outline"
             size={25}
             color={theme.colors.brand.primary}
           />

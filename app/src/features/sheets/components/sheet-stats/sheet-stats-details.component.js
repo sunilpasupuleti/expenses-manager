@@ -24,6 +24,7 @@ import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {SheetDetailsInfo} from '../sheet-details/sheet-details-info.component';
 import {SheetExport} from '../sheet-export/sheet-export.component';
 import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
+import {getFirebaseAccessUrl} from '../../../../components/utility/helper';
 
 export const SheetStatsDetailsScreen = ({navigation, route}) => {
   const [sheet, setSheet] = useState(null);
@@ -100,6 +101,7 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
       let detail = {
         'S.NO': i + 1,
         TITLE: d.notes,
+        IMAGE: d.image?.url ? getFirebaseAccessUrl(d.image.url) : '-',
         DATE: date,
         [amount]: d.type === 'expense' ? -d.amount : d.amount,
       };
@@ -107,8 +109,9 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
       structuredDetails.push(detail);
     });
     let extraCells = [
-      ['', '', '', '', ''],
+      ['', '', '', '', '', ''],
       [
+        '',
         '',
         '',
         'TOTAL INCOME ',
@@ -119,12 +122,14 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
       [
         '',
         '',
+        '',
         'TOTAL EXPENSES ',
         GetCurrencySymbol(sh.currency) +
           ' ' +
           GetCurrencyLocalString(totalExpense),
       ],
       [
+        '',
         '',
         '',
         'BALANCE',

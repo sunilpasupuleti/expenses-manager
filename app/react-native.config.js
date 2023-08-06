@@ -10,5 +10,9 @@ module.exports = {
       },
     },
   },
-  assets: ['./assets/fonts/', './assets/notification.mp3'], // stays the same
+  assets: [
+    './assets/fonts/',
+    './assets/notification_primary.wav',
+    './assets/notification_secondary.wav',
+  ], // stays the same
 };

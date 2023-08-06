@@ -48,13 +48,13 @@ import Share from 'react-native-share';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {GetCurrencySymbol} from '../../../components/symbol.currency';
 import Clipboard from '@react-native-community/clipboard';
+import {getFirebaseAccessUrl} from '../../../components/utility/helper';
+import {SettingsContext} from '../../../services/settings/settings.context';
 
 export const SettingsScreen = ({navigation}) => {
   const {onLogout, userData, userAdditionalDetails} = useContext(
     AuthenticationContext,
   );
-
-  const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
 
   const ACCOUNT_DELETION_URL = remoteConfig()
     .getValue('ACCOUNT_DELETION_URL')
@@ -105,7 +105,7 @@ export const SettingsScreen = ({navigation}) => {
     onUpdateDailyBackup,
     onUpdateAutoFetchTransactions,
     setBaseCurrency,
-  } = useContext(SheetsContext);
+  } = useContext(SettingsContext);
 
   const changesMade = useSelector(state => state.service.changesMade.status);
 
@@ -133,7 +133,7 @@ export const SettingsScreen = ({navigation}) => {
 
   useEffect(() => {
     if (userData) {
-      setReloadImageKey(new Date());
+      setReloadImageKey(Date.now());
     }
   }, [userData]);
 
@@ -276,10 +276,10 @@ export const SettingsScreen = ({navigation}) => {
                           onLoadStart={() => setProfilePictureLoading(true)}
                           onLoad={() => setProfilePictureLoading(false)}
                           source={{
-                            uri: userData.photoURL.startsWith(
-                              `public/users/${userData.uid}`,
-                            )
-                              ? `${BACKEND_URL}/${userData.photoURL}?time=${reloadImageKey}`
+                            uri: userData.photoURL.startsWith('users/')
+                              ? `${getFirebaseAccessUrl(
+                                  userData.photoURL,
+                                )}&time=${reloadImageKey}`
                               : userData.photoURL,
                           }}
                         />
@@ -556,7 +556,7 @@ export const SettingsScreen = ({navigation}) => {
                 <Setting justifyContent="space-between">
                   <FlexRow>
                     <SettingIconWrapper color="rgba(84,91,206,0.9)">
-                      <Ionicons name="ios-moon" size={20} color="#fefefe" />
+                      <Ionicons name="moon-outline" size={20} color="#fefefe" />
                     </SettingIconWrapper>
 
                     <SettingTitle>Appearance</SettingTitle>
@@ -688,7 +688,7 @@ export const SettingsScreen = ({navigation}) => {
                 <Setting justifyContent="space-between">
                   <FlexRow>
                     <SettingIconWrapper color="#F47C7C">
-                      <Ionicons name="ios-key-outline" size={20} color="#fff" />
+                      <Ionicons name="key-outline" size={20} color="#fff" />
                     </SettingIconWrapper>
 
                     <SettingTitle>Reveal your account key</SettingTitle>
@@ -762,7 +762,7 @@ export const SettingsScreen = ({navigation}) => {
                   <FlexRow>
                     <SettingIconWrapper color="#167ef5">
                       <Ionicons
-                        name="md-finger-print-outline"
+                        name="finger-print-outline"
                         size={20}
                         color="#fff"
                       />

@@ -9,7 +9,7 @@ import {AuthenticationContext} from '../authentication/authentication.context';
 import {notificationActions} from '../../store/notification-slice';
 import {Alert} from 'react-native';
 import {setChangesMade} from '../../store/service-slice';
-import {useNetInfo} from '@react-native-community/netinfo';
+import storage from '@react-native-firebase/storage';
 
 export const ProfileContext = createContext({
   onUpdateProfile: (data, successCallBack, errorCallback) => null,
@@ -21,11 +21,14 @@ export const ProfileContextProvider = ({children}) => {
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
   const dispatch = useDispatch();
   const {sendRequest} = useHttp();
-  const netInfo = useNetInfo();
 
-  const {userData, onLogout, onGetUserDetails} = useContext(
-    AuthenticationContext,
-  );
+  const {
+    onLogout,
+    onGetUserDetails,
+    userData,
+    setUserData,
+    onSetUserAdditionalDetails,
+  } = useContext(AuthenticationContext);
 
   const onUpdateProfile = async (
     data,
@@ -135,11 +138,12 @@ export const ProfileContextProvider = ({children}) => {
         },
       },
       {
-        successCallback: () => {
+        successCallback: data => {
           dispatch(setChangesMade({status: true}));
+          onSetUserAdditionalDetails(data.user);
+          setUserData(data.user);
           currentUser.reload();
           successCallBack();
-          onGetUserDetails();
           dispatch(
             notificationActions.showToast({
               status: 'success',
@@ -175,36 +179,18 @@ export const ProfileContextProvider = ({children}) => {
       },
       {
         successCallback: async result => {
-          let currentUser = await auth().currentUser;
-          currentUser
-            .updateProfile({
-              photoURL: null,
-            })
-            .then(() => {
-              const onSuccess = () => {
-                currentUser.reload();
-                dispatch(setChangesMade({status: true}));
-                successCallBack();
-                dispatch(
-                  notificationActions.showToast({
-                    message: result.message,
-                    status: 'success',
-                  }),
-                );
-              };
-              // call onsucces irrespective of geting user details failed or succefull
-              onGetUserDetails(onSuccess, onSuccess);
-            })
-            .catch(err => {
-              errorCallback();
-              console.log('Error in removing profile picture', err);
-              dispatch(
-                notificationActions.showToast({
-                  message: err,
-                  status: 'error',
-                }),
-              );
-            });
+          const onSuccess = () => {
+            dispatch(setChangesMade({status: true}));
+            successCallBack();
+            dispatch(
+              notificationActions.showToast({
+                message: result.message,
+                status: 'success',
+              }),
+            );
+          };
+          // call onsucces irrespective of geting user details failed or succefull
+          onGetUserDetails(onSuccess, onSuccess);
         },
         errorCallback: err => {
           errorCallback();
@@ -221,65 +207,52 @@ export const ProfileContextProvider = ({children}) => {
   };
 
   const onUpdateProfilePicture = async (
-    data,
+    photo,
     successCallBack = () => {},
     errorCallback = () => {},
   ) => {
-    let jwtToken = await auth().currentUser.getIdToken();
-    sendRequest(
-      {
-        type: 'PUT',
-        url: BACKEND_URL + '/user/update-profile-picture',
-        data: data,
-        headers: {
-          authorization: 'Bearer ' + jwtToken,
-        },
-      },
-      {
-        successCallback: async result => {
-          let currentUser = await auth().currentUser;
-          currentUser
-            .updateProfile({
-              photoURL: result.photoURL,
-            })
-            .then(() => {
-              const onSuccess = () => {
-                dispatch(setChangesMade({status: true}));
-                currentUser.reload();
-                successCallBack();
-                dispatch(
-                  notificationActions.showToast({
-                    message: result.message,
-                    status: 'success',
-                  }),
-                );
-              };
-              // call onsucces irrespective of geting user details failed or succefull
-              onGetUserDetails(onSuccess, onSuccess);
-            })
-            .catch(err => {
-              errorCallback();
-              console.log('Error in updating profile picture', err);
-              dispatch(
-                notificationActions.showToast({
-                  message: err,
-                  status: 'error',
-                }),
-              );
-            });
-        },
-        errorCallback: err => {
-          errorCallback();
-          console.log('Error in updating profile picture', err);
-          dispatch(
-            notificationActions.showToast({
-              message: err,
-              status: 'error',
-            }),
-          );
-        },
-      },
-    );
+    let {extension, uri} = photo;
+    try {
+      // delete if image already exists
+      let currentImagePath = userData.photoURL;
+      let currentImageRef = storage().ref(currentImagePath);
+      let currentImageExists = await currentImageRef
+        .getMetadata()
+        .then(() => true)
+        .catch(() => false);
+      if (currentImageExists) {
+        await currentImageRef.delete();
+      }
+
+      let pictureName = `profile.${extension}`;
+      let path = `users/${userData.uid}/${pictureName}`;
+      let storageRef = storage().ref(path);
+      let response = await storageRef.putFile(uri);
+      let state = response.state;
+      if (state === 'success') {
+        let photoURL = path;
+        await auth().currentUser.updateProfile({
+          photoURL: photoURL,
+        });
+
+        onSuccessUpdatingProfileData(
+          {photoURL: photoURL},
+          successCallBack,
+          errorCallback,
+        );
+      } else {
+        throw 'Error occured while uploading profile picture';
+      }
+    } catch (e) {
+      errorCallback();
+      console.log('Error in updating profile picture', e);
+      dispatch(
+        notificationActions.showToast({
+          message: e.toString(),
+          status: 'error',
+        }),
+      );
+    }
   };
 
   return (

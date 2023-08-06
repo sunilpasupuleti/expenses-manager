@@ -23,6 +23,7 @@ export const colors = {
   bg: {
     primary: '#ffffff',
     secondary: '#f1f1f1',
+    card: '#f8f4fb',
   },
 
   text: {
@@ -72,6 +73,7 @@ export const darkModeColors = {
     ...colors.bg,
     primary: '#000',
     secondary: '#222',
+    card: '#2a2730',
   },
   ui: {
     ...colors.ui,

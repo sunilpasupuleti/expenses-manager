@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const logger = require("../middleware/logger/logger");
 const ObjectId = mongoose.Types.ObjectId;
 const jwt = require("jsonwebtoken");
+const FIREBASE_STORAGE_URL = process.env.FIREBASE_STORAGE_URL;
 
 module.exports = {
   httpCodes: { ...httpstatus.StatusCodes },
@@ -14,8 +15,14 @@ module.exports = {
   getJwt,
   cryptoDecrypt,
   cryptoEncrypt,
+  getFirebaseAccessUrl,
   adminRole: "admin",
 };
+
+function getFirebaseAccessUrl(path = "") {
+  let URL = FIREBASE_STORAGE_URL + path.replaceAll("/", "%2f") + "?alt=media";
+  return URL;
+}
 
 function getJwt(data, expiry = "1h") {
   const token = jwt.sign({ data: data }, process.env.JWT_SECRET, {
