@@ -73,6 +73,5 @@ app/config.js
 
 # ignore ssl
 backend/config/ssl/
-backend/public/users/
 backend/config/AuthKey_78MHH3V4YC.p8
 backend/config/expensesmanager.json
