@@ -5,6 +5,7 @@ const OneSignal = require("onesignal-node");
 const {
   createDailyBackupFromTempData,
 } = require("../controllers/backup/backupController");
+const { getFirebaseAccessUrl } = require("./utility");
 const client = new OneSignal.Client(
   process.env.ONE_SIGNAL_APP_ID,
   process.env.ONE_SIGNAL_API_KEY
@@ -20,8 +21,8 @@ module.exports = {
       type: "daily-reminder",
       uid: data.uid,
     };
-    let bigPictureUrl = `${process.env.BACKEND_URL}/public/notification/daily_reminder.jpg`;
-    let largeIconUrl = `${process.env.BACKEND_URL}/public/notification/wallet.jpeg`;
+    let bigPictureUrl = getFirebaseAccessUrl("notification/daily_reminder.jpg");
+    let largeIconUrl = getFirebaseAccessUrl("notification/wallet.jpeg");
     let collapseId = "daily-reminder";
     try {
       const res = await client.createNotification({
@@ -86,8 +87,9 @@ module.exports = {
       type: "daily-backup",
       uid: data.uid,
     };
-    let bigPictureUrl = `${process.env.BACKEND_URL}/public/notification/daily_backup.jpeg`;
-    let largeIconUrl = `${process.env.BACKEND_URL}/public/notification/backup.png`;
+    let bigPictureUrl = getFirebaseAccessUrl("notification/daily_backup.jpeg");
+    let largeIconUrl = getFirebaseAccessUrl("notification/backup.png");
+
     let collapseId = "daily-backup";
 
     try {
