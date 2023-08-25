@@ -15,7 +15,8 @@ export const SafeAreaStyled = styled.SafeAreaView`
     StatusBar.currentHeight &&
     `margin-top : ${StatusBar.currentHeight}px`};
   ${props =>
-    !props.mdBackground && ` background-color: ${props.theme.colors.ui.body};`}
+    !props.mdBackground &&
+    ` background-color: ${props.theme.colors.bg.primary};`}
   ${props =>
     Platform.OS === 'ios' &&
     StatusBar.currentHeight &&

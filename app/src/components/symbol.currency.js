@@ -5,9 +5,11 @@ export const GetCurrencySymbol = currency => {
   return getSymbolFromCurrency(currency);
 };
 
-export const GetCurrencyLocalString = (number, baseCurrency) => {
-  return number.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
+export const GetCurrencyLocalString = number => {
+  return number
+    ? number.toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })
+    : '0';
 };

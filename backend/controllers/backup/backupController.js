@@ -130,6 +130,7 @@ module.exports = {
           sheet.pinned = false;
         }
         let structuredSheetDetails = [];
+        let structuredSheetUpcomingDetails = [];
         if (s.details) {
           s.details.forEach((sd) => {
             let {
@@ -172,7 +173,52 @@ module.exports = {
             structuredSheetDetails.push(sheetDetail);
           });
         }
+
+        if (s.upcoming) {
+          s.upcoming.forEach((sd) => {
+            let {
+              id,
+              amount,
+              notes,
+              type,
+              category,
+              showTime,
+              date,
+              createdAt,
+              image,
+              time,
+            } = sd;
+            let structuredCategory = {
+              id: category.id,
+              name: encryptAES(category.name, uid),
+              color: category.color,
+            };
+            if (category.icon) structuredCategory.icon = category.icon;
+            amount = encryptAES(amount, uid);
+            if (notes) {
+              notes = encryptAES(notes, uid);
+            }
+            let sheetDetail = {
+              id,
+              amount,
+              notes,
+              type,
+              category: structuredCategory,
+              date,
+              showTime,
+              date,
+              createdAt,
+              image,
+            };
+            if (showTime && time) {
+              sheetDetail.time = time;
+            }
+            structuredSheetUpcomingDetails.push(sheetDetail);
+          });
+        }
+
         sheet.details = structuredSheetDetails;
+        sheet.upcoming = structuredSheetUpcomingDetails;
         structuredSheets.push(sheet);
       });
       structuredData.sheets = structuredSheets;
@@ -510,6 +556,7 @@ module.exports = {
           sheet.pinned = false;
         }
         let structuredSheetDetails = [];
+        let structuredSheetUpcomingDetails = [];
         if (s.details) {
           s.details.forEach((sd) => {
             let {
@@ -552,7 +599,53 @@ module.exports = {
             structuredSheetDetails.push(sheetDetail);
           });
         }
+
+        if (s.upcoming) {
+          s.upcoming.forEach((sd) => {
+            let {
+              id,
+              amount,
+              notes,
+              type,
+              category,
+              showTime,
+              date,
+              createdAt,
+              image,
+              time,
+            } = sd;
+            let structuredCategory = {
+              id: category.id,
+              name: encryptAES(category.name, uid),
+              color: category.color,
+            };
+            if (category.icon) structuredCategory.icon = category.icon;
+            amount = encryptAES(amount, uid);
+            if (notes) {
+              notes = encryptAES(notes, uid);
+            }
+            let sheetDetail = {
+              id,
+              amount,
+              notes,
+              type,
+              category: structuredCategory,
+              date,
+              showTime,
+              date,
+              createdAt,
+              image,
+            };
+            if (showTime && time) {
+              sheetDetail.time = time;
+            }
+            structuredSheetUpcomingDetails.push(sheetDetail);
+          });
+        }
+
         sheet.details = structuredSheetDetails;
+        sheet.upcoming = structuredSheetUpcomingDetails;
+
         structuredSheets.push(sheet);
       });
       structuredData.sheets = structuredSheets;

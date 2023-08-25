@@ -1,4 +1,4 @@
-import {ActivityIndicator, Text, TextInput} from 'react-native-paper';
+import {ActivityIndicator, Text} from 'react-native-paper';
 import {styled} from 'styled-components/native';
 import {colors} from '../../../infrastructure/theme/colors';
 
@@ -22,15 +22,6 @@ export const ProfilePicture = styled.Image`
   height: 100%;
   width: 100%;
   border-radius: 100px;
-`;
-
-export const ProfileInput = styled(TextInput).attrs({
-  outlineColor: 'transparent',
-  selectionColor: colors.brand.primary,
-})`
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-  border-color: #ddd;
-  border-radius: 10px;
 `;
 
 export const ProfileInputErrorMessage = styled(Text)`

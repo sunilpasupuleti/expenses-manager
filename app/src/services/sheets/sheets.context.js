@@ -7,7 +7,7 @@ import {notificationActions} from '../../store/notification-slice';
 import {setChangesMade} from '../../store/service-slice';
 import {AuthenticationContext} from '../authentication/authentication.context';
 import {saveCategoryRequest, saveSheetRequest} from './sheets.service';
-import {Alert, PermissionsAndroid, Platform} from 'react-native';
+import {Alert, Linking, PermissionsAndroid, Platform} from 'react-native';
 import Share from 'react-native-share';
 import RNFetchBlob from 'rn-fetch-blob';
 import RNFS from 'react-native-fs';
@@ -17,7 +17,6 @@ import _ from 'lodash';
 import matchWords from '../../components/utility/category-match-words.json';
 import XLSX from 'xlsx';
 import moment from 'moment';
-import auth from '@react-native-firebase/auth';
 import remoteConfig from '@react-native-firebase/remote-config';
 import {
   GetCurrencyLocalString,
@@ -113,31 +112,55 @@ export const SheetsContext = createContext({
   expensesData: {},
   onSaveSheet: (sheet, callback = () => null) => null,
   onSaveCategory: (category, type, callback = () => null) => null,
-  onSaveSheetDetails: (sheet, sheetDetail, callback = () => null) => null,
+  onSaveSheetDetails: (sheetDetail, callback = () => null) => null,
   onSaveExpensesData: () => null,
-  onEditSheet: () => null,
-  onEditSheetDetails: (sheet, sheetDetail, callback = () => null) => null,
+  onEditSheet: (sheet, callback = () => {}) => null,
+  onEditSheetDetails: (
+    sheetDetail,
+    editFromUpcomingScreen,
+    callback = () => null,
+  ) => null,
   onEditCategory: (category, type, callback = () => null) => null,
   onDeleteSheet: () => null,
-  onDeleteSheetDetails: (sheet, sheetDetail, callback = () => null) => null,
+  onDeleteSheetDetails: (
+    sheetDetail,
+    editFromUpcomingScreen,
+    callback = () => null,
+  ) => null,
   onDeleteCategory: () => null,
   getSheetById: () => null,
-  onMoveSheets: (sheet, moveToSheet, sheetDetail, callback = () => null) =>
-    null,
-  onDuplicateSheet: (sheet, sheetDetail, callback = () => null) => null,
-  onChangeSheetType: (sheet, sheetDetail, callback = () => null) => null,
-  onExportDataToExcel: (config, data, callback) => null,
-  onExportDataToPdf: (config, sheet, callback) => null,
+  onMoveSheetDetail: (
+    moveToSheet,
+    sheetDetail,
+    editFromUpcomingScreen,
+    callback = () => null,
+  ) => null,
+  onDuplicateSheetDetail: (
+    sheetDetail,
+    editFromUpcomingScreen,
+    callback = () => null,
+  ) => null,
+  onChangeSheetDetailType: (
+    sheetDetail,
+    editFromUpcomingScreen,
+    callback = () => null,
+  ) => null,
+  onExportSheetDataToExcel: (config, data, callback) => null,
+  onExportSheetDataToPdf: (config, sheet, callback) => null,
   onArchiveSheet: () => null,
   onPinSheet: () => null,
   calculateBalance: sheet => null,
   onGoogleCloudVision: (base64, callback) => null,
   onSmartScanReceipt: (base64, callback) => null,
   getMessages: () => null,
+  currentSheet: null,
+  setCurrentSheet: null,
+  onCheckUpcomingSheetDetails: callback => null,
 });
 
 export const SheetsContextProvider = ({children}) => {
   const [sheets, setSheets] = useState([]);
+  const [currentSheet, setCurrentSheet] = useState();
   const [categories, setCategories] = useState(defaultCategories);
   const [expensesData, setExpensesData] = useState(null);
 
@@ -149,7 +172,6 @@ export const SheetsContextProvider = ({children}) => {
   const dispatch = useDispatch();
   const theme = useTheme();
 
-  const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
   const MINDEE_API_KEY = remoteConfig().getValue('MINDEE_API_KEY').asString();
   const MINDEE_API_URL = remoteConfig().getValue('MINDEE_API_URL').asString();
 
@@ -159,10 +181,8 @@ export const SheetsContextProvider = ({children}) => {
     .asString();
 
   useEffect(() => {
-    if (userData) {
-      retrieveExpensesData();
-    }
-  }, [userData]);
+    retrieveExpensesData();
+  }, []);
 
   useEffect(() => {
     let smsSubscription;
@@ -739,9 +759,6 @@ export const SheetsContextProvider = ({children}) => {
         let matched = [];
         words.forEach(obj => {
           if (text.toLowerCase().includes(obj.word)) {
-            // let index = text.indexOf(obj.word);
-            // let subStrIndex = index + obj.word.length
-            // let matchedWord = text.substring(index , subStrIndex)
             matched.push(obj.word);
           }
         });
@@ -796,18 +813,60 @@ export const SheetsContextProvider = ({children}) => {
       }
     });
     let totalBalance = totalIncomeAmount - totalExpenseAmount;
-    return totalBalance;
+    return {
+      totalIncome: totalIncomeAmount,
+      totalExpense: totalExpenseAmount,
+      totalBalance: totalBalance,
+    };
+  };
+
+  const onCheckUpcomingSheetDetails = (callback = () => {}) => {
+    if (currentSheet.upcoming && currentSheet.upcoming.length > 0) {
+      let presentSheets = [...sheets];
+      let sheetIndex = presentSheets.findIndex(s => s.id === currentSheet.id);
+      currentSheet.upcoming.forEach((sd, index) => {
+        let date = sd.date;
+        let upcoming = moment(date).isAfter(moment());
+        if (!upcoming) {
+          currentSheet.upcoming.splice(index, 1);
+          currentSheet.details.push(sd);
+        }
+      });
+      let {totalExpense, totalIncome, totalBalance} =
+        calculateBalance(currentSheet);
+      currentSheet.totalExpense = totalExpense;
+      currentSheet.totalIncome = totalIncome;
+      currentSheet.totalBalance = totalBalance;
+      presentSheets[sheetIndex] = currentSheet;
+      let updatedExpensesData = {
+        ...expensesData,
+        sheets: presentSheets,
+        categories: categories,
+      };
+      onSaveExpensesData(updatedExpensesData).then(() => {
+        onSetChangesMade(true); // set changes made to true so that backup occurs only if some changes are made
+        setCurrentSheet(currentSheet);
+        callback();
+      });
+    } else {
+      callback();
+    }
   };
 
   const onSaveExpensesData = async passedExpensesData => {
-    if (passedExpensesData) {
-      setExpensesData(passedExpensesData);
-    }
-
     if (passedExpensesData.sheets) {
       let sortedSheets = passedExpensesData.sheets.sort(
         (a, b) => b.updatedAt - a.updatedAt,
       );
+      passedExpensesData.sheets.forEach(sheet => {
+        if (!sheet.totalIncome || !sheet.totalExpense || !sheet.totalBalance) {
+          let {totalExpense, totalIncome, totalBalance} =
+            calculateBalance(sheet);
+          sheet.totalBalance = totalBalance;
+          sheet.totalExpense = totalExpense;
+          sheet.totalIncome = totalIncome;
+        }
+      });
       setSheets(sortedSheets);
     }
 
@@ -816,12 +875,13 @@ export const SheetsContextProvider = ({children}) => {
       setCategories(changedCategories);
     }
 
+    if (passedExpensesData) {
+      setExpensesData(passedExpensesData);
+    }
+
     try {
       const jsonValue = JSON.stringify(passedExpensesData);
-      await AsyncStorage.setItem(
-        `@expenses-manager-data-${userData.uid}`,
-        jsonValue,
-      );
+      await AsyncStorage.setItem('@expenses-manager-data', jsonValue);
       // retrieveExpensesData();
     } catch (e) {
       hideLoader();
@@ -830,9 +890,7 @@ export const SheetsContextProvider = ({children}) => {
 
   const retrieveExpensesData = async () => {
     try {
-      let value = await AsyncStorage.getItem(
-        `@expenses-manager-data-${userData.uid}`,
-      );
+      let value = await AsyncStorage.getItem('@expenses-manager-data');
       value = JSON.parse(value);
       if (value != null) {
         setExpensesData(value);
@@ -841,6 +899,20 @@ export const SheetsContextProvider = ({children}) => {
           let sortedSheets = value.sheets.sort(
             (a, b) => b.updatedAt - a.updatedAt,
           );
+
+          sortedSheets.forEach(sheet => {
+            if (
+              !sheet.totalIncome ||
+              !sheet.totalExpense ||
+              !sheet.totalBalance
+            ) {
+              let {totalExpense, totalIncome, totalBalance} =
+                calculateBalance(sheet);
+              sheet.totalBalance = totalBalance;
+              sheet.totalExpense = totalExpense;
+              sheet.totalIncome = totalIncome;
+            }
+          });
 
           setSheets(sortedSheets);
         }
@@ -859,9 +931,11 @@ export const SheetsContextProvider = ({children}) => {
     if (!sheets || sheets.length === 0) {
       showTransactions = true;
     }
-    saveSheetRequest(sheet, sheets)
+    let sh = {...sheet, totalIncome: 0, totalExpense: 0, totalBalance: 0};
+    console.log(sh);
+    saveSheetRequest(sh, sheets)
       .then(async result => {
-        const updatedSheets = [...sheets, sheet];
+        const updatedSheets = [...sheets, sh];
         let updatedExpensesData = {
           ...expensesData,
           sheets: updatedSheets,
@@ -888,21 +962,28 @@ export const SheetsContextProvider = ({children}) => {
       });
   };
 
-  const onSaveSheetDetails = async (
-    sheet,
-    sheetDetail,
-    callback = () => null,
-  ) => {
+  const onSaveSheetDetails = async (sheetDetail, callback = () => null) => {
     const saveSheet = () => {
-      var presentSheets = [...sheets];
-      var sheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
+      var presentSheets = _.cloneDeep(sheets);
+      var sheetIndex = presentSheets.findIndex(s => s.id === currentSheet.id);
       var presentSheet = presentSheets[sheetIndex];
       if (!presentSheet.details) {
         presentSheet.details = [];
       }
-
-      presentSheet.details.push(sheetDetail);
-      presentSheet.totalBalance = calculateBalance(presentSheet);
+      let upcoming = moment(sheetDetail.date).isAfter(moment());
+      if (upcoming) {
+        if (!presentSheet.upcoming) {
+          presentSheet.upcoming = [];
+        }
+        presentSheet.upcoming.push(sheetDetail);
+      } else {
+        presentSheet.details.push(sheetDetail);
+        let {totalExpense, totalIncome, totalBalance} =
+          calculateBalance(presentSheet);
+        presentSheet.totalExpense = totalExpense;
+        presentSheet.totalIncome = totalIncome;
+        presentSheet.totalBalance = totalBalance;
+      }
       presentSheet.updatedAt = Date.now();
       presentSheets[sheetIndex] = presentSheet;
       let updatedExpensesData = {
@@ -911,21 +992,21 @@ export const SheetsContextProvider = ({children}) => {
         categories: categories,
       };
       onSaveExpensesData(updatedExpensesData).then(() => {
+        setCurrentSheet(presentSheet);
         onSetChangesMade(true); // set changes made to true so that backup occurs only if some changes are made
-        callback(presentSheet);
+        callback();
       });
     };
 
     if (sheetDetail.image && sheetDetail.image.url) {
       let imageTypesAllowed = ['image/jpeg', 'image/jpg', 'image/png'];
-
       if (!imageTypesAllowed.includes(sheetDetail.image.type)) {
         showNotification('error', 'Only JPEG, PNG images are allowed');
         return;
       }
       let pictureName = `${sheetDetail.id}.${sheetDetail.image.extension}`;
 
-      let uploadPath = `users/${userData.uid}/${sheet.id}/${pictureName}`;
+      let uploadPath = `users/${userData.uid}/${currentSheet.id}/${pictureName}`;
       showLoader('image_upload');
 
       await firebaseUploadFile(uploadPath, sheetDetail.image.uri)
@@ -1002,16 +1083,38 @@ export const SheetsContextProvider = ({children}) => {
   };
 
   const onEditSheetDetails = async (
-    sheet,
     sheetDetail,
+    editFromUpcomingScreen = false,
     callback = () => null,
   ) => {
     const editSheet = () => {
       delete sheetDetail.imageChanged;
       delete sheetDetail.imageDeleted;
-
-      presentSheet.details[sheetDetailIndex] = sheetDetail;
-      presentSheet.totalBalance = calculateBalance(presentSheet);
+      sheetDetails[sheetDetailIndex] = sheetDetail;
+      let upcoming = moment(sheetDetail.date).isAfter(moment());
+      if (upcoming) {
+        if (!presentSheet.upcoming) {
+          presentSheet.upcoming = [];
+        }
+        if (!editFromUpcomingScreen) {
+          // remove from details
+          sheetDetails.splice(sheetDetailIndex, 1);
+          // add to upcoming
+          presentSheet.upcoming.push(sheetDetail);
+        }
+      } else {
+        if (editFromUpcomingScreen) {
+          // remove from upcoming
+          sheetDetails.splice(sheetDetailIndex, 1);
+          // add to details
+          presentSheet.details.push(sheetDetail);
+        }
+      }
+      let {totalExpense, totalIncome, totalBalance} =
+        calculateBalance(presentSheet);
+      presentSheet.totalExpense = totalExpense;
+      presentSheet.totalIncome = totalIncome;
+      presentSheet.totalBalance = totalBalance;
       presentSheet.updatedAt = Date.now();
       presentSheets[sheetIndex] = presentSheet;
       let updatedExpensesData = {
@@ -1020,22 +1123,27 @@ export const SheetsContextProvider = ({children}) => {
         categories: categories,
       };
       onSaveExpensesData(updatedExpensesData).then(() => {
+        setCurrentSheet(presentSheet);
         onSetChangesMade(true); // set changes made to true so that backup occurs only if some changes are made
-        callback(presentSheet);
+        callback();
       });
     };
 
-    var presentSheets = [...sheets];
-    var sheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
+    var presentSheets = _.cloneDeep(sheets);
+    var sheetIndex = presentSheets.findIndex(s => s.id === currentSheet.id);
     var presentSheet = presentSheets[sheetIndex];
-    let sheetDetailIndex = presentSheet.details.findIndex(
+    let sheetDetails = editFromUpcomingScreen
+      ? presentSheet.upcoming
+      : presentSheet.details;
+    let sheetDetailIndex = sheetDetails.findIndex(
       sd => sd.id === sheetDetail.id,
     );
+
     // if image changed delete the image and upload new image
     if (sheetDetail.imageChanged) {
       if (sheetDetail.image && sheetDetail.image.url) {
         // delete previous image
-        let previousImageUrl = presentSheet.details[sheetDetailIndex].image.url;
+        let previousImageUrl = sheetDetails[sheetDetailIndex].image.url;
 
         if (previousImageUrl) {
           await firebaseRemoveFile(previousImageUrl);
@@ -1049,7 +1157,7 @@ export const SheetsContextProvider = ({children}) => {
 
         let pictureName = `${sheetDetail.id}.${sheetDetail.image.extension}`;
 
-        let uploadPath = `users/${userData.uid}/${sheet.id}/${pictureName}`;
+        let uploadPath = `users/${userData.uid}/${currentSheet.id}/${pictureName}`;
         showLoader('image_upload');
 
         await firebaseUploadFile(uploadPath, sheetDetail.image.uri)
@@ -1072,7 +1180,7 @@ export const SheetsContextProvider = ({children}) => {
     // if image delete request
     else if (sheetDetail.imageDeleted) {
       showLoader('image_upload');
-      await firebaseRemoveFile(presentSheet.details[sheetDetailIndex].image.url)
+      await firebaseRemoveFile(sheetDetails[sheetDetailIndex].image.url)
         .then(() => {
           sheetDetail.image = {url: null};
           hideLoader();
@@ -1155,20 +1263,35 @@ export const SheetsContextProvider = ({children}) => {
   };
 
   const onDeleteSheetDetails = async (
-    sheet,
     sheetDetail,
+    editFromUpcomingScreen = false,
     callback = () => null,
   ) => {
-    let presentSheets = [...sheets];
-    let presentSheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
-
-    let remainingSheetDetails = presentSheets[presentSheetIndex].details.filter(
-      s => s.id !== sheetDetail.id,
+    let presentSheets = _.cloneDeep(sheets);
+    let presentSheetIndex = presentSheets.findIndex(
+      s => s.id === currentSheet.id,
     );
-    presentSheets[presentSheetIndex].details = remainingSheetDetails;
-    presentSheets[presentSheetIndex].totalBalance = calculateBalance(
+    let sheetDetails = editFromUpcomingScreen
+      ? presentSheets[presentSheetIndex].upcoming
+      : presentSheets[presentSheetIndex].details;
+
+    let sheetDetailIndex = sheetDetails.findIndex(d => d.id === sheetDetail.id);
+    sheetDetails.splice(sheetDetailIndex, 1);
+
+    if (editFromUpcomingScreen) {
+      presentSheets[presentSheetIndex].upcoming = sheetDetails;
+    } else {
+      presentSheets[presentSheetIndex].details = sheetDetails;
+    }
+
+    let {totalExpense, totalIncome, totalBalance} = calculateBalance(
       presentSheets[presentSheetIndex],
     );
+
+    presentSheets[presentSheetIndex].totalExpense = totalExpense;
+    presentSheets[presentSheetIndex].totalIncome = totalIncome;
+    presentSheets[presentSheetIndex].totalBalance = totalBalance;
+
     presentSheets[presentSheetIndex].updatedAt = Date.now();
     let updatedExpensesData = {
       ...expensesData,
@@ -1177,6 +1300,7 @@ export const SheetsContextProvider = ({children}) => {
     };
     // callback
     onSaveExpensesData(updatedExpensesData).then(() => {
+      setCurrentSheet(presentSheets[presentSheetIndex]);
       callback(presentSheets[presentSheetIndex]);
       onSetChangesMade(true);
     });
@@ -1186,23 +1310,36 @@ export const SheetsContextProvider = ({children}) => {
     }
   };
 
-  const onMoveSheets = async (
-    sheet,
+  const onMoveSheetDetail = async (
     moveToSheet,
     sheetDetail,
+    editFromUpcomingScreen = false,
     callback = () => null,
   ) => {
     let photo = sheetDetail?.image;
 
     const moveSheet = () => {
       let presentSheets = [...sheets];
-      let moveFromSheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
+      let moveFromSheetIndex = presentSheets.findIndex(
+        s => s.id === currentSheet.id,
+      );
       let moveFromSheet = presentSheets[moveFromSheetIndex];
-      let moveFromremainingSheetDetails = moveFromSheet.details.filter(
+      let sheetDetails = editFromUpcomingScreen
+        ? moveFromSheet.upcoming
+        : moveFromSheet.details;
+      let moveFromremainingSheetDetails = sheetDetails.filter(
         s => s.id !== sheetDetail.id,
       );
-      moveFromSheet.details = moveFromremainingSheetDetails;
-      moveFromSheet.totalBalance = calculateBalance(moveFromSheet);
+      if (editFromUpcomingScreen) {
+        moveFromSheet.upcoming = moveFromremainingSheetDetails;
+      } else {
+        moveFromSheet.details = moveFromremainingSheetDetails;
+      }
+      let {totalExpense, totalIncome, totalBalance} =
+        calculateBalance(moveFromSheet);
+      moveFromSheet.totalExpense = totalExpense;
+      moveFromSheet.totalIncome = totalIncome;
+      moveFromSheet.totalBalance = totalBalance;
       moveFromSheet.updatedAt = Date.now();
       presentSheets[moveFromSheetIndex] = moveFromSheet;
       // to move sheet into
@@ -1211,9 +1348,22 @@ export const SheetsContextProvider = ({children}) => {
       if (!moveTo.details) {
         moveTo.details = [];
       }
-
-      moveTo.details.push(sheetDetail);
-      moveTo.totalBalance = calculateBalance(moveTo);
+      if (editFromUpcomingScreen) {
+        if (!moveTo.upcoming) {
+          moveTo.upcoming = [];
+        }
+        moveTo.upcoming.push(sheetDetail);
+      } else {
+        moveTo.details.push(sheetDetail);
+      }
+      let {
+        totalExpense: moveToTotalExpense,
+        totalIncome: moveToTotalIncome,
+        totalBalance: moveToTotalBalance,
+      } = calculateBalance(moveTo);
+      moveTo.totalExpense = moveToTotalExpense;
+      moveTo.totalIncome = moveToTotalIncome;
+      moveTo.totalBalance = moveToTotalBalance;
       presentSheets[moveToIndex] = moveTo;
       let updatedExpensesData = {
         ...expensesData,
@@ -1222,6 +1372,7 @@ export const SheetsContextProvider = ({children}) => {
       };
       onSaveExpensesData(updatedExpensesData).then(() => {
         onSetChangesMade(true);
+        setCurrentSheet(moveFromSheet);
         callback(moveFromSheet);
       });
     };
@@ -1248,13 +1399,13 @@ export const SheetsContextProvider = ({children}) => {
     }
   };
 
-  const onDuplicateSheet = async (
-    sheet,
+  const onDuplicateSheetDetail = async (
     sheetDetail,
+    editFromUpcomingScreen = false,
     callback = () => null,
   ) => {
     let presentSheets = [...sheets];
-    let dupSheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
+    let dupSheetIndex = presentSheets.findIndex(s => s.id === currentSheet.id);
     let dupSheet = {...presentSheets[dupSheetIndex]};
     let newSheetDetail = _.cloneDeep(sheetDetail);
     newSheetDetail.id =
@@ -1263,9 +1414,17 @@ export const SheetsContextProvider = ({children}) => {
     let photo = sheetDetail?.image;
 
     const duplicateSheet = () => {
-      dupSheet.details.push(newSheetDetail);
+      if (editFromUpcomingScreen) {
+        dupSheet.upcoming.push(newSheetDetail);
+      } else {
+        dupSheet.details.push(newSheetDetail);
+      }
       dupSheet.updatedAt = Date.now();
-      dupSheet.totalBalance = calculateBalance(dupSheet);
+      let {totalExpense, totalIncome, totalBalance} =
+        calculateBalance(dupSheet);
+      dupSheet.totalExpense = totalExpense;
+      dupSheet.totalIncome = totalIncome;
+      dupSheet.totalBalance = totalBalance;
       presentSheets[dupSheetIndex] = dupSheet;
 
       let updatedExpensesData = {
@@ -1276,6 +1435,7 @@ export const SheetsContextProvider = ({children}) => {
 
       onSaveExpensesData(updatedExpensesData).then(() => {
         onSetChangesMade(true);
+        setCurrentSheet(dupSheet);
         callback(dupSheet);
       });
     };
@@ -1285,7 +1445,7 @@ export const SheetsContextProvider = ({children}) => {
       let extRegex = /\.(png|jpe?g|gif|bmp|webp)$/i;
       let extension = photo.url.match(extRegex)?.[0];
       let pictureName = newSheetDetail.id + '.' + extension;
-      let copyToPath = `users/${userData.uid}/${sheet.id}/${pictureName}`;
+      let copyToPath = `users/${userData.uid}/${currentSheet.id}/${pictureName}`;
       await firebaseCopyMoveFile('copy', photo.url, copyToPath)
         .then(downloadURL => {
           hideLoader();
@@ -1302,21 +1462,36 @@ export const SheetsContextProvider = ({children}) => {
     }
   };
 
-  const onChangeSheetType = async (
-    sheet,
+  const onChangeSheetDetailType = async (
     sheetDetail,
+    editFromUpcomingScreen = false,
     callback = () => null,
   ) => {
     let presentSheets = [...sheets];
-    let changeSheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
-    let changeSheet = presentSheets[changeSheetIndex];
-    let detailIndex = changeSheet.details.findIndex(
-      d => d.id === sheetDetail.id,
+    let changeSheetIndex = presentSheets.findIndex(
+      s => s.id === currentSheet.id,
     );
-    changeSheet.details[detailIndex].type =
-      sheetDetail.type === 'income' ? 'expense' : 'income';
+    let changeSheet = presentSheets[changeSheetIndex];
+    let sheetDetails = editFromUpcomingScreen
+      ? changeSheet.upcoming
+      : changeSheet.details;
+
+    let detailIndex = sheetDetails.findIndex(d => d.id === sheetDetail.id);
+
+    if (editFromUpcomingScreen) {
+      changeSheet.upcoming[detailIndex].type =
+        sheetDetail.type === 'income' ? 'expense' : 'income';
+    } else {
+      changeSheet.details[detailIndex].type =
+        sheetDetail.type === 'income' ? 'expense' : 'income';
+    }
+
     changeSheet.updatedAt = Date.now();
-    changeSheet.totalBalance = calculateBalance(changeSheet);
+    let {totalExpense, totalIncome, totalBalance} =
+      calculateBalance(changeSheet);
+    changeSheet.totalExpense = totalExpense;
+    changeSheet.totalIncome = totalIncome;
+    changeSheet.totalBalance = totalBalance;
     presentSheets[changeSheetIndex] = changeSheet;
     let updatedExpensesData = {
       ...expensesData,
@@ -1326,6 +1501,7 @@ export const SheetsContextProvider = ({children}) => {
 
     onSaveExpensesData(updatedExpensesData).then(() => {
       onSetChangesMade(true);
+      setCurrentSheet(changeSheet);
       callback(changeSheet);
     });
   };
@@ -1334,7 +1510,11 @@ export const SheetsContextProvider = ({children}) => {
     return sheets.filter(s => s.id === id)[0];
   };
 
-  const onExportDataToExcel = async (config, data, callback = () => null) => {
+  const onExportSheetDataToExcel = async (
+    config,
+    data,
+    callback = () => null,
+  ) => {
     showLoader('excel');
     let wb = XLSX.utils.book_new();
     let ws = XLSX.utils.json_to_sheet(data);
@@ -1449,7 +1629,11 @@ export const SheetsContextProvider = ({children}) => {
     }
   };
 
-  const onExportDataToPdf = async (config, sheet, callback = () => null) => {
+  const onExportSheetDataToPdf = async (
+    config,
+    sheet,
+    callback = () => null,
+  ) => {
     try {
       showLoader('pdf');
 
@@ -1459,7 +1643,7 @@ export const SheetsContextProvider = ({children}) => {
       <th>CATEGORY</th>
       <th>IMAGE</th>
       <th>DATE</th>
-      <th>AMOUNT ( ${GetCurrencySymbol(sheet.currency)} )</th>
+      <th>AMOUNT ( ${GetCurrencySymbol(currentSheet.currency)} )</th>
     `;
       let styles = `
       <style>
@@ -1629,7 +1813,7 @@ export const SheetsContextProvider = ({children}) => {
           url: finalPath,
           title: 'Transactions Pdf File',
           subject: 'Transaction file - Pdf',
-        });
+        }).catch(e => {});
         hideLoader();
         return;
       }
@@ -1728,6 +1912,8 @@ export const SheetsContextProvider = ({children}) => {
         sheets,
         expensesData,
         categories,
+        currentSheet,
+        setCurrentSheet,
         onSaveSheet,
         onSaveSheetDetails,
         onSaveCategory,
@@ -1739,16 +1925,17 @@ export const SheetsContextProvider = ({children}) => {
         getSheetById,
         onEditSheetDetails,
         onDeleteSheetDetails,
-        onMoveSheets,
-        onDuplicateSheet,
-        onChangeSheetType,
+        onMoveSheetDetail,
+        onDuplicateSheetDetail,
+        onChangeSheetDetailType,
         onArchiveSheet,
         onPinSheet,
-        onExportDataToExcel,
+        onExportSheetDataToExcel,
         calculateBalance,
         onGoogleCloudVision,
-        onExportDataToPdf,
+        onExportSheetDataToPdf,
         onSmartScanReceipt,
+        onCheckUpcomingSheetDetails,
         getMessages,
       }}>
       {children}

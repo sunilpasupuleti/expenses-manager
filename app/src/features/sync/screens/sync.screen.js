@@ -1,7 +1,14 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import momentTz from 'moment-timezone';
 import React, {useContext, useEffect, useState} from 'react';
-import {Alert, Platform, ScrollView, StyleSheet, View} from 'react-native';
+import {
+  Alert,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+} from 'react-native';
 import {Divider, Modal, Portal} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import {useTheme} from 'styled-components/native';
@@ -54,13 +61,15 @@ export const SyncScreen = ({navigation, route}) => {
     navigation.setOptions({
       headerTitle: 'Back up and Restore',
       headerRight: () => (
-        <Ionicons
+        <Pressable
           onPress={() => navigation.goBack()}
-          style={{marginRight: 20}}
-          name="close-circle-outline"
-          size={30}
-          color={theme.colors.brand.primary}
-        />
+          style={{marginRight: 20}}>
+          <Ionicons
+            name="close-circle-outline"
+            size={30}
+            color={theme.colors.brand.primary}
+          />
+        </Pressable>
       ),
       headerLeft: () => null,
     });
@@ -185,7 +194,8 @@ export const SyncScreen = ({navigation, route}) => {
         <MainWrapper>
           {Platform.OS === 'ios' && (
             <Spacer size={'large'}>
-              <SettingsCard>
+              <SettingsCard
+                style={{backgroundColor: theme.colors.bg.card, margin: 1}}>
                 <SettingsCardContent onPress={onBackupToiCloud}>
                   <Setting justifyContent="space-between">
                     <FlexRow>
@@ -233,7 +243,8 @@ export const SyncScreen = ({navigation, route}) => {
           )}
 
           <Spacer size={'xlarge'}>
-            <SettingsCard>
+            <SettingsCard
+              style={{backgroundColor: theme.colors.bg.card, margin: 1}}>
               <SettingsCardContent onPress={onPressBackupButton}>
                 <Setting justifyContent="space-between">
                   <FlexRow>

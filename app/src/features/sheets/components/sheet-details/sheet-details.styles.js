@@ -1,9 +1,17 @@
 import React from 'react';
-import {ActivityIndicator, TextInput} from 'react-native-paper';
+import {ActivityIndicator} from 'react-native-paper';
 import styled from 'styled-components/native';
 import {Text} from '../../../../components/typography/text.component';
 import {colors} from '../../../../infrastructure/theme/colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import * as Animatable from 'react-native-animatable';
+import {Input} from '../../../../components/styles';
+
+export const FilterIconContainer = styled.View`
+  position: absolute;
+  top: 20px;
+  right: 10px;
+`;
 
 export const SheetDetailsTotalBalance = styled(Text)`
   margin-top: 20px;
@@ -13,16 +21,48 @@ export const SheetDetailsTotalBalance = styled(Text)`
 export const SheetDetailsUnderline = styled.View`
   border-bottom-color: ${({theme}) => theme.colors.brand.primary};
   border-bottom-width: 5px;
-  width: 50px;
+  width: ${({amount}) => `${Math.max(60, amount * 20)}px`};
   align-self: center;
+  padding-top: 5px;
+  margin-left: 10px;
 `;
 
-export const SheetDetailInput = styled(TextInput).attrs({
-  activeOutlineColor: 'transparent',
-  outlineColor: 'transparent',
-  selectionColor: colors.brand.primary,
+export const AddAmountContainer = styled.View`
+  padding-bottom: 5px;
+`;
+
+export const AddAmountInputTextContainer = styled.View`
+  position: absolute;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const AddAmountInputText = styled(Text).attrs({
+  fontfamily: 'bodyBold',
 })`
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+`;
+
+export const AddAmountInputTextBlinkingCursor = styled(Animatable.View).attrs({
+  animation: 'fadeIn',
+  iterationCount: 'infinite',
+  direction: 'alternate',
+  duration: 400,
+})`
+  background-color: ${colors.brand.primary};
+  height: 70%;
+  width: 1%;
+  border-radius: 10px;
+  position: absolute;
+  right: -6px;
+  bottom: 0px;
+`;
+
+export const AddAmountInput = styled(Input).attrs({})`
+  opacity: 0;
+  width: 100%;
+  background-color: transparent;
 `;
 
 export const SheetDetailDate = styled(Text).attrs({

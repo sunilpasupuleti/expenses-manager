@@ -1,12 +1,12 @@
+/* eslint-disable react/self-closing-comp */
+/* eslint-disable react/no-unstable-nested-components */
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import React, {useContext, useEffect, useState} from 'react';
 import {FlatList, TouchableOpacity} from 'react-native';
 import {useTheme} from 'styled-components/native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {FlexRow, MainWrapper} from '../../../../components/styles';
+import {FlexRow} from '../../../../components/styles';
 import {Text} from '../../../../components/typography/text.component';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
-import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
 import moment from 'moment';
 import _ from 'lodash';
@@ -19,27 +19,21 @@ import {
   GetCurrencyLocalString,
   GetCurrencySymbol,
 } from '../../../../components/symbol.currency';
-import {SheetsContext} from '../../../../services/sheets/sheets.context';
 
 import {SheetDetailsInfo} from '../sheet-details/sheet-details-info.component';
-import {SheetExport} from '../sheet-export/sheet-export.component';
-import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
-import {getFirebaseAccessUrl} from '../../../../components/utility/helper';
+import {SheetsContext} from '../../../../services/sheets/sheets.context';
 
 export const SheetStatsDetailsScreen = ({navigation, route}) => {
-  const [sheet, setSheet] = useState(null);
+  const {currentSheet} = useContext(SheetsContext);
   const [sheetDetails, setSheetDetails] = useState(null);
   const [category, setCategory] = useState(null);
   const [totalAmount, setTotalAmount] = useState(0);
   const [groupedSheetDetails, setGroupedSheetDetails] = useState(null);
-  const {onExportDataToExcel} = useContext(SheetsContext);
   const theme = useTheme();
-  const {userAdditionalDetails} = useContext(AuthenticationContext);
 
   useEffect(() => {
-    let {sheet: ps, sheetDetails: psd, category: pc} = route.params;
-    if (ps && psd && pc) {
-      setSheet(ps);
+    let {sheetDetails: psd, category: pc} = route.params;
+    if (psd && pc) {
       setSheetDetails(psd);
       setCategory(pc);
       onGroupSheetDetails(psd);
@@ -82,80 +76,13 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
     }
   };
 
-  const onClickExportData = (sh, sds, cat) => {
-    let structuredDetails = [{}];
-    let totalIncome = 0;
-    let totalExpense = 0;
-    sds.forEach((d, i) => {
-      let date = moment(d.date).format('MMM DD, YYYY ');
-      if (d.showTime) {
-        let time = moment(d.time).format('hh:mm A');
-        date += time;
-      }
-      if (d.type === 'expense') {
-        totalExpense += d.amount;
-      } else {
-        totalIncome += d.amount;
-      }
-      let amount = `AMOUNT ( ${GetCurrencySymbol(sh.currency)} )`;
-      let detail = {
-        'S.NO': i + 1,
-        TITLE: d.notes,
-        IMAGE: d.image?.url ? getFirebaseAccessUrl(d.image.url) : '-',
-        DATE: date,
-        [amount]: d.type === 'expense' ? -d.amount : d.amount,
-      };
-
-      structuredDetails.push(detail);
-    });
-    let extraCells = [
-      ['', '', '', '', '', ''],
-      [
-        '',
-        '',
-        '',
-        'TOTAL INCOME ',
-        GetCurrencySymbol(sh.currency) +
-          ' ' +
-          GetCurrencyLocalString(totalIncome),
-      ],
-      [
-        '',
-        '',
-        '',
-        'TOTAL EXPENSES ',
-        GetCurrencySymbol(sh.currency) +
-          ' ' +
-          GetCurrencyLocalString(totalExpense),
-      ],
-      [
-        '',
-        '',
-        '',
-        'BALANCE',
-        GetCurrencySymbol(sh.currency) +
-          ' ' +
-          GetCurrencyLocalString(totalIncome - totalExpense),
-      ],
-    ];
-
-    let config = {
-      title: cat.name.toUpperCase(),
-      type: 'category',
-      extraCells,
-      sheet: {...sh},
-      wscols: [{wch: 5}, {wch: 40}, {wch: 40}, {wch: 30}],
-    };
-    onExportDataToExcel(config, structuredDetails);
-  };
-
   return (
     <SafeArea>
       {sheetDetails && sheetDetails.length > 0 && (
         <>
           <SheetDetailsTotalBalance fontsize={'30px'} fontfamily="bodySemiBold">
             {/* {"\u20B9"}{" "} */}
-            {GetCurrencySymbol(sheet.currency)}{' '}
+            {GetCurrencySymbol(currentSheet.currency)}{' '}
             {GetCurrencyLocalString(totalAmount)}
           </SheetDetailsTotalBalance>
           <SheetDetailsUnderline />
@@ -186,7 +113,7 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
                   date={item}
                   sheetDetails={sortedSheetDetails}
                   navigation={navigation}
-                  sheet={sheet}
+                  sheet={currentSheet}
                 />
               );
             }}

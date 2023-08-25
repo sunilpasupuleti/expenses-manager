@@ -5,8 +5,7 @@ import {Text} from '../../../../components/typography/text.component';
 import React from 'react';
 import {Platform, ScrollView, TouchableOpacity, View} from 'react-native';
 import {useTheme} from 'styled-components/native';
-import {useTheme as rnpUseTheme} from 'react-native-paper';
-
+import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {ButtonText, FlexRow} from '../../../../components/styles';
 import {Spacer} from '../../../../components/spacer/spacer.component';
 import {useContext} from 'react';
@@ -22,7 +21,6 @@ import {
 import {useDispatch} from 'react-redux';
 import {notificationActions} from '../../../../store/notification-slice';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
-import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
 import {MultipleSelectList} from 'react-native-dropdown-select-list';
 import {getFirebaseAccessUrl} from '../../../../components/utility/helper';
 
@@ -35,7 +33,7 @@ const onSetFromDate = () => {
 };
 
 export const SheetExport = ({navigation, route}) => {
-  const [sheet, setSheet] = useState(null);
+  const {currentSheet} = useContext(SheetsContext);
   const [type, setType] = useState(null);
   const [categoryType, setCategoryType] = useState(null);
   const dispatch = useDispatch();
@@ -54,11 +52,9 @@ export const SheetExport = ({navigation, route}) => {
 
   const {
     categories: allCategories,
-    onExportDataToExcel,
-    onExportDataToPdf,
+    onExportSheetDataToExcel,
+    onExportSheetDataToPdf,
   } = useContext(SheetsContext);
-
-  const {userAdditionalDetails} = useContext(AuthenticationContext);
 
   const theme = useTheme();
 
@@ -99,7 +95,7 @@ export const SheetExport = ({navigation, route}) => {
   }, [categoryType]);
 
   const onFilter = config => {
-    let sheetDetails = sheet.details;
+    let sheetDetails = currentSheet.details;
 
     if (!type) {
       dispatch(
@@ -117,9 +113,10 @@ export const SheetExport = ({navigation, route}) => {
       );
     }
     if (categoryType && !categories.length) {
-      sheetDetails = sheetDetails.filter(s => s.type === categoryType);
+      sheetDetails = sheetDetails.filter(s => {
+        return s.type === categoryType;
+      });
     }
-
     if (dateFilter) {
       //   for exact filter between dates
       // let from = new Date(fromDate); //minus one day
@@ -211,7 +208,7 @@ export const SheetExport = ({navigation, route}) => {
         totalIncome += d.amount;
       }
 
-      let amount = `AMOUNT ( ${GetCurrencySymbol(sheet.currency)} )`;
+      let amount = `AMOUNT ( ${GetCurrencySymbol(currentSheet.currency)} )`;
       let detail = {
         'S.NO': i + 1,
         TITLE: d.notes,
@@ -231,7 +228,7 @@ export const SheetExport = ({navigation, route}) => {
         '',
         '',
         'TOTAL INCOME ',
-        GetCurrencySymbol(sheet.currency) +
+        GetCurrencySymbol(currentSheet.currency) +
           ' ' +
           GetCurrencyLocalString(totalIncome),
       ],
@@ -241,7 +238,7 @@ export const SheetExport = ({navigation, route}) => {
         '',
         '',
         'TOTAL EXPENSES ',
-        GetCurrencySymbol(sheet.currency) +
+        GetCurrencySymbol(currentSheet.currency) +
           ' ' +
           GetCurrencyLocalString(totalExpense),
       ],
@@ -251,30 +248,30 @@ export const SheetExport = ({navigation, route}) => {
         '',
         '',
         'BALANCE',
-        GetCurrencySymbol(sheet.currency) +
+        GetCurrencySymbol(currentSheet.currency) +
           ' ' +
           GetCurrencyLocalString(totalIncome - totalExpense),
       ],
     ];
     let config = {
-      title: sheet.name.toUpperCase(),
+      title: currentSheet.name.toUpperCase(),
       extraCells,
-      sheet: {...sheet},
+      sheet: {...currentSheet},
       wscols: [{wch: 5}, {wch: 40}, {wch: 40}, {wch: 25}, {wch: 25}],
       ...configData,
     };
     onCompleteExporting();
-    onExportDataToExcel(config, structuredDetails);
+    onExportSheetDataToExcel(config, structuredDetails);
   };
 
   const exportPdf = (configData, sheetDetails) => {
     onCompleteExporting();
-    let finalSheet = {...sheet};
+    let finalSheet = {...currentSheet};
     finalSheet.details = sheetDetails;
     let config = {
       ...configData,
     };
-    onExportDataToPdf(config, finalSheet);
+    onExportSheetDataToPdf(config, finalSheet);
   };
 
   const toggleSwithStyles = {
@@ -284,7 +281,7 @@ export const SheetExport = ({navigation, route}) => {
 
   useEffect(() => {
     navigation.setOptions({
-      headerTitle: 'Export ' + sheet?.name,
+      headerTitle: 'Export ' + currentSheet?.name,
       headerLeft: () => (
         <Button uppercase={false} onPress={() => navigation.goBack()}>
           <ButtonText>Back</ButtonText>
@@ -292,38 +289,18 @@ export const SheetExport = ({navigation, route}) => {
       ),
       headerRight: () => {},
     });
-  }, [sheet]);
-
-  useEffect(() => {
-    if (route.params && route.params.sheet) {
-      let sh = route.params.sheet;
-      setSheet(sh);
-    }
-  }, [route.params]);
-
-  const returnDefaultOptions = () => {
-    let finalCategories = [];
-
-    if (categories) {
-      categories.forEach(c => {
-        let categoryFound = items.find(i => i.key === c);
-        if (categoryFound) {
-          finalCategories.push(categoryFound);
-        }
-      });
-    }
-    return finalCategories;
-  };
+  }, [currentSheet]);
 
   return (
     <SafeArea mdBackground={true}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          justifyContent: 'center',
-          marginTop: 50,
-        }}>
-        <Card>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <Card
+          style={{
+            marginBottom: 100,
+            marginTop: 50,
+            backgroundColor: theme.colors.bg.card,
+            margin: 1,
+          }}>
           <Card.Content>
             <RadioButton.Group
               onValueChange={newValue => setType(newValue)}
@@ -377,12 +354,29 @@ export const SheetExport = ({navigation, route}) => {
                 <Spacer size={'large'} />
 
                 <MultipleSelectList
+                  searchicon={
+                    <MaterialCommunityIcon
+                      name="magnify"
+                      size={20}
+                      style={{marginRight: 10}}
+                      color={theme.colors.text.primary}
+                    />
+                  }
+                  closeicon={
+                    <MaterialCommunityIcon
+                      name="close"
+                      size={20}
+                      color={theme.colors.text.primary}
+                    />
+                  }
                   setSelected={val => setCategories(val)}
                   data={items}
                   label="Categories"
                   placeholder="Select categories (optional)"
                   notFoundText="No Categories Found"
-                  checkBoxStyles={{borderColor: theme.colors.brand.primary}}
+                  checkBoxStyles={{
+                    borderColor: theme.colors.brand.primary,
+                  }}
                   labelStyles={{color: theme.colors.text.primary}}
                   dropdownTextStyles={{color: theme.colors.text.primary}}
                   badgeStyles={{
@@ -612,9 +606,8 @@ export const SheetExport = ({navigation, route}) => {
             <Button
               mode="contained"
               onPress={() => onFilter({sharing: true})}
-              style={{
-                backgroundColor: '#01AFDB',
-              }}
+              buttonColor="#01AFDB"
+              textColor="#fff"
               icon="share">
               SHARE
             </Button>
@@ -622,9 +615,8 @@ export const SheetExport = ({navigation, route}) => {
             <Button
               onPress={() => onFilter({})}
               mode="contained"
-              style={{
-                backgroundColor: '#32B997',
-              }}
+              buttonColor="#32B997"
+              textColor="#fff"
               icon="download">
               Export
             </Button>

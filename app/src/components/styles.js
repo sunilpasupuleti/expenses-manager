@@ -1,14 +1,25 @@
 import React from 'react';
 import {Animated} from 'react-native';
-import {Switch} from 'react-native-paper';
+import {Switch, TextInput} from 'react-native-paper';
 import styled from 'styled-components/native';
 import {Text} from '../components/typography/text.component';
 import {colors} from '../infrastructure/theme/colors';
 import {SafeArea} from './utility/safe-area.component';
 export const MainWrapper = styled.View`
   flex: 1;
-  padding: ${props => props.theme.space[3]};
+  margin: ${props => props.theme.space[3]};
 `;
+
+export const Input = styled(TextInput).attrs(props => ({
+  mode: 'outlined',
+  outlineColor: '#ccc',
+  activeOutlineColor: colors.brand.primary,
+  selectionColor: colors.brand.primary,
+  theme: {
+    roundness: 15,
+  },
+  ...props.custom,
+}))``;
 
 export const ButtonText = styled(Text).attrs({
   fontfamily: 'heading',
@@ -37,6 +48,11 @@ export const FlexColumn = styled.View`
 `;
 
 export const NotLoggedInContainer = styled(SafeArea)`
+  align-items: center;
+  justify-content: center;
+`;
+
+export const NotFoundContainer = styled(SafeArea)`
   align-items: center;
   justify-content: center;
 `;

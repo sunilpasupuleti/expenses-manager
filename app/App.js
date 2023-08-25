@@ -17,6 +17,7 @@ import {
   DeviceEventEmitter,
   Linking,
   LogBox,
+  NativeModules,
   Platform,
   StatusBar,
   useColorScheme,
@@ -41,6 +42,7 @@ import remoteConfig from '@react-native-firebase/remote-config';
 import {GetCurrencySymbol} from './src/components/symbol.currency';
 import {TourGuideProvider} from 'rn-tourguide';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {colors} from './src/infrastructure/theme/colors';
 
 moment.suppressDeprecationWarnings = true;
 if (Platform.OS === 'android') {
@@ -140,6 +142,28 @@ const App = () => {
     } catch (error) {}
   };
 
+  const MD3MergedLightTheme = {
+    ...MD3LightTheme,
+    colors: {
+      ...MD3LightTheme.colors,
+      background: lightTheme.colors.ui.body,
+      primary: colors.brand.primary,
+      secondary: colors.brand.secondary,
+      text: lightTheme.colors.text.primary,
+    },
+  };
+
+  const MD3MergedDarkTheme = {
+    ...MD3DarkTheme,
+    colors: {
+      ...MD3DarkTheme.colors,
+      background: darkTheme.colors.ui.body,
+      primary: colors.brand.primary,
+      secondary: colors.brand.secondary,
+      text: darkTheme.colors.text.primary,
+    },
+  };
+
   return (
     <GestureHandlerRootView style={{flex: 1}}>
       <ThemeProvider
@@ -158,11 +182,11 @@ const App = () => {
               theme={
                 appTheme === 'automatic'
                   ? themeType === 'light'
-                    ? MD3LightTheme
-                    : MD3DarkTheme
+                    ? MD3MergedLightTheme
+                    : MD3MergedDarkTheme
                   : appTheme === 'light'
-                  ? MD3LightTheme
-                  : MD3DarkTheme
+                  ? MD3MergedLightTheme
+                  : MD3MergedDarkTheme
               }>
               {appStatus && appStatus.hideSplashScreen && (
                 <AuthenticationContextProvider>

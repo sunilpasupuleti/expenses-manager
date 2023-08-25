@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-shadow */
 import React, {useContext, useEffect, useState, useRef} from 'react';
@@ -8,6 +9,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {
   FlatList,
+  Pressable,
+  RefreshControl,
   TouchableNativeFeedback,
   TouchableOpacity,
   View,
@@ -16,7 +19,6 @@ import {useTheme} from 'styled-components/native';
 
 import moment from 'moment';
 import _ from 'lodash';
-import {Card, Searchbar} from 'react-native-paper';
 import {
   Menu,
   MenuOptions,
@@ -25,7 +27,7 @@ import {
 } from 'react-native-popup-menu';
 import {useDispatch} from 'react-redux';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {FlexRow} from '../../../../components/styles';
+import {FlexRow, Input, NotFoundContainer} from '../../../../components/styles';
 
 import {Text} from '../../../../components/typography/text.component';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
@@ -33,6 +35,7 @@ import {
   BottomIconsContainer,
   CameraButton,
   CameraIcon,
+  FilterIconContainer,
   SheetDetailsAddIcon,
   SheetDetailsTotalBalance,
   SheetDetailsUnderline,
@@ -46,26 +49,33 @@ import {
 } from '../../../../components/symbol.currency';
 import {fetchExchangeRates} from '../../../../store/service-slice';
 import {useIsFocused} from '@react-navigation/native';
+import {FadeInView} from '../../../../components/animations/fade.animation';
+import Lottie from 'lottie-react-native';
+import noTransactions from '../../../../../assets/lottie/no_transactions.json';
 
 export const SheetDetailsScreen = ({navigation, route}) => {
-  const [sheet, setSheet] = useState(route.params.sheet);
   // for filtering purpose
-  const [filteredSheet, setFilteredSheet] = useState(route.params.sheet);
   // original sheet without change
-  const [originalSheet, setOriginalSheet] = useState(route.params.sheet);
+
+  const [refreshing, setRefreshing] = useState(false);
 
   const routeIsFocused = useIsFocused();
 
   const [groupedSheetDetails, setGroupedSheetDetails] = useState({});
 
+  const [filterParams, setFilterParams] = useState(null);
+
   const theme = useTheme();
   const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchBarFocused, setSearchBarFocused] = useState(false);
 
   const {
-    getSheetById,
-    calculateBalance,
-    onGoogleCloudVision,
+    currentSheet,
+    onCheckUpcomingSheetDetails,
     onSmartScanReceipt,
+    setCurrentSheet,
+    calculateBalance,
+    sheets,
   } = useContext(SheetsContext);
   let menuRef = useRef();
   let cameraRef = useRef();
@@ -75,23 +85,9 @@ export const SheetDetailsScreen = ({navigation, route}) => {
     optionWrapper: {padding: 15, paddingTop: 10},
     OptionTouchableComponent: TouchableOpacity,
   };
-
   useEffect(() => {
-    if (route.params.sheet && routeIsFocused) {
-      let s = getSheetById(route.params.sheet.id);
-      setOriginalSheet(s);
-      if (route.params.filter) {
-        let sh = route.params.sheet;
-        setSheet(sh);
-        setFilteredSheet(sh);
-        onGroupSheetDetails(sh);
-      } else {
-        setSheet(s);
-        setFilteredSheet(s);
-        onGroupSheetDetails(s);
-      }
-    }
-  }, [route.params, useIsFocused]);
+    onCheckUpcomingSheetDetails();
+  }, [routeIsFocused]);
 
   const onGroupSheetDetails = s => {
     let sheetDetails = s.details;
@@ -112,15 +108,19 @@ export const SheetDetailsScreen = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    if (routeIsFocused) {
+    if (routeIsFocused && currentSheet) {
+      if (route.params && route.params.filter) {
+        setFilterParams(route.params.filter);
+        onGroupSheetDetails(currentSheet);
+      } else {
+        onGroupSheetDetails(currentSheet);
+      }
+
       navigation.setOptions({
         headerTitle:
-          sheet?.name.length > 25
-            ? sheet.name.substring(0, 25) + '...'
-            : sheet.name,
-        // headerStyle: {
-        //   backgroundColor: theme.colors.bg.primary,
-        // },
+          currentSheet?.name?.length > 25
+            ? currentSheet.name.substring(0, 25) + '...'
+            : currentSheet.name,
         headerLeft: () => (
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <FlexRow>
@@ -153,7 +153,6 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 color={theme.colors.brand.primary}
               />
             </MenuTrigger>
-
             <MenuOptions
               optionsContainerStyle={{
                 marginRight: 10,
@@ -164,12 +163,12 @@ export const SheetDetailsScreen = ({navigation, route}) => {
               <MenuOption
                 customStyles={menuOptionStyles}
                 onSelect={() => {
-                  navigation.navigate('SheetStats', {sheet});
+                  navigation.navigate('SheetStats');
                   menuRef.current.close();
                 }}>
                 <FlexRow justifyContent="space-between">
                   <Text color="#2f2f2f" fontfamily="heading">
-                    Stats
+                    Analytics
                   </Text>
                   <Ionicons
                     style={{paddingBottom: 8}}
@@ -183,7 +182,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 customStyles={menuOptionStyles}
                 onSelect={() => {
                   menuRef.current.close();
-                  navigation.navigate('SheetTrends', {sheet});
+                  navigation.navigate('SheetTrends', {currentSheet});
                 }}>
                 <FlexRow justifyContent="space-between">
                   <Text color="#2f2f2f" fontfamily="heading">
@@ -197,26 +196,25 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                   />
                 </FlexRow>
               </MenuOption>
-
               <MenuOption
                 customStyles={menuOptionStyles}
                 onSelect={() => {
                   dispatch(
                     fetchExchangeRates({
                       showAlert: false,
-                      BASE_CURRENCY: sheet.currency,
+                      BASE_CURRENCY: currentSheet.currency,
                       dispatch: dispatch,
                     }),
                   );
                   menuRef.current.close();
                   navigation.navigate('CurrencyRates', {
                     display: true,
-                    selectedCurrency: sheet.currency,
+                    selectedCurrency: currentSheet.currency,
                   });
                 }}>
                 <FlexRow justifyContent="space-between">
                   <Text color="#2f2f2f" fontfamily="heading">
-                    Curreny Rate
+                    Curreny Rates
                   </Text>
                   <FontAwesome
                     style={{paddingBottom: 8}}
@@ -231,36 +229,8 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 customStyles={menuOptionStyles}
                 onSelect={() => {
                   menuRef.current.close();
-                  navigation.navigate('AddSheet', {
-                    sheet,
-                    edit: true,
-                    callback: sheet =>
-                      navigation.navigate('SheetDetailsHome', {
-                        screen: 'Transactions',
-                        sheet: sheet,
-                      }),
-                    // navigation.navigate('SheetDetails', {sheet}),
-                  });
-                }}>
-                <FlexRow justifyContent="space-between">
-                  <Text color="#2f2f2f" fontfamily="heading">
-                    Edit Account
-                  </Text>
-                  <Ionicons
-                    style={{paddingBottom: 8}}
-                    name="pencil-outline"
-                    size={20}
-                    color={'#000'}
-                  />
-                </FlexRow>
-              </MenuOption>
-
-              <MenuOption
-                customStyles={menuOptionStyles}
-                onSelect={() => {
-                  menuRef.current.close();
                   navigation.navigate('SheetExport', {
-                    sheet: sheet,
+                    sheet: currentSheet,
                   });
                   // onClickExportData();
                 }}>
@@ -282,31 +252,46 @@ export const SheetDetailsScreen = ({navigation, route}) => {
         ),
       });
     }
-  }, [navigation, sheet, useIsFocused]);
+  }, [currentSheet, routeIsFocused]);
 
   useEffect(() => {
-    let fsheet;
-    fsheet = {...filteredSheet};
-    if (searchKeyword !== '' && fsheet.details) {
-      let filteredDetails = fsheet.details.filter(sd => {
-        let notesMatched = sd.notes
-          ? sd.notes.toLowerCase().includes(searchKeyword.trim().toLowerCase())
-          : false;
-        return (
-          sd.category.name
-            .toLowerCase()
-            .includes(searchKeyword.trim().toLowerCase()) ||
-          sd.amount.toString().includes(searchKeyword.trim().toLowerCase()) ||
-          sd.type.toLowerCase().includes(searchKeyword.trim().toLowerCase()) ||
-          notesMatched
-        );
-      });
-      fsheet.details = filteredDetails;
-      fsheet.totalBalance = calculateBalance(fsheet);
+    if (searchBarFocused) {
+      let fsheet;
+      if (filterParams && filterParams.status) {
+        fsheet = filterParams.filteredSheet;
+      } else {
+        fsheet = sheets.find(s => s.id === currentSheet.id);
+      }
+      fsheet = _.cloneDeep(fsheet);
+
+      if (searchKeyword !== '' && fsheet.details) {
+        let filteredDetails = fsheet.details.filter(sd => {
+          let notesMatched = sd.notes
+            ? sd.notes
+                .toLowerCase()
+                .includes(searchKeyword.trim().toLowerCase())
+            : false;
+          return (
+            sd.category.name
+              .toLowerCase()
+              .includes(searchKeyword.trim().toLowerCase()) ||
+            sd.amount.toString().includes(searchKeyword.trim().toLowerCase()) ||
+            sd.type
+              .toLowerCase()
+              .includes(searchKeyword.trim().toLowerCase()) ||
+            notesMatched
+          );
+        });
+        fsheet.details = filteredDetails;
+        let {totalIncome, totalExpense, totalBalance} =
+          calculateBalance(fsheet);
+        fsheet.totalIncome = totalIncome;
+        fsheet.totalExpense = totalExpense;
+        fsheet.totalBalance = totalBalance;
+      }
+      setCurrentSheet(fsheet);
     }
-    setSheet(fsheet);
-    onGroupSheetDetails(fsheet);
-  }, [searchKeyword, filteredSheet]);
+  }, [searchKeyword, searchBarFocused, filterParams]);
 
   const onClickScanButton = async mode => {
     let options = {
@@ -322,17 +307,24 @@ export const SheetDetailsScreen = ({navigation, route}) => {
         response.assets[0] &&
         response.assets[0].base64
       ) {
-        let base64 = 'data:' + response.assets[0].type + ';base64,';
-        let base64Data = response.assets[0].base64;
+        let onlyBase64 = response.assets[0].base64;
+        let pictureType = response.assets[0].type;
+        let pictureExtension = pictureType.split('/')[1];
+        let base64 = 'data:' + pictureType + ';base64,' + onlyBase64;
+        let uri = response.assets[0].uri;
 
-        onSmartScanReceipt(base64Data, fetchedData => {
+        onSmartScanReceipt(onlyBase64, fetchedData => {
           if (fetchedData) {
-            fetchedData.image = base64 + base64Data;
+            fetchedData.image = {
+              type: pictureType,
+              uri: uri,
+              url: base64,
+              extension: pictureExtension,
+            };
           }
           navigation.navigate('AddSheetDetail', {
             smartScan: true,
             sheetDetail: fetchedData,
-            sheet: sheet,
           });
         });
       }
@@ -348,65 +340,90 @@ export const SheetDetailsScreen = ({navigation, route}) => {
     }
   };
 
+  const onRefresh = () => {
+    setRefreshing(true);
+    onCheckUpcomingSheetDetails(() => {
+      setRefreshing(false);
+    });
+  };
+
   return (
     <SafeArea
       style={{
         backgroundColor: theme.colors.bg.primary,
       }}>
-      {sheet && (
+      {currentSheet && (
         <>
-          <SheetDetailsTotalBalance fontsize={'30px'} fontfamily="bodySemiBold">
-            {GetCurrencySymbol(sheet.currency)}{' '}
-            {GetCurrencyLocalString(sheet.totalBalance)}
-          </SheetDetailsTotalBalance>
-          <SheetDetailsUnderline />
+          <FlexRow justifyContent="center">
+            <SheetDetailsTotalBalance
+              fontsize={'30px'}
+              fontfamily="bodySemiBold">
+              {GetCurrencySymbol(currentSheet.currency)}{' '}
+              {GetCurrencyLocalString(currentSheet.totalBalance)}
+            </SheetDetailsTotalBalance>
 
-          <Searchbar
-            value={searchKeyword}
-            theme={{roundness: 10}}
-            style={{elevation: 2, margin: 10, marginBottom: 0}}
-            placeholder="Search by Category/Name/Amt"
-            onChangeText={k => setSearchKeyword(k)}
-            clearIcon={() =>
-              searchKeyword !== '' && (
-                <Ionicons
-                  onPress={() => setSearchKeyword('')}
-                  name="close-circle-outline"
-                  size={25}
-                  color={theme.colors.brand.primary}
-                />
-              )
-            }
-          />
-          <Spacer size={'large'} />
-          <FlexRow justifyContent="flex-end">
-            <Spacer position={'right'} size="medium">
+            <FilterIconContainer>
               <MaterialCommunityIcons
                 onPress={() =>
                   navigation.navigate('SheetDetailsFilter', {
-                    sheet: originalSheet,
-                    filter:
-                      route.params && route.params.filter
-                        ? route.params.filter
-                        : null,
+                    filter: filterParams ? filterParams : null,
                   })
                 }
                 name={
-                  route.params &&
-                  route.params.filter &&
-                  route.params.filter.status
+                  filterParams && filterParams.status
                     ? 'filter-remove-outline'
                     : 'filter-outline'
                 }
                 size={30}
                 color={theme.colors.brand.primary}
               />
-            </Spacer>
+            </FilterIconContainer>
           </FlexRow>
 
+          <SheetDetailsUnderline
+            amount={currentSheet.totalBalance.toString().length}
+          />
+
+          <Input
+            value={searchKeyword}
+            onFocus={() => setSearchBarFocused(true)}
+            style={{elevation: 2, margin: 10, marginBottom: 0}}
+            placeholder="Search by Category/Name/Amt"
+            onChangeText={k => setSearchKeyword(k)}
+            clearButtonMode="while-editing"
+          />
+          {currentSheet.upcoming && currentSheet.upcoming.length > 0 && (
+            <Spacer size={'large'}>
+              <Pressable
+                onPress={() => {
+                  navigation.navigate('UpcomingSheetDetails');
+                }}>
+                <FlexRow
+                  justifyContent="space-between"
+                  style={{paddingLeft: 16, paddingRight: 16}}>
+                  <Text fontsize="20px" color={theme.colors.brand.primary}>
+                    Upcoming ({currentSheet.upcoming.length})
+                  </Text>
+                  <MaterialCommunityIcons
+                    name="chevron-right"
+                    size={30}
+                    color={theme.colors.text.primary}
+                  />
+                </FlexRow>
+              </Pressable>
+            </Spacer>
+          )}
+
           <Spacer size={'xlarge'} />
-          {sheet.details && sheet.details.length > 0 && (
+          {currentSheet.details && currentSheet.details.length > 0 && (
             <FlatList
+              refreshControl={
+                <RefreshControl
+                  title="Checking upcoming transactions"
+                  onRefresh={onRefresh}
+                  refreshing={refreshing}
+                />
+              }
               data={Object.keys(groupedSheetDetails)}
               showsVerticalScrollIndicator={false}
               renderItem={({item, index}) => {
@@ -427,13 +444,15 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                   .reverse()
                   .value();
                 return (
-                  <SheetDetailsInfo
-                    totalBalance={totalBalance}
-                    date={item}
-                    sheetDetails={sortedSheetDetails}
-                    navigation={navigation}
-                    sheet={sheet}
-                  />
+                  <FadeInView>
+                    <SheetDetailsInfo
+                      totalBalance={totalBalance}
+                      date={item}
+                      sheetDetails={sortedSheetDetails}
+                      navigation={navigation}
+                      sheet={currentSheet}
+                    />
+                  </FadeInView>
                 );
               }}
               keyExtractor={item => item}
@@ -441,12 +460,28 @@ export const SheetDetailsScreen = ({navigation, route}) => {
             />
           )}
 
-          {sheet.details && sheet.details.length === 0 && (
-            <View>
-              <Text style={{textAlign: 'center', fontStyle: 'italic'}}>
-                Tap the plus button to create a new expense.
-              </Text>
-            </View>
+          {currentSheet.details && currentSheet.details.length === 0 && (
+            <NotFoundContainer>
+              <Lottie
+                style={{
+                  width: '100%',
+                  height: 300,
+                  marginBottom: 50,
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+                source={noTransactions}
+                autoPlay
+                loop>
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    marginTop: 220,
+                  }}>
+                  No Transactions Found
+                </Text>
+              </Lottie>
+            </NotFoundContainer>
           )}
 
           <BottomIconsContainer>
@@ -522,7 +557,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
               <TouchableNativeFeedback
                 onPress={() => {
                   navigation.navigate('AddSheetDetail', {
-                    sheet: sheet,
+                    sheet: currentSheet,
                   });
                 }}>
                 <FlexRow>

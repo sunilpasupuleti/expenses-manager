@@ -26,6 +26,7 @@ import {getTimeZone} from 'react-native-localize';
 
 import {SheetsContext} from '../sheets/sheets.context';
 import {getFirebaseAccessUrl} from '../../components/utility/helper';
+import {setChangesMade} from '../../store/service-slice';
 
 export const SettingsContext = createContext({
   onExportData: () => null,
@@ -43,7 +44,8 @@ export const SettingsContext = createContext({
 export const SettingsContextProvider = ({children}) => {
   const {userData, userAdditionalDetails, onSetUserAdditionalDetails} =
     useContext(AuthenticationContext);
-  const {categories, getMessages, sheets} = useContext(SheetsContext);
+  const {categories, getMessages, sheets, onSaveExpensesData} =
+    useContext(SheetsContext);
 
   const {sendRequest} = useHttp();
 
@@ -56,6 +58,10 @@ export const SettingsContextProvider = ({children}) => {
   });
 
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
+
+  const onSetChangesMade = (status = true) => {
+    dispatch(setChangesMade({status}));
+  };
 
   useEffect(() => {
     let smsSubscription;
@@ -455,6 +461,11 @@ export const SettingsContextProvider = ({children}) => {
         let totalIncome = 0;
         let totalExpense = 0;
 
+        sheet.details = sheet.details.filter(d => {
+          let upcoming = moment(d.date).isAfter(moment());
+          return !upcoming;
+        });
+
         sheet.details.forEach((detail, index) => {
           let date = moment(detail.date).format('MMM DD, YYYY ');
           if (detail.showTime) {
@@ -577,7 +588,6 @@ export const SettingsContextProvider = ({children}) => {
             `/${folderName}/${sheet.name}-${Date.now()}.pdf`;
         }
 
-        console.log(toPath, file.filePath);
         await RNFetchBlob.fs.mv(file.filePath, toPath);
         console.log(`successfully exported file  -  ${sheet.name} pdf`);
       }
@@ -601,7 +611,7 @@ export const SettingsContextProvider = ({children}) => {
           subject: 'Transaction file - Pdf',
         }).catch(err => {
           console.log(
-            err.error.message,
+            err.error?.message,
             'error while exporting the all pdfs - ios',
           );
         });
@@ -630,7 +640,10 @@ export const SettingsContextProvider = ({children}) => {
       let totalIncome = 0;
       let totalExpense = 0;
       let structuredDetails = [{}];
-
+      sheet.details = sheet.details.filter(d => {
+        let upcoming = moment(d.date).isAfter(moment());
+        return !upcoming;
+      });
       sheet.details.forEach((d, i) => {
         let date = moment(d.date).format('MMM DD, YYYY ');
         if (d.showTime) {

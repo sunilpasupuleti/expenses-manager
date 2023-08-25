@@ -8,7 +8,6 @@ import {getCurrencies} from 'react-native-localize';
 import moment from 'moment';
 import {Spacer} from '../spacer/spacer.component';
 import {useTheme} from 'styled-components/native';
-import {useTheme as rnpUseTheme} from 'react-native-paper';
 import {ButtonText, FlexRow} from '../styles';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Alert, ScrollView, View} from 'react-native';
@@ -497,7 +496,6 @@ export const SmsTransactions = () => {
                 style={{padding: 5, marginLeft: 5, marginRight: -10}}
                 onPress={!loading ? onClickAddAndContinue : () => {}}
                 icon={'plus'}
-                buttonColor={theme.colors.brand.primary}
                 textColor="#fff"
                 loading={loading}>
                 Add

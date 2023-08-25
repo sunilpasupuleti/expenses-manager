@@ -275,7 +275,7 @@ export const SyncContextProvider = ({children}) => {
     dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'backup'}));
     try {
       if ((await isICloudAvailable()) && defaultICloudContainerPath) {
-        const fileName = `transactions-${moment()}.txt`;
+        const fileName = `transactions-${Date.now()}.json`;
         let path = `${defaultICloudContainerPath}/Documents/${fileName}`;
         await writeFile(path, JSON.stringify(data))
           .then(() => {

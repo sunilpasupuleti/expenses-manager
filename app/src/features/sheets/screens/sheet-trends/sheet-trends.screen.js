@@ -13,7 +13,7 @@ import {Text} from '../../../../components/typography/text.component';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
 import {CategoryTabs} from '../../../categories/components/category-tabs.component';
 import {Spacer} from '../../../../components/spacer/spacer.component';
-import {MainWrapper} from '../../../../components/styles';
+import {FlexRow, MainWrapper} from '../../../../components/styles';
 import {
   GetCurrencyLocalString,
   GetCurrencySymbol,
@@ -22,10 +22,11 @@ import {
   StatsTitle,
   ToolTip,
 } from '../../components/sheet-stats/sheet-stats.styles';
-import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
+import {SheetsContext} from '../../../../services/sheets/sheets.context';
+import {useIsFocused} from '@react-navigation/native';
 export const SheetTrendsScreen = ({navigation, route}) => {
   const theme = useTheme();
-  const {userAdditionalDetails} = useContext(AuthenticationContext);
+  const {currentSheet, onCheckUpcomingSheetDetails} = useContext(SheetsContext);
 
   const chartConfig = {
     backgroundGradientFromOpacity: 0,
@@ -41,8 +42,8 @@ export const SheetTrendsScreen = ({navigation, route}) => {
       strokeWidth: '1',
     },
   };
+  const routeIsFocused = useIsFocused();
 
-  const [sheet, setSheet] = useState(null);
   const [groupedDetails, setGroupedDetails] = useState(null);
   const [activeType, setActiveType] = useState('expense');
   const [chartData, setChartData] = useState({
@@ -72,23 +73,33 @@ export const SheetTrendsScreen = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    if (route.params && route.params.sheet) {
-      setSheet(route.params.sheet);
+    if (routeIsFocused) {
+      onCheckUpcomingSheetDetails();
     }
-    navigation.setOptions({
-      headerTitle: 'Trends',
-      headerRight: () => (
-        <Ionicons
-          onPress={() => navigation.goBack()}
-          style={{marginRight: 10}}
-          name="close-circle-outline"
-          size={30}
-          color={theme.colors.brand.primary}
-        />
-      ),
-      headerLeft: () => null,
-    });
-  }, [navigation]);
+  }, [routeIsFocused]);
+
+  useEffect(() => {
+    if (routeIsFocused && currentSheet) {
+      navigation.setOptions({
+        headerTitle:
+          currentSheet?.name?.length > 25
+            ? currentSheet.name.substring(0, 25) + '...'
+            : currentSheet.name,
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <FlexRow>
+              <Ionicons
+                name="chevron-back-outline"
+                size={25}
+                color={theme.colors.brand.primary}></Ionicons>
+              <Text color={theme.colors.brand.primary}>Back</Text>
+            </FlexRow>
+          </TouchableOpacity>
+        ),
+        headerRight: () => null,
+      });
+    }
+  }, [routeIsFocused, currentSheet]);
 
   useEffect(() => {
     setTooltipPos(prevstate => ({
@@ -101,9 +112,9 @@ export const SheetTrendsScreen = ({navigation, route}) => {
         visible: false,
       },
     }));
-    if (sheet && sheet.details) {
-      let expense = sheet.details.filter(s => s.type === 'expense');
-      let income = sheet.details.filter(s => s.type === 'income');
+    if (currentSheet && currentSheet.details) {
+      let expense = currentSheet.details.filter(s => s.type === 'expense');
+      let income = currentSheet.details.filter(s => s.type === 'income');
 
       const groupByCategory = item => item.category.name;
       let expenseGrouped = _(expense).groupBy(groupByCategory).value();
@@ -114,7 +125,7 @@ export const SheetTrendsScreen = ({navigation, route}) => {
         setGroupedDetails(incomeGrouped);
       }
     }
-  }, [sheet, activeType]);
+  }, [currentSheet, activeType]);
 
   useEffect(() => {
     if (groupedDetails) {
@@ -224,7 +235,7 @@ export const SheetTrendsScreen = ({navigation, route}) => {
       'MMM, YYYY - ',
     );
     last12monthsVal +=
-      GetCurrencySymbol(sheet.currency) +
+      GetCurrencySymbol(currentSheet.currency) +
       ' ' +
       GetCurrencyLocalString(data.last12months.datasets[0]);
 
@@ -240,7 +251,7 @@ export const SheetTrendsScreen = ({navigation, route}) => {
     );
 
     last14daysVal +=
-      GetCurrencySymbol(sheet.currency) +
+      GetCurrencySymbol(currentSheet.currency) +
       ' ' +
       GetCurrencyLocalString(data.last14days.datasets[0]);
 
@@ -262,7 +273,7 @@ export const SheetTrendsScreen = ({navigation, route}) => {
   };
 
   return (
-    <SafeArea>
+    <SafeArea style={{backgroundColor: theme.colors.bg.primary}}>
       {chartData &&
         chartData.last14days &&
         chartData.last12months &&
@@ -328,7 +339,7 @@ export const SheetTrendsScreen = ({navigation, route}) => {
 
                         let value = moment(key).format('ddd, DD MMM, YYYY - ');
                         value +=
-                          GetCurrencySymbol(sheet.currency) +
+                          GetCurrencySymbol(currentSheet.currency) +
                           ' ' +
                           GetCurrencyLocalString(data.value);
                         let isSamePoint =
@@ -427,7 +438,7 @@ export const SheetTrendsScreen = ({navigation, route}) => {
                         key = moment(key).format('MMM, YYYY - ');
                         let value = key;
                         value +=
-                          GetCurrencySymbol(sheet.currency) +
+                          GetCurrencySymbol(currentSheet.currency) +
                           '  ' +
                           GetCurrencyLocalString(data.value);
 

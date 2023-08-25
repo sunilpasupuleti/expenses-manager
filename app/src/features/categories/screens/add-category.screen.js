@@ -1,29 +1,18 @@
 import React, {useContext, useEffect, useRef, useState} from 'react';
-import {
-  Alert,
-  Dimensions,
-  FlatList,
-  Platform,
-  ScrollView,
-  TouchableOpacity,
-  VirtualizedList,
-} from 'react-native';
-import {
-  Button,
-  Card,
-  Dialog,
-  Modal,
-  Portal,
-  Searchbar,
-} from 'react-native-paper';
+import {ScrollView, TouchableOpacity} from 'react-native';
+import {Button, Card, Modal, Portal} from 'react-native-paper';
 import {useTheme} from 'styled-components/native';
 import {Spacer} from '../../../components/spacer/spacer.component';
-import {ButtonText, FlexRow, MainWrapper} from '../../../components/styles';
+import {
+  ButtonText,
+  FlexRow,
+  Input,
+  MainWrapper,
+} from '../../../components/styles';
 import {SafeArea} from '../../../components/utility/safe-area.component';
 import {SheetsContext} from '../../../services/sheets/sheets.context';
 import {
   CategoryColor,
-  CategoryNameInput,
   ColorPickerView,
   IconView,
 } from '../components/categories.styles';
@@ -175,6 +164,7 @@ export const AddCategoryScreen = ({navigation, route}) => {
         navigation.navigate('SelectCategory', {
           selectedCategory: category,
           type: route.params.type,
+          addedNewCategoryAndSelected: true,
         });
         return;
       }
@@ -271,27 +261,26 @@ export const AddCategoryScreen = ({navigation, route}) => {
             )}
           </Spacer>
 
-          <CategoryNameInput
+          <Input
             autoCapitalize="sentences"
-            theme={{roundness: 10}}
             mode="outlined"
             value={categoryName}
             onChangeText={n => setCategoryName(n)}
-            placeholder="Enter the category name * "
+            placeholder="Enter your category name * "
             left={
-              <CategoryNameInput.Icon icon="circle" iconColor={categoryColor} />
-            }
-            right={
-              <CategoryNameInput.Icon
-                name="close-circle"
-                color="#bbb"
-                onPress={() => setCategoryName('')}
+              <Input.Icon
+                icon={icon ? icon : 'circle'}
+                style={icon ? {backgroundColor: categoryColor} : {}}
+                iconColor={icon ? '#fff' : categoryColor}
               />
             }
+            clearButtonMode="while-editing"
             maxLength={50}
           />
           <Spacer size={'xlarge'} />
-          <Card theme={{roundness: 5}} style={{paddingBottom: 20}}>
+          <Card
+            theme={{roundness: 5}}
+            style={{paddingBottom: 20, backgroundColor: theme.colors.bg.card}}>
             <FlexRow style={{flexWrap: 'wrap'}}>
               <TouchableOpacity onPress={() => setShowColorPicker(true)}>
                 <ColorPickerView
@@ -329,35 +318,22 @@ export const AddCategoryScreen = ({navigation, route}) => {
           </Card>
           <Spacer size={'large'} />
 
-          <Searchbar
+          <Input
             value={search}
-            onFocus={() => {
-              let height = Dimensions.get('screen').height;
-              scrollViewRef.current?.scrollTo({
-                y: 300,
-                animated: true,
-              });
-            }}
-            theme={{roundness: 10}}
-            style={{elevation: 2}}
             placeholder="Search for more Icons"
             onChangeText={k => setSearch(k)}
             onSubmitEditing={onSearch}
-            clearIcon={() =>
-              search !== '' && (
-                <Iconicons
-                  onPress={onClearSearch}
-                  name="close-circle-outline"
-                  size={25}
-                  color={theme.colors.brand.primary}
-                />
-              )
-            }
+            clearButtonMode="while-editing"
           />
           <Spacer size={'large'} />
           <Card
             theme={{roundness: 5}}
-            style={{paddingBottom: 20, paddingTop: 20, marginBottom: 150}}>
+            style={{
+              paddingBottom: 20,
+              paddingTop: 20,
+              marginBottom: 150,
+              backgroundColor: theme.colors.bg.card,
+            }}>
             <Card.Title
               title="Select the category icon"
               subtitle={

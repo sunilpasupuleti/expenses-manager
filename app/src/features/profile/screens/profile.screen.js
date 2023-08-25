@@ -3,12 +3,11 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Button, Card, IconButton} from 'react-native-paper';
 import {useDispatch} from 'react-redux';
 import {useTheme} from 'styled-components/native';
-import {MainWrapper} from '../../../components/styles';
+import {Input, MainWrapper} from '../../../components/styles';
 import {SafeArea} from '../../../components/utility/safe-area.component';
 import {AuthenticationContext} from '../../../services/authentication/authentication.context';
 import {
   ProfileImageButtonContainer,
-  ProfileInput,
   ProfileInputErrorMessage,
   ProfilePicture,
   ProfilePictureActivityIndicator,
@@ -16,7 +15,7 @@ import {
   ProfileWrapper,
 } from '../components/profile.styles';
 import {Spacer} from '../../../components/spacer/spacer.component';
-import {Alert, ScrollView} from 'react-native';
+import {Alert, Pressable, ScrollView} from 'react-native';
 import {ProfileContext} from '../../../services/profile/profile.context';
 
 import {launchImageLibrary} from 'react-native-image-picker';
@@ -78,13 +77,15 @@ export const ProfileScreen = ({navigation, route}) => {
     navigation.setOptions({
       headerTitle: 'Manage Profile',
       headerRight: () => (
-        <Ionicons
+        <Pressable
           onPress={() => navigation.goBack()}
-          style={{marginRight: 20}}
-          name="close-circle-outline"
-          size={30}
-          color={theme.colors.brand.primary}
-        />
+          style={{marginRight: 20}}>
+          <Ionicons
+            name="close-circle-outline"
+            size={30}
+            color={theme.colors.brand.primary}
+          />
+        </Pressable>
       ),
       headerLeft: () => null,
     });
@@ -528,25 +529,23 @@ export const ProfileScreen = ({navigation, route}) => {
           </ProfileWrapper>
 
           <Spacer size="xlarge" />
-          <Card>
+          <Card style={{backgroundColor: theme.colors.bg.card, margin: 1}}>
             <Card.Content>
-              <ProfileInput
-                theme={{roundness: 10}}
+              <Input
                 mode="outlined"
                 returnKeyType="done"
                 onChangeText={n => onValueChangeHandler('displayName', n)}
                 value={inputs.displayName.value}
                 placeholder="Your Name"
                 keyboardType="default"
-                right={<ProfileInput.Icon icon="account" iconColor="#bbb" />}
+                right={<Input.Icon icon="account" iconColor="#bbb" />}
               />
 
               <ProfileInputErrorMessage fontsize="13px">
                 {inputs.displayName.errorMessage}
               </ProfileInputErrorMessage>
 
-              <ProfileInput
-                theme={{roundness: 10}}
+              <Input
                 mode="outlined"
                 returnKeyType="done"
                 multiline
@@ -558,7 +557,7 @@ export const ProfileScreen = ({navigation, route}) => {
                   userData?.providerId === 'google.com' ||
                   userData?.providerId === 'apple.com'
                 }
-                right={<ProfileInput.Icon icon="email" iconColor="#bbb" />}
+                right={<Input.Icon icon="email" iconColor="#bbb" />}
               />
 
               <ProfileInputErrorMessage fontsize="13px">
@@ -567,7 +566,7 @@ export const ProfileScreen = ({navigation, route}) => {
 
               {userData.phoneNumber && (
                 <>
-                  <ProfileInput
+                  <Input
                     theme={{roundness: 10}}
                     mode="outlined"
                     returnKeyType="done"
@@ -578,7 +577,7 @@ export const ProfileScreen = ({navigation, route}) => {
                     value={inputs.phoneNumber.value}
                     placeholder="Phone Number"
                     keyboardType="phone-pad"
-                    right={<ProfileInput.Icon icon="phone" iconColor="#bbb" />}
+                    right={<Input.Icon icon="phone" iconColor="#bbb" />}
                   />
 
                   <ProfileInputErrorMessage fontsize="13px">
@@ -587,7 +586,7 @@ export const ProfileScreen = ({navigation, route}) => {
                 </>
               )}
 
-              <ProfileInput
+              <Input
                 theme={{roundness: 10}}
                 mode="outlined"
                 returnKeyType="done"
@@ -595,7 +594,7 @@ export const ProfileScreen = ({navigation, route}) => {
                 value={'Signed In Using - ' + userData.providerId.toUpperCase()}
                 placeholder="Phone Number"
                 keyboardType="phone-pad"
-                right={<ProfileInput.Icon icon={signInIcon} iconColor="#bbb" />}
+                right={<Input.Icon icon={signInIcon} iconColor="#bbb" />}
               />
             </Card.Content>
             <Card.Actions>
@@ -610,7 +609,6 @@ export const ProfileScreen = ({navigation, route}) => {
                 }}
                 onPress={onClickUpdateProfile}
                 icon={'content-save-all-outline'}
-                buttonColor={theme.colors.brand.primary}
                 textColor="#fff"
                 loading={loading}
                 disabled={loading}>

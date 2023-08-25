@@ -1,6 +1,7 @@
+/* eslint-disable react/no-unstable-nested-components */
 import React, {useContext, useEffect, useState} from 'react';
 import {View} from 'react-native';
-import {Button, Card} from 'react-native-paper';
+import {Button, Card, Divider} from 'react-native-paper';
 import {useTheme} from 'styled-components/native';
 import {FadeInView} from '../../../../components/animations/fade.animation';
 import {
@@ -13,14 +14,12 @@ import {SafeArea} from '../../../../components/utility/safe-area.component';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {SheetInfoCard} from '../../components/sheet-info/sheet-info-card.component';
 import {SheetsList} from '../../components/sheets.styles';
-import {Platform} from 'react-native';
 export const MoveSheetScreen = ({navigation, route}) => {
-  const [sheet, setSheet] = useState(null);
   const [sheetDetail, setSheetDetail] = useState(null);
-  const {sheets, onMoveSheets} = useContext(SheetsContext);
+  const {sheets, onMoveSheetDetail, currentSheet} = useContext(SheetsContext);
   const [dupSheets, setDupSheets] = useState([]);
-
   const [moveToSheet, setMoveToSheet] = useState(null);
+  const [editFromUpcomingScreen, setEditFromUpcomingScreen] = useState(false);
   const theme = useTheme();
   useEffect(() => {
     navigation.setOptions({
@@ -37,7 +36,7 @@ export const MoveSheetScreen = ({navigation, route}) => {
           <Button
             uppercase={false}
             disabled={!moveToSheet}
-            onPress={() => onMove(sheet, moveToSheet, sheetDetail)}>
+            onPress={() => onMove(moveToSheet, sheetDetail)}>
             <ButtonText disabled={!moveToSheet}>Done</ButtonText>
           </Button>
         );
@@ -47,37 +46,44 @@ export const MoveSheetScreen = ({navigation, route}) => {
       },
       headerTitle: 'Move to account',
     });
-  }, [navigation, sheet, moveToSheet, sheetDetail]);
+  }, [navigation, moveToSheet, sheetDetail]);
 
   useEffect(() => {
-    if (route.params.sheet && route.params.sheetDetail) {
-      setSheet(route.params.sheet);
+    if (route.params && currentSheet && route.params.sheetDetail) {
+      let {editFromUpcomingScreen: eus} = route.params;
+      setEditFromUpcomingScreen(eus);
       setSheetDetail(route.params.sheetDetail);
     }
   }, [route.params]);
 
   useEffect(() => {
-    if (sheets && sheet) {
-      let filtered = sheets.filter(s => s.id !== sheet.id);
+    if (sheets && currentSheet) {
+      let filtered = sheets.filter(s => s.id !== currentSheet.id);
       setDupSheets(filtered);
     }
-  }, [sheets, sheet]);
+  }, [sheets, currentSheet]);
 
-  const onMove = (sheet, moveToSheet, sheetDetail) => {
-    onMoveSheets(sheet, moveToSheet, sheetDetail, moveFromSheet => {
-      navigation.navigate('SheetDetailsHome', {
-        screen: 'Transactions',
-        sheet: moveFromSheet,
-      });
-      // navigation.navigate('SheetDetails', {sheet: moveFromSheet});
-    });
+  const onMove = (moveToSheet, sheetDetail) => {
+    onMoveSheetDetail(
+      moveToSheet,
+      sheetDetail,
+      editFromUpcomingScreen,
+      moveFromSheet => {
+        navigation.navigate('Transactions');
+      },
+    );
   };
 
   return (
     <SafeArea>
       <MainWrapper>
-        <Card theme={{roundness: 5}}>
-          {sheet && sheetDetail && (
+        <Card
+          theme={{roundness: 5}}
+          style={{
+            backgroundColor: theme.colors.bg.card,
+            margin: 1,
+          }}>
+          {currentSheet && sheetDetail && (
             <FadeInView>
               <SheetsList
                 data={dupSheets}

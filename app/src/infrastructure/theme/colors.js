@@ -23,7 +23,7 @@ export const colors = {
   bg: {
     primary: '#ffffff',
     secondary: '#f1f1f1',
-    card: '#f8f4fb',
+    card: '#ffffff',
   },
 
   text: {

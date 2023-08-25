@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-hooks/exhaustive-deps */
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -29,10 +30,10 @@ import {
   Alert,
   Linking,
   Platform,
+  Pressable,
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
-import {SheetsContext} from '../../../services/sheets/sheets.context';
 import {fetchExchangeRates} from '../../../store/service-slice';
 import moment from 'moment';
 import {notificationActions} from '../../../store/notification-slice';
@@ -66,33 +67,13 @@ export const SettingsScreen = ({navigation}) => {
 
   const isAppLockEnabled = useSelector(state => state.applock.enabled);
 
-  const [isDailyBackUpEnabled, setIsDailyBackUpEnabled] = useState(
-    userAdditionalDetails?.dailyBackup
-      ? userAdditionalDetails.dailyBackup
-      : null,
-  );
+  const [isDailyBackUpEnabled, setIsDailyBackUpEnabled] = useState(false);
 
   const [isAutoFetchTransactionsEnabled, setIsAutoFetchTransactionsEnabled] =
-    useState(
-      userAdditionalDetails?.autoFetchTransactions
-        ? userAdditionalDetails.autoFetchTransactions
-        : null,
-    );
+    useState(false);
 
-  let date = new Date();
-  if (userAdditionalDetails?.dailyReminder?.enabled) {
-    let time = userAdditionalDetails.dailyReminder.time;
-    let splited = time.split(':');
-    let hr = splited[0];
-    let min = splited[1];
-    date.setHours(Number(hr));
-    date.setMinutes(Number(min));
-  }
   const [isDailyReminderEnabled, setIsDailyReminderEnabled] = useState({
-    enabled: userAdditionalDetails?.dailyReminder?.enabled
-      ? userAdditionalDetails.dailyReminder.enabled
-      : false,
-    time: date,
+    enabled: false,
   });
   const [showPicker, setShowPicker] = useState(false);
 
@@ -119,13 +100,15 @@ export const SettingsScreen = ({navigation}) => {
     navigation.setOptions({
       headerTitle: 'Settings',
       headerRight: () => (
-        <Ionicons
+        <Pressable
           onPress={() => navigation.goBack()}
-          style={{marginRight: 10}}
-          name="close-circle-outline"
-          size={30}
-          color={theme.colors.brand.primary}
-        />
+          style={{marginRight: 10}}>
+          <Ionicons
+            name="close-circle-outline"
+            size={30}
+            color={theme.colors.brand.primary}
+          />
+        </Pressable>
       ),
       headerLeft: () => null,
     });
@@ -136,6 +119,36 @@ export const SettingsScreen = ({navigation}) => {
       setReloadImageKey(Date.now());
     }
   }, [userData]);
+
+  useEffect(() => {
+    if (userAdditionalDetails) {
+      let dailyBackup = userAdditionalDetails.dailyBackup
+        ? userAdditionalDetails.dailyBackup
+        : null;
+      setIsDailyBackUpEnabled(dailyBackup);
+      let autoFetch = userAdditionalDetails.autoFetchTransactions
+        ? userAdditionalDetails.autoFetchTransactions
+        : null;
+      setIsAutoFetchTransactionsEnabled(autoFetch);
+      let date = new Date();
+      if (userAdditionalDetails.dailyReminder?.enabled) {
+        let time = userAdditionalDetails.dailyReminder.time;
+        let splited = time.split(':');
+        let hr = splited[0];
+        let min = splited[1];
+        date.setHours(Number(hr));
+        date.setMinutes(Number(min));
+      }
+
+      let dailyReminder = {
+        enabled: userAdditionalDetails.dailyReminder?.enabled
+          ? userAdditionalDetails.dailyReminder.enabled
+          : false,
+        time: date,
+      };
+      setIsDailyReminderEnabled(dailyReminder);
+    }
+  }, [userAdditionalDetails]);
 
   const onSetScreenLock = async () => {
     if (isAppLockEnabled) {
@@ -264,7 +277,7 @@ export const SettingsScreen = ({navigation}) => {
           <Spacer size={'medium'} />
           {/* display profile and email */}
 
-          <SettingsCard>
+          <SettingsCard style={{backgroundColor: theme.colors.bg.card}}>
             {/* Profile Card */}
             <SettingsCardContent onPress={() => navigation.navigate('Profile')}>
               <Setting justifyContent="space-between">
@@ -330,7 +343,7 @@ export const SettingsScreen = ({navigation}) => {
           </SettingsCard>
 
           <Spacer size={'large'}>
-            <SettingsCard>
+            <SettingsCard style={{backgroundColor: theme.colors.bg.card}}>
               {/* Sync card */}
               <SettingsCardContent onPress={() => navigation.navigate('Sync')}>
                 <Setting justifyContent="space-between">
@@ -458,7 +471,6 @@ export const SettingsScreen = ({navigation}) => {
 
                         <Button
                           mode="contained"
-                          buttonColor={theme.colors.brand.primary}
                           textColor={'#fff'}
                           onPress={() => {
                             if (userAdditionalDetails?.dailyReminder?.enabled) {
@@ -510,14 +522,10 @@ export const SettingsScreen = ({navigation}) => {
                       value={isDailyBackUpEnabled}
                       onValueChange={() => {
                         if (isDailyBackUpEnabled) {
-                          onUpdateDailyBackup(false, () =>
-                            setIsDailyBackUpEnabled(false),
-                          );
+                          onUpdateDailyBackup(false, () => {});
                         }
                         if (!isDailyBackUpEnabled) {
-                          onUpdateDailyBackup(true, () =>
-                            setIsDailyBackUpEnabled(true),
-                          );
+                          onUpdateDailyBackup(true, () => {});
                         }
                       }}
                     />
@@ -535,7 +543,7 @@ export const SettingsScreen = ({navigation}) => {
           </Spacer>
 
           <Spacer size={'xlarge'}>
-            <SettingsCard>
+            <SettingsCard style={{backgroundColor: theme.colors.bg.card}}>
               {/* categories card */}
               <SettingsCardContent
                 onPress={() => navigation.navigate('Categories')}>
@@ -614,7 +622,7 @@ export const SettingsScreen = ({navigation}) => {
           </Spacer>
 
           <Spacer size={'xlarge'}>
-            <SettingsCard>
+            <SettingsCard style={{backgroundColor: theme.colors.bg.card}}>
               <SettingsCardContent onPress={onExportAllDataToPdf}>
                 <Setting justifyContent="space-between">
                   <FlexRow>
@@ -683,7 +691,7 @@ export const SettingsScreen = ({navigation}) => {
           </Spacer>
 
           <Spacer size={'xlarge'}>
-            <SettingsCard>
+            <SettingsCard style={{backgroundColor: theme.colors.bg.card}}>
               <SettingsCardContent onPress={onRevealSecretKey}>
                 <Setting justifyContent="space-between">
                   <FlexRow>
@@ -756,7 +764,7 @@ export const SettingsScreen = ({navigation}) => {
           </Spacer>
 
           <Spacer size={'large'}>
-            <SettingsCard>
+            <SettingsCard style={{backgroundColor: theme.colors.bg.card}}>
               <SettingsCardContent>
                 <Setting justifyContent="space-between">
                   <FlexRow>
@@ -846,6 +854,7 @@ export const SettingsScreen = ({navigation}) => {
               </SettingHint>
             </SettingsCard>
           </Spacer>
+          <Spacer size={'xlarge'} position="bottom" />
         </MainWrapper>
       </ScrollView>
     </SafeArea>

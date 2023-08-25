@@ -159,7 +159,7 @@ const Status = ({ title }) => {
             });
           }
           setInputs(defaultInputState);
-          navigate("/account-deletion/status");
+          // navigate("/account-deletion/status");
           setLoading(false);
         },
         (error) => {

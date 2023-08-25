@@ -526,6 +526,7 @@ export const AuthenticationContextProvider = ({children}) => {
       await resetPinCodeInternalStates();
       await AsyncStorage.removeItem('@expenses-manager-user');
       await AsyncStorage.removeItem('@expenses-manager-logged');
+      await AsyncStorage.removeItem('@expenses-manager-data');
       await AsyncStorage.removeItem('@expenses-manager-removed-transactions');
       authFlag = true;
       setUserData(null);

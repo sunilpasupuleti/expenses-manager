@@ -568,6 +568,8 @@ PODS:
     - React-jsi (= 0.72.0)
     - React-logger (= 0.72.0)
     - React-perflogger (= 0.72.0)
+  - ReactNativeAvoidSoftinput (4.0.1):
+    - React-Core
   - rn-fetch-blob (0.12.0):
     - React-Core
   - RNAppleAuthentication (2.2.2):
@@ -620,6 +622,8 @@ PODS:
     - React-Core
   - RNReactNativeHapticFeedback (2.0.3):
     - React-Core
+  - RNReactNativeSharedGroupPreferences (1.1.23):
+    - React
   - RNReanimated (3.4.2):
     - DoubleConversion
     - FBLazyVector
@@ -727,6 +731,7 @@ DEPENDENCIES:
   - React-runtimescheduler (from `../node_modules/react-native/ReactCommon/react/renderer/runtimescheduler`)
   - React-utils (from `../node_modules/react-native/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
+  - ReactNativeAvoidSoftinput (from `../node_modules/react-native-avoid-softinput`)
   - rn-fetch-blob (from `../node_modules/rn-fetch-blob`)
   - "RNAppleAuthentication (from `../node_modules/@invertase/react-native-apple-authentication`)"
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
@@ -746,6 +751,7 @@ DEPENDENCIES:
   - RNLocalize (from `../node_modules/react-native-localize`)
   - "RNNotifee (from `../node_modules/@notifee/react-native`)"
   - RNReactNativeHapticFeedback (from `../node_modules/react-native-haptic-feedback`)
+  - RNReactNativeSharedGroupPreferences (from `../node_modules/react-native-shared-group-preferences`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
   - RNShare (from `../node_modules/react-native-share`)
@@ -893,6 +899,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/react/utils"
   ReactCommon:
     :path: "../node_modules/react-native/ReactCommon"
+  ReactNativeAvoidSoftinput:
+    :path: "../node_modules/react-native-avoid-softinput"
   rn-fetch-blob:
     :path: "../node_modules/rn-fetch-blob"
   RNAppleAuthentication:
@@ -931,6 +939,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@notifee/react-native"
   RNReactNativeHapticFeedback:
     :path: "../node_modules/react-native-haptic-feedback"
+  RNReactNativeSharedGroupPreferences:
+    :path: "../node_modules/react-native-shared-group-preferences"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNScreens:
@@ -1025,6 +1035,7 @@ SPEC CHECKSUMS:
   React-runtimescheduler: 8bfe12fe3e355b1775ef296d5099f99cc71fe56f
   React-utils: d2789c2e435e6e280b96bb43e53e910fe66ec5ff
   ReactCommon: 805c6b62061176752af50c828957ce02920931ff
+  ReactNativeAvoidSoftinput: a096aae8faf85c0f3225c2179bccdab00b8b6354
   rn-fetch-blob: f065bb7ab7fb48dd002629f8bdcb0336602d3cba
   RNAppleAuthentication: 0571c08da8c327ae2afc0261b48b4a515b0286a6
   RNCAsyncStorage: f47fe18526970a69c34b548883e1aeceb115e3e1
@@ -1044,6 +1055,7 @@ SPEC CHECKSUMS:
   RNLocalize: dbea38dcb344bf80ff18a1757b1becf11f70cae4
   RNNotifee: f3c01b391dd8e98e67f539f9a35a9cbcd3bae744
   RNReactNativeHapticFeedback: afa5bf2794aecbb2dba2525329253da0d66656df
+  RNReactNativeSharedGroupPreferences: de0121a4224c267bc7e9fb16c398f3f087c8da81
   RNReanimated: 726395a2fa2f04cea340274ba57a4e659bc0d9c1
   RNScreens: b21dc57dfa2b710c30ec600786a3fc223b1b92e7
   RNShare: da6d90b6dc332f51f86498041d6e34211f96b630

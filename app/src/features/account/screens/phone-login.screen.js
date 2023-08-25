@@ -13,6 +13,7 @@ import {Spacer} from '../../../components/spacer/spacer.component';
 import {
   ErrorMessage,
   FlexRow,
+  Input,
   SuccessMessage,
 } from '../../../components/styles';
 import {Text} from '../../../components/typography/text.component';
@@ -302,16 +303,14 @@ export const PhoneLoginScreen = ({navigation, route}) => {
                 onSelect={onChangeCountry}
               />
 
-              <LoginInput
-                theme={{roundness: 0}}
+              <Input
                 selectionColor={theme.colors.brand.primary}
-                mode="outlined"
                 returnKeyType="done"
                 maxLength={10}
                 onChangeText={n => setPhone(p => ({...p, value: n.trim()}))}
                 value={phone.value}
-                style={{width: '100%'}}
                 placeholder="Enter your mobile number"
+                style={{width: '70%'}}
                 keyboardType="phone-pad"
                 right={
                   phone.value && (
@@ -339,7 +338,6 @@ export const PhoneLoginScreen = ({navigation, route}) => {
               theme={{roundness: 10}}
               mode="contained"
               style={{height: 40}}
-              buttonColor={theme.colors.brand.primary}
               textColor="#fff"
               onPress={() => onClickSubmit(false)}
               loading={showLoader}
@@ -393,7 +391,6 @@ export const PhoneLoginScreen = ({navigation, route}) => {
               <Button
                 mode="contained"
                 style={{height: 40}}
-                buttonColor={theme.colors.brand.primary}
                 textColor="#fff"
                 onPress={onVerifyOtp}
                 loading={showLoader}

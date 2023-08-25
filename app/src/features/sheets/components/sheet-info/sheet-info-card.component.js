@@ -13,72 +13,78 @@ import React, {useContext} from 'react';
 import {View} from 'react-native';
 import {FlexRow} from '../../../../components/styles';
 import {Text} from '../../../../components/typography/text.component';
-import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {
   GetCurrencyLocalString,
   GetCurrencySymbol,
 } from '../../../../components/symbol.currency';
 import {Spacer} from '../../../../components/spacer/spacer.component';
-import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
+import {useTheme} from 'styled-components/native';
+import {Card, Divider} from 'react-native-paper';
 export const SheetInfoCard = ({sheet = {}, currentLength, index}) => {
-  const {userAdditionalDetails} = useContext(AuthenticationContext);
+  const theme = useTheme();
 
   return (
     <>
-      <FlexRow justifyContent="space-between">
-        <SheetInfoWrapper>
-          <FlexRow>
-            <SheetName archived={sheet.archived} fontsize="16px">
-              {sheet.name}
-            </SheetName>
+      <View
+        style={{
+          paddingTop: 5,
+          paddingBottom: 10,
+        }}>
+        <Card.Title
+          title={`${sheet.name}`}
+          titleVariant="titleMedium"
+          subtitle={`updated at: ${moment(sheet.updatedAt).calendar()}`}
+          subtitleVariant="labelMedium"
+          subtitleNumberOfLines={2}
+          right={props => (
+            <Ionicons name="chevron-forward-outline" size={30} color="#ccc" />
+          )}
+        />
+        <Card.Content>
+          <FlexRow justifyContent="space-evenly">
+            <View>
+              <Text fontsize="14px" color={theme.colors.text.disabled}>
+                Income
+              </Text>
+              <Spacer>
+                <Text fontsize="14px" color={theme.colors.text.success}>
+                  {GetCurrencySymbol(sheet.currency)}{' '}
+                  {GetCurrencyLocalString(sheet.totalIncome)}
+                </Text>
+              </Spacer>
+            </View>
 
-            <TransactionsCount>
-              ({sheet.details ? sheet.details.length : '0'})
-            </TransactionsCount>
-          </FlexRow>
-
-          <Spacer size={'medium'}>
-            <UpdatedTime
-              archived={sheet.archived}
-              showTotalBalance={sheet.showTotalBalance}>
-              Last Updated : {moment(sheet.updatedAt).calendar()}
-            </UpdatedTime>
-          </Spacer>
-        </SheetInfoWrapper>
-        <View style={{marginRight: 10}}>
-          <FlexRow>
-            {sheet.showTotalBalance && (
-              <View style={{marginRight: 10}}>
+            <Spacer position="left" size="large">
+              <View>
+                <Text fontsize="14px" color={theme.colors.text.disabled}>
+                  Expense
+                </Text>
                 <Spacer>
-                  <AvailableBalance>Avl Bal </AvailableBalance>
-                  <Spacer size={'medium'} />
-                  <TotalBalance archived={sheet.archived}>
+                  <Text fontsize="14px" color={theme.colors.text.error}>
                     {GetCurrencySymbol(sheet.currency)}{' '}
-                    {GetCurrencyLocalString(sheet.totalBalance)}
-                  </TotalBalance>
+                    {GetCurrencyLocalString(sheet.totalExpense)}
+                  </Text>
                 </Spacer>
               </View>
-            )}
-
-            <Ionicons name="chevron-forward-outline" size={30} color="#ccc" />
+            </Spacer>
+            <Spacer position="left" size="large">
+              <View>
+                <Text fontsize="14px" color={theme.colors.text.disabled}>
+                  Avl Bal
+                </Text>
+                <Spacer>
+                  <Text fontsize="14px">
+                    {GetCurrencySymbol(sheet.currency)}{' '}
+                    {GetCurrencyLocalString(sheet.totalBalance)}
+                  </Text>
+                </Spacer>
+              </View>
+            </Spacer>
           </FlexRow>
+        </Card.Content>
+      </View>
 
-          {/* <FlexRow>
-            <Text fontsize="12px" color="#aaa">
-              {sheet.details ? sheet.details.length : '0'}
-            </Text>
-            <Ionicons name="chevron-forward-outline" size={20} color="#ccc" />
-          </FlexRow> */}
-        </View>
-
-        {/* <FlexRow>
-          <Text fontsize="12px" color="#aaa">
-            {sheet.details ? sheet.details.length : '0'}
-          </Text>
-          <Ionicons name="chevron-forward-outline" size={20} color="#ccc" />
-        </FlexRow> */}
-      </FlexRow>
-      {currentLength > 0 && currentLength - 1 !== index && <BorderLine />}
+      {index < currentLength - 1 && <Divider />}
     </>
   );
 };

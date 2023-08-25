@@ -3,6 +3,7 @@ import {TextInput} from 'react-native-paper';
 import styled from 'styled-components/native';
 import {colors} from '../../../infrastructure/theme/colors';
 import {Text} from '../../../components/typography/text.component';
+import {Input} from '../../../components/styles';
 
 export const OTPContainer = styled.Pressable`
   align-items: center;
@@ -14,7 +15,7 @@ export const OTPinputContainer = styled.View`
   align-items: center;
 `;
 
-export const TextInputHidden = styled(TextInput)`
+export const TextInputHidden = styled(Input)`
   position: absolute;
   opacity: 0;
   width: 100%;

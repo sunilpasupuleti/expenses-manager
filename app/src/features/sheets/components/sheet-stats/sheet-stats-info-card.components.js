@@ -14,7 +14,6 @@ import {
   SheetDetailCategoryColor,
 } from '../sheet-details/sheet-details.styles';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
 
 export const StatsInfoCard = ({
   category,
@@ -23,8 +22,6 @@ export const StatsInfoCard = ({
   totalBalance,
   currency,
 }) => {
-  const {userAdditionalDetails} = useContext(AuthenticationContext);
-
   return (
     <>
       <View style={{marginRight: 10}}>
@@ -62,10 +59,7 @@ export const StatsInfoCard = ({
             <Text fontsize="14px" color="#8a8a8d" fontfamily="bodyBold">
               {activeType === 'expense' && '-'}
               {GetCurrencySymbol(currency)}{' '}
-              {GetCurrencyLocalString(
-                totalBalance,
-                userAdditionalDetails.baseCurrency,
-              )}{' '}
+              {GetCurrencyLocalString(totalBalance)}{' '}
             </Text>
             {!category.total && (
               <Spacer>

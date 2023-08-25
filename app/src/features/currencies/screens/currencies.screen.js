@@ -1,20 +1,20 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import React, {useEffect, useState} from 'react';
 import {ScrollView, TouchableOpacity, View} from 'react-native';
-import {Button, Card, Divider, Searchbar} from 'react-native-paper';
+import {Button, Card, Divider} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {useTheme} from 'styled-components/native';
 import {Spacer} from '../../../components/spacer/spacer.component';
 import {
   ButtonText,
   FlexRow,
+  Input,
   MainWrapper,
   TouchableHighlightWithColor,
 } from '../../../components/styles';
 import {GetCurrencySymbol} from '../../../components/symbol.currency';
 import {Text} from '../../../components/typography/text.component';
 import {SafeArea} from '../../../components/utility/safe-area.component';
-import {Platform} from 'react-native';
 
 export const CurrenciesScreen = ({navigation, route}) => {
   const theme = useTheme();
@@ -93,28 +93,19 @@ export const CurrenciesScreen = ({navigation, route}) => {
   return (
     <SafeArea>
       <MainWrapper>
-        <Searchbar
+        <Input
           value={searchKeyword}
-          theme={{roundness: 10}}
-          style={{elevation: 2}}
           placeholder="Search currencies"
-          clearIcon={() =>
-            searchKeyword !== '' && (
-              <Ionicons
-                onPress={() => setSearchKeyword('')}
-                name="close-circle-outline"
-                size={25}
-                color={theme.colors.brand.primary}
-              />
-            )
-          }
+          clearButtonMode="while-editing"
           onChangeText={k => setSearchKeyword(k)}
         />
         <Spacer size={'xlarge'}></Spacer>
 
         {(currencies && selectedCurrency) || displayMode ? (
           <ScrollView showsVerticalScrollIndicator={false}>
-            <Card theme={{roundness: Platform.OS === 'ios' ? 5 : 15}}>
+            <Card
+              theme={{roundness: 10}}
+              style={{margin: 0.5, backgroundColor: theme.colors.bg.card}}>
               {Object.keys(currencies).map(key => {
                 let c = currencies[key];
                 let currency = GetCurrencySymbol(key);

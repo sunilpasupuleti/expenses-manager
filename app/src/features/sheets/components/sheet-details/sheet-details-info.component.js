@@ -12,9 +12,8 @@ import {
 import {FlexRow} from '../../../../components/styles';
 import {useTheme} from 'styled-components/native';
 import {Spacer} from '../../../../components/spacer/spacer.component';
-import {Alert, FlatList, TouchableOpacity, View} from 'react-native';
-import React, {useContext, useRef, useState} from 'react';
-import Haptics from 'react-native-haptic-feedback';
+import {Alert, FlatList, TouchableOpacity} from 'react-native';
+import React, {useContext, useRef} from 'react';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {
@@ -29,34 +28,29 @@ import {
   GetCurrencySymbol,
 } from '../../../../components/symbol.currency';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
-import {useDispatch} from 'react-redux';
-import {notificationActions} from '../../../../store/notification-slice';
-import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
 moment.suppressDeprecationWarnings = true;
 
 export const SheetDetailsInfo = ({
   date,
   sheetDetails,
   navigation,
-  totalBalance,
   sheet,
+  totalBalance,
+  editFromUpcomingScreen = false,
 }) => {
   const theme = useTheme();
   const {
     onDeleteSheetDetails,
-    onDuplicateSheet,
+    onDuplicateSheetDetail,
     categories,
-    onChangeSheetType,
+    onChangeSheetDetailType,
   } = useContext(SheetsContext);
-  const {userAdditionalDetails} = useContext(AuthenticationContext);
-
-  const dispatch = useDispatch();
 
   const onPressEditButton = sheetDetail => {
     navigation.navigate('AddSheetDetail', {
       sheetDetail,
       edit: true,
-      sheet: sheet,
+      editFromUpcomingScreen: editFromUpcomingScreen,
     });
   };
 
@@ -76,12 +70,15 @@ export const SheetDetailsInfo = ({
         {
           text: 'Delete',
           onPress: () => {
-            onDeleteSheetDetails(sheet, sheetDetail, updatedSheet => {
-              navigation.navigate('SheetDetailsHome', {
-                screen: 'Transactions',
-                sheet: updatedSheet,
-              });
-            });
+            onDeleteSheetDetails(
+              sheetDetail,
+              editFromUpcomingScreen,
+              updatedSheet => {
+                if (editFromUpcomingScreen) {
+                  navigation.navigate('Transactions');
+                }
+              },
+            );
           },
         },
       ],
@@ -89,12 +86,10 @@ export const SheetDetailsInfo = ({
   };
 
   const onDuplicateButton = sheetDetail => {
-    onDuplicateSheet(sheet, sheetDetail, sheet => {
-      // navigation.navigate('SheetDetails', {sheet: sheet});
-      navigation.navigate('SheetDetailsHome', {
-        screen: 'Transactions',
-        sheet: sheet,
-      });
+    onDuplicateSheetDetail(sheetDetail, editFromUpcomingScreen, sh => {
+      if (editFromUpcomingScreen) {
+        navigation.navigate('Transactions');
+      }
     });
   };
 
@@ -115,7 +110,9 @@ export const SheetDetailsInfo = ({
               {moment(date).calendar(null, {
                 lastDay: '[Yesterday]',
                 sameDay: '[Today]',
+                nextDay: '[Tommorow]',
                 lastWeek: 'DD MMM YYYY',
+                nextWeek: 'DD MMM YYYY',
                 sameElse: 'DD MMM YYYY',
               })}
             </SheetDetailDate>
@@ -199,13 +196,15 @@ export const SheetDetailsInfo = ({
                       customStyles={menuOptionStyles}
                       onSelect={() => {
                         menuRefs.current[index].close();
-                        onChangeSheetType(sheet, sd, sheet => {
-                          navigation.navigate('SheetDetailsHome', {
-                            screen: 'Transactions',
-                            sheet: sheet,
-                          });
-                          // navigation.navigate('SheetDetails', {sheet: sheet});
-                        });
+                        onChangeSheetDetailType(
+                          sd,
+                          editFromUpcomingScreen,
+                          sheet => {
+                            if (editFromUpcomingScreen) {
+                              navigation.navigate('Transactions');
+                            }
+                          },
+                        );
                       }}>
                       <FlexRow justifyContent="space-between">
                         <Text color="#2f2f2f" fontfamily="heading">
@@ -221,8 +220,8 @@ export const SheetDetailsInfo = ({
                       onSelect={() => {
                         menuRefs.current[index].close();
                         navigation.navigate('MoveSheet', {
-                          sheet,
                           sheetDetail: sd,
+                          editFromUpcomingScreen: editFromUpcomingScreen,
                         });
                       }}>
                       <FlexRow justifyContent="space-between">

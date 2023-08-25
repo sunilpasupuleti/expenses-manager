@@ -20,13 +20,7 @@ const subtractMonths = numOfMonths => {
 export const SheetDetailsFilter = ({navigation, route}) => {
   const theme = useTheme();
 
-  const [sheet, setSheet] = useState(route.params.sheet);
-
-  const [customFilteredSheet, setCustomFilteredSheet] = useState(
-    route.params.sheet,
-  );
-
-  const [filteredSheet, setFilteredSheet] = useState(route.params.sheet);
+  const {currentSheet, setCurrentSheet, sheets} = useContext(SheetsContext);
 
   const {calculateBalance} = useContext(SheetsContext);
 
@@ -83,7 +77,7 @@ export const SheetDetailsFilter = ({navigation, route}) => {
     let toDate = customFilter.toDate.value;
     fromDate = moment(fromDate).format('YYYY-MM-DD');
     toDate = moment(toDate).format('YYYY-MM-DD');
-    let fsheet = {...filteredSheet};
+    let fsheet = {...currentSheet};
     let filteredDetails = [];
     fsheet.details.map(sd => {
       let createdDate = moment(sd.date).format('YYYY-MM-DD');
@@ -98,41 +92,39 @@ export const SheetDetailsFilter = ({navigation, route}) => {
       }
     });
     fsheet.details = filteredDetails;
-    fsheet.totalBalance = calculateBalance(fsheet);
-    setSheet(fsheet);
-    setCustomFilteredSheet(fsheet);
+    let {totalBalance, totalIncome, totalExpense} = calculateBalance(fsheet);
+    fsheet.totalIncome = totalIncome;
+    fsheet.totalExpense = totalExpense;
+    fsheet.totalBalance = totalBalance;
+    setCurrentSheet(fsheet);
     navigation.navigate('SheetDetailsHome', {
       screen: 'Transactions',
-      sheet: fsheet,
       filter: {
         status: true,
         fromDate: fromDate,
         toDate: toDate,
+        filteredSheet: fsheet,
       },
     });
   };
 
   const onResetCustomFilter = () => {
-    let fsheet = {...filteredSheet};
+    let sheet = sheets.find(s => s.id === currentSheet.id);
+    setCurrentSheet(sheet);
     navigation.navigate('SheetDetailsHome', {
       screen: 'Transactions',
-      sheet: fsheet,
       filter: null,
     });
   };
 
   const onCloseFilter = () => {
     navigation.goBack();
-    // navigation.navigate('SheetDetailsHome', {
-    //   screen: 'Transactions',
-    //   sheet: fsheet,
-    // });
   };
 
   return (
     <SafeArea mdBackground={true}>
       <View style={{flex: 1, alignContent: 'center', justifyContent: 'center'}}>
-        <Card>
+        <Card style={{backgroundColor: theme.colors.bg.card, margin: 1}}>
           <Card.Content>
             <FlexRow justifyContent="space-between">
               <Text>From Date : </Text>
@@ -373,11 +365,7 @@ export const SheetDetailsFilter = ({navigation, route}) => {
               Clear Filter
             </Button>
             <Spacer position={'right'} size="large" />
-            <Button
-              onPress={onCustomFilter}
-              mode="contained"
-              buttonColor={theme.colors.brand.primary}
-              textColor="#fff">
+            <Button onPress={onCustomFilter} mode="contained" textColor="#fff">
               Filter
             </Button>
           </Card.Actions>

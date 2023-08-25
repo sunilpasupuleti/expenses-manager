@@ -20,7 +20,7 @@ import {
 import * as Animatable from 'react-native-animatable';
 
 import {Text} from '../../../components/typography/text.component';
-import {Button, TextInput} from 'react-native-paper';
+import {Button} from 'react-native-paper';
 import {SafeArea} from '../../../components/utility/safe-area.component';
 import {ErrorMessage, SuccessMessage} from '../../../components/styles';
 import {useTheme} from 'styled-components/native';
@@ -279,7 +279,6 @@ export const AccountScreen = ({navigation}) => {
             theme={{roundness: 10}}
             mode="contained"
             style={{height: 40}}
-            buttonColor={theme.colors.brand.primary}
             textColor="#fff"
             onPress={onClickSubmit}
             loading={showLoader}

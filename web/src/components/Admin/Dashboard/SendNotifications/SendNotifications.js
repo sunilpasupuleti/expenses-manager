@@ -212,6 +212,7 @@ const SendNotifications = ({ title }) => {
                   model: a.device_model,
                 },
                 playerId: a.id,
+                last_active: a.last_active,
                 lastActive: moment
                   .unix(a.last_active)
                   .format("DD MMM YYYY, hh:mm:ss A"),
@@ -232,7 +233,7 @@ const SendNotifications = ({ title }) => {
           });
           let activeDevicesList = _.orderBy(
             structuredDevicesList,
-            "lastActive",
+            "last_active",
             "desc"
           );
           setActiveDevices(activeDevicesList);

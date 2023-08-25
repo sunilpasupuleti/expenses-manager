@@ -5,6 +5,8 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {SheetDetailsDashboard} from '../../components/sheet-details/sheet-details-dashboard';
 import {SheetDetailsScreen} from './sheet-details.screen';
 import {useSelector} from 'react-redux';
+import {SheetStatsScreen} from '../sheet-stats/sheet-stats.screen';
+import {SheetTrendsScreen} from '../sheet-trends/sheet-trends.screen';
 
 const Tab = createBottomTabNavigator();
 
@@ -22,6 +24,14 @@ export const SheetDetailsHome = ({navigation, route}) => {
     return <SheetDetailsScreen navigation={navigation} route={route} />;
   };
 
+  const SheetStatusComponent = () => {
+    return <SheetStatsScreen navigation={navigation} route={route} />;
+  };
+
+  const SheetTrendsComponent = () => {
+    return <SheetTrendsScreen navigation={navigation} route={route} />;
+  };
+
   return (
     <Tab.Navigator
       screenOptions={{
@@ -30,7 +40,8 @@ export const SheetDetailsHome = ({navigation, route}) => {
         tabBarActiveTintColor: theme.colors.brand.primary,
         tabBarStyle: {
           backgroundColor: theme.colors.bg.primary,
-          paddingBottom: 10,
+          paddingBottom: 30,
+          height: 80,
           display: appState === 'active' ? 'flex' : 'none',
         },
       }}>
@@ -46,15 +57,37 @@ export const SheetDetailsHome = ({navigation, route}) => {
       <Tab.Screen
         options={{
           tabBarIcon: ({color, size}) => (
+            <MaterialCommunityIcons name="cash" color={color} size={30} />
+          ),
+        }}
+        name="Transactions"
+        component={SheetDetailsComponent}
+      />
+
+      <Tab.Screen
+        options={{
+          title: 'Analytics',
+          tabBarIcon: ({color, size}) => (
+            <MaterialCommunityIcons name="chart-pie" color={color} size={30} />
+          ),
+        }}
+        name="SheetStats"
+        component={SheetStatusComponent}
+      />
+
+      <Tab.Screen
+        options={{
+          title: 'Trends',
+          tabBarIcon: ({color, size}) => (
             <MaterialCommunityIcons
-              name="format-list-bulleted"
+              name="trending-up"
               color={color}
               size={30}
             />
           ),
         }}
-        name="Transactions"
-        component={SheetDetailsComponent}
+        name="SheetTrends"
+        component={SheetTrendsComponent}
       />
     </Tab.Navigator>
   );

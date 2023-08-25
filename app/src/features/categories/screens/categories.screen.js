@@ -1,10 +1,15 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import React, {useContext, useEffect, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
-import {Button, Searchbar} from 'react-native-paper';
+import {Button} from 'react-native-paper';
 import {useTheme} from 'styled-components/native';
 import {Spacer} from '../../../components/spacer/spacer.component';
-import {ButtonText, FlexRow, MainWrapper} from '../../../components/styles';
+import {
+  ButtonText,
+  FlexRow,
+  Input,
+  MainWrapper,
+} from '../../../components/styles';
 import {Text} from '../../../components/typography/text.component';
 import {SafeArea} from '../../../components/utility/safe-area.component';
 import {SheetsContext} from '../../../services/sheets/sheets.context';
@@ -89,24 +94,13 @@ export const CategoriesScreen = ({navigation}) => {
   return (
     <SafeArea>
       <MainWrapper>
-        <Searchbar
+        <Input
           value={searchKeyword}
-          theme={{roundness: 10}}
-          style={{elevation: 2}}
           placeholder="Search"
-          clearIcon={() =>
-            searchKeyword !== '' && (
-              <Ionicons
-                onPress={() => setSearchKeyword('')}
-                name="close-circle-outline"
-                size={25}
-                color={theme.colors.brand.primary}
-              />
-            )
-          }
+          clearButtonMode="while-editing"
           onChangeText={k => setSearchKeyword(k)}
         />
-        <Spacer size={'large'}></Spacer>
+        <Spacer size={'large'} />
         <CategoryTabs activeType={activeType} setActiveType={onSetActiveType} />
         <CategoriesDetails
           navigation={navigation}

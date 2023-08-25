@@ -38,6 +38,7 @@ export const AddSheetIcon = styled(Ionicons)`
 
 export const SheetsList = styled.FlatList.attrs({
   contentContainerStyle: {},
+  showsVerticalScrollIndicator: false,
 })``;
 
 export const NoSheets = styled(SafeArea)`

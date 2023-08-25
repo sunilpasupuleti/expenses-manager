@@ -1,7 +1,8 @@
+/* eslint-disable react/no-unstable-nested-components */
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import React, {useContext, useEffect, useState} from 'react';
-import {Platform, ScrollView, TouchableOpacity} from 'react-native';
-import {Card, Divider, Searchbar} from 'react-native-paper';
+import {ScrollView, TouchableOpacity} from 'react-native';
+import {Card} from 'react-native-paper';
 import {useTheme} from 'styled-components/native';
 import {
   CategoryColor,
@@ -14,6 +15,7 @@ import {SafeArea} from '../../../../components/utility/safe-area.component';
 import {Text} from '../../../../components/typography/text.component';
 import {
   FlexRow,
+  Input,
   MainWrapper,
   TouchableHighlightWithColor,
 } from '../../../../components/styles';
@@ -43,6 +45,11 @@ export const SelectCategoryScreen = ({navigation, route}) => {
     }
     if (route.params.selectedCategory) {
       setSelectedCategory(route.params.selectedCategory);
+      if (route.params.addedNewCategoryAndSelected) {
+        navigation.navigate('AddSheetDetail', {
+          selectedCategory: route.params.selectedCategory,
+        });
+      }
     }
   }, [route.params]);
 
@@ -93,27 +100,22 @@ export const SelectCategoryScreen = ({navigation, route}) => {
   return (
     <SafeArea>
       <MainWrapper>
-        <Searchbar
+        <Input
           value={searchKeyword}
-          theme={{roundness: 10}}
-          style={{elevation: 2}}
           placeholder="Search"
-          clearIcon={() =>
-            searchKeyword !== '' && (
-              <Ionicons
-                onPress={() => setSearchKeyword('')}
-                name="close-circle-outline"
-                size={25}
-                color={theme.colors.brand.primary}
-              />
-            )
-          }
+          clearButtonMode="while-editing"
           onChangeText={k => setSearchKeyword(k)}
         />
         <Spacer size={'xlarge'}></Spacer>
 
         <ScrollView showsVerticalScrollIndicator={false}>
-          <Card theme={{roundness: 5}} style={{marginBottom: 100}}>
+          <Card
+            theme={{roundness: 5}}
+            style={{
+              marginBottom: 100,
+              backgroundColor: theme.colors.bg.card,
+              margin: 1,
+            }}>
             {categories.map(c => {
               return (
                 <TouchableHighlightWithColor

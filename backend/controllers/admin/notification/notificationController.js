@@ -34,7 +34,7 @@ module.exports = {
     let bigPictureUrl = null;
     let bigPicturePath = null;
 
-    let largeIconUrl = `${process.env.BACKEND_URL}/public/notification/mike.png`;
+    let largeIconUrl = getFirebaseAccessUrl("notification/mike.png");
     let largeIconPath = null;
 
     // delete old uploaded daily update files from dashboard
@@ -192,9 +192,12 @@ module.exports = {
   },
 
   async getActiveDevicesList(req, res) {
-    let allDevices = (await client.viewDevices()).body.players;
+    let allDevices = (
+      await client.viewDevices({
+        offset: 300,
+      })
+    ).body.players;
     let activeDevices = allDevices.filter((d) => !d.invalid_identifier);
-
     let users = await Users.find({})
       .select({
         email: 1,

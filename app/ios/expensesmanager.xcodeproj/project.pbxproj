@@ -128,6 +128,8 @@
 		D630F2672A36EEEC008B81E1 /* RNReactNativeHapticFeedback.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = RNReactNativeHapticFeedback.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D668738C2A40B7AF000E22A1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D66D6E522A4027B900E3B538 /* expensesmanager.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = expensesmanager.entitlements; path = expensesmanager/expensesmanager.entitlements; sourceTree = "<group>"; };
+		D6B09E652A9823EC00A9EBBC /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		D6B09E672A9823EC00A9EBBC /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		D6C6D91F2A598B7D00BAC333 /* OneSignalNotificationServiceExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OneSignalNotificationServiceExtension.entitlements; sourceTree = "<group>"; };
 		D6C6D9202A59ADEF00BAC333 /* notification_primary.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = notification_primary.wav; path = ../assets/notification_primary.wav; sourceTree = "<group>"; };
 		D6C6D9222A59BBF900BAC333 /* notification_secondary.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = notification_secondary.wav; path = ../assets/notification_secondary.wav; sourceTree = "<group>"; };
@@ -209,6 +211,8 @@
 				AA3920AD1B88ACF93DC99E8F /* Pods_expensesmanager.framework */,
 				6162DAD656319BEC957D43CD /* Pods_expensesmanager_expensesmanagerTests.framework */,
 				4113EC4749816F6E982C2F76 /* Pods_OneSignalNotificationServiceExtension.framework */,
+				D6B09E652A9823EC00A9EBBC /* WidgetKit.framework */,
+				D6B09E672A9823EC00A9EBBC /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

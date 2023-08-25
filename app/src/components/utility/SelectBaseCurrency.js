@@ -1,14 +1,13 @@
-import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
-import {Dialog, Divider, Portal, Searchbar} from 'react-native-paper';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import React, {useContext, useEffect, useState} from 'react';
+import {Dialog, Divider, Portal} from 'react-native-paper';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Text} from '../typography/text.component';
 import {GetCurrencySymbol} from '../symbol.currency';
 import {getCurrencies} from 'react-native-localize';
 import {Spacer} from '../spacer/spacer.component';
 import {useTheme} from 'styled-components/native';
-import {FlexRow, TouchableHighlightWithColor} from '../styles';
-import {FlatList, ScrollView, TouchableOpacity, View} from 'react-native';
+import {FlexRow, Input, TouchableHighlightWithColor} from '../styles';
+import {FlatList, TouchableOpacity, View} from 'react-native';
 import currenciesData from './currencies.json';
 import {SettingsContext} from '../../services/settings/settings.context';
 
@@ -117,21 +116,10 @@ export const SelectBaseCurrency = () => {
             <Spacer size="medium" />
           </>
         )}
-        <Searchbar
+        <Input
           value={searchKeyword}
-          theme={{roundness: 10}}
-          style={{elevation: 2}}
           placeholder="Search currencies"
-          clearIcon={() =>
-            searchKeyword !== '' && (
-              <Ionicons
-                onPress={() => setSearchKeyword('')}
-                name="close-circle-outline"
-                size={25}
-                color={theme.colors.brand.primary}
-              />
-            )
-          }
+          clearButtonMode="while-editing"
           onChangeText={k => setSearchKeyword(k)}
         />
 

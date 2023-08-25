@@ -2,10 +2,9 @@ import React, {useContext, useEffect, useState} from 'react';
 import {FlatList, TouchableOpacity} from 'react-native';
 import _ from 'lodash';
 import {StatsInfoCard} from './sheet-stats-info-card.components';
-import {Text} from '../../../../components/typography/text.component';
 
-import {useDispatch} from 'react-redux';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
+import {ScrollView} from 'react-native';
 export const StatsInfo = ({details, activeType, navigation, sheet}) => {
   const [finalTotal, setFinalTotal] = useState(0);
   const [getSheet, setGetSheet] = useState(sheet);
@@ -55,7 +54,7 @@ export const StatsInfo = ({details, activeType, navigation, sheet}) => {
   }, [details]);
 
   return (
-    <>
+    <ScrollView showsVerticalScrollIndicator={false}>
       <StatsInfoCard
         category={{name: 'Total', color: 'transparent', total: true}}
         percentage={1}
@@ -65,6 +64,7 @@ export const StatsInfo = ({details, activeType, navigation, sheet}) => {
       />
 
       <FlatList
+        scrollEnabled={false}
         data={
           sortedByPercentages && sortedByPercentages.length > 0
             ? sortedByPercentages
@@ -115,6 +115,6 @@ export const StatsInfo = ({details, activeType, navigation, sheet}) => {
           }
         }}
       />
-    </>
+    </ScrollView>
   );
 };

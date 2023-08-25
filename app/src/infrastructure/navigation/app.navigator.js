@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {Dimensions} from 'react-native';
@@ -10,13 +10,30 @@ import {SheetsNavigator} from './sheets.navigator';
 import {AppLockScreen} from '../../features/applock/screens/applock.screen';
 import {ProfileContextProvider} from '../../services/profile/profile.context';
 import {SmsTransactions} from '../../components/utility/SmsTransactions';
-import {useTheme} from 'react-native-paper';
 import {SelectBaseCurrency} from '../../components/utility/SelectBaseCurrency';
 import {SettingsContextProvider} from '../../services/settings/settings.context';
+import {AvoidSoftInput} from 'react-native-avoid-softinput';
+import {useFocusEffect} from '@react-navigation/native';
+import {useTheme} from 'styled-components/native';
+
 const Stack = createStackNavigator();
 
 export const AppNavigator = () => {
   const theme = useTheme();
+
+  const onFocusEffect = useCallback(() => {
+    // This should be run when screen gains focus - enable the module where it's needed
+    AvoidSoftInput.setShouldMimicIOSBehavior(true);
+    AvoidSoftInput.setEnabled(true);
+    return () => {
+      // This should be run when screen loses focus - disable the module where it's not needed, to make a cleanup
+      AvoidSoftInput.setEnabled(false);
+      AvoidSoftInput.setShouldMimicIOSBehavior(false);
+    };
+  }, []);
+
+  useFocusEffect(onFocusEffect);
+
   return (
     <>
       <SheetsContextProvider>

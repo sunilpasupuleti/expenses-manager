@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable curly */
 import {Swipeable, TouchableOpacity} from 'react-native-gesture-handler';
 import {SwipeableView} from './sheet-info-card.styles';
 
@@ -6,7 +8,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import React, {useContext, useEffect, useState} from 'react';
-import {Card} from 'react-native-paper';
+import {Avatar, Card} from 'react-native-paper';
 
 import {Alert, Platform, ScrollView, View} from 'react-native';
 import {useActionSheet} from '@expo/react-native-action-sheet';
@@ -17,13 +19,13 @@ import {Spacer} from '../../../../components/spacer/spacer.component';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {SheetInfoCard} from './sheet-info-card.component';
 import {Text} from '../../../../components/typography/text.component';
-import {NoSheets, SheetsList} from '../sheets.styles';
+import {NoSheets} from '../sheets.styles';
 import {
   FlexRow,
   TouchableHighlightWithColor,
 } from '../../../../components/styles';
 export const SheetsInfo = ({navigation, searchKeyword}) => {
-  const {sheets, onDeleteSheet, onArchiveSheet, onPinSheet} =
+  const {sheets, onDeleteSheet, onArchiveSheet, onPinSheet, setCurrentSheet} =
     useContext(SheetsContext);
   const theme = useTheme();
   const [dupSheets, setDupSheets] = useState(null);
@@ -187,18 +189,25 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
     );
   };
 
+  const onClickSheet = sheet => {
+    setCurrentSheet(sheet);
+    navigation.navigate('SheetDetailsHome', {
+      screen: 'Transactions',
+    });
+  };
+
   return (
     <>
       {sheets && sheets.length > 0 ? (
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{
-            padding: 1,
-          }}>
-          <View style={{marginBottom: 20}}>
+          contentContainerStyle={{}}>
+          <View style={{marginBottom: 120}}>
+            <Spacer size="large" />
+
             {/* for pinned */}
             {pinnedSheets && pinnedSheets.length > 0 && (
-              <Spacer size={'xlarge'}>
+              <Spacer size={'medium'}>
                 <FlexRow justifyContent="space-between">
                   <Text fontfamily="bodyMedium">
                     Pinned ({pinnedSheets.length})
@@ -224,6 +233,10 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
                     <Card
                       theme={{
                         roundness: 5,
+                      }}
+                      style={{
+                        backgroundColor: theme.colors.bg.card,
+                        margin: 1,
                       }}>
                       <FadeInView>
                         {pinnedSheets.map((item, index) => {
@@ -257,11 +270,7 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
                                   }}
                                   onLongPress={() => onLongPressActions(item)}
                                   padding={'0px'}
-                                  onPress={() =>
-                                    navigation.navigate('SheetDetailsHome', {
-                                      sheet: item,
-                                    })
-                                  }>
+                                  onPress={() => onClickSheet(item)}>
                                   <SheetInfoCard
                                     sheet={item}
                                     currentLength={pinnedSheets.length}
@@ -280,7 +289,10 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
 
             {/* normal sheets */}
             {dupSheets && dupSheets.length > 0 ? (
-              <Spacer size="xlarge">
+              <Spacer
+                size={
+                  pinnedSheets && pinnedSheets.length > 0 ? 'xlarge' : 'small'
+                }>
                 {dupSheets.length > 0 &&
                 (sheets.filter(s => s.pinned).length > 0 ||
                   sheets.filter(s => s.archived).length > 0) ? (
@@ -290,7 +302,12 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
                     </Text>
                   </Spacer>
                 ) : null}
-                <Card theme={{roundness: 5}}>
+                <Card
+                  theme={{roundness: 5}}
+                  style={{
+                    backgroundColor: theme.colors.bg.card,
+                    margin: 1,
+                  }}>
                   <FadeInView>
                     {dupSheets.map((item, index) => {
                       return (
@@ -322,11 +339,7 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
                             }}
                             onLongPress={() => onLongPressActions(item)}
                             padding={'0px'}
-                            onPress={() =>
-                              navigation.navigate('SheetDetailsHome', {
-                                sheet: item,
-                              })
-                            }>
+                            onPress={() => onClickSheet(item)}>
                             <SheetInfoCard
                               sheet={item}
                               index={index}
@@ -365,7 +378,12 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
                 </FlexRow>
                 <Spacer size={'medium'} />
                 {showArchived && (
-                  <Card theme={{roundness: 5}}>
+                  <Card
+                    theme={{roundness: 5}}
+                    style={{
+                      backgroundColor: theme.colors.bg.card,
+                      margin: 1,
+                    }}>
                     <FadeInView>
                       {archivedSheets.map((item, index) => {
                         return (
@@ -397,11 +415,7 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
                               }}
                               onLongPress={() => onLongPressActions(item)}
                               padding={'0px'}
-                              onPress={() =>
-                                navigation.navigate('SheetDetailsHome', {
-                                  sheet: item,
-                                })
-                              }>
+                              onPress={() => onClickSheet(item)}>
                               <SheetInfoCard
                                 sheet={item}
                                 currentLength={archivedSheets.length}

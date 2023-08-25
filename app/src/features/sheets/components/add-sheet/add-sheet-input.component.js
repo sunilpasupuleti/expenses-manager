@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {SheetNameInput} from './add-sheet.styles';
+import React from 'react';
+import {Input} from '../../../../components/styles';
 
 export const AddSheetInput = ({
   setButtonDisabled,
@@ -17,26 +17,13 @@ export const AddSheetInput = ({
     setButtonDisabled(false);
   };
 
-  const onClearSheetName = () => {
-    onSetSheetName(null);
-    setButtonDisabled(true);
-  };
-
   return (
-    <SheetNameInput
-      autoFocus
-      theme={{roundness: 10}}
+    <Input
       mode="outlined"
       value={sheetName}
       onChangeText={n => onChangeSheetName(n)}
       placeholder="Enter the account name"
-      right={
-        <SheetNameInput.Icon
-          icon="close-circle"
-          iconColor="#bbb"
-          onPress={onClearSheetName}
-        />
-      }
+      clearButtonMode="while-editing"
       maxLength={50}
     />
   );

@@ -1,10 +1,11 @@
+/* eslint-disable react/self-closing-comp */
+/* eslint-disable react/no-unstable-nested-components */
 import React, {useContext, useEffect, useState} from 'react';
 import {Text} from '../../../../components/typography/text.component';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {
-  FlatList,
   ScrollView,
   TouchableNativeFeedback,
   TouchableOpacity,
@@ -36,22 +37,19 @@ import {Card} from 'react-native-paper';
 import {CategoryColor} from '../../../categories/components/categories.styles';
 import _ from 'lodash';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
-import {DashboardAddButton, SheetDetailsAddIcon} from './sheet-details.styles';
-import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
+import {DashboardAddButton} from './sheet-details.styles';
 
 export const SheetDetailsDashboard = ({navigation, route}) => {
   const theme = useTheme();
   const routeIsFocused = useIsFocused();
-  const {categories} = useContext(SheetsContext);
-  const [sheet, setSheet] = useState(route.params.sheet);
+  const {categories, currentSheet, onCheckUpcomingSheetDetails} =
+    useContext(SheetsContext);
   const [activeType, setActiveType] = useState('income');
   const [groupedDetails, setGroupedDetails] = useState(null);
   const [sortedByPercentages, setSortedByPercentages] = useState(null);
 
-  const {userAdditionalDetails} = useContext(AuthenticationContext);
-
   const getTotalIncome = () => {
-    let sheetDetails = sheet.details;
+    let sheetDetails = currentSheet.details;
     let totalIncome = 0;
     sheetDetails.forEach(d => {
       if (d.type === 'income') {
@@ -67,7 +65,7 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
   };
 
   const getTotalExpense = () => {
-    let sheetDetails = sheet.details;
+    let sheetDetails = currentSheet.details;
     let totalExpense = 0;
     sheetDetails.forEach(d => {
       if (d.type === 'expense') {
@@ -84,20 +82,12 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
 
   useEffect(() => {
     if (routeIsFocused) {
-      let sDetails = sheet.details;
-      let expense = sDetails.filter(s => s.type === 'expense');
-      let income = sDetails.filter(s => s.type === 'income');
-
-      if (income.length > expense.length) {
-        setActiveType('income');
-      } else {
-        setActiveType('expense');
-      }
+      onCheckUpcomingSheetDetails();
       navigation.setOptions({
         headerTitle:
-          sheet?.name.length > 20
-            ? sheet.name.substring(0, 20) + '...'
-            : sheet.name,
+          currentSheet?.name.length > 20
+            ? currentSheet.name.substring(0, 14) + '...'
+            : currentSheet.name,
         headerLeft: () => (
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <FlexRow>
@@ -112,11 +102,7 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
         headerRight: () => (
           <Spacer position={'right'} size="large">
             <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('SheetExport', {
-                  sheet: sheet,
-                })
-              }>
+              onPress={() => navigation.navigate('SheetExport')}>
               <FlexRow>
                 <FontAwesome5
                   name="file-export"
@@ -134,9 +120,8 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
   }, [routeIsFocused]);
 
   useEffect(() => {
-    if (sheet && sheet.details) {
-      let sDetails = sheet.details;
-
+    if (currentSheet && currentSheet.details) {
+      let sDetails = currentSheet.details;
       let expense = sDetails.filter(s => s.type === 'expense');
       let income = sDetails.filter(s => s.type === 'income');
       const groupByCategory = item => item.category.id;
@@ -201,8 +186,8 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
       style={{
         backgroundColor: theme.colors.bg.primary,
       }}>
-      {sheet && (
-        <ScrollView showsHorizontalScrollIndicator={false}>
+      {currentSheet && (
+        <ScrollView showsVerticalScrollIndicator={false}>
           <MainWrapper>
             <LinearGradient
               start={{x: 0, y: 0}}
@@ -215,8 +200,8 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                 </Text>
                 <Spacer size={'large'} />
                 <Text color="#fff" fontfamily="headingBold" fontsize="38px">
-                  {GetCurrencySymbol(sheet.currency)}{' '}
-                  {GetCurrencyLocalString(sheet.totalBalance)}
+                  {GetCurrencySymbol(currentSheet.currency)}{' '}
+                  {GetCurrencyLocalString(currentSheet.totalBalance)}
                 </Text>
               </SheetSummaryTotalBalance>
               <Spacer size={'large'} />
@@ -235,7 +220,7 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                     </Text>
                     <Spacer />
                     <Text color="#fff" fontfamily="headingBold" fontsize="16px">
-                      {getTotalIncome().localStringAmount}
+                      {GetCurrencyLocalString(currentSheet.totalIncome)}
                     </Text>
                   </InExAmount>
                 </InEx>
@@ -254,7 +239,7 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                     </Text>
                     <Spacer />
                     <Text color="#fff" fontfamily="headingBold" fontsize="16px">
-                      {getTotalExpense().localStringAmount}
+                      {GetCurrencyLocalString(currentSheet.totalExpense)}
                     </Text>
                   </InExAmount>
                 </InEx>
@@ -290,6 +275,8 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                           position: 'relative',
                           borderTopLeftRadius: 10,
                           borderTopRightRadius: 10,
+                          backgroundColor: theme.colors.bg.card,
+                          margin: 1,
                         }}>
                         <TouchableHighlightWithColor
                           style={{
@@ -302,7 +289,6 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                             navigation.navigate('SheetStatsDetails', {
                               category,
                               sheetDetails: details,
-                              sheet: sheet,
                             })
                           }>
                           <>
@@ -336,7 +322,7 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                                 </FlexRow>
                                 <View>
                                   <Text fontsize="14px" fontfamily="heading">
-                                    {GetCurrencySymbol(sheet.currency)}{' '}
+                                    {GetCurrencySymbol(currentSheet.currency)}{' '}
                                     {activeType === 'expense' && '-'}{' '}
                                     {GetCurrencyLocalString(
                                       details.totalAmount,
@@ -389,7 +375,6 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
         <TouchableNativeFeedback
           onPress={() => {
             navigation.navigate('AddSheetDetail', {
-              sheet: sheet,
               activeType: activeType,
             });
           }}>

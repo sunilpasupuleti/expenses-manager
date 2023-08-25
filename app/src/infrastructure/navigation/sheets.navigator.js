@@ -12,7 +12,6 @@ import {AddSheetDetailScreen} from '../../features/sheets/screens/add-sheet/add-
 import {AddSheetScreen} from '../../features/sheets/screens/add-sheet/add-sheet.screen';
 import {MoveSheetScreen} from '../../features/sheets/screens/move-sheet/move-sheet.screen';
 import {SelectCategoryScreen} from '../../features/sheets/screens/select-category/select-category.screen';
-import {SheetDetailsScreen} from '../../features/sheets/screens//sheet-details/sheet-details.screen';
 import {SheetStatsScreen} from '../../features/sheets/screens/sheet-stats/sheet-stats.screen';
 import {SheetTrendsScreen} from '../../features/sheets/screens/sheet-trends/sheet-trends.screen';
 import {SheetsScreen} from '../../features/sheets/screens/sheets.screen';
@@ -20,6 +19,7 @@ import {SheetDetailsHome} from '../../features/sheets/screens/sheet-details/shee
 import {useSelector} from 'react-redux';
 import {SheetExport} from '../../features/sheets/components/sheet-export/sheet-export.component';
 import {SheetDetailsFilter} from '../../features/sheets/components/sheet-details/sheet-details-filter.component';
+import {UpcomingSheetDetails} from '../../features/sheets/screens/sheet-details/upcoming-sheet-details.screen';
 
 const SheetStack = createStackNavigator();
 
@@ -28,7 +28,7 @@ export const SheetsNavigator = () => {
   const appState = useSelector(state => state.service.appState);
 
   const headerStyles = {
-    headerTintColor: theme.colors.headerTintColor,
+    headerTintColor: theme.colors.text.primary,
     headerTitleAlign: 'center',
     headerShadowVisible: false,
   };
@@ -108,7 +108,7 @@ export const SheetsNavigator = () => {
         component={MoveSheetScreen}
       />
 
-      <SheetStack.Screen
+      {/* <SheetStack.Screen
         options={{
           headerShown: true,
           ...headerStyles,
@@ -117,7 +117,7 @@ export const SheetsNavigator = () => {
         }}
         name="SheetStats"
         component={SheetStatsScreen}
-      />
+      /> */}
 
       <SheetStack.Screen
         options={{
@@ -134,13 +134,25 @@ export const SheetsNavigator = () => {
       <SheetStack.Screen
         options={{
           headerShown: true,
+          headerMode: 'screen',
+          ...headerStyles,
+          gestureResponseDistance: Dimensions.get('window').height - 200,
+          ...TransitionPresets.ModalPresentationIOS,
+        }}
+        name="UpcomingSheetDetails"
+        component={UpcomingSheetDetails}
+      />
+
+      {/* <SheetStack.Screen
+        options={{
+          headerShown: true,
           ...headerStyles,
           gestureResponseDistance: Dimensions.get('window').height - 200,
           ...TransitionPresets.ModalPresentationIOS,
         }}
         name="SheetTrends"
         component={SheetTrendsScreen}
-      />
+      /> */}
 
       <SheetStack.Screen
         options={{

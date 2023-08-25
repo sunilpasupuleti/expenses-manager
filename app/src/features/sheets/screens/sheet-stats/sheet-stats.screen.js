@@ -1,3 +1,5 @@
+/* eslint-disable react-native/no-inline-styles */
+/* eslint-disable react/no-unstable-nested-components */
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {useTheme} from 'styled-components/native';
@@ -21,9 +23,9 @@ import {FlexRow} from '../../../../components/styles';
 import {StatsTitle} from '../../components/sheet-stats/sheet-stats.styles';
 import {useDispatch} from 'react-redux';
 import {loaderActions} from '../../../../store/loader-slice';
-import {ActivityIndicator} from 'react-native-paper';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {PieChart} from 'react-native-chart-kit';
+import {useIsFocused} from '@react-navigation/native';
 const menuOptions = [
   {key: 'daily', value: 'Daily'},
   {key: 'weekly', value: 'Weekly'},
@@ -35,13 +37,14 @@ const menuOptions = [
 
 export const SheetStatsScreen = ({navigation, route}) => {
   const theme = useTheme();
-  const [sheet, setSheet] = useState(null);
+  const {currentSheet, onCheckUpcomingSheetDetails} = useContext(SheetsContext);
   const [groupedDetails, setGroupedDetails] = useState(null);
   const [activeType, setActiveType] = useState('expense');
-  const [report, setReport] = useState({key: 'allitems', value: 'All items'});
+  const [report, setReport] = useState({key: 'monthly', value: 'Monthly'});
   const [chartData, setChartData] = useState(null);
   const {categories} = useContext(SheetsContext);
   const dispatch = useDispatch();
+  const routeIsFocused = useIsFocused();
 
   let menuRef = useRef();
   const menuOptionStyles = {
@@ -50,86 +53,96 @@ export const SheetStatsScreen = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    if (route.params && route.params.sheet) {
-      setSheet(route.params.sheet);
+    if (routeIsFocused) {
+      onCheckUpcomingSheetDetails();
     }
-    navigation.setOptions({
-      headerTitle: 'Stats',
-      headerRight: () => (
-        <Ionicons
-          onPress={() => navigation.goBack()}
-          style={{marginRight: 10}}
-          name="close-circle-outline"
-          size={30}
-          color={theme.colors.brand.primary}
-        />
-      ),
-      headerLeft: () => (
-        <Menu
-          style={{marginLeft: 10}}
-          onBackdropPress={() => menuRef.current.close()}
-          ref={element => (menuRef.current = element)}>
-          <MenuTrigger
-            customStyles={{
-              triggerTouchable: {
-                underlayColor: '#eee',
-                onPress: () => {
-                  menuRef.current.open();
-                },
-              },
-              TriggerTouchableComponent: TouchableOpacity,
-            }}>
-            <Ionicons
-              name="calendar-outline"
-              size={25}
-              color={theme.colors.brand.primary}
-            />
-          </MenuTrigger>
-
-          <MenuOptions
-            optionsContainerStyle={{
-              marginRight: 10,
-              marginTop: 35,
-              borderRadius: 10,
-              minWidth: 250,
-            }}>
-            {menuOptions.map(o => (
-              <MenuOption
-                key={o.key}
-                customStyles={menuOptionStyles}
-                onSelect={() => {
-                  setReport(o);
-                }}>
-                <FlexRow justifyContent="space-between">
-                  <Text color="#2f2f2f" fontfamily="heading">
-                    {o.value}
-                  </Text>
-                  {report.key === o.key && (
-                    <Ionicons name="checkmark-outline" size={22} />
-                  )}
-                </FlexRow>
-              </MenuOption>
-            ))}
-          </MenuOptions>
-          <Spacer size={'medium'} />
-        </Menu>
-      ),
-    });
-  }, [navigation, report]);
+  }, [routeIsFocused]);
 
   useEffect(() => {
-    if (sheet && sheet.details) {
+    if (routeIsFocused) {
+      navigation.setOptions({
+        headerTitle:
+          currentSheet?.name?.length > 25
+            ? currentSheet.name.substring(0, 25) + '...'
+            : currentSheet.name,
+        headerLeft: () => (
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <FlexRow>
+              <Ionicons
+                name="chevron-back-outline"
+                size={25}
+                color={theme.colors.brand.primary}></Ionicons>
+              <Text color={theme.colors.brand.primary}>Back</Text>
+            </FlexRow>
+          </TouchableOpacity>
+        ),
+        headerRight: () => (
+          <Menu
+            style={{marginRight: 10}}
+            onBackdropPress={() => menuRef.current.close()}
+            ref={element => (menuRef.current = element)}>
+            <MenuTrigger
+              customStyles={{
+                triggerTouchable: {
+                  underlayColor: '#eee',
+                  onPress: () => {
+                    menuRef.current.open();
+                  },
+                },
+                TriggerTouchableComponent: TouchableOpacity,
+              }}>
+              <Ionicons
+                name="calendar-outline"
+                size={25}
+                color={theme.colors.brand.primary}
+              />
+            </MenuTrigger>
+
+            <MenuOptions
+              optionsContainerStyle={{
+                marginRight: 10,
+                marginTop: 35,
+                borderRadius: 10,
+                minWidth: 250,
+              }}>
+              {menuOptions.map(o => (
+                <MenuOption
+                  key={o.key}
+                  customStyles={menuOptionStyles}
+                  onSelect={() => {
+                    setReport(o);
+                  }}>
+                  <FlexRow justifyContent="space-between">
+                    <Text color="#2f2f2f" fontfamily="heading">
+                      {o.value}
+                    </Text>
+                    {report.key === o.key && (
+                      <Ionicons name="checkmark-outline" size={22} />
+                    )}
+                  </FlexRow>
+                </MenuOption>
+              ))}
+            </MenuOptions>
+            <Spacer size={'medium'} />
+          </Menu>
+        ),
+      });
+    }
+  }, [report, currentSheet, routeIsFocused]);
+
+  useEffect(() => {
+    if (currentSheet && currentSheet.details) {
       let sDetails = [];
       if (report.key === 'allitems') {
-        sDetails = sheet.details;
+        sDetails = currentSheet.details;
       } else if (report.key === 'daily') {
-        sDetails = sheet.details.filter(
+        sDetails = currentSheet.details.filter(
           d =>
             moment(d.date).format('YYYY-MM-DD') ===
             moment().format('YYYY-MM-DD'),
         );
       } else {
-        sDetails = onReturnFilteredDetails(sheet.details, report.key);
+        sDetails = onReturnFilteredDetails(currentSheet.details, report.key);
       }
       let expense = sDetails.filter(s => s.type === 'expense');
       let income = sDetails.filter(s => s.type === 'income');
@@ -142,7 +155,7 @@ export const SheetStatsScreen = ({navigation, route}) => {
         setGroupedDetails(incomeGrouped);
       }
     }
-  }, [sheet, activeType, report]);
+  }, [currentSheet, activeType, report]);
 
   useEffect(() => {
     if (groupedDetails) {
@@ -230,53 +243,53 @@ export const SheetStatsScreen = ({navigation, route}) => {
   }, [chartData]);
 
   return (
-    <SafeArea>
+    <SafeArea style={{backgroundColor: theme.colors.bg.primary}}>
       {chartData && chartData.length > 0 && (
-        <>
-          <StatsTitle>
-            <Text color="#fff">{report.value}</Text>
-          </StatsTitle>
-          <Spacer size={'xlarge'} />
-          <View
-            style={{
-              position: 'relative',
-              height: 270,
-            }}>
-            <PieChart
-              data={chartData}
-              width={Dimensions.get('window').width}
-              height={270}
-              absolute
-              hasLegend={false}
-              paddingLeft="100"
-              chartConfig={{
-                decimalPlaces: 2, // optional, defaults to 2dp
-                color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                style: {
-                  borderRadius: 16,
-                },
-              }}
-              accessor="amount"
-              backgroundColor="transparent"
-            />
-          </View>
+        <Spacer size="xlarge">
+          <Spacer position="bottom" size="xlarge">
+            <StatsTitle>
+              <Text color="#fff">{report.value}</Text>
+            </StatsTitle>
+            <Spacer size={'xlarge'} />
+            <View
+              style={{
+                position: 'relative',
+                height: 270,
+              }}>
+              <PieChart
+                data={chartData}
+                width={Dimensions.get('window').width}
+                height={270}
+                absolute
+                hasLegend={false}
+                paddingLeft="100"
+                chartConfig={{
+                  decimalPlaces: 2, // optional, defaults to 2dp
+                  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                  style: {
+                    borderRadius: 16,
+                  },
+                }}
+                accessor="amount"
+                backgroundColor="transparent"
+              />
+            </View>
 
-          <Spacer size={'xlarge'} />
-
-          <View style={{marginLeft: 10, marginRight: 10}}>
-            <CategoryTabs
-              setActiveType={onSetActiveType}
+            <View style={{marginLeft: 10, marginRight: 10}}>
+              <CategoryTabs
+                setActiveType={onSetActiveType}
+                activeType={activeType}
+              />
+            </View>
+            <Spacer size={'xlarge'} />
+            <StatsInfo
+              details={groupedDetails}
+              navigation={navigation}
               activeType={activeType}
+              sheet={currentSheet}
             />
-          </View>
-          <Spacer size={'xlarge'} />
-          <StatsInfo
-            details={groupedDetails}
-            navigation={navigation}
-            activeType={activeType}
-            sheet={sheet}
-          />
-        </>
+          </Spacer>
+        </Spacer>
       )}
     </SafeArea>
   );

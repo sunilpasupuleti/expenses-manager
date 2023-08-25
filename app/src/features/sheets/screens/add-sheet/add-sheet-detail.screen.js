@@ -11,13 +11,16 @@ import {useTheme} from 'styled-components/native';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {
+  AddAmountContainer,
+  AddAmountInput,
+  AddAmountInputText,
+  AddAmountInputTextBlinkingCursor,
+  AddAmountInputTextContainer,
   SheetDetailAvatarActivityIndicator,
   SheetDetailAvatarWrapper,
   SheetDetailImage,
   SheetDetailImageActivityIndicator,
   SheetDetailImageWrapper,
-  SheetDetailInput,
-  SheetDetailsTotalBalance,
   SheetDetailsUnderline,
 } from '../../components/sheet-details/sheet-details.styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -29,6 +32,7 @@ import {ScrollView} from 'react-native';
 import {
   ButtonText,
   FlexRow,
+  Input,
   MainWrapper,
   ToggleSwitch,
 } from '../../../../components/styles';
@@ -50,8 +54,6 @@ import {notificationActions} from '../../../../store/notification-slice';
 import {launchImageLibrary} from 'react-native-image-picker';
 import RNFetchBlob from 'rn-fetch-blob';
 import {loaderActions} from '../../../../store/loader-slice';
-import remoteConfig from '@react-native-firebase/remote-config';
-import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import {getFirebaseAccessUrl} from '../../../../components/utility/helper';
 
@@ -59,7 +61,6 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   const theme = useTheme();
   const [disabled, setDisabled] = useState(true);
   const [activeType, setActiveType] = useState('expense');
-  const [sheet, setSheet] = useState(route.params.sheet);
   const [date, setDate] = useState(new Date());
   const [avatarLoading, setAvatarLoading] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
@@ -75,14 +76,20 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   });
 
   // contexts
-  const {categories, onSaveSheetDetails, onEditSheetDetails, onSaveCategory} =
-    useContext(SheetsContext);
+  const {
+    categories,
+    onSaveSheetDetails,
+    onEditSheetDetails,
+    onSaveCategory,
+    currentSheet,
+  } = useContext(SheetsContext);
 
   // inputs states
   const [amount, setAmount] = useState(0);
   const [notes, setNotes] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [editMode, setEditMode] = useState(false);
+  const [editFromUpcomingScreen, setEditUpcomingScreen] = useState(false);
   const [smartScanMode, setSmartScanMode] = useState(false);
   const [selectedImage, setSelectedImage] = useState({
     url: null,
@@ -164,9 +171,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
         setSmartScanMode(true);
         setAmount(sheetDetail.amount);
         setNotes(sheetDetail.notes);
-        setSelectedImage({
-          url: sheetDetail?.image,
-        });
+        setSelectedImage(sheetDetail.image);
         setActiveType(sheetDetail.type);
         let dateIsValid = moment(sheetDetail.date).isValid();
         let date = new Date();
@@ -191,7 +196,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     }
     if (route.params.edit) {
       setEditMode(true);
-      let sheetDetail = route.params.sheetDetail;
+      let {sheetDetail, editFromUpcomingScreen: eus} = route.params;
+      setEditUpcomingScreen(eus);
       if (sheetDetail) {
         setAmount(sheetDetail.amount);
         setNotes(sheetDetail.notes);
@@ -204,6 +210,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
         setSelectedImage({
           ...sheetDetail?.image,
           url: imageUrl,
+          originalUrl: sheetDetail.image.url,
         });
         setShowTime(sheetDetail.showTime);
         if (sheetDetail.showTime && sheetDetail.time) {
@@ -246,21 +253,29 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       notes: notes ? notes.trim() : notes,
       type: activeType,
       category: selectedCategory,
-      date: date.toString(),
       showTime: showTime,
       createdAt: Date.now(),
       image: selectedImage,
     };
     if (showTime) {
       sheetDetail.time = time.toString();
+      let minutes = moment(sheetDetail.time).minutes();
+      let hours = moment(sheetDetail.time).hours();
+      let dte = date;
+      dte.setMinutes(minutes);
+      dte.setHours(hours);
+      dte.setSeconds(0);
+      sheetDetail.date = dte.toString();
+    } else {
+      let dte = date;
+      dte.setMinutes(0);
+      dte.setHours(0);
+      dte.setSeconds(0);
+      sheetDetail.date = dte.toString();
     }
 
-    onSaveSheetDetails(sheet, sheetDetail, updatedSheet => {
-      navigation.navigate('SheetDetailsHome', {
-        screen: 'Transactions',
-        sheet: updatedSheet,
-      });
-      // navigation.navigate('SheetDetails', {sheet: updatedSheet});
+    onSaveSheetDetails(sheetDetail, updatedSheet => {
+      navigation.goBack();
     });
   };
 
@@ -278,6 +293,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     }
     return null;
   };
+
   const onEdit = (deleteImage = false) => {
     let sheetDetail = {
       id: route.params.sheetDetail.id,
@@ -285,7 +301,6 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       notes: notes ? notes.trim() : notes,
       type: activeType,
       category: selectedCategory,
-      date: date.toString(),
       showTime: showTime,
       createdAt: Date.now(),
       image: selectedImage,
@@ -293,13 +308,37 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       imageDeleted: deleteImage,
     };
 
-    if (showTime) sheetDetail.time = time.toString();
+    if (selectedImage && selectedImage.originalUrl) {
+      let image = selectedImage;
+      image.url = image.originalUrl;
+      delete image.originalUrl;
+      sheetDetail.image = image;
+    }
+
+    if (showTime) {
+      sheetDetail.time = time.toString();
+      let minutes = moment(sheetDetail.time).minutes();
+      let hours = moment(sheetDetail.time).hours();
+      let dte = date;
+      dte.setMinutes(minutes);
+      dte.setHours(hours);
+      dte.setSeconds(0);
+      sheetDetail.date = dte.toString();
+    } else {
+      let dte = date;
+      dte.setMinutes(0);
+      dte.setHours(0);
+      dte.setSeconds(0);
+      sheetDetail.date = dte.toString();
+    }
+
     setOpen(false);
-    onEditSheetDetails(sheet, sheetDetail, updatedSheet => {
-      navigation.navigate('SheetDetailsHome', {
-        screen: 'Transactions',
-        sheet: updatedSheet,
-      });
+    onEditSheetDetails(sheetDetail, editFromUpcomingScreen, updatedSheet => {
+      if (editFromUpcomingScreen) {
+        navigation.navigate('Transactions');
+      } else {
+        navigation.goBack();
+      }
     });
   };
 
@@ -442,61 +481,59 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
         <ScrollView
           keyboardShouldPersistTaps="never"
           showsVerticalScrollIndicator={false}>
-          <SheetDetailsTotalBalance fontsize={'30px'} fontfamily="bodySemiBold">
-            {activeType === 'expense' && '-'}
-            {GetCurrencySymbol(sheet?.currency)}{' '}
-            {GetCurrencyLocalString(amount)}
-          </SheetDetailsTotalBalance>
-          <SheetDetailsUnderline />
+          <AddAmountContainer>
+            <AddAmountInputTextContainer>
+              <View>
+                <AddAmountInputText fontsize={'30px'}>
+                  {activeType === 'expense' && '-'}
+                  {GetCurrencySymbol(currentSheet?.currency)}{' '}
+                  {GetCurrencyLocalString(amount)}
+                </AddAmountInputText>
+                <AddAmountInputTextBlinkingCursor />
+              </View>
+            </AddAmountInputTextContainer>
 
-          <Spacer size={'medium'}></Spacer>
+            <AddAmountInput
+              mode="outlined"
+              value={amount === 0 ? '' : amount.toString()}
+              returnKeyType="done"
+              onChangeText={n => {
+                // console.log(n.match(/\./).length);
+                if (/\./.test(n) && n.match(/\./g).length === 1) {
+                  setAmount(n);
+                } else {
+                  setAmount(parseFloat(n));
+                }
+              }}
+              placeholder="How much?"
+              keyboardType="decimal-pad"
+              maxLength={10}
+            />
+          </AddAmountContainer>
 
-          <SheetDetailInput
-            theme={{roundness: 10}}
+          <SheetDetailsUnderline amount={amount.toString().length} />
+
+          <Spacer size={'medium'} />
+
+          <Spacer size={'large'} />
+          <Input
             mode="outlined"
-            value={amount === 0 ? '' : amount.toString()}
             returnKeyType="done"
-            onChangeText={n => {
-              // console.log(n.match(/\./).length);
-              if (/\./.test(n) && n.match(/\./g).length === 1) {
-                setAmount(n);
-              } else {
-                setAmount(parseFloat(n));
-              }
-            }}
-            placeholder="How much?"
-            keyboardType="decimal-pad"
-            right={
-              <SheetDetailInput.Icon
-                icon="close-circle"
-                iconColor="#bbb"
-                onPress={() => setAmount(0)}
-              />
-            }
-            maxLength={10}
-          />
-          <Spacer size={'large'}></Spacer>
-          <SheetDetailInput
-            theme={{roundness: 10}}
-            mode="outlined"
+            blurOnSubmit
             multiline
             value={notes}
             onChangeText={n => (!notes ? setNotes(n.trim()) : setNotes(n))}
             placeholder="Notes / Description"
-            right={
-              notes && (
-                <SheetDetailInput.Icon
-                  icon="close-circle"
-                  iconColor="#bbb"
-                  onPress={() => setNotes(null)}
-                />
-              )
-            }
+            clearButtonMode="while-editing"
             maxLength={80}
           />
           <Spacer size={'large'}></Spacer>
           <Card
-            theme={{roundness: 10}}
+            style={{
+              backgroundColor: theme.colors.bg.card,
+              margin: 0.5,
+            }}
+            theme={{roundness: 5}}
             onPress={() => {
               let paramsObject = passPresentEditedDetailsToSelectCategory();
               navigation.navigate('SelectCategory', {
@@ -506,40 +543,81 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                 editModeParams: paramsObject,
               });
             }}>
-            <Card.Content>
-              {selectedCategory ? (
-                <CategoryItem>
-                  <CategoryColor
-                    color={selectedCategory ? selectedCategory.color : '#fff'}>
-                    {selectedCategory && selectedCategory.icon && (
-                      <MaterialCommunityIcon
-                        name={selectedCategory.icon}
-                        size={16}
-                        color="#fff"
-                      />
-                    )}
-                  </CategoryColor>
+            {selectedCategory ? (
+              <Card.Title
+                title={selectedCategory?.name}
+                titleVariant="titleMedium"
+                subtitle="Change category"
+                subtitleVariant="bodySmall"
+                left={props => (
+                  <Avatar.Icon
+                    style={{
+                      backgroundColor: selectedCategory
+                        ? selectedCategory.color
+                        : '#fff',
+                    }}
+                    icon={selectedCategory.icon}
+                    {...props}
+                    color="#fff"
+                  />
+                )}
+                right={props => (
+                  <MaterialCommunityIcon
+                    name="chevron-right"
+                    {...props}
+                    size={40}
+                    color={theme.colors.brand.primary}
+                  />
+                )}
+                rightStyle={{
+                  marginRight: 10,
+                }}
+              />
+            ) : (
+              <Card.Title
+                title={`Select category`}
+                titleVariant="titleMedium"
+                subtitle="click here to change"
+                subtitleVariant="bodySmall"
+                left={props => (
+                  <Avatar.Icon
+                    style={{backgroundColor: theme.colors.brand.primary}}
+                    icon={'format-list-bulleted'}
+                    {...props}
+                    color="#fff"
+                  />
+                )}
+                right={props => (
+                  <MaterialCommunityIcon
+                    name="chevron-right"
+                    {...props}
+                    size={40}
+                    color={theme.colors.brand.primary}
+                  />
+                )}
+                rightStyle={{
+                  marginRight: 10,
+                }}
+              />
+              // <CategoryItem>
+              //   <CategoryColor color={'#aaa'} />
 
-                  <Spacer position={'left'} size={'medium'} />
-                  <Text fontfamily="heading">{selectedCategory?.name}</Text>
-                </CategoryItem>
-              ) : (
-                <CategoryItem>
-                  <CategoryColor color={'#aaa'} />
-
-                  <Spacer position={'left'} size={'medium'} />
-                  <Text fontfamily="heading">
-                    {'Select category from here'}
-                  </Text>
-                </CategoryItem>
-              )}
-              <Spacer size={'small'} />
-            </Card.Content>
+              //   <Spacer position={'left'} size={'medium'} />
+              //   <Text fontfamily="heading">
+              //     {'Select category from here'}
+              //   </Text>
+              // </CategoryItem>
+            )}
           </Card>
 
           <Spacer size={'large'} />
 
-          <Card theme={{roundness: 5}}>
+          <Card
+            theme={{roundness: 5}}
+            style={{
+              backgroundColor: theme.colors.bg.card,
+              margin: 1,
+            }}>
             {/* date picker */}
             <Card.Content>
               <View>
@@ -578,7 +656,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                         <DateTimePicker
                           mode="date"
                           value={date}
-                          maximumDate={new Date()}
+                          // maximumDate={new Date()}
                           onChange={(e, d) => {
                             if (e.type === 'dismissed') {
                               setShowPicker(prev => ({
@@ -609,7 +687,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                     <DateTimePicker
                       mode="date"
                       value={date}
-                      maximumDate={new Date()}
+                      // maximumDate={new Date()}
                       onChange={(e, d) => {
                         if (e.type === 'dismissed') {
                           setShowPicker(prev => ({
@@ -694,7 +772,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                             <DateTimePicker
                               mode="time"
                               value={time}
-                              maximumDate={new Date()}
+                              // maximumDate={new Date()}
                               onChange={(e, t) => {
                                 if (e.type === 'dismissed') {
                                   setShowPicker(prev => ({
@@ -723,7 +801,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                         <DateTimePicker
                           mode="time"
                           value={time}
-                          maximumDate={new Date()}
+                          // maximumDate={new Date()}
                           onChange={(e, t) => {
                             if (e.type === 'dismissed') {
                               setShowPicker(prev => ({
@@ -786,7 +864,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                         onLoad={() => setAvatarLoading(false)}
                         size={70}
                         source={{
-                          uri: selectedImage.url,
+                          uri: selectedImage?.url,
                         }}
                       />
                       {avatarLoading && (
@@ -801,7 +879,6 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
               )}
             </Card.Content>
             <Spacer position={'bottom'} size="large" />
-            <Divider />
           </Card>
 
           <Spacer size={'large'} />
@@ -815,7 +892,6 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
               editMode ? onEdit() : onSave();
             }}
             mode="contained"
-            buttonColor={theme.colors.brand.primary}
             disabled={disabled}>
             <ButtonText disabled={disabled} color="#fff">
               Done
@@ -866,8 +942,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                   icon={'plus'}
                   mode="outlined"
                   onPress={onAddNewCategory}
-                  textColor="#fff"
-                  buttonColor={theme.colors.brand.primary}>
+                  textColor="#fff">
                   Add and Continue
                 </Button>
               </Dialog.Actions>

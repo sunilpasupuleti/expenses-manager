@@ -26,7 +26,6 @@ const { storage } = require("firebase-admin");
 let logsPath = __dirname + "/logs";
 if (!fs.existsSync(logsPath)) {
   fs.mkdirSync(logsPath);
-  fs.writeFileSync(logsPath, "");
 }
 
 let apiLogsPath = __dirname + "/logs/api.log";

@@ -1,8 +1,8 @@
+/* eslint-disable react/no-unstable-nested-components */
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
-import React, {useContext, useRef, useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {TouchableOpacity} from 'react-native';
-import {Searchbar} from 'react-native-paper';
 import {useTheme} from 'styled-components/native';
 import {SheetsInfo} from '../components/sheet-info/sheet-info.component';
 import {
@@ -12,7 +12,7 @@ import {
   UpperIcon,
 } from '../components/sheets.styles';
 import {Spacer} from '../../../components/spacer/spacer.component';
-import {MainWrapper} from '../../../components/styles';
+import {Input, MainWrapper} from '../../../components/styles';
 import {Text} from '../../../components/typography/text.component';
 import {SafeArea} from '../../../components/utility/safe-area.component';
 import {SheetsContext} from '../../../services/sheets/sheets.context';
@@ -49,22 +49,13 @@ export const SheetsScreen = ({navigation}) => {
 
         <Spacer size={'large'} />
         {sheets && sheets.length > 0 && (
-          <Searchbar
+          <Input
             value={searchKeyword}
             theme={{roundness: 10}}
-            style={{elevation: 2}}
+            style={{elevation: 2, marginBottom: 20}}
             placeholder="Search"
             onChangeText={k => setSearchKeyword(k)}
-            clearIcon={() =>
-              searchKeyword !== '' && (
-                <Ionicons
-                  onPress={() => setSearchKeyword('')}
-                  name="close-circle-outline"
-                  size={25}
-                  color={theme.colors.brand.primary}
-                />
-              )
-            }
+            clearButtonMode="while-editing"
           />
         )}
 

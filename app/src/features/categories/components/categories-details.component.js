@@ -7,6 +7,7 @@ import {TouchableHighlightWithColor} from '../../../components/styles';
 import {Text} from '../../../components/typography/text.component';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {CategoryColor, CategoryItem} from './categories.styles';
+import {useTheme} from 'styled-components/native';
 
 export const CategoriesDetails = ({
   navigation,
@@ -15,10 +16,17 @@ export const CategoriesDetails = ({
   details,
   onDeleteCategory,
 }) => {
+  const theme = useTheme();
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <Spacer size={'large'}></Spacer>
-      <Card theme={{roundness: 5}}>
+      <Card
+        theme={{roundness: 5}}
+        style={{
+          paddingBottom: 20,
+          backgroundColor: theme.colors.bg.card,
+          margin: 1,
+        }}>
         {details &&
           details.map(c => {
             return (
