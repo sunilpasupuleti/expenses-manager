@@ -274,7 +274,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       sheetDetail.date = dte.toString();
     }
 
-    onSaveSheetDetails(sheetDetail, updatedSheet => {
+    onSaveSheetDetails(currentSheet, sheetDetail, updatedSheet => {
       navigation.goBack();
     });
   };

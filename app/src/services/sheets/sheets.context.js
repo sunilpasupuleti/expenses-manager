@@ -406,7 +406,6 @@ export const SheetsContextProvider = ({children}) => {
             if (finalMessages && finalMessages.length > 0) {
               let messagesWithoutRemovedTransactions = [];
 
-              // console.log(finalMessages, removedTransactions);
               finalMessages.forEach((m, index) => {
                 let alreadyExists = removedTransactions.find(
                   t => t.body === m.body,
@@ -416,6 +415,9 @@ export const SheetsContextProvider = ({children}) => {
                   messagesWithoutRemovedTransactions.push(m);
                 }
               });
+
+              console.log(finalMessages);
+
               if (messagesWithoutRemovedTransactions.length > 0) {
                 dispatch(
                   smsTransactionsActions.setTransactions(
@@ -932,7 +934,6 @@ export const SheetsContextProvider = ({children}) => {
       showTransactions = true;
     }
     let sh = {...sheet, totalIncome: 0, totalExpense: 0, totalBalance: 0};
-    console.log(sh);
     saveSheetRequest(sh, sheets)
       .then(async result => {
         const updatedSheets = [...sheets, sh];
@@ -962,10 +963,14 @@ export const SheetsContextProvider = ({children}) => {
       });
   };
 
-  const onSaveSheetDetails = async (sheetDetail, callback = () => null) => {
+  const onSaveSheetDetails = async (
+    sheet,
+    sheetDetail,
+    callback = () => null,
+  ) => {
     const saveSheet = () => {
       var presentSheets = _.cloneDeep(sheets);
-      var sheetIndex = presentSheets.findIndex(s => s.id === currentSheet.id);
+      var sheetIndex = presentSheets.findIndex(s => s.id === sheet.id);
       var presentSheet = presentSheets[sheetIndex];
       if (!presentSheet.details) {
         presentSheet.details = [];
@@ -992,7 +997,9 @@ export const SheetsContextProvider = ({children}) => {
         categories: categories,
       };
       onSaveExpensesData(updatedExpensesData).then(() => {
-        setCurrentSheet(presentSheet);
+        if (currentSheet && presentSheet.id === currentSheet.id) {
+          setCurrentSheet(presentSheet);
+        }
         onSetChangesMade(true); // set changes made to true so that backup occurs only if some changes are made
         callback();
       });

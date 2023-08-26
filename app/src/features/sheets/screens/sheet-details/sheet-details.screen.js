@@ -13,7 +13,6 @@ import {
   RefreshControl,
   TouchableNativeFeedback,
   TouchableOpacity,
-  View,
 } from 'react-native';
 import {useTheme} from 'styled-components/native';
 
@@ -257,6 +256,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
   useEffect(() => {
     if (searchBarFocused) {
       let fsheet;
+
       if (filterParams && filterParams.status) {
         fsheet = filterParams.filteredSheet;
       } else {
@@ -430,6 +430,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 let sheetDetails = groupedSheetDetails[item];
                 var totalExpenseAmount = 0;
                 var totalIncomeAmount = 0;
+                sheetDetails = sheetDetails.filter(d => d.type);
                 sheetDetails.filter(d => {
                   if (d.type === 'expense') {
                     totalExpenseAmount += d.amount;
@@ -443,6 +444,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                   .sortBy(item => item.createdAt)
                   .reverse()
                   .value();
+
                 return (
                   <FadeInView>
                     <SheetDetailsInfo
@@ -472,15 +474,8 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                 }}
                 source={noTransactions}
                 autoPlay
-                loop>
-                <Text
-                  style={{
-                    textAlign: 'center',
-                    marginTop: 220,
-                  }}>
-                  No Transactions Found
-                </Text>
-              </Lottie>
+                loop
+              />
             </NotFoundContainer>
           )}
 

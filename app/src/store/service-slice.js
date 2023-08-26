@@ -160,7 +160,7 @@ export const loadAppStatus = createAsyncThunk(
         FIREBASE_STORAGE_URL: FIREBASE_STORAGE_URL,
       })
       .then(() => {
-        // remoteConfig().fetchAndActivate();
+        remoteConfig().fetchAndActivate();
       })
       .then(fetchedRemotely => {
         if (fetchedRemotely) {

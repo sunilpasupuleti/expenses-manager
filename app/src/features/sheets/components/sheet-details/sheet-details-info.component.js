@@ -127,6 +127,7 @@ export const SheetDetailsInfo = ({
             </SheetDetailDateAmount>
           </FlexRow>
           <Spacer size={'large'} />
+
           <FlatList
             data={sheetDetails}
             renderItem={({item: sd, index}) => {

@@ -111,7 +111,7 @@ process.on("SIGINT", function () {
  * Create Server
  */
 
-let productionMode = true;
+let productionMode = false;
 
 const https_options = {
   ca: fs.readFileSync("./config/ssl/ca_bundle.crt"),
@@ -128,7 +128,7 @@ let server = productionMode ? httpsServer : httpServer;
 const io = socketIo(server, {
   cors: {
     origin: "*",
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "DELETE", "PATCH", "PUT"],
     transports: ["websocket"],
     credentials: true,
   },

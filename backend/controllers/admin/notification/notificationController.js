@@ -5,26 +5,49 @@ const {
 } = require("../../../helpers/utility");
 const logger = require("../../../middleware/logger/logger");
 const Users = require("../../../models/Users");
-const { getMessaging } = require("firebase-admin/messaging");
-const mongoose = require("mongoose");
-const fs = require("fs");
-const path = require("path");
-const util = require("util");
 const OneSignal = require("onesignal-node");
 const { storage } = require("firebase-admin");
 const client = new OneSignal.Client(
   process.env.ONE_SIGNAL_APP_ID,
   process.env.ONE_SIGNAL_API_KEY
 );
-
-const writeFile = util.promisify(fs.writeFile);
-const readdir = util.promisify(fs.readdir);
+const _ = require("lodash");
 
 function base64ToBuffer(base64String) {
   const base64Data = base64String.replace(/^data:image\/\w+;base64,/, "");
   const buffer = Buffer.from(base64Data, "base64");
   return buffer;
 }
+
+const getDevicesList = async (offsets) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      let fullDevicesList = [];
+      const getListPromises = offsets.map(async (offset) => {
+        try {
+          let devices = (
+            await client.viewDevices({
+              offset: offset,
+            })
+          ).body.players;
+          return {
+            offset: offset,
+            devices: devices,
+          };
+        } catch (e) {
+          throw e;
+        }
+      });
+      const results = await Promise.all(getListPromises);
+      results.forEach((r) => {
+        fullDevicesList.push(...r.devices);
+      });
+      resolve(fullDevicesList);
+    } catch (e) {
+      reject(e.toString());
+    }
+  });
+};
 
 module.exports = {
   async sendDailyUpdateNotificationsToUsers(req, res) {
@@ -192,30 +215,39 @@ module.exports = {
   },
 
   async getActiveDevicesList(req, res) {
-    let allDevices = (
-      await client.viewDevices({
-        offset: 300,
-      })
-    ).body.players;
-    let activeDevices = allDevices.filter((d) => !d.invalid_identifier);
-    let users = await Users.find({})
-      .select({
-        email: 1,
-        displayName: 1,
-        photoURL: 1,
-        fcmToken: 1,
-        phoneNumber: 1,
-        providerId: 1,
-        lastLogin: 1,
-        uid: 1,
-        platform: 1,
-        _id: 1,
-      })
-      .sort({ createdAt: -1 });
-    return sendResponse(res, httpCodes.OK, {
-      message: "Active users list",
-      activeDevices: activeDevices,
-      users: users,
-    });
+    let offsets = [700, 600, 500, 400, 300, 200, 100, 0];
+
+    try {
+      let fullDevicesList = await getDevicesList(offsets);
+      let uniqueDevices = _.uniqBy(fullDevicesList, (m) => {
+        return m.id;
+      });
+
+      let activeDevices = uniqueDevices.filter((d) => !d.invalid_identifier);
+      let users = await Users.find({})
+        .select({
+          email: 1,
+          displayName: 1,
+          photoURL: 1,
+          fcmToken: 1,
+          phoneNumber: 1,
+          providerId: 1,
+          lastLogin: 1,
+          uid: 1,
+          platform: 1,
+          _id: 1,
+        })
+        .sort({ createdAt: -1 });
+      return sendResponse(res, httpCodes.OK, {
+        message: "Active users list",
+        activeDevices: activeDevices,
+        users: users,
+      });
+    } catch (e) {
+      logger.error(e);
+      return sendResponse(res, httpCodes.INTERNAL_SERVER_ERROR, {
+        message: e.toString(),
+      });
+    }
   },
 };

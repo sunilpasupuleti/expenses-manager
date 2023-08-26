@@ -28,7 +28,8 @@ export const SmsTransactions = () => {
 
   const {userAdditionalDetails} = useContext(AuthenticationContext);
 
-  const {categories, sheets, onSaveSheetDetails} = useContext(SheetsContext);
+  const {categories, sheets, onSaveSheetDetails, setCurrentSheet} =
+    useContext(SheetsContext);
 
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categoryItems, setCategoryItems] = useState([]);
@@ -54,7 +55,6 @@ export const SmsTransactions = () => {
       );
 
       let sheet = sheets.find(s => s.id === selectedSheet.key);
-
       let sheetDetail = {
         id: Date.now().toString(36) + Math.random().toString(36).substring(2),
         amount: parseFloat(transaction.amount),
@@ -67,7 +67,6 @@ export const SmsTransactions = () => {
         image: {url: null},
         time: time,
       };
-
       setLoading(true);
       onSaveSheetDetails(sheet, sheetDetail, updatedSheet => {
         onRemoveTransaction();
@@ -494,7 +493,8 @@ export const SmsTransactions = () => {
               <Button
                 mode="contained"
                 style={{padding: 5, marginLeft: 5, marginRight: -10}}
-                onPress={!loading ? onClickAddAndContinue : () => {}}
+                // onPress={!loading ? onClickAddAndContinue : () => {}}
+                onPressIn={onClickAddAndContinue}
                 icon={'plus'}
                 textColor="#fff"
                 loading={loading}>
