@@ -48,7 +48,6 @@ const getDevicesList = async (offsets) => {
     }
   });
 };
-
 module.exports = {
   async sendDailyUpdateNotificationsToUsers(req, res) {
     logger.info("sending daily update notifications to users  - ");
