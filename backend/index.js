@@ -123,7 +123,7 @@ const httpServer = require("http").Server(app);
 
 const httpsServer = require("https").createServer(https_options, app);
 
-let server = productionMode ? httpsServer : httpServer;
+let server = httpServer;
 
 const io = socketIo(server, {
   cors: {
