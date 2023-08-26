@@ -1204,3 +1204,48 @@
 8/26/2023, 9:08:23 PM [info]  Message :  -----------------------------------
 8/26/2023, 9:22:26 PM [info]  Message :  sending daily reminder notification to  - sumair793@gmail.com
 8/26/2023, 9:22:27 PM [info]  Message :  {"id":"","errors":["All included players are not subscribed"]}
+8/26/2023, 11:27:18 PM [info]  Message :  server started on port number 3000 }
+8/26/2023, 11:27:19 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+8/26/2023, 11:27:25 PM [error]  Message :  unauthorized, there is no access token but refesh token
+8/26/2023, 11:27:38 PM [debug]  Message :  CLIENT CONNECTED with ID -  AGsYZYrq9TJ7na7hAAAB
+8/26/2023, 11:28:07 PM [info]  Message :  sending daily update notifications to users  - 
+8/26/2023, 11:28:11 PM [info]  Message :  undefined DAILY UPDATE
+8/26/2023, 11:29:02 PM [info]  Message :  server started on port number 3000 }
+8/26/2023, 11:29:02 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+8/26/2023, 11:29:03 PM [debug]  Message :  CLIENT CONNECTED with ID -  eGdxb_BOasVG0EF1AAAB
+8/26/2023, 11:29:37 PM [info]  Message :  server started on port number 3000 }
+8/26/2023, 11:29:39 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+8/26/2023, 11:29:41 PM [debug]  Message :  CLIENT CONNECTED with ID -  hSFkadD_Nc_cbDZxAAAB
+8/26/2023, 11:30:00 PM [info]  Message :  server started on port number 3000 }
+8/26/2023, 11:30:01 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+8/26/2023, 11:30:05 PM [debug]  Message :  CLIENT CONNECTED with ID -  mOjfIxAfyH-h-woiAAAB
+8/26/2023, 11:30:14 PM [info]  Message :  server started on port number 3000 }
+8/26/2023, 11:30:14 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+8/26/2023, 11:30:15 PM [debug]  Message :  CLIENT CONNECTED with ID -  nrVkQrvo-WER9nPmAAAB
+8/26/2023, 11:30:26 PM [info]  Message :  server started on port number 3000 }
+8/26/2023, 11:30:26 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+8/26/2023, 11:30:27 PM [debug]  Message :  CLIENT CONNECTED with ID -  73sWbeq32ihdDmr4AAAB
+8/26/2023, 11:30:35 PM [info]  Message :  server started on port number 3000 }
+8/26/2023, 11:30:36 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+8/26/2023, 11:30:39 PM [debug]  Message :  CLIENT CONNECTED with ID -  tyRp7IqVPFXsFN--AAAB
+8/26/2023, 11:30:40 PM [info]  Message :  server started on port number 3000 }
+8/26/2023, 11:30:41 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+8/26/2023, 11:30:42 PM [debug]  Message :  CLIENT CONNECTED with ID -  dtVgdsws3GzTgzLEAAAB
+8/26/2023, 11:30:48 PM [info]  Message :  server started on port number 3000 }
+8/26/2023, 11:30:49 PM [debug]  Message :  CLIENT CONNECTED with ID -  NISDfhMvKoiD8Uw7AAAB
+8/26/2023, 11:30:49 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+8/26/2023, 11:30:56 PM [info]  Message :  server started on port number 3000 }
+8/26/2023, 11:30:57 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+8/26/2023, 11:30:58 PM [debug]  Message :  CLIENT CONNECTED with ID -  A53T47EZL3mGuz4ZAAAB
+8/26/2023, 11:31:56 PM [info]  Message :  server started on port number 3000 }
+8/26/2023, 11:31:57 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+8/26/2023, 11:31:58 PM [debug]  Message :  CLIENT CONNECTED with ID -  BgYBFQxA9I9_UzWoAAAB
+8/26/2023, 11:33:46 PM [info]  Message :  sending daily update notifications to users  - 
+8/26/2023, 11:33:51 PM [info]  Message :  undefined DAILY UPDATE
+8/26/2023, 11:35:01 PM [info]  Message :  sending daily update notifications to users  - 
+8/26/2023, 11:35:04 PM [info]  Message :  undefined DAILY UPDATE
+8/26/2023, 11:35:41 PM [info]  Message :  sending daily update notifications to users  - 
+8/26/2023, 11:35:46 PM [info]  Message :  undefined DAILY UPDATE
+8/26/2023, 11:36:22 PM [info]  Message :  server started on port number 3000 }
+8/26/2023, 11:36:22 PM [debug]  Message :  CLIENT CONNECTED with ID -  JYVvAvUkYaGL0hhzAAAB
+8/26/2023, 11:36:22 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net

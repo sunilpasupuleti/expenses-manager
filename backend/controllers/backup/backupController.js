@@ -9,6 +9,7 @@ const {
   httpCodes,
   decryptAES,
   encryptAES,
+  getFirebaseAccessUrl,
 } = require("../../helpers/utility");
 const Backups = require("../../models/Backups");
 const mongoose = require("mongoose");
@@ -292,8 +293,9 @@ module.exports = {
       let pictureName = success
         ? "daily_backup_success.jpeg"
         : "daily_backup_failure.jpeg";
-      let bigPictureUrl = `${process.env.BACKEND_URL}/public/notification/${pictureName}`;
-      let largeIconUrl = `${process.env.BACKEND_URL}/public/notification/backup.png`;
+
+      let bigPictureUrl = getFirebaseAccessUrl(`notification/${pictureName}`);
+      let largeIconUrl = getFirebaseAccessUrl(`notification/backup.png`);
       let collapseId = "daily-backup";
       let title = success ? backupSuccessTitle : backupFailedTitle;
       let body = success ? backupSuccessBody : backupFailedBody;
@@ -301,7 +303,8 @@ module.exports = {
       if (noBackup) {
         title = "Absolutely perfect!🤩";
         body = "Seems like there's nothing currently needing a backup";
-        bigPictureUrl = `${process.env.BACKEND_URL}/public/notification/no_backup.jpg`;
+
+        bigPictureUrl = getFirebaseAccessUrl(`notification/no_backup.jpg`);
       }
 
       try {
