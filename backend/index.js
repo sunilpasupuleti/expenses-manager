@@ -113,15 +113,7 @@ process.on("SIGINT", function () {
 
 let productionMode = true;
 
-const https_options = {
-  ca: fs.readFileSync("./config/ssl/ca_bundle.crt"),
-  key: fs.readFileSync("./config/ssl/private.key"),
-  cert: fs.readFileSync("./config/ssl/certificate.crt"),
-};
-
 const httpServer = require("http").Server(app);
-
-const httpsServer = require("https").createServer(https_options, app);
 
 let server = httpServer;
 

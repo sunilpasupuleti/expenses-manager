@@ -64,14 +64,10 @@ jobs:
             source ~/.nvm/nvm.sh
             sudo chown -hR ubuntu:ubuntu expenses-manager/
             npm -g install create-react-app
-            rm -rf /var/www/html/expenses-manager
-            mkdir /var/www/html/expenses-manager
             cd /home/ubuntu/expenses-manager/web/
             rm .env
             touch .env
             echo "${{secrets.WEB_ENV_FILE}}" | base64 --decode > .env
-
-            cp -a dist/. /var/www/html/expenses-manager/
 
             cd /home/ubuntu/expenses-manager/backend/
 
@@ -80,21 +76,13 @@ jobs:
             docker rmi expenses-manager-backend
             rm config/.env
             rm config/expensesmanager.json
-            rm -rf config/ssl
-            mkdir config/ssl
 
             touch config/.env
             touch config/expensesmanager.json
-            touch config/ssl/ca_bundle.crt
-            touch config/ssl/certificate.crt
-            touch config/ssl/private.key
 
 
             echo "${{secrets.BACKEND_ENV_FILE}}" | base64 --decode > config/.env
             echo "${{secrets.EXPENSES_MANAGER_JSON}}" | base64 --decode > config/expensesmanager.json
-            echo "${{secrets.SSL_CA_BUNDLE}}" > config/ssl/ca_bundle.crt
-            echo "${{secrets.SSL_PRIVATE}}" > config/ssl/private.key
-            echo "${{secrets.SSL_CERTIFICATE}}" > config/ssl/certificate.crt
 
             npm install -f
             cd ..
