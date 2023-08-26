@@ -111,7 +111,7 @@ process.on("SIGINT", function () {
  * Create Server
  */
 
-let productionMode = true;
+let productionMode = false;
 
 const https_options = {
   ca: fs.readFileSync("./config/ssl/ca_bundle.crt"),
