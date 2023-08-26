@@ -73,7 +73,6 @@ jobs:
 
             cp -a dist/. /var/www/html/expenses-manager/
 
-
             cd /home/ubuntu/expenses-manager/backend/
 
             docker stop expenses-manager-backend
