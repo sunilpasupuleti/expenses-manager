@@ -18,7 +18,7 @@ jobs:
           username: ${{ secrets.USER_NAME }}
           password: ${{ secrets.PASS_WORD }}
           port: ${{ secrets.PORT }}
-          source: ./web/dist/
+          source: web/dist/*
           target: /var/www/expensesmanager.app/
 
       - name: 📂 Deploying Grapics into VPS server
@@ -28,7 +28,7 @@ jobs:
           username: ${{ secrets.USER_NAME }}
           password: ${{ secrets.PASS_WORD }}
           port: ${{ secrets.PORT }}
-          source: ./graphics/
+          source: ¯graphics/
           target: /var/www/expensesmanager.app/graphics/
 
       - name: DEPLOY CODE TO VPS
