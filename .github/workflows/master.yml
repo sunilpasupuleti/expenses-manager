@@ -16,7 +16,8 @@ jobs:
         with:
           host: ${{ secrets.HOST_NAME }}
           username: ${{ secrets.USER_NAME }}
-          password: ${{ secrets.PORT }}
+          password: ${{ secrets.PASS_WORD }}
+          port: ${{ secrets.PORT }}
           source: ./web/dist/
           target: /var/www/expensesmanaer.app/
 
@@ -25,7 +26,8 @@ jobs:
         with:
           host: ${{ secrets.HOST_NAME }}
           username: ${{ secrets.USER_NAME }}
-          password: ${{ secrets.PORT }}
+          password: ${{ secrets.PASS_WORD }}
+          port: ${{ secrets.PORT }}
           source: ./graphics/
           target: /var/www/expensesmanaer.app/graphics/
 
