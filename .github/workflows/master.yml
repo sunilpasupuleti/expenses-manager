@@ -35,6 +35,7 @@ jobs:
             rm .env
             touch .env
             echo "${{secrets.WEB_ENV_FILE}}" | base64 --decode > .env
+            npm i -f
             npm run build
             cp -a dist/. /var/www/expensesmanager.app
 
