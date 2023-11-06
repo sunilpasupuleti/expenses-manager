@@ -38,7 +38,7 @@ jobs:
           username: ${{ secrets.USER_NAME }}
           password: ${{ secrets.PASS_WORD }}
           port: ${{ secrets.PORT }}
-          source: /
+          source: ./*
           target: /root/expenses-manager
 
       - name: Executing commands in EC2 Instance
