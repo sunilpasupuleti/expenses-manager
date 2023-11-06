@@ -29,7 +29,9 @@ jobs:
           password: ${{secrets.PASS_WORD}}
           port: ${{secrets.PORT}}
           script: |
-
+            source ~/.bashrc
+            source ~/.nvm/nvm.sh
+            npm i -g create-react-app
             cd /root/expenses-manager/web
 
             rm .env
