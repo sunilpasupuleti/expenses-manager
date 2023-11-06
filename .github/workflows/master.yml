@@ -14,10 +14,10 @@ jobs:
       - name: 📂 Deploying web dist into VPS
         uses: appleboy/scp-action@master
         with:
-          host: ${{ secrets.HOST_NAME }}
-          username: ${{ secrets.USER_NAME }}
+          host: webwizard.in
+          username: root
           port: 22
-          password: ${{ secrets.PASS_WORD }}
+          password: Sunil@123
           # Selecting all folders except "node_modules"
           source: ./web/dist/
           target: /var/www/expensesmanaer.app/
