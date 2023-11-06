@@ -11,26 +11,6 @@ jobs:
       - name: 🚚 Get latest code
         uses: actions/checkout@v3
 
-      # - name: 📂 Deploying web dist into VPS
-      #   uses: appleboy/scp-action@master
-      #   with:
-      #     host: ${{ secrets.HOST_NAME }}
-      #     username: ${{ secrets.USER_NAME }}
-      #     password: ${{ secrets.PASS_WORD }}
-      #     port: ${{ secrets.PORT }}
-      #     source: web/dist/*
-      #     target: /var/www/expensesmanager.app/
-
-      # - name: 📂 Deploying Grapics into VPS server
-      #   uses: appleboy/scp-action@master
-      #   with:
-      #     host: ${{ secrets.HOST_NAME }}
-      #     username: ${{ secrets.USER_NAME }}
-      #     password: ${{ secrets.PASS_WORD }}
-      #     port: ${{ secrets.PORT }}
-      #     source: graphics/
-      #     target: /var/www/expensesmanager.app/graphics/
-
       - name: DEPLOY CODE TO VPS
         uses: appleboy/scp-action@master
         with:
@@ -41,7 +21,7 @@ jobs:
           source: ./*
           target: /root/expenses-manager
 
-      - name: Executing commands in EC2 Instance
+      - name: Run the application
         uses: appleboy/ssh-action@master
         with:
           host: ${{secrets.HOST_NAME}}
@@ -50,7 +30,19 @@ jobs:
           port: ${{secrets.PORT}}
           script: |
 
-            cd /root/expenses-manager/backend/
+            cd /root/expenses-manager/web
+
+            rm .env
+            touch .env
+            echo "${{secrets.WEB_ENV}}" | base64 --decode > .env
+            npm run build
+            cp -r /dist/* /var/www/expensesmanager.app
+
+            cd ..
+            cp -r graphics/* /var/www/expensesmanager.app/graphics
+
+
+            cd backend/
 
             docker stop expenses-manager-backend
             docker rm  expenses-manager-backend
