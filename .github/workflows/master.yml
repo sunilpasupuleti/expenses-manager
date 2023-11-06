@@ -20,7 +20,6 @@ jobs:
           source: ./web/dist/
           target: /var/www/expensesmanaer.app/
 
-
       - name: 📂 Deploying Grapics into VPS server
         uses: appleboy/scp-action@master
         with:
@@ -39,14 +38,13 @@ jobs:
           source: ./
           target: /root/expenses-manager
 
-
       - name: Executing commands in EC2 Instance
         uses: appleboy/ssh-action@master
         with:
           host: ${{secrets.HOST_NAME}}
           username: ${{secrets.USER_NAME}}
           password: ${{secrets.PASS_WORD}}
-          password: ${{secrets.PORT}}
+          port: ${{secrets.PORT}}
           script: |
 
             cd /root/expenses-manager/backend/
