@@ -1,4 +1,4 @@
-![Logo](https://expenses-manager.webwizard.in/graphics/EXPENSES%20MANAGER.jpg)
+![Logo](https://expensesmanager.app/graphics/EXPENSES%20MANAGER.jpg)
 
 # Expenses Manager
 
@@ -10,7 +10,7 @@ Expenses Manager has been crafted to keep track of your spending effortlessly, w
 
 WEB
 
-https://expenses-manager.webwizard.in
+https://expensesmanager.app
 
 GOOGLE PLAY STORE
 
@@ -24,15 +24,15 @@ https://apps.apple.com/in/app/expenses-manager-by-webwizard/id6450874945
 
 Android  
 :-------------------------:
-![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/1.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/2.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/3.png)
-![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/4.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/5.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/6.png)
-![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/7.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/8.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/android/9.png)
+![App Screenshot](https://expensesmanager.app/graphics/reduced/android/1.png) ![App Screenshot](https://expensesmanager.app/graphics/reduced/android/2.png) ![App Screenshot](https://expensesmanager.app/graphics/reduced/android/3.png)
+![App Screenshot](https://expensesmanager.app/graphics/reduced/android/4.png) ![App Screenshot](https://expensesmanager.app/graphics/reduced/android/5.png) ![App Screenshot](https://expensesmanager.app/graphics/reduced/android/6.png)
+![App Screenshot](https://expensesmanager.app/graphics/reduced/android/7.png) ![App Screenshot](https://expensesmanager.app/graphics/reduced/android/8.png) ![App Screenshot](https://expensesmanager.app/graphics/reduced/android/9.png)
 
 IOS  
 :-------------------------:
-![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/ios/1.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/ios/2.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/ios/3.png)
-![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/ios/4.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/ios/5.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/ios/6.png)
-![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/ios/7.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/ios/8.png) ![App Screenshot](https://expenses-manager.webwizard.in/graphics/reduced/ios/9.png)
+![App Screenshot](https://expensesmanager.app/graphics/reduced/ios/1.png) ![App Screenshot](https://expensesmanager.app/graphics/reduced/ios/2.png) ![App Screenshot](https://expensesmanager.app/graphics/reduced/ios/3.png)
+![App Screenshot](https://expensesmanager.app/graphics/reduced/ios/4.png) ![App Screenshot](https://expensesmanager.app/graphics/reduced/ios/5.png) ![App Screenshot](https://expensesmanager.app/graphics/reduced/ios/6.png)
+![App Screenshot](https://expensesmanager.app/graphics/reduced/ios/7.png) ![App Screenshot](https://expensesmanager.app/graphics/reduced/ios/8.png) ![App Screenshot](https://expensesmanager.app/graphics/reduced/ios/9.png)
 
 ## Features
 
@@ -188,7 +188,7 @@ To run this project, you will need to add the following configuration files to t
   JWT_SECRET=expensesmanager
   FRONTEND_URL=https://ec2.webwizard.in
   BACKEND_URL=https://ec2.webwizard.in:3000
-  CORS_ORIGIN_URL=https://ec2.webwizard.in,http://ec2.webwizard.in,http://localhost:4200,https://expenses-manager.webwizard.in,http://65.1.150.254
+  CORS_ORIGIN_URL=https://ec2.webwizard.in,http://ec2.webwizard.in,http://localhost:4200,https://expensesmanager.app,http://65.1.150.254
   ONE_SIGNAL_APP_ID=your one signal app Id in order to send custom notifications
   ONE_SIGNAL_API_KEY=one signal api key
   ONE_SIGNAL_DAILY_BACKUP_CHANNEL_ID=Channel ID for daily backup android
@@ -212,7 +212,7 @@ export const MINDEE_API_URL =
 export const MINDEE_API_KEY = MIndee api key here;
 export const ONESIGNAL_APP_ID = One signal app id to register;
 export const ACCOUNT_DELETION_URL =
-  'https://expenses-manager.webwizard.in/#/account-deletion';
+  'https://expensesmanager.app/#/account-deletion';
 export const APP_STORE_URL =
   'https://apps.apple.com/us/app/expenses-manager-by-webwizard/id6450874945';
 export const PLAY_STORE_URL =
