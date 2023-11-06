@@ -14,22 +14,31 @@ jobs:
       - name: 📂 Deploying web dist into VPS
         uses: appleboy/scp-action@master
         with:
-          host: webwizard.in
-          username: root
-          port: 22
-          password: Sunil@123
-          # Selecting all folders except "node_modules"
+          host: ${{ secrets.HOST_NAME }}
+          username: ${{ secrets.USER_NAME }}
+          password: ${{ secrets.PORT }}
           source: ./web/dist/
           target: /var/www/expensesmanaer.app/
 
-      - name: 📂 Deploy to VPS
-        uses: easingthemes/ssh-deploy/@main
-        env:
-          SSH_PRIVATE_KEY: ${{secrets.AWS_PEM_KEY}}
-          SOURCE: "./"
-          REMOTE_HOST: ${{secrets.HOST_NAME}}
-          REMOTE_USER: ${{secrets.USER_NAME}}
-          TARGET: "/home/ubuntu/expenses-manager/"
+
+      - name: 📂 Deploying Grapics into VPS server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST_NAME }}
+          username: ${{ secrets.USER_NAME }}
+          password: ${{ secrets.PORT }}
+          source: ./graphics/
+          target: /var/www/expensesmanaer.app/graphics/
+
+      - name: DEPLOY CODE TO VPS
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.HOST_NAME }}
+          username: ${{ secrets.USER_NAME }}
+          password: ${{ secrets.PORT }}
+          source: ./
+          target: /root/expenses-manager
+
 
       - name: Executing commands in EC2 Instance
         uses: appleboy/ssh-action@master
@@ -37,7 +46,7 @@ jobs:
           host: ${{secrets.HOST_NAME}}
           username: ${{secrets.USER_NAME}}
           password: ${{secrets.PASS_WORD}}
-          port: 22
+          password: ${{secrets.PORT}}
           script: |
 
             cd /root/expenses-manager/backend/
