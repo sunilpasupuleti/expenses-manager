@@ -11,13 +11,14 @@ jobs:
       - name: 🚚 Get latest code
         uses: actions/checkout@v3
 
-      - name: 📂 Deploying web dist into webiwzard.in server
+      - name: 📂 Deploying web dist into VPS
         uses: appleboy/scp-action@master
         with:
-          server: ${{ secrets.HOST_NAME }}
+          host: ${{ secrets.HOST_NAME }}
           username: ${{ secrets.USER_NAME }}
-          password: ${{ secrets.PASS_WORD }}
           port: 22
+          password: ${{ secrets.PASS_WORD }}
+          # Selecting all folders except "node_modules"
           source: ./web/dist/
           target: /var/www/expensesmanaer.app/
 
