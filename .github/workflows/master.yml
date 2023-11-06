@@ -12,38 +12,16 @@ jobs:
         uses: actions/checkout@v3
 
       - name: 📂 Deploying web dist into webiwzard.in server
-        uses: SamKirkland/FTP-Deploy-Action@4.3.2
+        uses: appleboy/scp-action@master
         with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./web/dist/
-          server-dir: /expenses-manager.webwizard.in/
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/.vscode*/**
-            **/.DS_STORE*/**
-            **/node_modules/**
-            **/__MACOSX/**
+          server: ${{ secrets.HOST_NAME }}
+          username: ${{ secrets.USER_NAME }}
+          password: ${{ secrets.PASS_WORD }}
+          port: 22
+          source: ./web/dist/
+          target: /var/www/expensesmanaer.app/
 
-      - name: 📂 Deploying Grapics into webiwzard.in server
-        uses: SamKirkland/FTP-Deploy-Action@4.3.2
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
-          local-dir: ./graphics/
-          server-dir: /expenses-manager.webwizard.in/graphics/
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/.vscode*/**
-            **/.DS_STORE*/**
-            **/node_modules/**
-            **/__MACOSX/**
-
-      - name: 📂 Deploy in EC2 Instance
+      - name: 📂 Deploy to VPS
         uses: easingthemes/ssh-deploy/@main
         env:
           SSH_PRIVATE_KEY: ${{secrets.AWS_PEM_KEY}}
@@ -57,23 +35,16 @@ jobs:
         with:
           host: ${{secrets.HOST_NAME}}
           username: ${{secrets.USER_NAME}}
-          key: ${{secrets.AWS_PEM_KEY}}
+          password: ${{secrets.PASS_WORD}}
           port: 22
           script: |
-            source ~/.bashrc
-            source ~/.nvm/nvm.sh
-            sudo chown -hR ubuntu:ubuntu expenses-manager/
-            npm -g install create-react-app
-            cd /home/ubuntu/expenses-manager/web/
-            rm .env
-            touch .env
-            echo "${{secrets.WEB_ENV_FILE}}" | base64 --decode > .env
 
-            cd /home/ubuntu/expenses-manager/backend/
+            cd /root/expenses-manager/backend/
 
             docker stop expenses-manager-backend
             docker rm  expenses-manager-backend
             docker rmi expenses-manager-backend
+
             rm config/.env
             rm config/expensesmanager.json
 
@@ -84,7 +55,6 @@ jobs:
             echo "${{secrets.BACKEND_ENV_FILE}}" | base64 --decode > config/.env
             echo "${{secrets.EXPENSES_MANAGER_JSON}}" | base64 --decode > config/expensesmanager.json
 
-            npm install -f
             cd ..
 
             docker compose up -d

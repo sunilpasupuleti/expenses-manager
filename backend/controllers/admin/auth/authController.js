@@ -114,7 +114,6 @@ module.exports = {
       role: adminRole,
       password: password,
     });
-
     if (!userData) {
       return sendResponse(res, httpCodes.NOT_FOUND, {
         message: "Invalid Email / Password",

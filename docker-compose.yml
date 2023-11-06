@@ -1,7 +1,7 @@
-version: '3.9'
+version: "3.9"
 services:
   backend:
-    build: 
+    build:
       context: ./backend
       dockerfile: Dockerfile
     image: expenses-manager-backend
@@ -9,7 +9,7 @@ services:
     restart: always
     volumes:
       - ./backend:/expenses-manager/backend
-      - /resume-builder/backend/node_modules
+      - /expenses-manager/backend/node_modules
     ports:
       - "3000:3000"
     networks:
@@ -23,4 +23,3 @@ volumes:
   node_modules:
   web-root:
     driver: local
-
