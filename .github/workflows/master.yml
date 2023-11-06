@@ -34,12 +34,12 @@ jobs:
 
             rm .env
             touch .env
-            echo "${{secrets.WEB_ENV}}" | base64 --decode > .env
+            echo "${{secrets.WEB_ENV_FILE}}" | base64 --decode > .env
             npm run build
-            cp -r /dist/* /var/www/expensesmanager.app
+            cp -a dist/. /var/www/expensesmanager.app
 
             cd ..
-            cp -r graphics/* /var/www/expensesmanager.app/graphics
+            cp -a graphics/. /var/www/expensesmanager.app/graphics
 
 
             cd backend/
