@@ -2,7 +2,7 @@ on:
   push:
     branches:
       - master
-name: 🚀 Deploy to Ec2
+name: 🚀 Deploy to VPS
 jobs:
   web-deploy:
     name: 🎉 Deploy

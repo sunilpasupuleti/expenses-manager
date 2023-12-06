@@ -18,6 +18,7 @@ export const SocketContextProvider = ({ children }) => {
       let query = `id=${metadata._id}`;
       var socketConnect = io(process.env.REACT_APP_SOCKET_URL, {
         transports: ["websocket"],
+        secure: true,
         query,
       });
       socketConnect.on("connect", function () {
