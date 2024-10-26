@@ -6,6 +6,7 @@ import {SwipeableView} from './sheet-info-card.styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import React, {useContext, useEffect, useState} from 'react';
 import {Avatar, Card} from 'react-native-paper';
@@ -20,49 +21,24 @@ import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {SheetInfoCard} from './sheet-info-card.component';
 import {Text} from '../../../../components/typography/text.component';
 import {NoSheets} from '../sheets.styles';
+import _ from 'lodash';
 import {
   FlexRow,
   TouchableHighlightWithColor,
 } from '../../../../components/styles';
-export const SheetsInfo = ({navigation, searchKeyword}) => {
-  const {sheets, onDeleteSheet, onArchiveSheet, onPinSheet, setCurrentSheet} =
+export const SheetsInfo = ({
+  navigation,
+  pinnedSheets,
+  archivedSheets,
+  regularSheets,
+  onGetSheets,
+  totalCount,
+}) => {
+  const {onDeleteSheet, onArchiveSheet, onPinSheet, setCurrentSheet} =
     useContext(SheetsContext);
   const theme = useTheme();
-  const [dupSheets, setDupSheets] = useState(null);
-
   const [showArchived, setShowArchived] = useState(false);
   const [showPinned, setShowPinned] = useState(true);
-
-  const [pinnedSheets, setPinnedSheets] = useState([null]);
-  const [archivedSheets, setArchivedSheets] = useState(null);
-
-  useEffect(() => {
-    if (sheets) {
-      onGroupSheets(sheets);
-    }
-  }, [sheets]);
-
-  useEffect(() => {
-    onGroupSheets(sheets);
-    if (searchKeyword !== '') {
-      let filtered = sheets.filter(s => {
-        return s.name
-          .toLowerCase()
-          .includes(searchKeyword.trim().toLowerCase());
-      });
-      onGroupSheets(filtered);
-    }
-  }, [searchKeyword]);
-
-  const onGroupSheets = sheets => {
-    let pinned = sheets.filter(s => s.pinned);
-    let archived = sheets.filter(s => s.archived);
-    let normalSheets = sheets.filter(s => !s.pinned && !s.archived);
-
-    setPinnedSheets(pinned);
-    setDupSheets(normalSheets);
-    setArchivedSheets(archived);
-  };
 
   const {showActionSheetWithOptions} = useActionSheet();
 
@@ -89,6 +65,8 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
         ],
         cancelButtonIndex: 0,
         destructiveButtonIndex: 4,
+        showSeparators: true,
+
         message: 'Select an action to perform',
         icons: [
           <Ionicons name="close-outline" size={25} color="#aaa" />,
@@ -108,9 +86,9 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
         } else if (buttonIndex === 1) {
           onPressEditButton(sheet);
         } else if (buttonIndex === 2) {
-          onPinSheet(sheet);
+          onPressPinButton(sheet);
         } else if (buttonIndex === 3) {
-          onArchiveSheet(sheet);
+          onPressArchiveButton(sheet);
         } else if (buttonIndex === 4) {
           onPressDeleteButton(sheet);
         }
@@ -121,7 +99,9 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
   const onPressDeleteButton = sheet => {
     return Alert.alert(
       'Confirm?',
-      `Are you sure you want to delete "${sheet.name.toUpperCase()}" account? You won't be able to revert this back?`,
+      `Are you sure you want to delete "${_.toUpper(
+        sheet.name,
+      )}" account? You won't be able to revert this back?`,
       [
         // No buton to dismiss the alert
         {
@@ -134,7 +114,7 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
         {
           text: 'Delete',
           onPress: () => {
-            onDeleteSheet(sheet);
+            onDeleteSheet(sheet, onGetSheets);
           },
         },
       ],
@@ -144,9 +124,16 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
     navigation.navigate('AddSheet', {
       sheet,
       edit: true,
-      callback: (sheet = null) => navigation.goBack(),
     });
     onCloseSwipebles();
+  };
+
+  const onPressArchiveButton = sheet => {
+    onArchiveSheet(sheet, onGetSheets);
+  };
+
+  const onPressPinButton = sheet => {
+    onPinSheet(sheet, onGetSheets);
   };
 
   const rightSwipeActions = (progress, dragX, sheet) => {
@@ -158,9 +145,9 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
           </SwipeableView>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => onArchiveSheet(sheet)}>
+        <TouchableOpacity onPress={() => onPressEditButton(sheet)}>
           <SwipeableView style={{backgroundColor: '#babac1'}}>
-            <EvilIcons name="archive" color={'#fff'} size={30} />
+            <Ionicons name="create-outline" color={'#fff'} size={25} />
           </SwipeableView>
         </TouchableOpacity>
       </>
@@ -170,13 +157,17 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
   const leftSwipeActions = (progress, dragX, sheet) => {
     return (
       <>
-        <TouchableOpacity onPress={() => onPressEditButton(sheet)}>
+        <TouchableOpacity onPress={() => onPressArchiveButton(sheet)}>
           <SwipeableView style={{backgroundColor: '#babac1'}}>
-            <Ionicons name="create-outline" color={'#fff'} size={25} />
+            {sheet.archived ? (
+              <MaterialIcons name="unarchive" color={'#fff'} size={30} />
+            ) : (
+              <EvilIcons name="archive" color={'#fff'} size={30} />
+            )}
           </SwipeableView>
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => onPinSheet(sheet)}>
+        <TouchableOpacity onPress={() => onPressPinButton(sheet)}>
           <SwipeableView style={{backgroundColor: '#ed9938'}}>
             <MaterialCommunityIcons
               name={sheet.pinned ? 'pin-off-outline' : 'pin-outline'}
@@ -198,7 +189,7 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
 
   return (
     <>
-      {sheets && sheets.length > 0 ? (
+      {totalCount > 0 ? (
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{}}>
@@ -206,7 +197,7 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
             <Spacer size="large" />
 
             {/* for pinned */}
-            {pinnedSheets && pinnedSheets.length > 0 && (
+            {pinnedSheets.length > 0 && (
               <Spacer size={'medium'}>
                 <FlexRow justifyContent="space-between">
                   <Text fontfamily="bodyMedium">
@@ -288,20 +279,13 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
             )}
 
             {/* normal sheets */}
-            {dupSheets && dupSheets.length > 0 ? (
-              <Spacer
-                size={
-                  pinnedSheets && pinnedSheets.length > 0 ? 'xlarge' : 'small'
-                }>
-                {dupSheets.length > 0 &&
-                (sheets.filter(s => s.pinned).length > 0 ||
-                  sheets.filter(s => s.archived).length > 0) ? (
-                  <Spacer position={'bottom'} size="medium">
-                    <Text fontfamily="bodyMedium">
-                      Accounts ({dupSheets?.length})
-                    </Text>
-                  </Spacer>
-                ) : null}
+            {regularSheets.length > 0 ? (
+              <Spacer size={pinnedSheets.length > 0 ? 'xlarge' : 'small'}>
+                <Spacer position={'bottom'} size="medium">
+                  <Text fontfamily="bodyMedium">
+                    Accounts ({regularSheets?.length})
+                  </Text>
+                </Spacer>
                 <Card
                   theme={{roundness: 5}}
                   style={{
@@ -309,7 +293,7 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
                     margin: 1,
                   }}>
                   <FadeInView>
-                    {dupSheets.map((item, index) => {
+                    {regularSheets.map((item, index) => {
                       return (
                         <Swipeable
                           key={item.id}
@@ -343,7 +327,7 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
                             <SheetInfoCard
                               sheet={item}
                               index={index}
-                              currentLength={dupSheets.length}
+                              currentLength={regularSheets.length}
                             />
                           </TouchableHighlightWithColor>
                         </Swipeable>
@@ -353,8 +337,9 @@ export const SheetsInfo = ({navigation, searchKeyword}) => {
                 </Card>
               </Spacer>
             ) : null}
+
             {/* for archived */}
-            {archivedSheets && archivedSheets.length > 0 && (
+            {archivedSheets.length > 0 && (
               <Spacer size={'xlarge'}>
                 <FlexRow justifyContent="space-between">
                   <Text fontfamily="bodyMedium">

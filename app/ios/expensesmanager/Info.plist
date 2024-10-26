@@ -25,17 +25,26 @@
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>expenses-manager</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>expenses-manager</string>
+			</array>
+		</dict>
+		<dict>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>com.webwizard.expensesmanager</string>
 			</array>
 		</dict>
 		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>expenses-manager</string>
 				<string>com.googleusercontent.apps.4544693826-3hc21eltmp0auh2t8gjbll5s4v7c6au2</string>
 			</array>
 		</dict>
@@ -53,12 +62,15 @@
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
+		<false/>
+		<key>NSAllowsLocalNetworking</key>
 		<true/>
+		<!-- for localhost -->
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>localhost</key>
 			<dict>
-				<key>NSExceptionAllowsInsecureHTTPLoads</key>
+				<key>NSTemporaryExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
 			</dict>
 		</dict>
@@ -67,12 +79,28 @@
 	<string>Allow $(PRODUCT_NAME) to use Camera</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>Enabling Face ID allows you quick and secure access to your account.</string>
+	<!-- not rqeuired but due to security purpose required -->
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Allow $(PRODUCT_NAME) to access your Music</string>
+	<key>NSContactsUsageDescription</key>
+	<string>Allow $(PRODUCT_NAME) to access your Contacts</string>
+	<!--  -->
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string/>
+	<string>Allow $(PRODUCT_NAME) to access your location</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Allow $(PRODUCT_NAME) to access Library</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allow $(PRODUCT_NAME) to access Library</string>
+	<key>NSUbiquitousContainers</key>
+	<dict>
+		<key>[THIS_IS_CONTAINER_ID_YOU_CHECKED_ABOVE]</key>
+		<dict>
+			<key>NSUbiquitousContainerIsDocumentScopePublic</key>
+			<true/>
+			<key>NSUbiquitousContainerName</key>
+			<string>[THIS_IS_THE_NAME_SHOWED_IN_ICLOUD_DRIVE]</string>
+		</dict>
+	</dict>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>
@@ -116,7 +144,7 @@
 	<string>LaunchScreen</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
-		<string>armv7</string>
+		<string>arm64</string>
 	</array>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
@@ -126,15 +154,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSUbiquitousContainers</key>
-	<dict>
-		<key>[THIS_IS_CONTAINER_ID_YOU_CHECKED_ABOVE]</key>
-		<dict>
-			<key>NSUbiquitousContainerIsDocumentScopePublic</key>
-			<true/>
-			<key>NSUbiquitousContainerName</key>
-			<string>[THIS_IS_THE_NAME_SHOWED_IN_ICLOUD_DRIVE]</string>
-		</dict>
-	</dict>
 </dict>
 </plist>

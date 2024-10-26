@@ -15,6 +15,8 @@ import {SettingsContextProvider} from '../../services/settings/settings.context'
 import {AvoidSoftInput} from 'react-native-avoid-softinput';
 import {useFocusEffect} from '@react-navigation/native';
 import {useTheme} from 'styled-components/native';
+import {CategoriesContextProvider} from '../../services/categories/categories.context';
+import {SheetDetailsContextProvider} from '../../services/sheetDetails/sheetDetails.context';
 
 const Stack = createStackNavigator();
 
@@ -36,38 +38,39 @@ export const AppNavigator = () => {
 
   return (
     <>
-      <SheetsContextProvider>
-        <SettingsContextProvider>
-          <SyncContextProvider>
-            <ProfileContextProvider>
-              <SmsTransactions />
+      <CategoriesContextProvider>
+        <SheetsContextProvider>
+          <SheetDetailsContextProvider>
+            <SettingsContextProvider>
+              <SyncContextProvider>
+                <ProfileContextProvider>
+                  <SmsTransactions />
 
-              <SelectBaseCurrency />
+                  <SelectBaseCurrency />
 
-              <Stack.Navigator
-                screenOptions={{
-                  headerShown: false,
-                }}>
-                <Stack.Screen name="Sheets" component={SheetsNavigator} />
-                <Stack.Screen
-                  options={{
-                    headerMode: 'screen',
-                    gestureResponseDistance:
-                      Dimensions.get('window').height - 200,
-                    ...TransitionPresets.ModalPresentationIOS,
-                  }}
-                  name="Settings"
-                  component={SettingsNavigator}
-                />
-
-                <Stack.Screen name="Applock" component={AppLockScreen} />
-              </Stack.Navigator>
-            </ProfileContextProvider>
-          </SyncContextProvider>
-        </SettingsContextProvider>
-      </SheetsContextProvider>
-
-      <Notification />
+                  <Stack.Navigator
+                    screenOptions={{
+                      headerShown: false,
+                    }}>
+                    <Stack.Screen name="Sheets" component={SheetsNavigator} />
+                    <Stack.Screen
+                      options={{
+                        headerMode: 'screen',
+                        gestureResponseDistance:
+                          Dimensions.get('window').height - 200,
+                        ...TransitionPresets.ModalPresentationIOS,
+                      }}
+                      name="Settings"
+                      component={SettingsNavigator}
+                    />
+                    <Stack.Screen name="Applock" component={AppLockScreen} />
+                  </Stack.Navigator>
+                </ProfileContextProvider>
+              </SyncContextProvider>
+            </SettingsContextProvider>
+          </SheetDetailsContextProvider>
+        </SheetsContextProvider>
+      </CategoriesContextProvider>
     </>
   );
 };

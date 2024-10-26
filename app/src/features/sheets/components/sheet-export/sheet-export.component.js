@@ -6,7 +6,7 @@ import React from 'react';
 import {Platform, ScrollView, TouchableOpacity, View} from 'react-native';
 import {useTheme} from 'styled-components/native';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {ButtonText, FlexRow} from '../../../../components/styles';
+import {ButtonText, FlexRow, MainWrapper} from '../../../../components/styles';
 import {Spacer} from '../../../../components/spacer/spacer.component';
 import {useContext} from 'react';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
@@ -22,7 +22,7 @@ import {useDispatch} from 'react-redux';
 import {notificationActions} from '../../../../store/notification-slice';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
 import {MultipleSelectList} from 'react-native-dropdown-select-list';
-import {getFirebaseAccessUrl} from '../../../../components/utility/helper';
+import {CategoriesContext} from '../../../../services/categories/categories.context';
 
 const onSetFromDate = () => {
   let date = new Date();
@@ -38,6 +38,7 @@ export const SheetExport = ({navigation, route}) => {
   const [categoryType, setCategoryType] = useState(null);
   const dispatch = useDispatch();
   const [categories, setCategories] = useState(null);
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [dateFilter, setDateFilter] = useState(false);
 
   const [showPicker, setShowPicker] = useState({
@@ -50,11 +51,9 @@ export const SheetExport = ({navigation, route}) => {
 
   const [items, setItems] = useState([]);
 
-  const {
-    categories: allCategories,
-    onExportSheetDataToExcel,
-    onExportSheetDataToPdf,
-  } = useContext(SheetsContext);
+  const {onExportSheetDataToExcel, onExportSheetDataToPdf} =
+    useContext(SheetsContext);
+  const {getCategories} = useContext(CategoriesContext);
 
   const theme = useTheme();
 
@@ -64,6 +63,7 @@ export const SheetExport = ({navigation, route}) => {
 
   const onResetFilters = () => {
     setCategories([]);
+    setSelectedCategories([]);
     setDateFilter(false);
     setFromDate(onSetFromDate());
     setToDate(new Date());
@@ -73,30 +73,27 @@ export const SheetExport = ({navigation, route}) => {
 
   useEffect(() => {
     if (categoryType) {
-      let cat = allCategories[categoryType];
-      let values = [];
-      let colors = [];
-      cat.forEach(item => {
-        let obj = {
-          value: _.capitalize(item.name),
-          key: item.id,
-        };
-        values.push(obj);
-        let categoryObj = cat.filter(c => c.id === item.id)[0];
-        if (!categoryObj) {
-          colors.push(item.color);
-        } else {
-          colors.push(categoryObj.color);
-        }
-      });
-      setItems(values);
-      setCategories([]);
+      onGetCategories(categoryType);
     }
   }, [categoryType]);
 
-  const onFilter = config => {
-    let sheetDetails = currentSheet.details;
+  const onGetCategories = async catType => {
+    let data = await getCategories(catType);
+    let values = [];
+    let colors = [];
+    data.map(d => {
+      let {name, id, color} = d;
+      let obj = {
+        value: _.capitalize(name),
+        key: id,
+      };
+      values.push(obj);
+      colors.push(color);
+    });
+    setItems(values);
+  };
 
+  const onFilter = config => {
     if (!type) {
       dispatch(
         notificationActions.showToast({
@@ -107,171 +104,27 @@ export const SheetExport = ({navigation, route}) => {
       return;
     }
 
-    if (categoryType && categories.length && categories.length > 0) {
-      sheetDetails = sheetDetails.filter(
-        s => categories.includes(s.category.id) && s.type === categoryType,
-      );
-    }
-    if (categoryType && !categories.length) {
-      sheetDetails = sheetDetails.filter(s => {
-        return s.type === categoryType;
-      });
-    }
     if (dateFilter) {
-      //   for exact filter between dates
-      // let from = new Date(fromDate); //minus one day
-      // let to = new Date(toDate); //plus one day
-
-      // const fromDateMonth = moment(fromDate).format('M');
-      // const fromDateDay = moment(fromDate).format('D');
-
-      // const toDateDaysInMonth = moment(toDate).daysInMonth();
-      // const toDateMonth = moment(toDate).format('M');
-      // const toDateDay = moment(toDate).format('D');
-
-      // from.setDate(Number(fromDateDay) - 1);
-      // Number(fromDateDay) === 1
-      //   ? from.setMonth(fromDate.getMonth() - 1)
-      //   : from.setMonth(fromDate.getMonth());
-
-      // Number(fromDateMonth) === 1 && Number(fromDateDay) === 1
-      //   ? from.setFullYear(fromDate.getFullYear() - 1)
-      //   : from.setFullYear(fromDate.getFullYear());
-
-      let from = moment(fromDate).format('YYYY-MM-DD');
-
-      // to.setDate(Number(toDateDay) + 1);
-
-      // Number(toDateDay) >= Number(toDateDaysInMonth)
-      //   ? to.setMonth(toDate.getMonth() + 1)
-      //   : to.setMonth(toDate.getMonth());
-
-      // Number(toDateMonth) === 12 &&
-      // Number(toDateDay) >= Number(toDateDaysInMonth)
-      //   ? to.setFullYear(toDate.getFullYear() + 1)
-      //   : to.setFullYear(toDate.getFullYear());
-
-      let to = moment(toDate).format('YYYY-MM-DD');
-
-      let filteredDetails = [];
-      sheetDetails.map(sd => {
-        let createdDate = moment(sd.date).format('YYYY-MM-DD');
-        let isBetweenFilteredDates = moment(createdDate).isBetween(
-          from,
-          to,
-          null,
-          '[]',
-        );
-
-        if (isBetweenFilteredDates) {
-          filteredDetails.push(sd);
-        }
-      });
-      sheetDetails = filteredDetails;
+      config.from = moment(fromDate).format('YYYY-MM-DD');
+      config.to = moment(toDate).format('YYYY-MM-DD');
     }
 
-    let sortedSheetDetails = _(sheetDetails)
-      .sortBy(item => moment(item.date).format('YYYY-MM-DD'))
-      .value();
-
-    if (!sortedSheetDetails || sortedSheetDetails.length === 0) {
-      dispatch(
-        notificationActions.showToast({
-          status: 'warning',
-          message: 'There were no transactions found with selected filters.',
-        }),
-      );
-      return;
+    if (categoryType) {
+      config.categoryType = categoryType;
     }
+    if (categoryType && selectedCategories.length > 0) {
+      config.selectedCategories = selectedCategories;
+    }
+
+    config.id = currentSheet.id;
+    onCompleteExporting();
 
     if (type === 'pdf') {
-      exportPdf(config, sortedSheetDetails);
+      onExportSheetDataToPdf(config);
     }
     if (type === 'excel') {
-      exportExcel(config, sortedSheetDetails);
+      onExportSheetDataToExcel(config);
     }
-  };
-
-  const exportExcel = (configData, sheetDetails) => {
-    let totalIncome = 0;
-    let totalExpense = 0;
-    let structuredDetails = [];
-    sheetDetails.forEach((d, i) => {
-      let date = moment(d.date).format('MMM DD, YYYY ');
-      if (d.showTime) {
-        let time = moment(d.time).format('hh:mm A');
-        date += time;
-      }
-      if (d.type === 'expense') {
-        totalExpense += d.amount;
-      } else {
-        totalIncome += d.amount;
-      }
-
-      let amount = `AMOUNT ( ${GetCurrencySymbol(currentSheet.currency)} )`;
-      let detail = {
-        'S.NO': i + 1,
-        TITLE: d.notes,
-        CATEGORY: d.category.name,
-        DATE: date,
-        IMAGE: d.image?.url ? getFirebaseAccessUrl(d.image.url) : '-',
-        [amount]: d.type === 'expense' ? -d.amount : d.amount,
-      };
-      structuredDetails.push(detail);
-    });
-
-    let extraCells = [
-      ['', '', '', '', '', ''],
-      [
-        '',
-        '',
-        '',
-        '',
-        'TOTAL INCOME ',
-        GetCurrencySymbol(currentSheet.currency) +
-          ' ' +
-          GetCurrencyLocalString(totalIncome),
-      ],
-      [
-        '',
-        '',
-        '',
-        '',
-        'TOTAL EXPENSES ',
-        GetCurrencySymbol(currentSheet.currency) +
-          ' ' +
-          GetCurrencyLocalString(totalExpense),
-      ],
-      [
-        '',
-        '',
-        '',
-        '',
-        'BALANCE',
-        GetCurrencySymbol(currentSheet.currency) +
-          ' ' +
-          GetCurrencyLocalString(totalIncome - totalExpense),
-      ],
-    ];
-    let config = {
-      title: currentSheet.name.toUpperCase(),
-      extraCells,
-      sheet: {...currentSheet},
-      wscols: [{wch: 5}, {wch: 40}, {wch: 40}, {wch: 25}, {wch: 25}],
-      ...configData,
-    };
-    onCompleteExporting();
-    onExportSheetDataToExcel(config, structuredDetails);
-  };
-
-  const exportPdf = (configData, sheetDetails) => {
-    onCompleteExporting();
-    let finalSheet = {...currentSheet};
-    finalSheet.details = sheetDetails;
-    let config = {
-      ...configData,
-    };
-    onExportSheetDataToPdf(config, finalSheet);
   };
 
   const toggleSwithStyles = {
@@ -292,7 +145,7 @@ export const SheetExport = ({navigation, route}) => {
   }, [currentSheet]);
 
   return (
-    <SafeArea mdBackground={true}>
+    <SafeArea child={true}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Card
           style={{
@@ -369,7 +222,7 @@ export const SheetExport = ({navigation, route}) => {
                       color={theme.colors.text.primary}
                     />
                   }
-                  setSelected={val => setCategories(val)}
+                  setSelected={val => setSelectedCategories(val)}
                   data={items}
                   label="Categories"
                   placeholder="Select categories (optional)"

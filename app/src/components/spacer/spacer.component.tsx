@@ -54,16 +54,11 @@ interface Props {
 
 export const Spacer = (props: Props) => {
   const theme = useTheme();
-  let {position, size, children, type} = props;
+  let {position = 'top', size = 'small', children, type} = props;
   const variant = getVariant(type, position, size, theme);
   return (
     <SpacerView variant={variant} {...props}>
       {children}
     </SpacerView>
   );
-};
-
-Spacer.defaultProps = {
-  position: 'top',
-  size: 'small',
 };

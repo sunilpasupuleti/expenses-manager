@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unstable-nested-components */
+/* eslint-disable react-native/no-inline-styles */
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {
   Avatar,
@@ -25,7 +27,13 @@ import {
 } from '../../components/sheet-details/sheet-details.styles';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import {Alert, Platform, TouchableOpacity, View} from 'react-native';
+import {
+  Alert,
+  Platform,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from 'react-native';
 import moment from 'moment';
 import Haptics from 'react-native-haptic-feedback';
 import {ScrollView} from 'react-native';
@@ -49,13 +57,21 @@ import {
 } from '../../../categories/components/categories.styles';
 import {Spacer} from '../../../../components/spacer/spacer.component';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {notificationActions} from '../../../../store/notification-slice';
 import {launchImageLibrary} from 'react-native-image-picker';
 import RNFetchBlob from 'rn-fetch-blob';
 import {loaderActions} from '../../../../store/loader-slice';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
-import {getFirebaseAccessUrl} from '../../../../components/utility/helper';
+import {
+  formatDate,
+  getFirebaseAccessUrl,
+} from '../../../../components/utility/helper';
+import {SheetDetailsContext} from '../../../../services/sheetDetails/sheetDetails.context';
+import {CategoriesContext} from '../../../../services/categories/categories.context';
+import _ from 'lodash';
+import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 export const AddSheetDetailScreen = ({navigation, route}) => {
   const theme = useTheme();
@@ -64,11 +80,14 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   const [date, setDate] = useState(new Date());
   const [avatarLoading, setAvatarLoading] = useState(false);
   const [imageLoading, setImageLoading] = useState(false);
+  const [sheetDetail, setSheetDetail] = useState(null);
   let d = new Date();
   d.setMonth(date.getMonth());
   d.setDate(date.getDate());
   const [time, setTime] = useState(d);
   const dispatch = useDispatch();
+  const {onSaveSheetDetail, onEditSheetDetail} =
+    useContext(SheetDetailsContext);
 
   const [showPicker, setShowPicker] = useState({
     date: Platform.OS === 'ios' ? true : false,
@@ -76,25 +95,21 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   });
 
   // contexts
-  const {
-    categories,
-    onSaveSheetDetails,
-    onEditSheetDetails,
-    onSaveCategory,
-    currentSheet,
-  } = useContext(SheetsContext);
+  const {currentSheet} = useContext(SheetsContext);
+  const {onSaveCategory} = useContext(CategoriesContext);
+  const {userData} = useContext(AuthenticationContext);
 
   // inputs states
   const [amount, setAmount] = useState(0);
   const [notes, setNotes] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [repeat, setRepeat] = useState({value: 'weekly', name: 'Weekly'});
   const [editMode, setEditMode] = useState(false);
-  const [editFromUpcomingScreen, setEditUpcomingScreen] = useState(false);
   const [smartScanMode, setSmartScanMode] = useState(false);
   const [selectedImage, setSelectedImage] = useState({
     url: null,
   });
-
+  const {isConnected} = useNetInfo();
   const [imageChanged, setImageChanged] = useState(false);
 
   // let imageChanged = false
@@ -105,17 +120,22 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     category: null,
   });
   const [showTime, setShowTime] = useState(false);
+
+  const themeType = useColorScheme();
+  const appTheme = useSelector(state => state.service.theme);
+  let darkMode =
+    appTheme === 'automatic'
+      ? themeType === 'light'
+        ? false
+        : true
+      : appTheme === 'light'
+      ? false
+      : true;
+
   function setCategories(fromRoute = null) {
-    let selectedCategories =
-      activeType === 'expense' ? categories.expense : categories.income;
-    let result;
     if (fromRoute) {
-      result = selectedCategories.filter(c => c.id === fromRoute.id)[0];
+      setSelectedCategory(fromRoute);
     }
-    // else {
-    //   result = selectedCategories.filter(c => c.default)[0];
-    // }
-    setSelectedCategory(result);
   }
 
   useEffect(() => {
@@ -140,7 +160,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       navigation.setOptions({
         headerTitle: activeType === 'expense' ? 'New Expense' : 'New Income',
       });
-      setCategories();
+      // setCategories();
     }
   }, [activeType]);
 
@@ -155,7 +175,6 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       },
       headerTitle: 'New Expense',
     });
-    setCategories();
   }, []);
 
   useEffect(() => {
@@ -165,69 +184,70 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     if (route.params.selectedCategory) {
       setCategories(route.params.selectedCategory);
     }
+    if (route.params.repeat) {
+      setRepeat(route.params.repeat);
+    }
     if (route.params && route.params.smartScan) {
-      let sheetDetail = route.params.sheetDetail;
-      if (sheetDetail) {
+      let sd = route.params.sheetDetail;
+      if (sd) {
+        const {
+          amount,
+          notes,
+          image,
+          type,
+          date,
+          category,
+          newCategoryIdentified,
+        } = sd;
         setSmartScanMode(true);
-        setAmount(sheetDetail.amount);
-        setNotes(sheetDetail.notes);
-        setSelectedImage(sheetDetail.image);
-        setActiveType(sheetDetail.type);
-        let dateIsValid = moment(sheetDetail.date).isValid();
-        let date = new Date();
-        if (dateIsValid) {
-          date = new Date(sheetDetail.date);
-        }
-        setDate(date);
-        let categoryAlreadyExists = categories['expense'].filter(c => {
-          return c.name
-            .toLowerCase()
-            .includes(sheetDetail.category.toLowerCase());
-        })[0];
-        if (categoryAlreadyExists) {
-          setSelectedCategory(categoryAlreadyExists);
-        } else {
+        setAmount(amount);
+        setNotes(notes);
+        setSelectedImage(image);
+        setActiveType(type);
+        setDate(date ? new Date(date) : new Date());
+
+        if (newCategoryIdentified) {
           setNewCategoryIdentified({
             showDialog: true,
-            category: {name: sheetDetail.category},
+            category: {name: category},
           });
+        } else {
+          setSelectedCategory(category);
         }
       }
     }
     if (route.params.edit) {
       setEditMode(true);
-      let {sheetDetail, editFromUpcomingScreen: eus} = route.params;
-      setEditUpcomingScreen(eus);
-      if (sheetDetail) {
-        setAmount(sheetDetail.amount);
-        setNotes(sheetDetail.notes);
-        setActiveType(sheetDetail.type);
-        setDate(new Date(sheetDetail.date));
+      let {sheetDetail: sd} = route.params;
+
+      if (sd) {
+        setSheetDetail(sd);
+        setAmount(sd.amount);
+        setNotes(sd.notes);
+        setActiveType(sd.type);
+
+        const localDate = new Date(`${sd.date}T00:00:00`);
+        setDate(localDate);
+
         let imageUrl = null;
-        if (sheetDetail.image && sheetDetail.image.url) {
-          imageUrl = getFirebaseAccessUrl(sheetDetail.image.url);
+        if (sd.imageUrl) {
+          imageUrl = getFirebaseAccessUrl(sd.imageUrl);
         }
         setSelectedImage({
-          ...sheetDetail?.image,
+          type: sd.imageType,
+          extension: sd.imageExtension,
           url: imageUrl,
-          originalUrl: sheetDetail.image.url,
+          originalUrl: sd.imageUrl,
         });
-        setShowTime(sheetDetail.showTime);
-        if (sheetDetail.showTime && sheetDetail.time) {
-          setTime(new Date(sheetDetail.time));
+        setShowTime(sd.showTime ? true : false);
+        if (sd.showTime && sd.time) {
+          setTime(new Date(sd.time));
         }
-        let category = categories[sheetDetail.type].filter(
-          c => c.id === sheetDetail.category.id,
-        )[0];
-        if (!category) {
-          category = sheetDetail.category;
-        }
-        setSelectedCategory(category);
+
+        setSelectedCategory(sd.category);
+
         navigation.setOptions({
-          headerTitle:
-            'Edit ' +
-            sheetDetail.type.charAt(0).toUpperCase() +
-            sheetDetail.type.slice(1),
+          headerTitle: 'Edit ' + _.capitalize(_.trim(sd.type)),
         });
       }
     }
@@ -235,6 +255,15 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
 
   const onCancel = () => {
     navigation.goBack();
+  };
+
+  const showNotification = (status, message) => {
+    dispatch(
+      notificationActions.showToast({
+        status: status,
+        message: message,
+      }),
+    );
   };
 
   const onSave = () => {
@@ -247,34 +276,32 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       );
       return;
     }
-    let sheetDetail = {
-      id: Date.now().toString(36) + Math.random().toString(36).substring(2),
+    let sd = {
       amount: parseFloat(amount),
       notes: notes ? notes.trim() : notes,
       type: activeType,
-      category: selectedCategory,
-      showTime: showTime,
-      createdAt: Date.now(),
+      categoryId: selectedCategory.id,
+      showTime: showTime ? 1 : 0,
       image: selectedImage,
+      accountId: currentSheet.id,
     };
     if (showTime) {
-      sheetDetail.time = time.toString();
-      let minutes = moment(sheetDetail.time).minutes();
-      let hours = moment(sheetDetail.time).hours();
+      sd.time = formatDate(time);
+      let minutes = moment(sd.time).minutes();
+      let hours = moment(sd.time).hours();
       let dte = date;
       dte.setMinutes(minutes);
       dte.setHours(hours);
       dte.setSeconds(0);
-      sheetDetail.date = dte.toString();
+      sd.date = formatDate(dte);
     } else {
       let dte = date;
       dte.setMinutes(0);
       dte.setHours(0);
       dte.setSeconds(0);
-      sheetDetail.date = dte.toString();
+      sd.date = formatDate(dte);
     }
-
-    onSaveSheetDetails(currentSheet, sheetDetail, updatedSheet => {
+    onSaveSheetDetail(currentSheet, sd, () => {
       navigation.goBack();
     });
   };
@@ -294,70 +321,69 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     return null;
   };
 
-  const onEdit = (deleteImage = false) => {
-    let sheetDetail = {
-      id: route.params.sheetDetail.id,
+  const onEdit = () => {
+    let selImage = _.cloneDeep(selectedImage);
+    let sd = {
+      id: sheetDetail.id,
       amount: parseFloat(amount),
       notes: notes ? notes.trim() : notes,
       type: activeType,
-      category: selectedCategory,
-      showTime: showTime,
-      createdAt: Date.now(),
-      image: selectedImage,
+      categoryId: selectedCategory.id,
+      showTime: showTime ? 1 : 0,
+      image: selImage,
       imageChanged: imageChanged,
-      imageDeleted: deleteImage,
     };
 
-    if (selectedImage && selectedImage.originalUrl) {
-      let image = selectedImage;
+    if (selectedImage.originalUrl && !selImage.url) {
+      sd.imageDeleted = true;
+    }
+    if (selImage && selImage.originalUrl) {
+      let image = selImage;
       image.url = image.originalUrl;
       delete image.originalUrl;
       sheetDetail.image = image;
     }
 
     if (showTime) {
-      sheetDetail.time = time.toString();
-      let minutes = moment(sheetDetail.time).minutes();
-      let hours = moment(sheetDetail.time).hours();
+      sd.time = formatDate(time);
+      let minutes = moment(sd.time).minutes();
+      let hours = moment(sd.time).hours();
       let dte = date;
       dte.setMinutes(minutes);
       dte.setHours(hours);
       dte.setSeconds(0);
-      sheetDetail.date = dte.toString();
+      sd.date = formatDate(dte);
     } else {
       let dte = date;
       dte.setMinutes(0);
       dte.setHours(0);
       dte.setSeconds(0);
-      sheetDetail.date = dte.toString();
+      sd.date = formatDate(dte);
     }
-
-    setOpen(false);
-    onEditSheetDetails(sheetDetail, editFromUpcomingScreen, updatedSheet => {
-      if (editFromUpcomingScreen) {
-        navigation.navigate('Transactions');
-      } else {
-        navigation.goBack();
-      }
+    onEditSheetDetail(currentSheet, sd, () => {
+      navigation.goBack();
     });
   };
 
   const onSetActiveType = type => {
-    setActiveType(type);
+    if (activeType !== type) {
+      setActiveType(type);
+      setSelectedCategory(null);
+    }
   };
 
   // when new category identified
   const onAddNewCategory = () => {
-    let categoryName = newCategoryIdentified.category.name;
     let n = (Math.random() * 0xfffff * 1000000).toString(16);
     let categoryColor = '#' + n.slice(0, 6);
     let category = {
-      id: Date.now().toString(36) + Math.random().toString(36).substring(2),
-      name: categoryName.charAt(0).toUpperCase() + categoryName.slice(1),
+      name: _.capitalize(_.trim(newCategoryIdentified.category.name)),
       color: categoryColor,
+      uid: userData.uid,
+      type: 'expense',
     };
-    onSaveCategory(category, 'expense', () => {
-      setSelectedCategory(category);
+    onSaveCategory(category, insertedCat => {
+      setSelectedCategory(insertedCat);
       setNewCategoryIdentified(p => ({
         ...p,
         showDialog: false,
@@ -388,12 +414,13 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
         if (editMode) {
           setImageChanged(true);
         }
-        setSelectedImage({
+        setSelectedImage(p => ({
+          ...p,
           type: pictureType,
           uri: uri,
           url: base64,
           extension: pictureExtension,
-        });
+        }));
       }
     });
   };
@@ -411,7 +438,13 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   };
 
   const downloadImage = async image => {
-    if (image && image.url) {
+    try {
+      if (!image || !image.url) {
+        throw 'No Image Found';
+      }
+      if (!isConnected) {
+        throw 'No Internet Connection';
+      }
       // Getting the extention of the file
       // get bytes
       setOpen(false);
@@ -422,54 +455,48 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
         }),
       );
       let imageURL = image.url;
-      RNFetchBlob.config({
+      const res = await RNFetchBlob.config({
         fileCache: true,
         appendExt: image.extension,
-      })
-        .fetch('GET', imageURL)
-        .then(res => {
-          saveToCameraRoll(res.data);
-        })
-        .catch(err => {
-          dispatch(
-            notificationActions.showToast({
-              status: 'error',
-              message: err,
-            }),
-          );
-          dispatch(loaderActions.hideLoader());
-        });
+      }).fetch('GET', imageURL);
 
-      const saveToCameraRoll = url => {
-        CameraRoll.save(url)
-          .then(() => {
-            dispatch(
-              notificationActions.showToast({
-                status: 'success',
-                message: 'Image saved to your Camera Roll/ Photos',
-              }),
-            );
-            dispatch(loaderActions.hideLoader());
-          })
-          .catch(err => {
-            dispatch(
-              notificationActions.showToast({
-                status: 'error',
-                message:
-                  err?.message + '. Please enable permission from settings',
-              }),
-            );
-            dispatch(loaderActions.hideLoader());
-          });
-      };
-    } else {
+      await CameraRoll.saveToCameraRoll(res.data);
+
+      dispatch(
+        notificationActions.showToast({
+          status: 'success',
+          message: 'Image saved to your Camera Roll/ Photos',
+        }),
+      );
       dispatch(loaderActions.hideLoader());
-      Alert.alert('No Image Found');
+      setOpen(false);
+    } catch (e) {
+      setOpen(false);
+      dispatch(loaderActions.hideLoader());
+      dispatch(
+        notificationActions.showToast({
+          status: 'error',
+          message: e.toString(),
+        }),
+      );
     }
   };
 
+  const onClickDeleteImage = () => {
+    if (!isConnected) {
+      showNotification('error', 'No Internet Connection');
+      setOpen(false);
+      return;
+    }
+    setSelectedImage(p => ({
+      ...p,
+      url: null,
+    }));
+    setOpen(false);
+  };
+
   return (
-    <SafeArea>
+    <SafeArea child={true}>
       <MainWrapper>
         {!editMode && !smartScanMode && (
           <CategoryTabs
@@ -543,71 +570,45 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                 editModeParams: paramsObject,
               });
             }}>
-            {selectedCategory ? (
-              <Card.Title
-                title={selectedCategory?.name}
-                titleVariant="titleMedium"
-                subtitle="Change category"
-                subtitleVariant="bodySmall"
-                left={props => (
-                  <Avatar.Icon
-                    style={{
-                      backgroundColor: selectedCategory
-                        ? selectedCategory.color
-                        : '#fff',
-                    }}
-                    icon={selectedCategory.icon}
-                    {...props}
-                    color="#fff"
-                  />
-                )}
-                right={props => (
-                  <MaterialCommunityIcon
-                    name="chevron-right"
-                    {...props}
-                    size={40}
-                    color={theme.colors.brand.primary}
-                  />
-                )}
-                rightStyle={{
-                  marginRight: 10,
-                }}
-              />
-            ) : (
-              <Card.Title
-                title={`Select category`}
-                titleVariant="titleMedium"
-                subtitle="click here to change"
-                subtitleVariant="bodySmall"
-                left={props => (
-                  <Avatar.Icon
-                    style={{backgroundColor: theme.colors.brand.primary}}
-                    icon={'format-list-bulleted'}
-                    {...props}
-                    color="#fff"
-                  />
-                )}
-                right={props => (
-                  <MaterialCommunityIcon
-                    name="chevron-right"
-                    {...props}
-                    size={40}
-                    color={theme.colors.brand.primary}
-                  />
-                )}
-                rightStyle={{
-                  marginRight: 10,
-                }}
-              />
-              // <CategoryItem>
-              //   <CategoryColor color={'#aaa'} />
-
-              //   <Spacer position={'left'} size={'medium'} />
-              //   <Text fontfamily="heading">
-              //     {'Select category from here'}
-              //   </Text>
-              // </CategoryItem>
-            )}
+            <Card.Title
+              title={
+                selectedCategory ? selectedCategory?.name : 'Select Category'
+              }
+              titleVariant="titleMedium"
+              subtitle={
+                selectedCategory ? 'Change category' : 'click here to change'
+              }
+              subtitleVariant="bodySmall"
+              left={props => (
+                <Avatar.Icon
+                  style={{
+                    backgroundColor: selectedCategory
+                      ? selectedCategory.color
+                      : theme.colors.brand.primary,
+                  }}
+                  {...(selectedCategory &&
+                    selectedCategory.icon && {
+                      icon: selectedCategory.icon,
+                    })}
+                  {...(!selectedCategory && {
+                    icon: 'format-list-bulleted',
+                  })}
+                  {...props}
+                  color="#fff"
+                />
+              )}
+              right={props => (
+                <MaterialCommunityIcon
+                  name="chevron-right"
+                  {...props}
+                  size={40}
+                  color={theme.colors.brand.primary}
+                />
+              )}
+              rightStyle={{
+                marginRight: 10,
+              }}
+            />
           </Card>
 
           <Spacer size={'large'} />
@@ -618,7 +619,39 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
               backgroundColor: theme.colors.bg.card,
               margin: 1,
             }}>
+            {/* Repeat */}
+            {/* <Card.Content>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('SelectRepeat', {
+                    repeat: repeat,
+                  });
+                }}>
+                <FlexRow justifyContent="space-between">
+                  <FlexRow gap="5px">
+                    <Ionicons
+                      name="repeat"
+                      size={25}
+                      color={theme.colors.brand.primary}
+                    />
+                    <Text fontfamily="heading">Repeat</Text>
+                  </FlexRow>
+                  <FlexRow>
+                    <Text color={'#aaa'}>{repeat.name}</Text>
+                    <MaterialCommunityIcon
+                      name="chevron-right"
+                      size={25}
+                      color="#aaa"
+                    />
+                  </FlexRow>
+                </FlexRow>
+              </TouchableOpacity>
+            </Card.Content> */}
+
             {/* date picker */}
+            <Spacer size="medium" />
+            <Divider />
+            <Spacer size={'large'} />
             <Card.Content>
               <View>
                 <FlexRow justifyContent="space-between">
@@ -656,7 +689,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                         <DateTimePicker
                           mode="date"
                           value={date}
-                          // maximumDate={new Date()}
+                          timeZoneName="America/Toronto"
+                          themeVariant={darkMode ? 'dark' : 'light'}
                           onChange={(e, d) => {
                             if (e.type === 'dismissed') {
                               setShowPicker(prev => ({
@@ -687,6 +721,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                     <DateTimePicker
                       mode="date"
                       value={date}
+                      themeVariant={darkMode ? 'dark' : 'light'}
+                      dateFormat="dayofweek day month"
                       // maximumDate={new Date()}
                       onChange={(e, d) => {
                         if (e.type === 'dismissed') {
@@ -696,14 +732,6 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                           }));
                         }
                         if (d) {
-                          if (Platform.OS === 'android') {
-                            setShowPicker(prevState => {
-                              return {
-                                ...prevState,
-                                date: false,
-                              };
-                            });
-                          }
                           setDate(d);
                           time.setMonth(d.getMonth());
                           time.setDate(d.getDate());
@@ -714,10 +742,10 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                 </FlexRow>
               </View>
             </Card.Content>
+            {/* time */}
             <Spacer />
             <Divider />
             <Spacer size={'large'} />
-
             <Card.Content>
               <FlexRow justifyContent="space-between" gap="5px">
                 <Text>Show Time</Text>
@@ -727,7 +755,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                 />
               </FlexRow>
             </Card.Content>
-
+            {/* showing time */}
             <Spacer />
             <Divider />
             <Spacer size={'large'} />
@@ -772,6 +800,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                             <DateTimePicker
                               mode="time"
                               value={time}
+                              themeVariant={darkMode ? 'dark' : 'light'}
                               // maximumDate={new Date()}
                               onChange={(e, t) => {
                                 if (e.type === 'dismissed') {
@@ -801,6 +830,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                         <DateTimePicker
                           mode="time"
                           value={time}
+                          themeVariant={darkMode ? 'dark' : 'light'}
                           // maximumDate={new Date()}
                           onChange={(e, t) => {
                             if (e.type === 'dismissed') {
@@ -832,7 +862,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                 <Spacer size={'large'} />
               </>
             )}
-
+            {/* image */}
             <Card.Content>
               {!selectedImage?.url && (
                 <TouchableOpacity onPress={onAddImage}>
@@ -942,7 +972,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                   icon={'plus'}
                   mode="outlined"
                   onPress={onAddNewCategory}
-                  textColor="#fff">
+                  textColor={theme.colors.brand.primary}>
                   Add and Continue
                 </Button>
               </Dialog.Actions>
@@ -974,15 +1004,12 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                 <Button onPress={() => setOpen(false)} color="#aaa">
                   Cancel
                 </Button>
+                <Spacer position={'left'} size="xlarge" />
+                <Button onPress={() => onClickDeleteImage()}>
+                  <FontAwesome name="trash" size={20} color={'tomato'} />
+                </Button>
                 {editMode && !imageChanged && (
                   <>
-                    <Spacer position={'left'} size="xlarge" />
-                    <Button
-                      onPress={() => {
-                        onEdit(true);
-                      }}>
-                      <FontAwesome name="trash" size={20} color={'tomato'} />
-                    </Button>
                     <Spacer position={'left'} size="xlarge" />
                     <Button onPress={onDownloadImage} mode="contained">
                       <FontAwesome name="download" size={20} color={'#fff'} />

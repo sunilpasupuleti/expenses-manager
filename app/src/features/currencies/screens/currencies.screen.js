@@ -40,7 +40,7 @@ export const CurrenciesScreen = ({navigation, route}) => {
                 name="chevron-back-outline"
                 size={25}
                 color={theme.colors.brand.primary}></Ionicons>
-              <Text color={theme.colors.brand.primary}>New Sheet</Text>
+              <Text color={theme.colors.brand.primary}>New Account</Text>
             </FlexRow>
           </TouchableOpacity>
         ) : null,
@@ -91,7 +91,11 @@ export const CurrenciesScreen = ({navigation, route}) => {
   }, [route.params]);
 
   return (
-    <SafeArea>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: theme.colors.bg.primary,
+      }}>
       <MainWrapper>
         <Input
           value={searchKeyword}
@@ -176,6 +180,6 @@ export const CurrenciesScreen = ({navigation, route}) => {
           </View>
         )}
       </MainWrapper>
-    </SafeArea>
+    </View>
   );
 };

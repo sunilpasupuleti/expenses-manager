@@ -7,7 +7,8 @@ import {colors} from '../infrastructure/theme/colors';
 import {SafeArea} from './utility/safe-area.component';
 export const MainWrapper = styled.View`
   flex: 1;
-  margin: ${props => props.theme.space[3]};
+  background-color: ${props => props.theme.colors.bg.primary};
+  padding: ${props => (props.disablePadding ? '0px' : props.theme.space[3])};
 `;
 
 export const Input = styled(TextInput).attrs(props => ({

@@ -8,15 +8,23 @@ import {Text} from '../../../components/typography/text.component';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {CategoryColor, CategoryItem} from './categories.styles';
 import {useTheme} from 'styled-components/native';
+import {CategoriesContext} from '../../../services/categories/categories.context';
 
 export const CategoriesDetails = ({
   navigation,
   deleteMode,
   activeType,
-  details,
-  onDeleteCategory,
+  categories,
+  onGetCategories,
 }) => {
   const theme = useTheme();
+  const {onDeleteCategory} = useContext(CategoriesContext);
+
+  const deleteCategory = category => {
+    onDeleteCategory(category, () => {
+      onGetCategories(activeType);
+    });
+  };
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <Spacer size={'large'}></Spacer>
@@ -27,13 +35,13 @@ export const CategoriesDetails = ({
           backgroundColor: theme.colors.bg.card,
           margin: 1,
         }}>
-        {details &&
-          details.map(c => {
+        {categories &&
+          categories.map(c => {
             return (
               <TouchableHighlightWithColor
                 key={c.id}
                 onPress={() => {
-                  if (!c.default && !deleteMode) {
+                  if (!c.isDefault && !deleteMode) {
                     navigation.navigate('AddCategory', {
                       category: c,
                       type: activeType,
@@ -43,13 +51,13 @@ export const CategoriesDetails = ({
                 }}>
                 <Card.Content key={c.id}>
                   <CategoryItem>
-                    {deleteMode && !c.default && (
+                    {deleteMode && !c.isDefault && (
                       <>
                         <Ionicons
                           name="remove-circle-outline"
                           size={25}
                           color="red"
-                          onPress={() => onDeleteCategory(c)}
+                          onPress={() => deleteCategory(c)}
                         />
                         <Spacer position={'left'} size={'large'} />
                       </>

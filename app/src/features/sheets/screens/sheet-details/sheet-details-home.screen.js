@@ -48,6 +48,7 @@ export const SheetDetailsHome = ({navigation, route}) => {
       <Tab.Screen
         name="Dashboard"
         options={{
+          title: 'Dashboard',
           tabBarIcon: ({color, size}) => (
             <MaterialCommunityIcons name="dots-grid" color={color} size={30} />
           ),
@@ -56,6 +57,7 @@ export const SheetDetailsHome = ({navigation, route}) => {
       />
       <Tab.Screen
         options={{
+          title: 'Transactions',
           tabBarIcon: ({color, size}) => (
             <MaterialCommunityIcons name="cash" color={color} size={30} />
           ),

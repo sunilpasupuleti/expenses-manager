@@ -90,7 +90,8 @@ export const SheetDetailAmount = styled(Text).attrs({
 })`
   font-size: 17px;
   padding: 0px 16px 0px 16px;
-  ${props => props.type && props.type === 'income' && `color : #42cb66;`}
+  color: ${props =>
+    props.type && props.type === 'income' ? '#42cb66' : 'tomato'};
 `;
 
 export const SheetDetailCategoryColor = styled.View`

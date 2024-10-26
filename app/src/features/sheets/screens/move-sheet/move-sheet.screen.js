@@ -14,12 +14,17 @@ import {SafeArea} from '../../../../components/utility/safe-area.component';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {SheetInfoCard} from '../../components/sheet-info/sheet-info-card.component';
 import {SheetsList} from '../../components/sheets.styles';
+import {SheetDetailsContext} from '../../../../services/sheetDetails/sheetDetails.context';
 export const MoveSheetScreen = ({navigation, route}) => {
   const [sheetDetail, setSheetDetail] = useState(null);
-  const {sheets, onMoveSheetDetail, currentSheet} = useContext(SheetsContext);
-  const [dupSheets, setDupSheets] = useState([]);
+  const {getAllSheets, currentSheet} = useContext(SheetsContext);
+  const {onMoveSheetDetail} = useContext(SheetDetailsContext);
+  const [data, setData] = useState({
+    totalCount: 0,
+    sheets: [],
+  });
   const [moveToSheet, setMoveToSheet] = useState(null);
-  const [editFromUpcomingScreen, setEditFromUpcomingScreen] = useState(false);
+
   const theme = useTheme();
   useEffect(() => {
     navigation.setOptions({
@@ -36,7 +41,7 @@ export const MoveSheetScreen = ({navigation, route}) => {
           <Button
             uppercase={false}
             disabled={!moveToSheet}
-            onPress={() => onMove(moveToSheet, sheetDetail)}>
+            onPress={() => onMove()}>
             <ButtonText disabled={!moveToSheet}>Done</ButtonText>
           </Button>
         );
@@ -50,32 +55,26 @@ export const MoveSheetScreen = ({navigation, route}) => {
 
   useEffect(() => {
     if (route.params && currentSheet && route.params.sheetDetail) {
-      let {editFromUpcomingScreen: eus} = route.params;
-      setEditFromUpcomingScreen(eus);
       setSheetDetail(route.params.sheetDetail);
+      onGetSheets();
     }
   }, [route.params]);
 
-  useEffect(() => {
-    if (sheets && currentSheet) {
-      let filtered = sheets.filter(s => s.id !== currentSheet.id);
-      setDupSheets(filtered);
+  const onGetSheets = async () => {
+    let result = await getAllSheets(null, currentSheet.id);
+    if (result) {
+      setData(result);
     }
-  }, [sheets, currentSheet]);
+  };
 
-  const onMove = (moveToSheet, sheetDetail) => {
-    onMoveSheetDetail(
-      moveToSheet,
-      sheetDetail,
-      editFromUpcomingScreen,
-      moveFromSheet => {
-        navigation.navigate('Transactions');
-      },
-    );
+  const onMove = () => {
+    onMoveSheetDetail(moveToSheet, sheetDetail, () => {
+      navigation.goBack();
+    });
   };
 
   return (
-    <SafeArea>
+    <SafeArea child={true}>
       <MainWrapper>
         <Card
           theme={{roundness: 5}}
@@ -86,7 +85,7 @@ export const MoveSheetScreen = ({navigation, route}) => {
           {currentSheet && sheetDetail && (
             <FadeInView>
               <SheetsList
-                data={dupSheets}
+                data={data.sheets}
                 renderItem={({item, index}) => {
                   return (
                     <TouchableHighlightWithColor
@@ -111,17 +110,16 @@ export const MoveSheetScreen = ({navigation, route}) => {
         </Card>
       </MainWrapper>
 
-      {!dupSheets ||
-        (dupSheets.length === 0 && (
-          <Text
-            style={{
-              flex: 1,
-              textAlign: 'center',
-            }}>
-            {' '}
-            There are no accounts to move.
-          </Text>
-        ))}
+      {data.totalCount === 0 && (
+        <Text
+          style={{
+            flex: 1,
+            textAlign: 'center',
+          }}>
+          {' '}
+          There are no accounts to move.
+        </Text>
+      )}
     </SafeArea>
   );
 };

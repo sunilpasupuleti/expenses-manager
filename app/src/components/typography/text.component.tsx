@@ -128,17 +128,14 @@ const StyledText = styled.Text<Props>`
 `;
 
 export const Text = (props: Props) => {
-  let {children} = props;
+  let {children, variantType = 'body'} = props;
   let th = useTheme();
+
   props.theme = th;
 
   return (
-    <StyledText {...props} theme={th}>
+    <StyledText {...props} theme={th} variantType={variantType}>
       {children}
     </StyledText>
   );
-};
-
-Text.defaultProps = {
-  variantType: 'body',
 };

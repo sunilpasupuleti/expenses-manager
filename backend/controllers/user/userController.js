@@ -6,43 +6,43 @@ const { sendResponse, httpCodes } = require("../../helpers/utility");
 
 module.exports = {
   async saveUser(req, res) {
-    let uid = req.user.uid;
-    let data = {};
-    Object.keys(req.body).map((key) => {
-      if (key) {
-        let value = req.body[key];
-        if (value !== undefined) {
-          data[key] = value;
+    try {
+      let uid = req.user.uid;
+      let data = {};
+      Object.keys(req.body).map((key) => {
+        if (key) {
+          let value = req.body[key];
+          if (value !== undefined) {
+            data[key] = value;
+          }
         }
-      }
-    });
-
-    Users.findOneAndUpdate(
-      {
-        uid: uid,
-      },
-      {
-        $set: data,
-      },
-      {
-        upsert: true,
-        new: true,
-      }
-    )
-      .then((result) => {
-        return sendResponse(res, httpCodes.OK, {
-          message: "Login Successfull",
-          user: result,
-        });
-      })
-      .catch((err) => {
-        logger.error(
-          " Error occured while saving the user data to the database " + err
-        );
-        return sendResponse(res, httpCodes.INTERNAL_SERVER_ERROR, {
-          message: "Error occured while saving " + err,
-        });
       });
+
+      let result = await Users.findOneAndUpdate(
+        {
+          uid: uid,
+        },
+        {
+          $set: data,
+        },
+        {
+          upsert: true,
+          new: true,
+        }
+      );
+
+      return sendResponse(res, httpCodes.OK, {
+        message: "Login Successfull",
+        user: result,
+      });
+    } catch (e) {
+      logger.error(
+        " Error occured while saving the user data to the database " + e
+      );
+      return sendResponse(res, httpCodes.BAD_REQUEST, {
+        message: "Error occured while saving " + e.toString(),
+      });
+    }
   },
 
   async getUser(req, res) {

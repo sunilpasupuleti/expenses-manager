@@ -1,0 +1,7 @@
+::ffff:192.168.40.73 - - [07/Apr/2024:14:56:44 +0000] "POST /notification/enable-notifications/ HTTP/1.1" 200 48 "-" "expensesmanager/5 CFNetwork/1474 Darwin/23.4.0"
+::ffff:192.168.40.73 - - [07/Apr/2024:14:57:17 +0000] "POST /notification/enable-notifications/ HTTP/1.1" 200 48 "-" "expensesmanager/5 CFNetwork/1474 Darwin/23.4.0"
+::ffff:192.168.40.73 - - [07/Apr/2024:14:57:32 +0000] "POST /notification/enable-notifications/ HTTP/1.1" 200 48 "-" "expensesmanager/5 CFNetwork/1474 Darwin/23.4.0"
+::ffff:192.168.40.73 - - [07/Apr/2024:15:38:49 +0000] "POST /notification/enable-notifications/ HTTP/1.1" 200 48 "-" "expensesmanager/5 CFNetwork/1474 Darwin/23.4.0"
+::ffff:192.168.40.73 - - [07/Apr/2024:15:38:56 +0000] "POST /notification/enable-notifications/ HTTP/1.1" 200 48 "-" "expensesmanager/5 CFNetwork/1474 Darwin/23.4.0"
+::ffff:192.168.40.73 - - [07/Apr/2024:15:39:02 +0000] "POST /notification/enable-notifications/ HTTP/1.1" 200 48 "-" "expensesmanager/5 CFNetwork/1474 Darwin/23.4.0"
+::ffff:192.168.40.73 - - [07/Apr/2024:15:39:04 +0000] "POST /notification/enable-notifications/ HTTP/1.1" 200 48 "-" "expensesmanager/5 CFNetwork/1474 Darwin/23.4.0"

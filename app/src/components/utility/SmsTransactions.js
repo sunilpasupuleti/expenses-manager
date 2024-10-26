@@ -16,21 +16,33 @@ import {SheetsContext} from '../../services/sheets/sheets.context';
 import _ from 'lodash';
 import {AuthenticationContext} from '../../services/authentication/authentication.context';
 import {SelectList} from 'react-native-dropdown-select-list';
+import {CategoriesContext} from '../../services/categories/categories.context';
+import {formatDate, formatDateTz, formatDateTzReadable} from './helper';
+import {SheetDetailsContext} from '../../services/sheetDetails/sheetDetails.context';
+import {
+  useNavigation,
+  useNavigationState,
+  useRoute,
+} from '@react-navigation/native';
 
 export const SmsTransactions = () => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-
+  const [sheets, setSheets] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const navigation = useNavigation();
   const {dialogVisible, transactions} = useSelector(
     state => state.smsTransactions,
   );
 
   const {userAdditionalDetails} = useContext(AuthenticationContext);
 
-  const {categories, sheets, onSaveSheetDetails, setCurrentSheet} =
-    useContext(SheetsContext);
+  const {getSheets} = useContext(SheetsContext);
+  const {onSaveSheetDetail} = useContext(SheetDetailsContext);
+  const {userData} = useContext(AuthenticationContext);
 
+  const {getCategories} = useContext(CategoriesContext);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [categoryItems, setCategoryItems] = useState([]);
 
@@ -45,33 +57,57 @@ export const SmsTransactions = () => {
 
   const [showHelp, setShowHelp] = useState(false);
 
+  useEffect(() => {
+    (async () => {
+      if (userData) {
+        const sheetsData = await onGetSheets();
+        setSheets(sheetsData);
+      }
+    })();
+  }, [userData]);
+
+  const onGetSheets = async () => {
+    let sheetsData = await getSheets();
+    if (sheetsData) {
+      const {archived, pinned, regular} = sheetsData;
+      const structuredData = [...archived, ...pinned, ...regular].filter(
+        item => item,
+      );
+      return structuredData;
+    }
+  };
+
+  const onGetCategories = async catType => {
+    let catData = await getCategories(catType);
+    if (catData) {
+      return catData;
+    }
+  };
+
   const onClickAddAndContinue = () => {
     if (selectedSheet && selectedCategory && transaction) {
-      let date = new Date(transaction.date).toString();
-      let time = new Date(transaction.date).toString();
+      const time = formatDateTz(transaction.date);
+      const date = formatDateTz(transaction.date);
       let categoryType = transaction.categoryType;
-      let category = categories[categoryType].find(
-        c => c.id === selectedCategory.key,
-      );
+      const sheet = sheets.find(s => s.id === selectedSheet.key);
+      const category = categories.find(c => c.id === selectedCategory.key);
 
-      let sheet = sheets.find(s => s.id === selectedSheet.key);
       let sheetDetail = {
-        id: Date.now().toString(36) + Math.random().toString(36).substring(2),
         amount: parseFloat(transaction.amount),
         notes: '',
         type: categoryType,
-        category: category,
+        categoryId: category.id,
         date: date,
         showTime: true,
-        createdAt: Date.now(),
-        image: {url: null},
         time: time,
+        accountId: sheet.id,
+        image: {url: null},
       };
       setLoading(true);
-      onSaveSheetDetails(sheet, sheetDetail, updatedSheet => {
+      onSaveSheetDetail(sheet, sheetDetail, () => {
+        navigation.setParams({reRender: true});
         onRemoveTransaction();
         setLoading(false);
-        // navigation.navigate('SheetDetails', {sheet: updatedSheet});
       });
     } else {
       Alert.alert('Please select ACCOUNT and CATEGORY to continue');
@@ -93,6 +129,8 @@ export const SmsTransactions = () => {
 
     if (nextTransaction) {
       setTransaction(nextTransaction);
+    } else {
+      onHideDialog();
     }
   };
 
@@ -183,66 +221,69 @@ export const SmsTransactions = () => {
   };
 
   useEffect(() => {
-    if (
-      transactions &&
-      transactions.length > 0 &&
-      sheets &&
-      sheets.length > 0
-    ) {
-      let trns = null;
-      if (removedIndex) {
-        trns = transactions[removedIndex];
+    (async () => {
+      if (
+        transactions &&
+        transactions.length > 0 &&
+        sheets &&
+        sheets.length > 0
+      ) {
+        let trns = null;
+        if (removedIndex) {
+          trns = transactions[removedIndex];
+        } else {
+          trns = transactions[0];
+        }
+
+        const catData = await onGetCategories(trns.categoryType);
+
+        setCategories(catData || []);
         setTransaction(trns);
       } else {
-        trns = transactions[0];
-        setTransaction(trns);
+        onHideDialog();
       }
-    } else {
-      onHideDialog();
-    }
+    })();
   }, [transactions, sheets]);
 
   useEffect(() => {
-    if (transaction) {
-      let cat = categories[transaction.categoryType];
-      // console.log(cat);
-      let values = [];
-      let colors = [];
-      cat.forEach(item => {
-        let obj = {
-          value: _.capitalize(item.name),
-          key: item.id,
-        };
-        values.push(obj);
-        let categoryObj = cat.filter(c => c.id === item.id)[0];
-        if (!categoryObj) {
+    (async () => {
+      if (transaction) {
+        let values = [];
+        let colors = [];
+        categories.forEach(item => {
+          let obj = {
+            value: _.capitalize(item.name),
+            key: item.id,
+          };
+          values.push(obj);
           colors.push(item.color);
-        } else {
-          colors.push(categoryObj.color);
-        }
-      });
-      setCategoryItems(values);
-      if (selectedCategory) {
-        let categoryExists = cat.find(c => c.id === selectedCategory.key);
-        if (categoryExists) {
-          setSelectedCategory({
-            key: categoryExists.id,
-            value: categoryExists.name,
-          });
+        });
+        setCategoryItems(values);
+
+        if (selectedCategory) {
+          let categoryExists = categories.find(
+            c => c.id === selectedCategory.key,
+          );
+          if (categoryExists) {
+            setSelectedCategory({
+              key: categoryExists.id,
+              value: categoryExists.name,
+            });
+          } else {
+            setSelectedCategory({
+              key: transaction.category.id,
+              value: transaction.category.name,
+            });
+          }
         } else {
           setSelectedCategory({
             key: transaction.category.id,
             value: transaction.category.name,
           });
         }
-      } else {
-        setSelectedCategory({
-          key: transaction.category.id,
-          value: transaction.category.name,
-        });
       }
-    }
-  }, [categories, transaction]);
+    })();
+  }, [transaction]);
 
   useEffect(() => {
     if (sheets && sheets.length > 0) {
@@ -300,7 +341,7 @@ export const SmsTransactions = () => {
                   fontfamily="heading"
                   fontsize="16px"
                   style={{textAlign: 'center', fontWeight: 'bold'}}>
-                  {moment(transaction.date).format('DD MMM YYYY, hh:mm:ss A')}
+                  {formatDateTzReadable(transaction.date)}
                 </Text>
                 <Spacer size={'large'} />
                 <FlexRow style={{alignSelf: 'center'}}>
@@ -376,9 +417,7 @@ export const SmsTransactions = () => {
                   <Spacer size="medium" />
                   <SelectList
                     setSelected={id => {
-                      let category = categories[transaction.categoryType].find(
-                        c => c.id === id,
-                      );
+                      let category = categories.find(c => c.id === id);
                       setSelectedCategory({
                         key: id,
                         value: category?.name,

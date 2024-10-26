@@ -111,7 +111,7 @@ process.on("SIGINT", function () {
  * Create Server
  */
 
-let productionMode = true;
+let productionMode = false;
 
 const httpServer = require("http").Server(app);
 
@@ -136,6 +136,7 @@ server.listen(process.env.PORT || 8080, async () => {
    * Firebase config
    */
   const { initializeApp, cert } = require("firebase-admin/app");
+  const db = require("firebase-admin/database");
   var serviceAccount = require("./config/expensesmanager.json");
 
   initializeApp({

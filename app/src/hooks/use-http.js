@@ -39,7 +39,6 @@ const useHttp = () => {
           setError('Invalid http call request');
           return;
         }
-
         request
           .then(res => {
             setIsLoading(false);

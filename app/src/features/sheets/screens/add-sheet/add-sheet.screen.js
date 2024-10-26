@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/no-unstable-nested-components */
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
@@ -23,6 +25,9 @@ import {Text} from '../../../../components/typography/text.component';
 import {Spacer} from '../../../../components/spacer/spacer.component';
 import {getCurrencies} from 'react-native-localize';
 import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
+import _ from 'lodash';
+import {getCurrentDate} from '../../../../components/utility/helper';
+import {View} from 'react-native';
 
 export const AddSheetScreen = ({navigation, route}) => {
   const theme = useTheme();
@@ -31,9 +36,9 @@ export const AddSheetScreen = ({navigation, route}) => {
   const [editMode, setEditMode] = useState(false);
   const [editSheet, setEditSheet] = useState(null);
 
-  const [showTotalBalance, setShowTotalBalance] = useState(true);
+  const [showSummary, setShowSheetSummary] = useState(true);
 
-  const {userAdditionalDetails} = useContext(AuthenticationContext);
+  const {userAdditionalDetails, userData} = useContext(AuthenticationContext);
 
   const {onSaveSheet, onEditSheet} = useContext(SheetsContext);
 
@@ -64,16 +69,17 @@ export const AddSheetScreen = ({navigation, route}) => {
         );
       },
     });
-  }, [sheetName, showTotalBalance, disabled, editMode, selectedCurrency]);
+  }, [sheetName, showSummary, disabled, editMode, selectedCurrency]);
 
   useEffect(() => {
     if (route.params && route.params.edit) {
       let sheet = route.params.sheet;
+
       setEditSheet(sheet);
       setSheetName(sheet.name);
       setEditMode(true);
       setDisabled(false);
-      setShowTotalBalance(sheet.showTotalBalance);
+      setShowSheetSummary(sheet.showSummary ? true : false);
       setSelectedCurrency(sheet.currency);
     }
     if (route.params && route.params.selectedCurrency) {
@@ -95,36 +101,35 @@ export const AddSheetScreen = ({navigation, route}) => {
 
   const onSave = () => {
     const sheet = {
-      id: Date.now().toString(36) + Math.random().toString(36).substring(2),
-      name: (sheetName.charAt(0).toUpperCase() + sheetName.slice(1)).trim(),
-      showTotalBalance: showTotalBalance,
-      totalBalance: 0,
-      updatedAt: Date.now(),
-      details: [],
+      name: _.capitalize(_.trim(sheetName)),
+      showSummary: showSummary ? 1 : 0,
+      updatedAt: getCurrentDate(),
       currency: selectedCurrency,
+      totalBalance: 0,
+      totalExpense: 0,
+      totalIncome: 0,
+      uid: userData.uid,
     };
     onSaveSheet(sheet, () => {
       navigation.goBack();
-      // navigation.navigate('SheetDetailsHome', {
-      //   screen: 'Transactions',
-      //   sheet: sheet,
-      // });
     });
   };
 
   const onEdit = () => {
     const sheet = {
       id: editSheet.id,
-      name: (sheetName.charAt(0).toUpperCase() + sheetName.slice(1)).trim(),
-      showTotalBalance: showTotalBalance,
+      name: _.capitalize(_.trim(sheetName)),
+      showSummary: showSummary ? 1 : 0,
       totalBalance: editSheet.totalBalance,
-      updatedAt: Date.now(),
+      updatedAt: getCurrentDate(),
     };
-    onEditSheet(sheet, route.params.callback);
+    onEditSheet(sheet, () => {
+      navigation.goBack();
+    });
   };
 
   return (
-    <SafeArea>
+    <SafeArea child={true}>
       <MainWrapper>
         <Spacer size="xlarge">
           <AddSheetInput
@@ -143,10 +148,10 @@ export const AddSheetScreen = ({navigation, route}) => {
             style={{backgroundColor: theme.colors.bg.card, margin: 1}}>
             <AdvancedSettings.Content>
               <FlexRow justifyContent="space-between">
-                <Text>Show Total Balance</Text>
+                <Text>Show Account Summary</Text>
                 <ToggleSwitch
-                  value={showTotalBalance}
-                  onValueChange={() => setShowTotalBalance(!showTotalBalance)}
+                  value={showSummary}
+                  onValueChange={() => setShowSheetSummary(!showSummary)}
                 />
               </FlexRow>
             </AdvancedSettings.Content>

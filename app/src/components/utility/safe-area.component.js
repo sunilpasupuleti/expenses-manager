@@ -4,10 +4,11 @@ import {Dimensions, StyleSheet, View} from 'react-native';
 import {Image} from 'react-native';
 import {Platform, StatusBar} from 'react-native';
 import {Text} from 'react-native-paper';
+import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
 import styled, {useTheme} from 'styled-components/native';
 
-export const SafeAreaStyled = styled.SafeAreaView`
+export const SafeAreaStyled = styled(SafeAreaView)`
   flex: 1;
   ${props =>
     Platform.OS === 'android' &&
@@ -17,15 +18,13 @@ export const SafeAreaStyled = styled.SafeAreaView`
   ${props =>
     !props.mdBackground &&
     ` background-color: ${props.theme.colors.bg.primary};`}
-  ${props =>
-    Platform.OS === 'ios' &&
-    StatusBar.currentHeight &&
-    `margin-top : ${StatusBar.currentHeight.toString}px;`}
 `;
 
-// ${Platform.OS === 'android' &&
-// StatusBar.currentHeight &&
-// `margin-top : ${StatusBar.currentHeight}px;`};
+export const MainContainer = styled.View`
+  flex: 1;
+  background-color: ${props => props.theme.colors.bg.primary};
+  padding: 0px;
+`;
 
 export const SafeArea = props => {
   const appState = useSelector(state => state.service.appState);
@@ -37,11 +36,21 @@ export const SafeArea = props => {
     viewportHeight,
     viewportWidth,
   };
+  const insets = useSafeAreaInsets();
 
   return (
     <>
-      <SafeAreaStyled {...props}>{props.children}</SafeAreaStyled>
+      {!props.child && (
+        <SafeAreaStyled {...props} insets={insets}>
+          {props.children}
+        </SafeAreaStyled>
+      )}
 
+      {props.child && (
+        <MainContainer {...props} insets={insets}>
+          {props.children}
+        </MainContainer>
+      )}
       {(appState === 'inactive' || appState === 'background') && (
         <BlurView
           blurType="extraDark"

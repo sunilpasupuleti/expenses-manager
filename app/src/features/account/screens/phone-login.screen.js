@@ -2,6 +2,8 @@ import React, {useContext, useEffect, useRef, useState} from 'react';
 import {
   Image,
   Keyboard,
+  NativeEventEmitter,
+  NativeModules,
   Platform,
   Pressable,
   View,
@@ -38,17 +40,22 @@ import {
   SplitOTPBoxesContainer,
   TextInputHidden,
 } from '../components/phone-login.styles';
-import SmsListener from 'react-native-android-sms-listener';
 import {getCountry} from 'react-native-localize';
 import {useSelector} from 'react-redux';
 import {ScrollView} from 'react-native-gesture-handler';
+
+const SmsListener = NativeModules.SmsListener;
+const smsListenerEmitter = new NativeEventEmitter(SmsListener);
 
 export const PhoneLoginScreen = ({navigation, route}) => {
   const [phone, setPhone] = useState({valreacue: '', error: false});
   const [otp, setOtp] = useState({value: '', error: false, focused: false});
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-  const [showLoader, setShowLoader] = useState(false);
+  const [showLoader, setShowLoader] = useState({
+    status: false,
+    type: null,
+  });
   const [mode, setMode] = useState('phone');
   const maximumOtpLength = 6;
   const [confirmCode, setConfirmCode] = useState(null);
@@ -72,14 +79,26 @@ export const PhoneLoginScreen = ({navigation, route}) => {
 
   const theme = useTheme();
 
-  const {onSignInWithMobile, onSignInSuccess} = useContext(
-    AuthenticationContext,
-  );
+  const {onSignInWithMobile} = useContext(AuthenticationContext);
+
+  const onShowLoader = type => {
+    setShowLoader({
+      type: type,
+      status: true,
+    });
+  };
+
+  const onHideLoader = () => {
+    setShowLoader({
+      type: null,
+      status: false,
+    });
+  };
 
   const onResetAllValues = () => {
     setOtp({value: '', error: false});
     setError(null);
-    setShowLoader(false);
+    onHideLoader();
   };
 
   const onChangeCountry = value => {
@@ -103,21 +122,27 @@ export const PhoneLoginScreen = ({navigation, route}) => {
     if (!otp.value || otp.value.length < 6) {
       return;
     }
-    setShowLoader(true);
+
+    onShowLoader('verifyOtp');
     confirmCode
       .confirm(otp.value)
       .then(res => {
-        console.log(res, 'Authenticated succesfully using phone');
-        setShowLoader(false);
-        onSignInSuccess(res);
+        // console.log(res, 'Authenticated succesfully using phone');
+        onHideLoader();
       })
       .catch(e => {
-        setShowLoader(false);
+        onHideLoader();
         let error = '';
         switch (e.code) {
           case 'auth/invalid-verification-code':
             error = 'Otp is incorrect!';
             break;
+          case 'auth/code-expired':
+            error =
+              'The SMS code has expired. Please re-send the verification code to try again';
+            break;
+          default:
+            error = 'Something error occured in verifying otp';
         }
         setError({message: error});
         console.log(e, 'error in verifying otp ');
@@ -149,34 +174,29 @@ export const PhoneLoginScreen = ({navigation, route}) => {
   const onClickSubmit = async (resend = false) => {
     setError(null);
     setSuccess(null);
-    if (mode === 'phone') {
-      if (phone.value === '' || !phone.value) {
-        return;
-      }
-      let isnum = /^\d+$/.test(phone.value);
-      if (!isnum) {
-        // val is a number
-        setError({message: 'Mobile number bad format!'});
-        return;
-      }
+    if (phone.value === '' || !phone.value) {
+      setError({message: 'Invalid Mobile Number!'});
+      return;
     }
-    setShowLoader(true);
+    let isnum = /^\d+$/.test(phone.value);
+    if (!isnum) {
+      // val is a number
+      setError({message: 'Mobile number bad format!'});
+      return;
+    }
+    onShowLoader(resend ? 'resendOtp' : 'sendOtp');
     let callCode = await getCallingCode(countryCode);
-    let result;
     let number = '+' + callCode + phone.value;
-
-    if (mode === 'phone') {
-      result = await onSignInWithMobile(number, resend);
-      if (result && result.status) {
-        onChangeMode('otp');
-        setSuccess(result);
-        setConfirmCode(result.result);
-      }
+    let result = await onSignInWithMobile(number, resend);
+    if (result && result.status) {
+      onChangeMode('otp');
+      setSuccess(result);
+      setConfirmCode(result.result);
     }
-    setShowLoader(false);
     if (!result.status) {
       setError(result);
     }
+    onHideLoader();
   };
 
   const boxDigit = (_, index) => {
@@ -227,17 +247,22 @@ export const PhoneLoginScreen = ({navigation, route}) => {
     let smsSubscription = null;
     if (Platform.OS === 'android') {
       // auto verifying otp
-      smsSubscription = SmsListener.addListener(message => {
-        if (message && message.body) {
-          let fetchedOtp = /\d{6}/g.exec(message.body);
-          if (fetchedOtp && fetchedOtp[0]) {
-            setOtp(p => ({
-              ...p,
-              value: fetchedOtp[0],
-            }));
+      smsSubscription = smsListenerEmitter.addListener(
+        'onSmsReceived',
+        message => {
+          if (message && message.body) {
+            const otpKeywords =
+              /(OTP|one[\s-]?time[\s-]?password|verification[\s-]?code)/i;
+            let fetchedOtp = /\d{6}/g.exec(message.body);
+            if (fetchedOtp && fetchedOtp[0] && otpKeywords.test(message.body)) {
+              setOtp(p => ({
+                ...p,
+                value: fetchedOtp[0],
+              }));
+            }
           }
-        }
-      });
+        },
+      );
     }
     return () => {
       smsSubscription && smsSubscription.remove();
@@ -340,9 +365,9 @@ export const PhoneLoginScreen = ({navigation, route}) => {
               style={{height: 40}}
               textColor="#fff"
               onPress={() => onClickSubmit(false)}
-              loading={showLoader}
-              disabled={showLoader}>
-              {showLoader ? 'SENDING OTP' : ' SEND OTP'}
+              loading={showLoader.status}
+              disabled={showLoader.status}>
+              {showLoader.type === 'sendOtp' ? 'SENDING OTP' : ' SEND OTP'}
             </Button>
             <Spacer size={'large'} />
             <Hyperlink onPress={() => navigation.goBack()}>
@@ -362,9 +387,6 @@ export const PhoneLoginScreen = ({navigation, route}) => {
               <SuccessMessage fontsize="15px">{success.message}</SuccessMessage>
             )}
             <Spacer size="medium" />
-            {/* <Hyperlink onPress={() => onClickSubmit(true)}>
-            Otp not received? Resend Otp
-          </Hyperlink> */}
 
             <OTPContainer onPress={Keyboard.dismiss}>
               <OTPinputContainer>
@@ -393,14 +415,22 @@ export const PhoneLoginScreen = ({navigation, route}) => {
                 style={{height: 40}}
                 textColor="#fff"
                 onPress={onVerifyOtp}
-                loading={showLoader}
-                disabled={showLoader}>
-                {showLoader ? 'VERIFYING OTP' : ' VERIFY OTP'}
+                loading={showLoader.status}
+                disabled={showLoader.status}>
+                {showLoader.type === 'verifyOtp'
+                  ? 'VERIFYING OTP'
+                  : showLoader.type === 'resendOtp'
+                  ? 'RESENDING OTP'
+                  : ' VERIFY OTP'}
               </Button>
               <Spacer size={'large'} />
 
               <Hyperlink onPress={() => onChangeMode('phone')}>
                 Change number?
+              </Hyperlink>
+              <Spacer size="large" />
+              <Hyperlink onPress={() => onClickSubmit(true)}>
+                Otp not received? Resend Otp
               </Hyperlink>
             </AccountContainer>
           </>

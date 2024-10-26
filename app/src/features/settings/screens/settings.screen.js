@@ -33,6 +33,7 @@ import {
   Pressable,
   ScrollView,
   TouchableOpacity,
+  useColorScheme,
 } from 'react-native';
 import {fetchExchangeRates} from '../../../store/service-slice';
 import moment from 'moment';
@@ -48,14 +49,17 @@ import {Button} from 'react-native-paper';
 import Share from 'react-native-share';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {GetCurrencySymbol} from '../../../components/symbol.currency';
-import Clipboard from '@react-native-community/clipboard';
+import Clipboard from '@react-native-clipboard/clipboard';
 import {getFirebaseAccessUrl} from '../../../components/utility/helper';
 import {SettingsContext} from '../../../services/settings/settings.context';
+import {SheetDetailsContext} from '../../../services/sheetDetails/sheetDetails.context';
+import _ from 'lodash';
 
 export const SettingsScreen = ({navigation}) => {
   const {onLogout, userData, userAdditionalDetails} = useContext(
     AuthenticationContext,
   );
+  const {onGetSheetsAndTransactions} = useContext(SheetDetailsContext);
 
   const ACCOUNT_DELETION_URL = remoteConfig()
     .getValue('ACCOUNT_DELETION_URL')
@@ -88,13 +92,23 @@ export const SettingsScreen = ({navigation}) => {
     setBaseCurrency,
   } = useContext(SettingsContext);
 
-  const changesMade = useSelector(state => state.service.changesMade.status);
-
   const [profilePictureLoading, setProfilePictureLoading] = useState(false);
   const dispatch = useDispatch();
   const theme = useTheme();
 
   const [reloadImageKey, setReloadImageKey] = useState('rendomid');
+
+  const appTheme = useSelector(state => state.service.theme);
+  const themeType = useColorScheme();
+
+  let darkMode =
+    appTheme === 'automatic'
+      ? themeType === 'light'
+        ? false
+        : true
+      : appTheme === 'light'
+      ? false
+      : true;
 
   useEffect(() => {
     navigation.setOptions({
@@ -122,17 +136,17 @@ export const SettingsScreen = ({navigation}) => {
 
   useEffect(() => {
     if (userAdditionalDetails) {
-      let dailyBackup = userAdditionalDetails.dailyBackup
-        ? userAdditionalDetails.dailyBackup
-        : null;
+      let dailyBackup = userAdditionalDetails.dailyBackupEnabled ? true : false;
       setIsDailyBackUpEnabled(dailyBackup);
       let autoFetch = userAdditionalDetails.autoFetchTransactions
-        ? userAdditionalDetails.autoFetchTransactions
-        : null;
+        ? true
+        : false;
+
       setIsAutoFetchTransactionsEnabled(autoFetch);
       let date = new Date();
-      if (userAdditionalDetails.dailyReminder?.enabled) {
-        let time = userAdditionalDetails.dailyReminder.time;
+
+      if (userAdditionalDetails.dailyReminderEnabled) {
+        let time = userAdditionalDetails.dailyReminderTime;
         let splited = time.split(':');
         let hr = splited[0];
         let min = splited[1];
@@ -141,9 +155,7 @@ export const SettingsScreen = ({navigation}) => {
       }
 
       let dailyReminder = {
-        enabled: userAdditionalDetails.dailyReminder?.enabled
-          ? userAdditionalDetails.dailyReminder.enabled
-          : false,
+        enabled: userAdditionalDetails.dailyReminderEnabled ? true : false,
         time: date,
       };
       setIsDailyReminderEnabled(dailyReminder);
@@ -190,7 +202,7 @@ export const SettingsScreen = ({navigation}) => {
           },
 
           {
-            text: 'COPY TO CLOPBOARD',
+            text: 'COPY TO CLIPBOARD',
             style: 'cancel',
             onPress: () => {
               Clipboard.setString(userData.uid);
@@ -270,8 +282,51 @@ export const SettingsScreen = ({navigation}) => {
     );
   };
 
+  const onClickLogout = async () => {
+    const proceedLogout = (transactionsExists = false) => {
+      const alertOptions = [
+        {
+          text: 'Logout',
+          onPress: async () => {
+            onLogout();
+          },
+          style: 'default',
+        },
+        {
+          text: 'Backup & Logout',
+          onPress: async () => {
+            navigation.navigate('Sync', {
+              backupAndSignOut: true,
+            });
+          },
+          style: 'default',
+        },
+        {
+          text: 'Cancel',
+          style: 'destructive',
+        },
+      ];
+      if (!transactionsExists) {
+        _.remove(alertOptions, option => option.text === 'Backup & Logout');
+      }
+      Alert.alert(
+        'Warning : Logout Confirmation',
+        'Are you sure you want to logout? All your local data will be wiped out. Please ensure you back up your data before proceeding.',
+        alertOptions,
+        {cancelable: false},
+      );
+    };
+    try {
+      let transactions = await onGetSheetsAndTransactions();
+      const transactionExists = transactions && transactions.length > 0;
+      proceedLogout(transactionExists);
+    } catch (e) {
+      proceedLogout();
+    }
+  };
+
   return (
-    <SafeArea>
+    <SafeArea child={true}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <MainWrapper>
           <Spacer size={'medium'} />
@@ -376,7 +431,7 @@ export const SettingsScreen = ({navigation}) => {
                           onUpdateDailyReminder(
                             {
                               time: isDailyReminderEnabled.time,
-                              disable: true,
+                              enable: false,
                             },
                             // callback
                             () =>
@@ -424,6 +479,7 @@ export const SettingsScreen = ({navigation}) => {
                                 {showPicker && (
                                   <DateTimePicker
                                     mode="time"
+                                    themeVariant={darkMode ? 'dark' : 'light'}
                                     value={isDailyReminderEnabled.time}
                                     onChange={(e, t) => {
                                       if (e.type === 'dismissed') {
@@ -447,6 +503,8 @@ export const SettingsScreen = ({navigation}) => {
                             {Platform.OS === 'ios' && (
                               <DateTimePicker
                                 mode="time"
+                                accentColor={theme.colors.brand.primary}
+                                themeVariant={darkMode ? 'dark' : 'light'}
                                 value={isDailyReminderEnabled.time}
                                 onChange={(e, t) => {
                                   if (e.type === 'dismissed') {
@@ -473,9 +531,10 @@ export const SettingsScreen = ({navigation}) => {
                           mode="contained"
                           textColor={'#fff'}
                           onPress={() => {
-                            if (userAdditionalDetails?.dailyReminder?.enabled) {
+                            if (userAdditionalDetails?.dailyReminderEnabled) {
                               onUpdateDailyReminder({
                                 time: isDailyReminderEnabled.time,
+                                enable: true,
                                 update: true,
                               });
                             } else {
@@ -485,7 +544,7 @@ export const SettingsScreen = ({navigation}) => {
                               });
                             }
                           }}>
-                          {userAdditionalDetails?.dailyReminder?.enabled
+                          {userAdditionalDetails?.dailyReminderEnabled
                             ? 'Update Reminder'
                             : 'Set Reminder'}
                         </Button>
@@ -495,8 +554,8 @@ export const SettingsScreen = ({navigation}) => {
 
                   <Spacer size={'large'}>
                     <SettingHint marginLeft="0px">
-                      You will get the daily notification to remind you to
-                      record your daily transactions.
+                      You'll receive a daily reminder to help you stay on top of
+                      recording your transactions.
                     </SettingHint>
                   </Spacer>
                 </>
@@ -530,13 +589,6 @@ export const SettingsScreen = ({navigation}) => {
                       }}
                     />
                   </Setting>
-
-                  <Spacer size={'large'}>
-                    <SettingHint marginLeft="0px">
-                      Your data will be backed up daily at 12:00 AM
-                      automatically.
-                    </SettingHint>
-                  </Spacer>
                 </>
               </SettingsCardContent>
             </SettingsCard>
@@ -833,11 +885,7 @@ export const SettingsScreen = ({navigation}) => {
               )}
 
               <SettingsCardContent
-                onPress={() =>
-                  changesMade
-                    ? navigation.navigate('Sync', {backupAndSignOut: true})
-                    : onLogout()
-                }
+                onPress={() => onClickLogout()}
                 padding={'15px'}>
                 <Setting justifyContent="space-between">
                   <FlexRow>
@@ -845,13 +893,10 @@ export const SettingsScreen = ({navigation}) => {
                       <Ionicons name="log-out-outline" size={20} color="#fff" />
                     </SettingIconWrapper>
 
-                    <SettingTitle>Sign Out</SettingTitle>
+                    <SettingTitle>Log Out</SettingTitle>
                   </FlexRow>
                 </Setting>
               </SettingsCardContent>
-              <SettingHint>
-                When you sign out, your data will be immediately backed up.
-              </SettingHint>
             </SettingsCard>
           </Spacer>
           <Spacer size={'xlarge'} position="bottom" />

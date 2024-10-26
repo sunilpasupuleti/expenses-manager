@@ -1,7 +1,7 @@
-const mongoose = require("mongoose");
-const { String, Number, Boolean, Date, ObjectId } = mongoose.SchemaTypes;
+const { Types, Schema, default: mongoose } = require("mongoose");
+const { ObjectId } = Types;
 
-const usersSchema = mongoose.Schema(
+const usersSchema = new Schema(
   {
     displayName: { type: String },
     dailyReminder: {

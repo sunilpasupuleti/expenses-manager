@@ -33,6 +33,8 @@ import {loaderActions} from '../../../store/loader-slice';
 import {notificationActions} from '../../../store/notification-slice';
 import {getTimeZone} from 'react-native-localize';
 import _ from 'lodash';
+import {LastSyncedContainer} from '../../sheets/components/sheets.styles';
+import moment from 'moment';
 
 export const SyncScreen = ({navigation, route}) => {
   const theme = useTheme();
@@ -53,8 +55,8 @@ export const SyncScreen = ({navigation, route}) => {
 
   const [restoreDates, setRestoreDates] = useState([]);
   const [iCloudRestoreDates, setiCloudRestoreDates] = useState([]);
+  const {userAdditionalDetails} = useContext(AuthenticationContext);
 
-  const changesMade = useSelector(state => state.service.changesMade.status);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -78,10 +80,10 @@ export const SyncScreen = ({navigation, route}) => {
   useEffect(() => {
     (async () => {
       if (route.params && route.params.backupAndSignOut) {
-        if (changesMade) {
-          await backUpData(false);
+        let result = await backUpData();
+        if (result) {
+          onLogout();
         }
-        onLogout();
       }
     })();
   }, [route.params]);
@@ -104,68 +106,28 @@ export const SyncScreen = ({navigation, route}) => {
   };
 
   const onPressRestoreButton = () => {
-    return Alert.alert(
-      'Are you sure you want to continue ?',
-      'Your data will be restored from the latest backup file. Please backup your data if you have made any changes to prevent data loss.',
-      [
-        // No buton to dismiss the alert
-        {
-          text: 'Cancel',
-          onPress: () => {},
-        },
-        //restore button
-        {
-          text: 'Restore',
-          onPress: () => {
-            restoreData();
-          },
-        },
-      ],
-    );
+    restoreData();
   };
 
   const onPressGetRestoreDates = async () => {
-    onGetRestoreDates(async result => {
-      let backups = result.backups;
-      dispatch(loaderActions.hideLoader());
-      if (backups && backups.length > 0) {
-        setRestoreDates(result.backups);
-        setShowModal(true);
-      } else {
-        dispatch(
-          notificationActions.showToast({
-            status: 'info',
-            message: 'There were no backups found to restore',
-          }),
-        );
-      }
-    });
+    const result = await onGetRestoreDates();
+    if (result) {
+      setRestoreDates(result);
+      setShowModal(true);
+    }
   };
 
-  const getRestoreDatesFromiCloud = type => {
-    onGetRestoresFromiCloud(files => {
-      let structuredFiles = [];
-      files.forEach(file => {
-        let name = file.split('/Documents/')[1];
-        let date = /\d{13}/.exec(name)[0];
-        let obj = {
-          name: name,
-          date: Number(date),
-          file: file,
-        };
-        structuredFiles.push(obj);
-      });
-      structuredFiles = _.sortBy(structuredFiles, 'date').reverse();
-      setiCloudRestoreDates(structuredFiles);
-      if (type && type === 'delete') {
-        setShowiCloudDeleteModal(true);
-      } else {
-        setShowiCloudModal(true);
-      }
-    });
+  const getRestoreDatesFromiCloud = async type => {
+    const files = await onGetRestoresFromiCloud();
+    setiCloudRestoreDates(files);
+    if (type && type === 'delete') {
+      setShowiCloudDeleteModal(true);
+    } else {
+      setShowiCloudModal(true);
+    }
   };
 
-  const showDeleteConfirmDialog = file => {
+  const showDeleteConfirmDialog = backup => {
     return Alert.alert(
       'Are your sure?',
       'Are you sure you want to remove this backup file from your iCloud?',
@@ -181,7 +143,7 @@ export const SyncScreen = ({navigation, route}) => {
           text: 'Yes',
           onPress: () => {
             setShowiCloudDeleteModal(false);
-            onDeleteBackupFromiCloud(file);
+            onDeleteBackupFromiCloud(backup);
           },
         },
       ],
@@ -189,7 +151,7 @@ export const SyncScreen = ({navigation, route}) => {
   };
 
   return (
-    <SafeArea>
+    <SafeArea child={true}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <MainWrapper>
           {Platform.OS === 'ios' && (
@@ -279,13 +241,22 @@ export const SyncScreen = ({navigation, route}) => {
                     <SettingIconWrapper color="#fb8003">
                       <Ionicons name="time-outline" size={20} color="#fff" />
                     </SettingIconWrapper>
-                    <SettingTitle>Restore from specific date</SettingTitle>
+                    <SettingTitle>Restore from previous Backups</SettingTitle>
                   </FlexRow>
                   <Ionicons name="chevron-forward" size={25} color="#aaa" />
                 </Setting>
               </SettingsCardContent>
             </SettingsCard>
           </Spacer>
+          <Spacer size="xlarge" />
+          {userAdditionalDetails?.lastSynced && (
+            <LastSyncedContainer>
+              <Text color={'green'} fontfamily="bodyBold" fontsize="14px">
+                Last Synced :{' '}
+                {moment(userAdditionalDetails.lastSynced).calendar()}
+              </Text>
+            </LastSyncedContainer>
+          )}
 
           <Text variantType="caption" style={styles.hint}>
             <Text style={styles.hintHeading}> BACKUP : </Text> Your data will be
@@ -309,25 +280,17 @@ export const SyncScreen = ({navigation, route}) => {
                 contentContainerStyle={{
                   backgroundColor: theme.colors.ui.body,
                   minHeight: '40%',
-                  maxHeight: '80%',
+                  maxHeight: '100%',
                 }}>
                 <ScrollView>
                   {restoreDates.map((backup, i) => {
-                    let timeZone = getTimeZone();
-                    let date = momentTz(backup.date)
-                      .tz(timeZone)
-                      .format('DD MMM YYYY');
-
-                    let time = momentTz(backup.time)
-                      .tz(timeZone)
-                      .format('hh:mm:ss A');
-
+                    const {date, time} = backup;
                     return (
                       <TouchableHighlightWithColor
                         key={i}
                         onPress={() => {
                           setShowModal(false);
-                          restoreData(backup._id);
+                          restoreData(backup);
                         }}>
                         <View>
                           <FlexRow justifyContent="space-between">
@@ -344,97 +307,84 @@ export const SyncScreen = ({navigation, route}) => {
             </Portal>
           )}
 
-          {iCloudRestoreDates && iCloudRestoreDates.length > 0 && (
-            <Portal>
-              <Modal
-                visible={showiCloudModal}
-                onDismiss={() => setShowiCloudModal(false)}
-                contentContainerStyle={{
-                  backgroundColor: theme.colors.ui.body,
-                  minHeight: '40%',
-                  maxHeight: '80%',
-                }}>
-                <ScrollView>
-                  {iCloudRestoreDates.map((backup, i) => {
-                    let timeZone = getTimeZone();
+          {iCloudRestoreDates &&
+            iCloudRestoreDates.length > 0 &&
+            showiCloudModal && (
+              <Portal>
+                <Modal
+                  visible={showiCloudModal}
+                  onDismiss={() => setShowiCloudModal(false)}
+                  contentContainerStyle={{
+                    backgroundColor: theme.colors.ui.body,
+                    minHeight: '40%',
+                    maxHeight: '100%',
+                  }}>
+                  <ScrollView>
+                    {iCloudRestoreDates.map((backup, i) => {
+                      const {date, time} = backup;
 
-                    let date = momentTz(backup.date)
-                      .tz(timeZone)
-                      .format('DD MMM YYYY');
-
-                    let time = momentTz(backup.date)
-                      .tz(timeZone)
-                      .format('hh:mm:ss A');
-
-                    return (
-                      <TouchableHighlightWithColor
-                        key={i}
-                        onPress={() => {
-                          setShowiCloudModal(false);
-                          onRestoreFromiCloud(backup.file);
-                        }}>
-                        <View>
-                          <FlexRow justifyContent="space-between">
-                            <Text style={{padding: 5}}>{date}</Text>
-                            <Text style={{padding: 5}}>{time}</Text>
-                          </FlexRow>
-                          <Divider />
-                        </View>
-                      </TouchableHighlightWithColor>
-                    );
-                  })}
-                </ScrollView>
-              </Modal>
-            </Portal>
-          )}
-
-          {iCloudRestoreDates && iCloudRestoreDates.length > 0 && (
-            <Portal>
-              <Modal
-                visible={showiCloudDeleteModal}
-                onDismiss={() => setShowiCloudDeleteModal(false)}
-                contentContainerStyle={{
-                  backgroundColor: theme.colors.ui.body,
-                  minHeight: '40%',
-                  maxHeight: '80%',
-                }}>
-                <ScrollView>
-                  {iCloudRestoreDates.map((backup, i) => {
-                    let timeZone = getTimeZone();
-
-                    let date = momentTz(backup.date)
-                      .tz(timeZone)
-                      .format('DD MMM YYYY');
-
-                    let time = momentTz(backup.date)
-                      .tz(timeZone)
-                      .format('hh:mm:ss A');
-
-                    return (
-                      <View style={{padding: 15}} key={i}>
-                        <FlexRow justifyContent="space-between">
+                      return (
+                        <TouchableHighlightWithColor
+                          key={i}
+                          onPress={() => {
+                            setShowiCloudModal(false);
+                            onRestoreFromiCloud(backup);
+                          }}>
                           <View>
-                            <Text style={{padding: 5}}>{backup.name}</Text>
-                            <Text style={{padding: 5}}>
-                              {date}, {time}
-                            </Text>
+                            <FlexRow justifyContent="space-between">
+                              <Text style={{padding: 5}}>{date}</Text>
+                              <Text style={{padding: 5}}>{time}</Text>
+                            </FlexRow>
+                            <Divider />
                           </View>
+                        </TouchableHighlightWithColor>
+                      );
+                    })}
+                  </ScrollView>
+                </Modal>
+              </Portal>
+            )}
 
-                          <Ionicons
-                            onPress={() => showDeleteConfirmDialog(backup.file)}
-                            name="trash-outline"
-                            size={28}
-                            color="tomato"
-                          />
-                        </FlexRow>
-                        <Divider />
-                      </View>
-                    );
-                  })}
-                </ScrollView>
-              </Modal>
-            </Portal>
-          )}
+          {iCloudRestoreDates &&
+            iCloudRestoreDates.length > 0 &&
+            showiCloudDeleteModal && (
+              <Portal>
+                <Modal
+                  visible={showiCloudDeleteModal}
+                  onDismiss={() => setShowiCloudDeleteModal(false)}
+                  contentContainerStyle={{
+                    backgroundColor: theme.colors.ui.body,
+                    minHeight: '40%',
+                    maxHeight: '100%',
+                  }}>
+                  <ScrollView>
+                    {iCloudRestoreDates.map((backup, i) => {
+                      const {date, time, fileName} = backup;
+
+                      return (
+                        <View style={{padding: 15}} key={i}>
+                          <FlexRow justifyContent="space-between">
+                            <View>
+                              <Text style={{padding: 5}}>
+                                {date}, {time}
+                              </Text>
+                            </View>
+
+                            <Ionicons
+                              onPress={() => showDeleteConfirmDialog(backup)}
+                              name="trash-outline"
+                              size={28}
+                              color="tomato"
+                            />
+                          </FlexRow>
+                          <Divider />
+                        </View>
+                      );
+                    })}
+                  </ScrollView>
+                </Modal>
+              </Portal>
+            )}
         </MainWrapper>
       </ScrollView>
     </SafeArea>

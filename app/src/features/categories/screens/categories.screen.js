@@ -12,28 +12,37 @@ import {
 } from '../../../components/styles';
 import {Text} from '../../../components/typography/text.component';
 import {SafeArea} from '../../../components/utility/safe-area.component';
-import {SheetsContext} from '../../../services/sheets/sheets.context';
 import {CategoriesDetails} from '../components/categories-details.component';
 import {AddNewCategoryIcon, NewCategory} from '../components/categories.styles';
 import {CategoryTabs} from '../components/category-tabs.component';
 import _ from 'lodash';
+import {CategoriesContext} from '../../../services/categories/categories.context';
+import {searchKeywordRegex} from '../../../components/utility/helper';
+import {useIsFocused} from '@react-navigation/native';
 
 export const CategoriesScreen = ({navigation}) => {
   const theme = useTheme();
+  const [categories, setCategories] = useState([]);
   const [deleteMode, setDeleteMode] = useState(false);
-  const [searchKeyword, setSearchKeyword] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState(null);
   const [activeType, setActiveType] = useState('expense');
-
-  const {categories, onDeleteCategory} = useContext(SheetsContext);
-
-  const [allCategories, setAllCategories] = useState(null);
+  const routeIsFocused = useIsFocused();
+  const {getCategories, onSearchCategories} = useContext(CategoriesContext);
 
   useEffect(() => {
-    if (categories) {
-      let sorted = _.orderBy(categories[activeType], ['name'], ['asc']);
-      setAllCategories(sorted);
+    if (routeIsFocused) {
+      onGetCategories(activeType);
+    } else {
+      setSearchKeyword(null);
     }
-  }, [activeType, categories]);
+  }, [routeIsFocused]);
+
+  const onGetCategories = async type => {
+    if (type) {
+      let data = await getCategories(type);
+      setCategories(data);
+    }
+  };
 
   useEffect(() => {
     navigation.setOptions({
@@ -70,29 +79,29 @@ export const CategoriesScreen = ({navigation}) => {
   }, [deleteMode]);
 
   useEffect(() => {
-    let sorted = _.orderBy(categories[activeType], ['name'], ['asc']);
-    setAllCategories(sorted);
-    if (searchKeyword !== '') {
-      let filtered = allCategories.filter(c => {
-        return c.name
-          .toLowerCase()
-          .includes(searchKeyword.trim().toLowerCase());
-      });
-      let filterWithSorted = _.orderBy(filtered, ['name'], ['asc']);
-      setAllCategories(filterWithSorted);
+    if (searchKeyword === '') {
+      onGetCategories();
+    } else if (
+      searchKeyword !== null &&
+      searchKeywordRegex.test(searchKeyword)
+    ) {
+      onSearch();
     }
   }, [searchKeyword]);
 
-  const onSetActiveType = type => {
-    setActiveType(type);
+  const onSearch = async () => {
+    let result = await onSearchCategories(_.toLower(searchKeyword), activeType);
+    setCategories(result);
   };
 
-  const onClickDeleteCategory = c => {
-    onDeleteCategory(c, activeType);
+  const onSetActiveType = type => {
+    setSearchKeyword(null);
+    setActiveType(type);
+    onGetCategories(type);
   };
 
   return (
-    <SafeArea>
+    <SafeArea child={true}>
       <MainWrapper>
         <Input
           value={searchKeyword}
@@ -106,8 +115,8 @@ export const CategoriesScreen = ({navigation}) => {
           navigation={navigation}
           activeType={activeType}
           deleteMode={deleteMode}
-          onDeleteCategory={onClickDeleteCategory}
-          details={allCategories}
+          categories={categories}
+          onGetCategories={onGetCategories}
         />
 
         <NewCategory

@@ -1,28 +1,40 @@
-import OneSignal from 'react-native-onesignal';
-import {Linking, Platform} from 'react-native';
+import {OneSignal} from 'react-native-onesignal';
+import {Linking} from 'react-native';
+import remoteConfig from '@react-native-firebase/remote-config';
+
+const ONE_SIGNAL_APP_ID = remoteConfig()
+  .getValue('ONE_SIGNAL_APP_ID')
+  .asString();
 
 try {
-  OneSignal.promptForPushNotificationsWithUserResponse(response => {});
+  OneSignal.initialize(ONE_SIGNAL_APP_ID);
+  OneSignal.Notifications.requestPermission(true);
 } catch (e) {
   console.log(e, 'error in one signal');
 }
 
-// called in foreground state when app is in open
-OneSignal.setNotificationWillShowInForegroundHandler(
+OneSignal.Notifications.addEventListener(
+  'foregroundWillDisplay',
   async notificationReceivedEvent => {
+    notificationReceivedEvent.preventDefault();
+    // do some aynsc work
     let notification = notificationReceivedEvent.getNotification();
     let data = notification.additionalData;
-    console.log(data, 'Data recevied Notification foreground handler');
-    // immediately show notification
-    notificationReceivedEvent.complete(notification);
+    notification.display();
+    // console.log(data, 'Data recevied Notification foreground handler');
   },
 );
 
-OneSignal.setNotificationOpenedHandler(async notification => {
-  let action = notification.action;
-  let actionID = Platform.OS === 'android' ? action.actionId : action.actionID;
-  console.log(`Action Type : ${actionID} `);
-  if (actionID === 'daily_reminder_yes') {
-    Linking.openURL('expenses-manager://');
+const onBackup = async () => {
+  Linking.openURL('expenses-manager://Settings/Sync');
+};
+
+OneSignal.Notifications.addEventListener('click', async event => {
+  const data = event.notification;
+  // onBackup();
+
+  if (event?.result?.actionId === 'backup_now') {
+    onBackup();
   }
+  // console.log(data, 'Data recevied Notification click handler');
 });

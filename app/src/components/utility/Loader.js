@@ -10,8 +10,10 @@ import image_upload from '../../../assets/lottie/image_upload.json';
 import loader from '../../../assets/lottie/loader.json';
 import pdf from '../../../assets/lottie/pdf.json';
 import restore from '../../../assets/lottie/restore.json';
+import app from '../../../assets/lottie/app.json';
 import scanning from '../../../assets/lottie/scanning.json';
 import security from '../../../assets/lottie/security.json';
+import {Text} from '../typography/text.component';
 
 const LoaderContainer = styled.View`
   position: absolute;
@@ -35,10 +37,21 @@ const LoaderMain = styled(Animated.View)`
   border-color: ${props => props.theme.colors.loader.borderColor};
 `;
 
+const LoaderTextView = styled.View`
+  position: absolute;
+  bottom: 15%;
+  padding: 10px;
+`;
+
+const LoaderText = styled(Text)`
+  text-align: center;
+`;
+
 export const Loader = () => {
   const isLoading = useSelector(state => state.loader.isLoading);
   const backdrop = useSelector(state => state.loader.backdrop);
   const loaderType = useSelector(state => state.loader.loaderType);
+  const loaderText = useSelector(state => state.loader.loaderText);
 
   const [rotationAnimation, setRotationAnimation] = useState(
     new Animated.Value(0),
@@ -53,46 +66,39 @@ export const Loader = () => {
       }
 
       if (loaderType === 'backup') {
-        // setAnimatedJson(require('../../../assets/lottie/backup.json'));
         setAnimatedJson(backup);
+      }
+      if (loaderType === 'app') {
+        setAnimatedJson(app);
       }
 
       if (loaderType === 'restore') {
         setAnimatedJson(restore);
-        // setAnimatedJson(require('../../../assets/lottie/restore.json'));
       }
       if (loaderType === 'security') {
         setAnimatedJson(security);
-        // setAnimatedJson(require('../../../assets/lottie/scanning.json'));
       }
 
       if (loaderType === 'scanning') {
         setAnimatedJson(scanning);
-        // setAnimatedJson(require('../../../assets/lottie/scanning.json'));
       }
 
       if (loaderType === 'pdf') {
         setAnimatedJson(pdf);
-
-        // setAnimatedJson(require('../../../assets/lottie/pdf.json'));
       }
 
       if (loaderType === 'excel') {
         setAnimatedJson(excel);
-
-        // setAnimatedJson(require('../../../assets/lottie/excel.json'));
       }
 
       if (loaderType === 'image_upload') {
         setAnimatedJson(image_upload);
-        // setAnimatedJson(require('../../../assets/lottie/image_upload.json'));
       }
     } else {
       if (loaderType === 'spinner') {
         rotationAnimation.setValue(0);
       } else {
         setAnimatedJson(loader);
-        // setAnimatedJson(require('../../../assets/lottie/loader.json'));
       }
     }
   }, [isLoading, loaderType]);
@@ -125,14 +131,28 @@ export const Loader = () => {
       },
     ).start(() => rotationAnimation.setValue(1));
   }
-
   return isLoading ? (
     <LoaderContainer backdrop={backdrop}>
       {loaderType !== 'spinner' && (
-        <Lottie source={animatedJson} autoPlay loop />
+        <Lottie
+          source={animatedJson}
+          autoPlay
+          loop
+          style={{
+            width: '100%',
+            height: '100%',
+          }}
+        />
       )}
       {loaderType === 'spinner' && <LoaderMain style={animatedStyles.upper} />}
       {/* if you want to use spinner loader uncomment this and use */}
+      {loaderText && (
+        <LoaderTextView>
+          <LoaderText fontsize="20px" color={'#fff'}>
+            {loaderText}
+          </LoaderText>
+        </LoaderTextView>
+      )}
     </LoaderContainer>
   ) : null;
 };

@@ -5,6 +5,17 @@ import {Text} from '../../../components/typography/text.component';
 import {SafeArea} from '../../../components/utility/safe-area.component';
 import {colors} from '../../../infrastructure/theme/colors';
 
+export const TopContainer = styled.View`
+  flex-direction: row;
+  justify-content: ${props =>
+    props.lastSynced ? `space-between` : `flex-end`};
+`;
+
+export const LastSyncedContainer = styled.View`
+  flex-direction: row;
+  align-items: center;
+`;
+
 export const IconsContainer = styled.View`
   flex-direction: row;
   align-items: center;

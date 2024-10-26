@@ -10,8 +10,9 @@ import {applockActions} from '../../../store/applock-slice';
 import {useTheme} from 'styled-components/native';
 import {notificationActions} from '../../../store/notification-slice';
 import {AuthenticationContext} from '../../../services/authentication/authentication.context';
-import {Alert, BackHandler} from 'react-native';
-
+import {Alert} from 'react-native';
+import RNExitApp from 'react-native-exit-app';
+import {MainWrapper} from '../../../components/styles';
 export const AppLockScreen = ({navigation, route, purpose}) => {
   const theme = useTheme();
   const dispatch = useDispatch();
@@ -56,7 +57,7 @@ export const AppLockScreen = ({navigation, route, purpose}) => {
   };
 
   return (
-    <SafeArea>
+    <MainWrapper>
       <PINCode
         status={type}
         finishProcess={onSuccess}
@@ -67,8 +68,8 @@ export const AppLockScreen = ({navigation, route, purpose}) => {
         colorCircleButtons={theme.colors.brand.primary}
         colorPassword={theme.colors.brand.primary}
         numbersButtonOverlayColor={theme.colors.brand.secondary}
-        onClickButtonLockedPage={() => BackHandler.exitApp()}
+        onClickButtonLockedPage={() => RNExitApp.exitApp()}
       />
-    </SafeArea>
+    </MainWrapper>
   );
 };

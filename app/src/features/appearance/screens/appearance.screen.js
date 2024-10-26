@@ -39,7 +39,7 @@ export const AppearanceScreen = ({navigation}) => {
   }, []);
 
   return (
-    <SafeArea>
+    <SafeArea child={true}>
       <MainWrapper>
         <Card
           theme={{roundness: 5}}

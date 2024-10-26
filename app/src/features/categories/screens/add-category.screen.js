@@ -16,6 +16,7 @@ import {
   ColorPickerView,
   IconView,
 } from '../components/categories.styles';
+import _ from 'lodash';
 import {CategoryTabs} from '../components/category-tabs.component';
 import {ColorPicker, fromHsv} from 'react-native-color-picker';
 import Iconicons from 'react-native-vector-icons/Ionicons';
@@ -26,6 +27,9 @@ import {Text} from '../../../components/typography/text.component';
 import {useDispatch} from 'react-redux';
 import {loaderActions} from '../../../store/loader-slice';
 import {notificationActions} from '../../../store/notification-slice';
+import {CategoriesContext} from '../../../services/categories/categories.context';
+import {AuthenticationContext} from '../../../services/authentication/authentication.context';
+import {View} from 'react-native';
 const colors = [
   '#ff3a30',
   '#ff5722',
@@ -56,7 +60,8 @@ export const AddCategoryScreen = ({navigation, route}) => {
   const [categoryColor, setCategoryColor] = useState(
     colors[Math.floor(Math.random() * colors.length)],
   );
-  const {onSaveCategory, onEditCategory} = useContext(SheetsContext);
+  const {onSaveCategory, onEditCategory} = useContext(CategoriesContext);
+  const {userData} = useContext(AuthenticationContext);
 
   const [icons, setIcons] = useState(
     Object.keys(MaterialCommunityIcons).slice(0, 40),
@@ -143,26 +148,16 @@ export const AddCategoryScreen = ({navigation, route}) => {
 
   const onSave = () => {
     categoryName.trim();
-    let name = categoryName.charAt(0).toUpperCase() + categoryName.slice(1);
-    // if (!icon) {
-    //   dispatch(
-    //     notificationActions.showToast({
-    //       status: 'warning',
-    //       message: 'Please select Icon',
-    //     }),
-    //   );
-    //   return;
-    // }
     let category = {
-      id: Date.now().toString(36) + Math.random().toString(36).substring(2),
-      name: name.trim(),
+      name: _.capitalize(_.trim(categoryName)),
       color: categoryColor,
       icon: icon,
+      uid: userData.uid,
+      type: categoryType,
     };
-    onSaveCategory(category, categoryType, () => {
+    onSaveCategory(category, insertedCat => {
       if (fromSheetDetailScreen) {
         navigation.navigate('SelectCategory', {
-          selectedCategory: category,
           type: route.params.type,
           addedNewCategoryAndSelected: true,
         });
@@ -173,22 +168,14 @@ export const AddCategoryScreen = ({navigation, route}) => {
   };
 
   const onEdit = () => {
-    // if (!icon) {
-    //   dispatch(
-    //     notificationActions.showToast({
-    //       status: 'warning',
-    //       message: 'Please select Icon',
-    //     }),
-    //   );
-    //   return;
-    // }
     const editedCategory = {
       id: categoryId,
-      name: categoryName.charAt(0).toUpperCase() + categoryName.slice(1),
+      name: _.capitalize(_.trim(categoryName)),
       color: categoryColor,
       icon: icon,
+      type: categoryType,
     };
-    onEditCategory(editedCategory, categoryType, () => {
+    onEditCategory(editedCategory, () => {
       navigation.goBack();
     });
   };
@@ -203,7 +190,7 @@ export const AddCategoryScreen = ({navigation, route}) => {
 
   const containerStyle = {backgroundColor: 'white', height: 350, padding: 20};
   return (
-    <SafeArea>
+    <SafeArea child={true}>
       {/* for color picker */}
       <Portal>
         <Modal

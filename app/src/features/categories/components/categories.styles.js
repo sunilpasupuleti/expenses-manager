@@ -48,7 +48,7 @@ export const NewCategory = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
   position: absolute;
-  bottom: 20px;
+  bottom: 30px;
   right: 20px;
 `;
 

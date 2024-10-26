@@ -1,5 +1,5 @@
 import {Button, Card} from 'react-native-paper';
-import {ButtonText, FlexRow} from '../../../../components/styles';
+import {ButtonText, FlexRow, MainWrapper} from '../../../../components/styles';
 import {Text} from '../../../../components/typography/text.component';
 import {Platform, View} from 'react-native';
 import {TouchableOpacity} from 'react-native';
@@ -10,6 +10,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {useTheme} from 'styled-components/native';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
+import {formatDate} from '../../../../components/utility/helper';
 
 const subtractMonths = numOfMonths => {
   let date = new Date();
@@ -19,10 +20,6 @@ const subtractMonths = numOfMonths => {
 
 export const SheetDetailsFilter = ({navigation, route}) => {
   const theme = useTheme();
-
-  const {currentSheet, setCurrentSheet, sheets} = useContext(SheetsContext);
-
-  const {calculateBalance} = useContext(SheetsContext);
 
   // for custom date range
   const [customFilter, setCustomFilter] = useState({
@@ -75,45 +72,27 @@ export const SheetDetailsFilter = ({navigation, route}) => {
   const onCustomFilter = () => {
     let fromDate = customFilter.fromDate.value;
     let toDate = customFilter.toDate.value;
-    fromDate = moment(fromDate).format('YYYY-MM-DD');
-    toDate = moment(toDate).format('YYYY-MM-DD');
-    let fsheet = {...currentSheet};
-    let filteredDetails = [];
-    fsheet.details.map(sd => {
-      let createdDate = moment(sd.date).format('YYYY-MM-DD');
-      let isBetweenFilteredDates = moment(createdDate).isBetween(
-        fromDate,
-        toDate,
-        null,
-        '[]',
-      );
-      if (isBetweenFilteredDates) {
-        filteredDetails.push(sd);
-      }
-    });
-    fsheet.details = filteredDetails;
-    let {totalBalance, totalIncome, totalExpense} = calculateBalance(fsheet);
-    fsheet.totalIncome = totalIncome;
-    fsheet.totalExpense = totalExpense;
-    fsheet.totalBalance = totalBalance;
-    setCurrentSheet(fsheet);
+    fromDate = moment(fromDate).startOf('day').format('YYYY-MM-DD HH:mm:ss');
+    toDate = moment(toDate).endOf('day').format('YYYY-MM-DD HH:mm:ss');
+
     navigation.navigate('SheetDetailsHome', {
       screen: 'Transactions',
       filter: {
         status: true,
         fromDate: fromDate,
         toDate: toDate,
-        filteredSheet: fsheet,
       },
     });
   };
 
   const onResetCustomFilter = () => {
-    let sheet = sheets.find(s => s.id === currentSheet.id);
-    setCurrentSheet(sheet);
     navigation.navigate('SheetDetailsHome', {
       screen: 'Transactions',
-      filter: null,
+      filter: {
+        status: false,
+        fromDate: null,
+        toDate: null,
+      },
     });
   };
 
@@ -122,7 +101,7 @@ export const SheetDetailsFilter = ({navigation, route}) => {
   };
 
   return (
-    <SafeArea mdBackground={true}>
+    <SafeArea child={true}>
       <View style={{flex: 1, alignContent: 'center', justifyContent: 'center'}}>
         <Card style={{backgroundColor: theme.colors.bg.card, margin: 1}}>
           <Card.Content>

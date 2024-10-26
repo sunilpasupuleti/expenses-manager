@@ -40,8 +40,7 @@ export const StatsInfoCard = ({
               <SheetDetailCategory>{category.name} </SheetDetailCategory>
               <FlexRow>
                 <Text color="#8a8a8d" fontfamily="bodyBold">
-                  {(percentage * 100).toFixed(2).toString() + '%'}{' '}
-                  {/* {Math.round(percentage * 100).toString() + '%'}{' '} */}
+                  {percentage + '%'}{' '}
                 </Text>
                 <Ionicons
                   name="chevron-forward-outline"

@@ -1,16 +1,16 @@
 /* eslint-disable handle-callback-err */
 /* eslint-disable quotes */
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useState} from 'react';
+import React from 'react';
 import {createContext, useContext, useEffect} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {loaderActions} from '../../store/loader-slice';
 import {notificationActions} from '../../store/notification-slice';
-import {setChangesMade} from '../../store/service-slice';
 import {AuthenticationContext} from '../authentication/authentication.context';
-import {SheetsContext} from '../sheets/sheets.context';
+import database from '@react-native-firebase/database';
 import useHttp from '../../hooks/use-http';
 import auth from '@react-native-firebase/auth';
+import storage from '@react-native-firebase/storage';
 import remoteConfig from '@react-native-firebase/remote-config';
 import {
   defaultICloudContainerPath,
@@ -19,15 +19,36 @@ import {
   readDir,
   writeFile,
   unlink,
+  download,
 } from 'react-native-cloud-store';
 import moment from 'moment';
+import {SheetDetailsContext} from '../sheetDetails/sheetDetails.context';
+import {SQLiteContext} from '../sqlite/sqlite.context';
+import {
+  firebaseRemoveFile,
+  firebaseRemoveFiles,
+  firebaseUploadFile,
+  formatDate,
+  getCurrentDate,
+  getDataFromRows,
+} from '../../components/utility/helper';
+import _ from 'lodash';
+import {Alert, Platform} from 'react-native';
+import RNFS from 'react-native-fs';
+import RNFetchBlob from 'rn-fetch-blob';
+import {dbPath} from '../../../config';
+import {getTimeZone} from 'react-native-localize';
+import momentTz from 'moment-timezone';
+import {navigate} from '../../infrastructure/navigation/rootnavigation';
+import {
+  useNetInfo,
+  fetch as netInfoFetch,
+} from '@react-native-community/netinfo';
 
 export const SyncContext = createContext({
   backUpData: () => null,
   restoreData: () => null,
-  backUpAndRestore: () => null,
   onGetRestoreDates: () => null,
-  backUpTempData: () => null,
   onBackupToiCloud: () => null,
   onRestoreFromiCloud: () => null,
   onGetRestoresFromiCloud: successCallBack => null,
@@ -36,413 +57,502 @@ export const SyncContext = createContext({
 
 export const SyncContextProvider = ({children}) => {
   const {userData} = useContext(AuthenticationContext);
-  const {expensesData, onSaveExpensesData, categories} =
-    useContext(SheetsContext);
-  const changesMade = useSelector(state => state.service.changesMade);
+  const {onGetSheetsAndTransactions} = useContext(SheetDetailsContext);
+  const {onSetUserAdditionalDetails} = useContext(AuthenticationContext);
+  const {
+    onBackUpDatabase,
+    closeDatabase,
+    initializeDB,
+    getData,
+    restoreDbFromBackup,
+    db,
+  } = useContext(SQLiteContext);
   const dispatch = useDispatch();
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
   const appState = useSelector(state => state.service.appState);
-
-  let {sendRequest} = useHttp();
-
-  useEffect(() => {
-    if (userData) {
-      if (changesMade.loaded) {
-        if (!changesMade.status) {
-          restoreData(null, true);
-        }
-      }
-    }
-  }, [userData, changesMade.status]);
+  const {isConnected} = useNetInfo();
 
   useEffect(() => {
-    if (userData && (appState === 'inactive' || appState === 'background')) {
-      backUpTempData();
+    if (userData && db) {
+      onInitialRestoreCheck();
     }
-  }, [appState]);
+  }, [userData, db]);
 
-  const backUpData = async (notify = true) => {
-    if (!expensesData) {
-      dispatch(
-        notificationActions.showToast({
-          status: 'error',
-          message: 'There is no data to create back up.',
-        }),
-      );
-      return;
+  const showLoader = (loaderType, backdrop = true) => {
+    let options = {};
+    if (loaderType) {
+      options.loaderType = loaderType;
     }
-    try {
-      dispatch(
-        loaderActions.showLoader({backdrop: true, loaderType: 'backup'}),
-      );
-      let jwtToken = await auth().currentUser.getIdToken();
-      sendRequest(
-        {
-          type: 'POST',
-          url: BACKEND_URL + '/backup',
-          data: {
-            ...expensesData,
-            categories: categories,
-          },
-          headers: {
-            authorization: 'Bearer ' + jwtToken,
-          },
-        },
-        {
-          successCallback: async () => {
-            dispatch(loaderActions.hideLoader());
-            if (notify) {
-              dispatch(
-                notificationActions.showToast({
-                  status: 'success',
-                  message: 'Your data backed up safely.',
-                }),
-              );
-            }
-            dispatch(setChangesMade({status: false}));
-          },
-          errorCallback: err => {
-            dispatch(loaderActions.hideLoader());
-            if (notify) {
-              dispatch(
-                notificationActions.showToast({
-                  status: 'error',
-                  message: 'Error in backing up your data.',
-                }),
-              );
-            }
-
-            console.log(err, 'error in backup');
-          },
-        },
-      );
-    } catch (e) {
-      dispatch(loaderActions.hideLoader());
-      dispatch(
-        notificationActions.showToast({
-          status: 'error',
-          message: 'Error in backing up your data.',
-        }),
-      );
-      console.log(e, 'error in backup');
+    if (backdrop) {
+      options.backdrop = backdrop;
     }
+    dispatch(loaderActions.showLoader(options));
   };
 
-  // store for automatic backup
-  const backUpTempData = async (notify = true) => {
-    try {
-      let jwtToken = await auth().currentUser.getIdToken();
-      sendRequest(
-        {
-          type: 'POST',
-          url: BACKEND_URL + '/backup/temp',
-          data: {
-            ...expensesData,
-            categories: categories,
-          },
-          headers: {
-            authorization: 'Bearer ' + jwtToken,
-          },
-        },
-        {
-          successCallback: async () => {
-            console.log('Your data backed up temp data.');
-          },
-          errorCallback: err => {
-            console.log(err, 'error in backup temp ');
-          },
-        },
-      );
-    } catch (e) {
-      console.log(e, 'error in backup temp ');
-    }
+  const hideLoader = () => {
+    dispatch(loaderActions.hideLoader());
   };
 
-  const restoreData = async (backupId = null, initialRestore = false) => {
-    let jwtToken = await auth().currentUser.getIdToken();
-    dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'restore'}));
-    try {
-      let url = BACKEND_URL + '/backup';
-
-      if (backupId) {
-        url += '?id=' + backupId;
-      }
-
-      sendRequest(
-        {
-          type: 'GET',
-          url: url,
-          headers: {
-            authorization: 'Bearer ' + jwtToken,
-          },
-        },
-        {
-          successCallback: async result => {
-            if (result.backup) {
-              onSaveExpensesData(result.backup);
-              dispatch(loaderActions.hideLoader());
-              dispatch(
-                notificationActions.showToast({
-                  status: 'success',
-                  message: 'Data restored successfully.',
-                }),
-              );
-            } else {
-              dispatch(loaderActions.hideLoader());
-              if (!initialRestore) {
-                dispatch(
-                  notificationActions.showToast({
-                    status: 'info',
-                    message: 'There is no data to restore.',
-                  }),
-                );
-              }
-            }
-          },
-          errorCallback: err => {
-            dispatch(loaderActions.hideLoader());
-            dispatch(
-              notificationActions.showToast({
-                status: 'error',
-                message: 'Error in restoring up your data.',
-              }),
-            );
-            console.log(err, 'error in restore');
-          },
-        },
-      );
-    } catch (e) {
-      dispatch(loaderActions.hideLoader());
-      dispatch(
-        notificationActions.showToast({
-          status: 'error',
-          message: 'Error occured in restoring data.',
-        }),
-      );
-      console.log(e);
-    }
-  };
-
-  const onGetRestoreDates = async (successCallBack = () => {}) => {
-    dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'restore'}));
-    let jwtToken = await auth().currentUser.getIdToken();
-    sendRequest(
-      {
-        type: 'GET',
-        url: BACKEND_URL + '/backup/all',
-        headers: {
-          authorization: 'Bearer ' + jwtToken,
-        },
-      },
-      {
-        successCallback: successCallBack,
-        errorCallback: err => {
-          dispatch(loaderActions.hideLoader());
-          dispatch(
-            notificationActions.showToast({
-              status: 'error',
-              message: 'Something error occured while fetching restore dates.',
-            }),
-          );
-          console.log('error in fetching restore dates', err);
-        },
-      },
+  const showNotification = (status = 'error', message) => {
+    dispatch(
+      notificationActions.showToast({
+        status: status,
+        message: message,
+      }),
     );
   };
 
-  const backUpAndRestore = async () => {
-    await backUpData().then(async () => {
-      restoreData();
+  const backUpData = async () => {
+    return new Promise(async (resolve, reject) => {
+      let fileUrl, uploadPath;
+      try {
+        if (!isConnected) {
+          throw 'Check your internet connection & try again';
+        }
+        showLoader('backup', true);
+        let {uid} = userData;
+        let accounts = await onGetSheetsAndTransactions();
+        if (accounts.length === 0) {
+          throw {
+            message:
+              'There are no accounts or transactions in accounts to backup',
+            error: 'noData',
+          };
+        }
+        fileUrl = await onBackUpDatabase();
+
+        const currentDate = new Date().toISOString();
+        uploadPath = `users/${uid}/backups/${currentDate}.db`;
+        await firebaseUploadFile(uploadPath, fileUrl);
+        let snapshot = await database()
+          .ref(`/users/${uid}/backups`)
+          .once('value');
+        let backups = snapshot.val() || {};
+        const backupsLength = Object.keys(backups).length;
+
+        const allowedBackups = 9;
+        if (backupsLength > allowedBackups) {
+          const formattedBackups = _.map(backups, (backup, key) => ({
+            datetime: formatDate(backup.date),
+            id: key,
+          }));
+          // Sort the array by the 'datetime' key
+          const sortedBackups = _.orderBy(formattedBackups, ['datetime']);
+          const backupKeys = _.map(sortedBackups, 'id');
+          // delete old ones
+          const numBackupsToDelete = backupsLength - allowedBackups;
+          const backupsToDelete = backupKeys.slice(0, numBackupsToDelete);
+          const removeFilePaths = [];
+          for (const key of backupsToDelete) {
+            const backupRef = database().ref(`/users/${uid}/backups/${key}`);
+            await backupRef.remove();
+            const value = backups[key];
+            removeFilePaths.push(value.path);
+          }
+          await firebaseRemoveFiles(removeFilePaths);
+        }
+        const lastSynced = getCurrentDate();
+        await database().ref(`/users/${uid}`).update({
+          lastSynced: lastSynced,
+        });
+        await database().ref(`/users/${uid}/backups`).push({
+          path: uploadPath,
+          date: currentDate,
+        });
+        showNotification(
+          'success',
+          'Backup complete! Your data is now safely stored',
+        );
+        onSetUserAdditionalDetails(p => ({
+          ...p,
+          lastSynced: lastSynced,
+        }));
+        hideLoader();
+        resolve(true);
+      } catch (e) {
+        reject(e);
+        hideLoader();
+        showNotification('error', e.message || e.toString());
+        console.log(e);
+        // delete uploaded file if error occurs
+        if (e.error !== 'noData') {
+          await firebaseRemoveFile(uploadPath);
+        }
+      }
+    });
+  };
+
+  const onInitialRestoreCheck = async () => {
+    try {
+      const {uid} = userData;
+      let accounts = await getData(`SELECT * From Accounts WHERE uid='${uid}'`);
+      let snapshot = await database()
+        .ref(`/users/${uid}/backups`)
+        .once('value');
+      let backups = snapshot.val() || {};
+      const backupsLength = Object.keys(backups).length;
+      const accountsLength = accounts?.rows?.length || 0;
+      if (accountsLength === 0 && backupsLength > 0) {
+        Alert.alert(
+          `Restore Backup?`,
+          `We found a backup of your data. Do you want to restore it now? You can't undo this action later.`,
+          [
+            {
+              text: 'No, thanks',
+              style: 'cancel',
+            },
+            {
+              text: 'Restore',
+              onPress: async () => {
+                await navigate('Settings', {
+                  screen: 'Sync',
+                });
+                await restoreData(null, false);
+                await navigate('Sheets');
+              },
+              style: 'default',
+            },
+          ],
+          {cancelable: false},
+        );
+      }
+    } catch (e) {}
+  };
+
+  const removeFile = async path => {
+    if (await RNFS.exists(path)) {
+      await RNFS.unlink(path);
+    }
+  };
+
+  const restoreData = async (backup = null, confirmation = true) => {
+    const onRestore = async () => {
+      return new Promise(async (resolve, reject) => {
+        try {
+          const netStatus = await netInfoFetch();
+          if (!netStatus.isConnected) {
+            throw 'Check your internet connection & try again';
+          }
+
+          showLoader('restore', true);
+          const {uid} = userData;
+          let pathRef = `users/${uid}/backups/`;
+
+          if (backup) {
+            pathRef += `${backup.id}`;
+          } else {
+            let snapshot = await database()
+              .ref(`/users/${uid}/backups`)
+              .once('value');
+            let backups = snapshot.val() || {};
+            const backupsLength = Object.keys(backups).length;
+            if (backupsLength === 0) {
+              throw 'No Backups Found to restore';
+            }
+            const formattedBackups = _.map(backups, (bk, key) => ({
+              datetime: formatDate(bk.date),
+              id: key,
+            }));
+            // Sort the array by the 'datetime' key
+            const sortedBackups = _.orderBy(
+              formattedBackups,
+              ['datetime'],
+              'desc',
+            );
+            const backupKeys = _.map(sortedBackups, 'id');
+            pathRef += `${backupKeys[0]}`;
+          }
+
+          let snapshot = await database().ref(pathRef).once('value');
+          const backupInfo = snapshot.val();
+
+          if (!backupInfo) {
+            throw 'No Backup Found';
+          }
+          const reference = storage().ref(backupInfo.path);
+
+          const downloadURL = await reference.getDownloadURL();
+
+          const basePath =
+            Platform.OS === 'ios'
+              ? RNFS.DocumentDirectoryPath
+              : RNFS.DocumentDirectoryPath;
+          const title = 'expenses-manager-restore.db';
+          const downloadedPath = `${basePath}/${title}`;
+
+          await removeFile(downloadedPath);
+
+          const response = await RNFetchBlob.config({
+            fileCache: true,
+            path: downloadedPath,
+          }).fetch('GET', downloadURL);
+          if (response) {
+            await restoreDbFromBackup(downloadedPath);
+            await initializeDB(true);
+          } else {
+            throw ' No file fetched';
+          }
+          hideLoader();
+          showNotification('success', 'Data restored successfully.');
+          resolve(true);
+        } catch (e) {
+          hideLoader();
+          showNotification('error', e.toString());
+          console.error(e);
+        }
+      });
+    };
+
+    if (confirmation) {
+      Alert.alert(
+        'Restore Data Confirmation?',
+        'This will replace all your current data in the app. Make sure to back up your data first to avoid losing any important information.',
+        [
+          {
+            text: 'Cancel',
+            style: 'destructive',
+          },
+          {
+            text: 'Restore',
+            onPress: async () => {
+              await onRestore();
+            },
+            style: 'default',
+          },
+        ],
+        {cancelable: false},
+      );
+    } else {
+      await onRestore();
+    }
+  };
+
+  const onGetRestoreDates = async () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        if (!isConnected) {
+          throw 'Check your internet connection & try again';
+        }
+        const {uid} = userData;
+        showLoader('restore', true);
+        let snapshot = await database()
+          .ref(`/users/${uid}/backups`)
+          .once('value');
+        let backups = snapshot.val() || {};
+        const backupsLength = Object.keys(backups).length;
+        if (backupsLength === 0) {
+          throw 'There were no backups to restore';
+        }
+        let timeZone = getTimeZone();
+        const getDate = dt => momentTz(dt).tz(timeZone).format('DD MMM YYYY');
+        const getTime = dt => momentTz(dt).tz(timeZone).format('hh:mm:ss A');
+        const backupsArray = _.orderBy(
+          _.map(backups, (backup, key) => ({
+            date: getDate(backup.date),
+            time: getTime(backup.date),
+            path: backup.path,
+            datetime: formatDate(backup.date),
+            id: key,
+          })),
+          ['datetime'],
+          'desc',
+        );
+        hideLoader();
+        resolve(backupsArray);
+      } catch (e) {
+        hideLoader();
+        showNotification('error', e.message || e.toString());
+        console.log(e);
+        reject(e);
+      }
     });
   };
 
   const onBackupToiCloud = async () => {
-    if (!expensesData) {
-      dispatch(
-        notificationActions.showToast({
-          status: 'error',
-          message: 'There is no data to create back up.',
-        }),
-      );
-      return;
-    }
+    return new Promise(async (resolve, reject) => {
+      try {
+        showLoader('backup', true);
+        let accounts = await onGetSheetsAndTransactions();
+        if (accounts.length === 0) {
+          throw {
+            message:
+              'There are no accounts or transactions in accounts to backup',
+            error: 'noData',
+          };
+        }
 
-    let data = {
-      ...expensesData,
-      categories: categories,
+        if ((await isICloudAvailable()) && defaultICloudContainerPath) {
+          const {uid} = userData;
+          const fileUrl = await onBackUpDatabase();
+          const currentDate = new Date().toISOString();
+          const fileName = `transactions-${currentDate}.db`;
+          let path = `${defaultICloudContainerPath}/Documents/${fileName}`;
+          await RNFS.copyFile(fileUrl, path);
+          const lastSynced = getCurrentDate();
+
+          if (isConnected) {
+            await database().ref(`/users/${uid}`).update({
+              lastSynced: lastSynced,
+            });
+          }
+
+          onSetUserAdditionalDetails(p => ({
+            ...p,
+            lastSynced: lastSynced,
+          }));
+          hideLoader();
+          showNotification('success', 'Your data backed up safely to iCloud');
+        } else {
+          throw 'Error occured while backing up to iCloud : iCloud is not available';
+        }
+      } catch (e) {
+        reject(e);
+        hideLoader();
+        showNotification('error', e.message || e.toString());
+        console.error(e);
+      }
+    });
+  };
+
+  const onRestoreFromiCloud = async backup => {
+    const onRestore = async () => {
+      try {
+        showLoader('restore', true);
+        if ((await isICloudAvailable()) && defaultICloudContainerPath) {
+          const {path} = backup;
+          const basePath = RNFS.DocumentDirectoryPath;
+          if (await RNFS.exists(path)) {
+            await closeDatabase();
+            const originalFile = `${basePath}/${dbPath}`;
+            await removeFile(originalFile);
+            await RNFS.copyFile(path, originalFile);
+            await initializeDB(true);
+          } else {
+            throw 'File  does not exist ';
+          }
+          hideLoader();
+          showNotification('success', 'Data restored successfully.');
+        } else {
+          throw 'Error occured while restoring data from iCloud';
+        }
+      } catch (e) {
+        hideLoader();
+        showNotification('error', e.message || e.toString());
+        console.error(e);
+      }
     };
 
-    dispatch(loaderActions.showLoader({backdrop: true, loaderType: 'backup'}));
-    try {
-      if ((await isICloudAvailable()) && defaultICloudContainerPath) {
-        const fileName = `transactions-${Date.now()}.json`;
-        let path = `${defaultICloudContainerPath}/Documents/${fileName}`;
-        await writeFile(path, JSON.stringify(data))
-          .then(() => {
-            dispatch(loaderActions.hideLoader());
-            dispatch(
-              notificationActions.showToast({
-                status: 'success',
-                message: 'Your data backed up safely to iCloud.',
-              }),
-            );
+    Alert.alert(
+      'Restore Data Confirmation?',
+      'This will replace all your current data in the app. Make sure to back up your data first to avoid losing any important information.',
+      [
+        {
+          text: 'Cancel',
+          style: 'destructive',
+        },
+        {
+          text: 'Restore',
+          onPress: async () => {
+            await onRestore();
+          },
+          style: 'default',
+        },
+      ],
+      {cancelable: false},
+    );
+  };
 
-            console.log('Successfully backed up data to iCloud');
-          })
-          .catch(err => {
-            console.log(err, 'Error occured while backing into iCloud');
-            throw err.message;
-          });
+  const onDeleteBackupFromiCloud = async backup => {
+    try {
+      showLoader('backup', true);
+      if ((await isICloudAvailable()) && defaultICloudContainerPath) {
+        await unlink(backup.path);
+        hideLoader();
+        showNotification(
+          'success',
+          'Backup file deleted successfully from iCloud',
+        );
       } else {
-        throw 'Error occured while backing up to iCloud';
+        throw 'Error occured while deleting data from iCloud  : iCloud not availble';
       }
     } catch (e) {
-      console.log(e, 'Error in syncing to iCloud');
-      dispatch(loaderActions.hideLoader());
-      dispatch(
-        notificationActions.showToast({
-          status: 'error',
-          message: JSON.stringify(e),
-        }),
-      );
+      hideLoader();
+      showNotification('error', e.message || e.toString());
+      console.error(e);
     }
   };
 
-  const onRestoreFromiCloud = async fileName => {
-    try {
-      dispatch(
-        loaderActions.showLoader({backdrop: true, loaderType: 'backup'}),
-      );
-
-      if ((await isICloudAvailable()) && defaultICloudContainerPath) {
-        await readFile(fileName)
-          .then(content => {
-            let data = JSON.parse(content);
-            if (data.sheets && data.categories) {
-              dispatch(loaderActions.hideLoader());
-
-              onSaveExpensesData(data).then(() => {
-                dispatch(setChangesMade({status: true})); // set changes made to true so that backup occurs only if some changes are made
-                dispatch(
-                  notificationActions.showToast({
-                    status: 'success',
-                    message: 'Data has been restored successfully from iCloud.',
-                  }),
-                );
-              });
-            } else {
-              dispatch(
-                notificationActions.showToast({
-                  status: 'error',
-                  message: 'Empty file or corrupted data file from iCloud.',
-                }),
-              );
-            }
-          })
-          .catch(err => {
-            console.log(err, 'Error occured while restoring from  iCloud');
-            throw err.message;
-          });
-      } else {
-        throw 'Error occured while restoring data from iCloud';
+  const onGetRestoresFromiCloud = async () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        hideLoader('restore', true);
+        if (
+          (await isICloudAvailable()) &&
+          defaultICloudContainerPath + '/Documents'
+        ) {
+          const files = await readDir(
+            defaultICloudContainerPath + '/Documents',
+          );
+          if (!files || files.length === 0) {
+            showNotification('info', 'There were no backups found');
+            resolve([]);
+          } else {
+            let timeZone = getTimeZone();
+            const getDate = dt =>
+              momentTz(dt).tz(timeZone).format('DD MMM YYYY');
+            const getTime = dt =>
+              momentTz(dt).tz(timeZone).format('hh:mm:ss A');
+            let structuredFiles = [];
+            files.map(file => {
+              let fileName = file.split('/Documents/')[1];
+              const regex = /(transactions-.*?\.db)\.?(?:icloud)?$/;
+              const match = regex.exec(fileName);
+              if (match && match[1]) {
+                fileName = match[1];
+              }
+              const dateRegex = /transactions-(.*?)\.db/;
+              const extensionRegex = /\.db$/;
+              const dateMatch = dateRegex.exec(fileName);
+              const extensionMatch = extensionRegex.exec(fileName);
+              let date, extension;
+              if (dateMatch) {
+                date = dateMatch[1];
+              }
+              if (extensionMatch) {
+                extension = extensionMatch[0];
+              }
+              if (date && extension) {
+                const obj = {
+                  date: getDate(date),
+                  time: getTime(date),
+                  path: file,
+                  fileName: fileName,
+                  datetime: formatDate(date),
+                };
+                structuredFiles.push(obj);
+              }
+            });
+            structuredFiles = _.orderBy(structuredFiles, ['datetime'], 'desc');
+            resolve(structuredFiles);
+          }
+          hideLoader();
+        } else {
+          throw 'Error occured while reading files from iCloud : iCloud not available';
+        }
+      } catch (e) {
+        reject(e);
+        hideLoader();
+        showNotification('error', e.message || e.toString());
+        console.error(e);
       }
-    } catch (e) {
-      console.log(e, 'Error in restoring from iCloud');
-      dispatch(loaderActions.hideLoader());
-      dispatch(
-        notificationActions.showToast({
-          status: 'error',
-          message: JSON.stringify(e),
-        }),
-      );
-    }
-  };
-
-  const onDeleteBackupFromiCloud = async fileName => {
-    try {
-      dispatch(
-        loaderActions.showLoader({backdrop: true, loaderType: 'backup'}),
-      );
-
-      if ((await isICloudAvailable()) && defaultICloudContainerPath) {
-        await unlink(fileName)
-          .then(() => {
-            dispatch(loaderActions.hideLoader());
-            dispatch(
-              notificationActions.showToast({
-                status: 'success',
-                message: 'Backup file deleted successfully from iCloud.',
-              }),
-            );
-          })
-          .catch(err => {
-            console.log(err, 'Error occured while restoring from  iCloud');
-            throw err.message;
-          });
-      } else {
-        throw 'Error occured while deleting data from iCloud';
-      }
-    } catch (e) {
-      console.log(e, 'Error in deleting from iCloud');
-      dispatch(loaderActions.hideLoader());
-      dispatch(
-        notificationActions.showToast({
-          status: 'error',
-          message: JSON.stringify(e),
-        }),
-      );
-    }
-  };
-
-  const onGetRestoresFromiCloud = async (successCallBack = () => {}) => {
-    try {
-      dispatch(
-        loaderActions.showLoader({backdrop: true, loaderType: 'backup'}),
-      );
-      if (
-        (await isICloudAvailable()) &&
-        defaultICloudContainerPath + '/Documents'
-      ) {
-        await readDir(defaultICloudContainerPath + '/Documents')
-          .then(files => {
-            if (!files || files.length === 0) {
-              dispatch(
-                notificationActions.showToast({
-                  status: 'info',
-                  message: 'There are no files to show from iCloud',
-                }),
-              );
-            } else {
-              successCallBack(files.reverse());
-            }
-
-            dispatch(loaderActions.hideLoader());
-          })
-          .catch(e => {
-            throw e;
-          });
-      } else {
-        throw 'Error occured while reading files from iCloud ';
-      }
-    } catch (e) {
-      console.log(e, 'Error in reading files from iCloud');
-      dispatch(loaderActions.hideLoader());
-      dispatch(
-        notificationActions.showToast({
-          status: 'error',
-          message: JSON.stringify(e),
-        }),
-      );
-    }
+    });
   };
 
   return (
     <SyncContext.Provider
       value={{
         backUpData,
-        backUpTempData,
         restoreData,
-        backUpAndRestore,
         onGetRestoreDates,
         onBackupToiCloud,
         onGetRestoresFromiCloud,

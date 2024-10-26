@@ -1,13 +1,4 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {
-  AvailableBalance,
-  BorderLine,
-  SheetInfoWrapper,
-  SheetName,
-  TotalBalance,
-  TransactionsCount,
-  UpdatedTime,
-} from './sheet-info-card.styles';
 import moment from 'moment';
 import React, {useContext} from 'react';
 import {View} from 'react-native';
@@ -22,7 +13,6 @@ import {useTheme} from 'styled-components/native';
 import {Card, Divider} from 'react-native-paper';
 export const SheetInfoCard = ({sheet = {}, currentLength, index}) => {
   const theme = useTheme();
-
   return (
     <>
       <View
@@ -40,48 +30,50 @@ export const SheetInfoCard = ({sheet = {}, currentLength, index}) => {
             <Ionicons name="chevron-forward-outline" size={30} color="#ccc" />
           )}
         />
-        <Card.Content>
-          <FlexRow justifyContent="space-evenly">
-            <View>
-              <Text fontsize="14px" color={theme.colors.text.disabled}>
-                Income
-              </Text>
-              <Spacer>
-                <Text fontsize="14px" color={theme.colors.text.success}>
-                  {GetCurrencySymbol(sheet.currency)}{' '}
-                  {GetCurrencyLocalString(sheet.totalIncome)}
+        {sheet.showSummary ? (
+          <Card.Content>
+            <FlexRow justifyContent="space-evenly">
+              <View>
+                <Text fontsize="14px" color={theme.colors.text.disabled}>
+                  Income
                 </Text>
-              </Spacer>
-            </View>
+                <Spacer>
+                  <Text fontsize="14px" color={theme.colors.text.success}>
+                    {GetCurrencySymbol(sheet.currency)}{' '}
+                    {GetCurrencyLocalString(sheet.totalIncome)}
+                  </Text>
+                </Spacer>
+              </View>
 
-            <Spacer position="left" size="large">
-              <View>
-                <Text fontsize="14px" color={theme.colors.text.disabled}>
-                  Expense
-                </Text>
-                <Spacer>
-                  <Text fontsize="14px" color={theme.colors.text.error}>
-                    {GetCurrencySymbol(sheet.currency)}{' '}
-                    {GetCurrencyLocalString(sheet.totalExpense)}
+              <Spacer position="left" size="large">
+                <View>
+                  <Text fontsize="14px" color={theme.colors.text.disabled}>
+                    Expense
                   </Text>
-                </Spacer>
-              </View>
-            </Spacer>
-            <Spacer position="left" size="large">
-              <View>
-                <Text fontsize="14px" color={theme.colors.text.disabled}>
-                  Avl Bal
-                </Text>
-                <Spacer>
-                  <Text fontsize="14px">
-                    {GetCurrencySymbol(sheet.currency)}{' '}
-                    {GetCurrencyLocalString(sheet.totalBalance)}
+                  <Spacer>
+                    <Text fontsize="14px" color={theme.colors.text.error}>
+                      {GetCurrencySymbol(sheet.currency)}{' '}
+                      {GetCurrencyLocalString(sheet.totalExpense)}
+                    </Text>
+                  </Spacer>
+                </View>
+              </Spacer>
+              <Spacer position="left" size="large">
+                <View>
+                  <Text fontsize="14px" color={theme.colors.text.disabled}>
+                    Avl Bal
                   </Text>
-                </Spacer>
-              </View>
-            </Spacer>
-          </FlexRow>
-        </Card.Content>
+                  <Spacer>
+                    <Text fontsize="14px">
+                      {GetCurrencySymbol(sheet.currency)}{' '}
+                      {GetCurrencyLocalString(sheet.totalBalance)}
+                    </Text>
+                  </Spacer>
+                </View>
+              </Spacer>
+            </FlexRow>
+          </Card.Content>
+        ) : null}
       </View>
 
       {index < currentLength - 1 && <Divider />}

@@ -10,36 +10,13 @@ import {
   FIREBASE_STORAGE_BUCKET,
   FIREBASE_STORAGE_URL,
   GOOGLE_API_KEY,
-  GOOGLE_CLOUD_VISION_API_URL,
   MINDEE_API_KEY,
   MINDEE_API_URL,
   ONESIGNAL_APP_ID,
   PLAY_STORE_URL,
   WEB_CLIENT_ID,
+  FIREBASE_DATABASE_URL,
 } from '../../config';
-import auth from '@react-native-firebase/auth';
-
-export const fetchChangesMade = createAsyncThunk(
-  'service/fetchChangesMade',
-  async () => {
-    try {
-      const result = await AsyncStorage.getItem(
-        `@expenses-manager-changesmade`,
-      ).then(d => {
-        return JSON.parse(d);
-      });
-
-      if (result) {
-        return true;
-      }
-
-      return false;
-    } catch (e) {
-      console.log('error in fetching changesmade - ', e);
-      return false;
-    }
-  },
-);
 
 export const fetchTheme = createAsyncThunk('service/fetchTheme', async () => {
   try {
@@ -54,7 +31,7 @@ export const fetchTheme = createAsyncThunk('service/fetchTheme', async () => {
     }
     return false;
   } catch (e) {
-    console.log('error in fetching changesmade - ', e);
+    console.log('error in fetching theme - ', e);
     return false;
   }
 });
@@ -97,20 +74,6 @@ export const fetchExchangeRates = createAsyncThunk(
   },
 );
 
-export const setChangesMade = createAsyncThunk(
-  'service/setChangesMade',
-  async ({status, loaded = false}) => {
-    await AsyncStorage.setItem(
-      `@expenses-manager-changesmade`,
-      JSON.stringify(status),
-    );
-    return {
-      status: status,
-      loaded: loaded,
-    };
-  },
-);
-
 export const setTheme = createAsyncThunk(
   'service/setTheme',
   async ({theme}) => {
@@ -149,7 +112,6 @@ export const loadAppStatus = createAsyncThunk(
         BACKEND_URL: BACKEND_URL,
         WEB_CLIENT_ID: WEB_CLIENT_ID,
         GOOGLE_API_KEY: GOOGLE_API_KEY,
-        GOOGLE_CLOUD_VISION_API_URL: GOOGLE_CLOUD_VISION_API_URL,
         ONE_SIGNAL_APP_ID: ONESIGNAL_APP_ID,
         ACCOUNT_DELETION_URL: ACCOUNT_DELETION_URL,
         APP_STORE_URL: APP_STORE_URL,
@@ -158,9 +120,10 @@ export const loadAppStatus = createAsyncThunk(
         MINDEE_API_URL: MINDEE_API_URL,
         FIREBASE_STORAGE_BUCKET: FIREBASE_STORAGE_BUCKET,
         FIREBASE_STORAGE_URL: FIREBASE_STORAGE_URL,
+        FIREBASE_DATABASE_URL: FIREBASE_DATABASE_URL,
       })
       .then(() => {
-        remoteConfig().fetchAndActivate();
+        // remoteConfig().fetchAndActivate();
       })
       .then(fetchedRemotely => {
         if (fetchedRemotely) {
@@ -196,10 +159,6 @@ export const loadAppStatus = createAsyncThunk(
 const serviceSlice = createSlice({
   name: 'service',
   initialState: {
-    changesMade: {
-      loaded: false,
-      status: null,
-    },
     theme: 'automatic',
     exchangeRates: null,
     appState: AppState.currentState,
@@ -218,17 +177,6 @@ const serviceSlice = createSlice({
     },
   },
   extraReducers: builder => {
-    builder.addCase(fetchChangesMade.fulfilled, (state, action) => {
-      state.changesMade = {
-        loaded: true,
-        status: action.payload,
-      };
-    });
-
-    builder.addCase(setChangesMade.fulfilled, (state, action) => {
-      state.changesMade = action.payload;
-    });
-
     builder.addCase(fetchTheme.fulfilled, (state, action) => {
       if (action.payload) {
         state.theme = action.payload;

@@ -38,84 +38,26 @@ import {CategoryColor} from '../../../categories/components/categories.styles';
 import _ from 'lodash';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {DashboardAddButton} from './sheet-details.styles';
+import {SheetDetailsContext} from '../../../../services/sheetDetails/sheetDetails.context';
 
 export const SheetDetailsDashboard = ({navigation, route}) => {
   const theme = useTheme();
   const routeIsFocused = useIsFocused();
-  const {categories, currentSheet, onCheckUpcomingSheetDetails} =
-    useContext(SheetsContext);
+  const {currentSheet} = useContext(SheetsContext);
+  const {onCheckUpcomingSheetDetails, getSheetDetailsDashboard} =
+    useContext(SheetDetailsContext);
+  const [sheetDetails, setSheetDetails] = useState({
+    transactions: [],
+    totalCount: 0,
+  });
+
   const [activeType, setActiveType] = useState('income');
-  const [groupedDetails, setGroupedDetails] = useState(null);
-  const [sortedByPercentages, setSortedByPercentages] = useState(null);
-
-  const getTotalIncome = () => {
-    let sheetDetails = currentSheet.details;
-    let totalIncome = 0;
-    sheetDetails.forEach(d => {
-      if (d.type === 'income') {
-        totalIncome += d.amount;
-      }
-    });
-    let data = {
-      amount: totalIncome,
-      localStringAmount: GetCurrencyLocalString(totalIncome),
-    };
-
-    return data;
-  };
-
-  const getTotalExpense = () => {
-    let sheetDetails = currentSheet.details;
-    let totalExpense = 0;
-    sheetDetails.forEach(d => {
-      if (d.type === 'expense') {
-        totalExpense += d.amount;
-      }
-    });
-
-    let data = {
-      amount: totalExpense,
-      localStringAmount: GetCurrencyLocalString(totalExpense),
-    };
-    return data;
-  };
 
   useEffect(() => {
     if (routeIsFocused) {
-      onCheckUpcomingSheetDetails();
-      navigation.setOptions({
-        headerTitle:
-          currentSheet?.name.length > 20
-            ? currentSheet.name.substring(0, 14) + '...'
-            : currentSheet.name,
-        headerLeft: () => (
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <FlexRow>
-              <Ionicons
-                name="chevron-back-outline"
-                size={25}
-                color={theme.colors.brand.primary}></Ionicons>
-              <Text color={theme.colors.brand.primary}>Back</Text>
-            </FlexRow>
-          </TouchableOpacity>
-        ),
-        headerRight: () => (
-          <Spacer position={'right'} size="large">
-            <TouchableOpacity
-              onPress={() => navigation.navigate('SheetExport')}>
-              <FlexRow>
-                <FontAwesome5
-                  name="file-export"
-                  size={16}
-                  color={theme.colors.brand.primary}
-                />
-                <Spacer position={'right'} size="medium" />
-                <Text color={theme.colors.brand.primary}>Export</Text>
-              </FlexRow>
-            </TouchableOpacity>
-          </Spacer>
-        ),
-      });
+      onSetNavigationOptions();
+      checkUpcomingDetails();
+      onGetSheetDetailsDashboard(currentSheet, activeType);
     }
   }, [routeIsFocused]);
 
@@ -181,11 +123,63 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
     }
   }, [activeType]);
 
+  const onSetNavigationOptions = () => {
+    navigation.setOptions({
+      headerTitle:
+        currentSheet?.name.length > 20
+          ? currentSheet.name.substring(0, 14) + '...'
+          : currentSheet.name,
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <FlexRow>
+            <Ionicons
+              name="chevron-back-outline"
+              size={25}
+              color={theme.colors.brand.primary}></Ionicons>
+            <Text color={theme.colors.brand.primary}>Back</Text>
+          </FlexRow>
+        </TouchableOpacity>
+      ),
+      headerRight: () => (
+        <Spacer position={'right'} size="large">
+          <TouchableOpacity onPress={() => navigation.navigate('SheetExport')}>
+            <FlexRow>
+              <FontAwesome5
+                name="file-export"
+                size={16}
+                color={theme.colors.brand.primary}
+              />
+              <Spacer position={'right'} size="medium" />
+              <Text color={theme.colors.brand.primary}>Export</Text>
+            </FlexRow>
+          </TouchableOpacity>
+        </Spacer>
+      ),
+    });
+  };
+
+  const checkUpcomingDetails = () => {
+    onCheckUpcomingSheetDetails(currentSheet, transactionExists => {
+      if (transactionExists) {
+        onGetSheetDetailsDashboard(currentSheet, activeType);
+      }
+    });
+  };
+
+  const onSetActiveType = type => {
+    setActiveType(type);
+    onGetSheetDetailsDashboard(currentSheet, type);
+  };
+
+  const onGetSheetDetailsDashboard = async (sheet, type) => {
+    let data = await getSheetDetailsDashboard(sheet, type);
+    if (data) {
+      setSheetDetails(data);
+    }
+  };
+
   return (
-    <SafeArea
-      style={{
-        backgroundColor: theme.colors.bg.primary,
-      }}>
+    <SafeArea child={true}>
       {currentSheet && (
         <ScrollView showsVerticalScrollIndicator={false}>
           <MainWrapper>
@@ -248,26 +242,19 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
             <Spacer size={'large'} />
             <CategoryTabs
               activeType={activeType}
-              setActiveType={setActiveType}
+              setActiveType={onSetActiveType}
               tabReverse={true}
               animation={false}
             />
 
-            {sortedByPercentages && sortedByPercentages.length > 0 && (
+            {sheetDetails.totalCount > 0 && (
               <>
-                {sortedByPercentages.map(key => {
-                  let details = groupedDetails[key];
-
-                  let category = details.category;
-                  // get the icon from categoires list
-                  // let categoryObj = allCategories.filter(c => c.name === key)[0];
-                  let categoryIcon = null;
-                  if (category && category.icon) {
-                    categoryIcon = category.icon;
-                  }
-
+                {sheetDetails.transactions.map((sd, index) => {
+                  let {category, transactions, totalAmount, totalPercentage} =
+                    sd;
+                  let {icon, name, color} = category;
                   return (
-                    <Spacer size={'large'} key={key}>
+                    <Spacer size={'large'} key={index}>
                       <Card
                         theme={{roundness: 0}}
                         elevation={2}
@@ -288,7 +275,7 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                           onPress={() =>
                             navigation.navigate('SheetStatsDetails', {
                               category,
-                              sheetDetails: details,
+                              sheetDetails: transactions,
                             })
                           }>
                           <>
@@ -297,8 +284,8 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                                 position: 'absolute',
                                 bottom: 0,
                                 height: 2,
-                                width: details.percentage + '%',
-                                backgroundColor: category.color,
+                                width: totalPercentage + '%',
+                                backgroundColor: color,
                               }}
                             />
                             <Card.Content>
@@ -307,9 +294,9 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                                   <CategoryColor
                                     color={category.color}
                                     style={{width: 50, height: 50}}>
-                                    {categoryIcon && (
+                                    {icon && (
                                       <MaterialCommunityIcon
-                                        name={categoryIcon}
+                                        name={icon}
                                         size={22}
                                         color="#fff"
                                       />
@@ -317,16 +304,14 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                                   </CategoryColor>
                                   <Spacer size={'large'} position="left" />
                                   <Text fontsize="16px" fontfamily="heading">
-                                    {category.name}
+                                    {name}
                                   </Text>
                                 </FlexRow>
                                 <View>
                                   <Text fontsize="14px" fontfamily="heading">
                                     {GetCurrencySymbol(currentSheet.currency)}{' '}
                                     {activeType === 'expense' && '-'}{' '}
-                                    {GetCurrencyLocalString(
-                                      details.totalAmount,
-                                    )}
+                                    {GetCurrencyLocalString(totalAmount)}
                                     {/* -40,000.23 */}
                                   </Text>
                                   <Spacer size={'medium'} />
@@ -335,7 +320,7 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                                       fontsize="16px"
                                       fontfamily="heading"
                                       color="grey">
-                                      {details.percentage}%
+                                      {totalPercentage}%
                                     </Text>
                                   </FlexRow>
                                 </View>
@@ -349,24 +334,23 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                 })}
               </>
             )}
-            {!sortedByPercentages ||
-              (sortedByPercentages.length === 0 && (
-                <View
+            {sheetDetails.totalCount === 0 && (
+              <View
+                style={{
+                  marginTop: 100,
+                }}>
+                <Text
+                  fontfamily="heading"
                   style={{
-                    marginTop: 100,
+                    textAlign: 'center',
+                    letterSpacing: 1,
+                    lineHeight: 30,
                   }}>
-                  <Text
-                    fontfamily="heading"
-                    style={{
-                      textAlign: 'center',
-                      letterSpacing: 1,
-                      lineHeight: 30,
-                    }}>
-                    There are no {_.capitalize(activeType)}s to display. Create
-                    one from Transactions tab or Below.
-                  </Text>
-                </View>
-              ))}
+                  There are no {_.capitalize(activeType)}s to display. Create
+                  one from Transactions tab or Below.
+                </Text>
+              </View>
+            )}
           </MainWrapper>
         </ScrollView>
       )}

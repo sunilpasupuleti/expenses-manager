@@ -19,13 +19,10 @@ import {Alert, Pressable, ScrollView} from 'react-native';
 import {ProfileContext} from '../../../services/profile/profile.context';
 
 import {launchImageLibrary} from 'react-native-image-picker';
-import {loaderActions} from '../../../store/loader-slice';
-import RNFetchBlob from 'rn-fetch-blob';
-import {notificationActions} from '../../../store/notification-slice';
-import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 
 import _ from 'lodash';
 import {getFirebaseAccessUrl} from '../../../components/utility/helper';
+import {useNetInfo} from '@react-native-community/netinfo';
 
 const defaultInputState = {
   displayName: {
@@ -55,9 +52,13 @@ export const ProfileScreen = ({navigation, route}) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const {userData} = useContext(AuthenticationContext);
-  const {onUpdateProfile, onRemoveProfilePicture, onUpdateProfilePicture} =
-    useContext(ProfileContext);
-
+  const {
+    onUpdateProfile,
+    onRemoveProfilePicture,
+    onUpdateProfilePicture,
+    onDownloadProfilePicture,
+  } = useContext(ProfileContext);
+  const {isConnected} = useNetInfo();
   const [inputs, setInputs] = useState(defaultInputState);
 
   const [loading, setLoading] = useState(false);
@@ -296,68 +297,7 @@ export const ProfileScreen = ({navigation, route}) => {
   };
 
   const downloadProfilePicture = async () => {
-    if (userData && userData.photoURL) {
-      // Getting the extention of the file
-      // get bytes
-      let photoURL = userData.photoURL;
-      let extension;
-      if (photoURL && photoURL.startsWith('users/')) {
-        photoURL = getFirebaseAccessUrl(userData.photoURL);
-        let extRegex = /\.(png|jpe?g|gif|bmp|webp)/i;
-        extension = photoURL.match(extRegex)?.[0];
-      }
-
-      dispatch(
-        loaderActions.showLoader({
-          backdrop: true,
-          loaderType: 'image_upload',
-        }),
-      );
-
-      RNFetchBlob.config({
-        fileCache: true,
-        appendExt: extension,
-      })
-        .fetch('GET', photoURL)
-        .then(res => {
-          saveToCameraRoll(res.data);
-        })
-        .catch(err => {
-          dispatch(
-            notificationActions.showToast({
-              status: 'error',
-              message: err,
-            }),
-          );
-          dispatch(loaderActions.hideLoader());
-        });
-
-      const saveToCameraRoll = url => {
-        CameraRoll.save(url)
-          .then(() => {
-            dispatch(
-              notificationActions.showToast({
-                status: 'success',
-                message: 'Profile Picture saved to your Gallery/Photos',
-              }),
-            );
-            dispatch(loaderActions.hideLoader());
-          })
-          .catch(err => {
-            dispatch(
-              notificationActions.showToast({
-                status: 'error',
-                message:
-                  err?.message + '. Please enable permission from settings',
-              }),
-            );
-            dispatch(loaderActions.hideLoader());
-          });
-      };
-    } else {
-      dispatch(loaderActions.hideLoader());
-      Alert.alert('No Image Found');
-    }
+    await onDownloadProfilePicture(() => {});
   };
 
   let signInIcon =
@@ -370,7 +310,7 @@ export const ProfileScreen = ({navigation, route}) => {
       : 'login';
 
   return (
-    <SafeArea>
+    <SafeArea child={true}>
       <MainWrapper>
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -549,7 +489,9 @@ export const ProfileScreen = ({navigation, route}) => {
                 mode="outlined"
                 returnKeyType="done"
                 multiline
-                onChangeText={n => onValueChangeHandler('email', n.trim())}
+                onChangeText={n =>
+                  onValueChangeHandler('email', n.toLowerCase().trim())
+                }
                 value={inputs.email.value}
                 placeholder="Email Address"
                 keyboardType="default"

@@ -20,7 +20,7 @@ DerivedData
 *.hmap
 *.ipa
 *.xcuserstate
-ios/.xcode.env.local
+**.xcode.env.local
 
 
 
@@ -61,7 +61,8 @@ yarn-error.log
 *.jsbundle
 
 # Ruby / CocoaPods
-app/ios/Pods/
+**/Pods/
+# app/ios/Pods/
 app/vendor/bundle/
 app/config.js
 
@@ -75,3 +76,11 @@ app/config.js
 backend/config/ssl/
 backend/config/AuthKey_78MHH3V4YC.p8
 backend/config/expensesmanager.json
+
+# Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

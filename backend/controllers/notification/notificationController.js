@@ -1,6 +1,6 @@
 const httpstatus = require("http-status-codes");
-const moment = require("moment");
 const schedule = require("node-schedule");
+const db = require("firebase-admin/database");
 
 const {
   sendDailyReminderNotification,
@@ -12,268 +12,149 @@ const logger = require("../../middleware/logger/logger");
 
 module.exports = {
   async updateDailyReminder(req, res) {
-    const { time, fcmToken, enable, update, disable, timeZone } = req.body;
+    try {
+      const sendSuccessResponse = (message) => {
+        sendResponse(res, httpCodes.OK, {
+          message: message,
+        });
+      };
+      let { fcmToken, timeZone, dailyReminderEnabled, dailyReminderTime } =
+        req.body;
 
-    // console.log(req.body);
-
-    let { uid } = req.user;
-    if (!uid || !time || !fcmToken || !timeZone) {
-      return sendResponse(res, httpCodes.BAD_REQUEST, {
-        message: "UID , TIME , FCM TOKEN , TIME ZONE fields are required",
+      dailyReminderEnabled = dailyReminderEnabled ? true : false;
+      let { uid } = req.user;
+      if (!uid || !dailyReminderTime || !fcmToken || !timeZone) {
+        throw "UID , TIME , FCM TOKEN , TIME ZONE fields are required";
+      }
+      const dbRef = await db.getDatabase().ref(`/users/${uid}`);
+      let snapshot = await dbRef.once("value");
+      const userData = snapshot.val();
+      if (!userData) {
+        throw "No User Found";
+      }
+      await dbRef.update({
+        dailyReminderEnabled: dailyReminderEnabled,
+        dailyReminderTime: dailyReminderTime,
+        fcmToken: fcmToken,
+        timeZone: timeZone,
       });
-    }
 
-    Users.findOne({
-      uid: uid,
-    })
-      .then(async (data) => {
-        let userData = data;
-        function scheduleFunction() {
-          // let formatedTime = moment(time).format("HH:mm");
-          // let hr = moment(time).format("HH");
-          // let min = moment(time).format("mm");
-          let formatedTime = time;
-          let hr = time.split(":")[0];
-          let min = time.split(":")[1];
+      const jobId = `${uid}-daily-reminder`;
+      const jobs = schedule.scheduledJobs;
+      const jobKeyFound = Object.keys(jobs).find((key) => key === jobId);
+      const jobFound = jobs[jobKeyFound];
 
-          var rule = new schedule.RecurrenceRule();
-          // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
-          rule.hour = hr;
-          rule.minute = min;
-          rule.tz = timeZone;
-          rule.dayOfWeek = new schedule.Range(0, 6);
-          let jobId = `${uid}-daily-reminder`;
-          Users.findOneAndUpdate(
-            {
-              uid: uid,
-            },
-            {
-              $set: {
-                dailyReminder: {
-                  enabled: true,
-                  time: formatedTime,
-                },
-                fcmToken: fcmToken,
-              },
-            },
-            {
-              new: true,
-            }
-          )
-            .then(async (response) => {
-              let returnData = response;
-              // get user data
-              logger.info(
-                `Enabling daily reminder for ${userData.displayName} at time - ${hr}:${min} - ${timeZone}`
-              );
-              logger.info("-----------------------------------");
-              schedule.scheduleJob(jobId, rule, function () {
-                sendDailyReminderNotification(returnData);
-              });
-              return sendResponse(res, httpCodes.OK, {
-                message: "Daily Reminder updated.",
-                user: returnData,
-              });
-            })
-            .catch((err) => {
-              console.error("err in updating the data", err);
-              return sendResponse(res, httpCodes.BAD_REQUEST, {
-                message: "Error occured in enabling daily reminder",
-              });
-            });
-        }
-        let jobs = schedule.scheduledJobs;
-
-        if (enable) {
-          scheduleFunction();
-        } else if (update) {
-          let jobId = `${uid}-daily-reminder`;
-          let jobKeyFound = Object.keys(jobs).filter((key) => key === jobId)[0];
-          let jobFound = jobs[jobKeyFound];
+      if (dailyReminderEnabled) {
+        if (jobFound) {
           logger.info(
             "Updated time in daily reminder. Cancelling the previous one and scheduling new reminder"
           );
           logger.info("-----------------------------------");
-
-          if (jobFound) {
-            jobFound.cancel();
-            scheduleFunction();
-          } else {
-            scheduleFunction();
-          }
-        } else if (disable) {
-          let jobId = `${uid}-daily-reminder`;
-          let jobs = schedule.scheduledJobs;
-          let jobKeyFound = Object.keys(jobs).filter((key) => key === jobId)[0];
-          let jobFound = jobs[jobKeyFound];
-
-          Users.findOneAndUpdate(
-            {
-              uid: uid,
-            },
-            {
-              $set: {
-                dailyReminder: {
-                  enabled: false,
-                },
-              },
-            }
-          )
-            .then(() => {
-              logger.info(`Daily reminder disabled for - ${uid} `);
-              logger.info("-----------------------------------");
-              if (jobFound) {
-                jobFound.cancel();
-              }
-              return sendResponse(res, httpCodes.OK, {
-                message: "Daily Reminder Disabled.",
-              });
-            })
-            .catch((err) => {
-              logger.error("Error in disabling daily reminder " + err);
-              return sendResponse(res, httpCodes.BAD_REQUEST, {
-                message: "Error occured in disabling daily reminder",
-              });
-            });
-        } else {
-          logger.error("No if block conditions found");
-          return sendResponse(res, httpCodes.OK, {
-            message: "Updated successfully",
-          });
+          jobFound.cancel();
         }
-      })
-      .catch((err) => {
-        logger.error("Error in  daily reminder " + err);
-        return sendResponse(res, httpCodes.BAD_REQUEST, {
-          message: "Error occured in  daily reminder",
+        let hr = dailyReminderTime.split(":")[0];
+        let min = dailyReminderTime.split(":")[1];
+        const rule = new schedule.RecurrenceRule();
+        // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
+        rule.hour = hr;
+        rule.minute = min;
+        rule.tz = timeZone;
+        rule.dayOfWeek = new schedule.Range(0, 6);
+
+        // get user data
+        logger.info(
+          `Enabling daily reminder for ${userData.displayName} at time - ${hr}:${min} - ${timeZone}`
+        );
+        logger.info("-----------------------------------");
+        schedule.scheduleJob(jobId, rule, function () {
+          sendDailyReminderNotification(userData);
         });
+        return sendSuccessResponse(
+          jobFound ? "Daily Reminder Updated" : "Daily Reminder Enabled"
+        );
+      } else {
+        if (jobFound) {
+          logger.info(`Daily reminder disabled for - ${uid} `);
+          logger.info("-----------------------------------");
+          jobFound.cancel();
+        }
+        return sendSuccessResponse("Daily Reminder Disabled");
+      }
+    } catch (e) {
+      return sendResponse(res, httpCodes.BAD_REQUEST, {
+        message: "Error occured in updating daily reminder : " + e.toString(),
       });
+    }
   },
 
   async updateDailyBackUp(req, res) {
-    const { fcmToken, enabled, timeZone } = req.body;
+    try {
+      const sendSuccessResponse = (message) => {
+        sendResponse(res, httpCodes.OK, {
+          message: message,
+        });
+      };
+      let { fcmToken, dailyBackupEnabled, timeZone } = req.body;
+      dailyBackupEnabled = dailyBackupEnabled ? true : false;
 
-    let { uid } = req.user;
+      let { uid } = req.user;
+      if (!uid || !fcmToken || !timeZone) {
+        throw "UID , timeZone, FCM Token required ";
+      }
+      const dbRef = await db.getDatabase().ref(`/users/${uid}`);
+      let snapshot = await dbRef.once("value");
+      const userData = snapshot.val();
+      if (!userData) {
+        throw "No User Found";
+      }
+      await dbRef.update({
+        dailyBackupEnabled: dailyBackupEnabled,
+        fcmToken: fcmToken,
+        timeZone: timeZone,
+      });
+      const jobId = `${uid}-daily-backup`;
+      const jobs = schedule.scheduledJobs;
+      const jobKeyFound = Object.keys(jobs).find((key) => key === jobId);
+      const jobFound = jobs[jobKeyFound];
+      if (dailyBackupEnabled) {
+        if (jobFound) {
+          logger.info("Found daily backup and cancelling it");
+          logger.info("-----------------------------------");
+          jobFound.cancel();
+        }
 
-    if (!uid || typeof enabled !== "boolean" || !fcmToken || !timeZone) {
+        const rule = new schedule.RecurrenceRule();
+        let hour = 00;
+        let minute = 01;
+        // rule.hour = hour;
+        // rule.minute = minute;
+        rule.tz = timeZone;
+
+        rule.dayOfWeek = new schedule.Range(0, 6);
+
+        rule.minute = new schedule.Range(0, 59, 1); //for every one minute
+        // get user data
+        logger.info(
+          `Enabling daily backup for ${userData.displayName} at time - ${hour}:${minute} - ${timeZone}`
+        );
+        logger.info("-----------------------------------");
+        schedule.scheduleJob(jobId, rule, function () {
+          sendDailyBackupNotification(userData);
+        });
+        return sendSuccessResponse("Daily Backup Enabled");
+      } else {
+        if (jobFound) {
+          logger.info(`Daily Backup disabled for - ${uid} `);
+          logger.info("-----------------------------------");
+          jobFound.cancel();
+        }
+        return sendSuccessResponse("Daily Backup Disabled");
+      }
+    } catch (e) {
       return sendResponse(res, httpCodes.BAD_REQUEST, {
-        message: "all fields are required",
+        message: "Error occured in updating daily backup : " + e.toString(),
       });
     }
-
-    Users.findOne({
-      uid: uid,
-    })
-      .then(async (result) => {
-        let data = result;
-        let jobs = schedule.scheduledJobs;
-        let jobsLength = Object.keys(jobs).length;
-        function scheduleFunction() {
-          var rule = new schedule.RecurrenceRule();
-          let hour = 00;
-          let minute = 01;
-          rule.hour = hour;
-          rule.minute = minute;
-          rule.tz = timeZone;
-
-          rule.dayOfWeek = new schedule.Range(0, 6);
-          let jobId = `${uid}-daily-backup`;
-          Users.findOneAndUpdate(
-            {
-              uid: uid,
-            },
-            {
-              $set: {
-                dailyBackup: true,
-                fcmToken: fcmToken,
-              },
-            },
-            {
-              new: true,
-            }
-          )
-            .then((response) => {
-              let returnData = response;
-              logger.info(
-                `Enabling daily backup for ${data.displayName} at ${hour}:${minute}`
-              );
-
-              logger.info("-----------------------------------");
-              schedule.scheduleJob(jobId, rule, function () {
-                sendDailyBackupNotification(returnData);
-              });
-              return res.status(httpstatus.OK).json({
-                message: "Daily Backup enabled.",
-                user: returnData,
-              });
-            })
-            .catch((err) => {
-              logger.error(
-                "error occured in daily backup updating data - " + err
-              );
-              return sendResponse(res, httpCodes.BAD_REQUEST, {
-                message: "Error occured in enabling daily backup updating data",
-              });
-            });
-        }
-
-        if (enabled) {
-          let jobDailyBackupId = `${uid}-daily-backup`;
-          let jobKeyDailyBackupFound = Object.keys(jobs).filter(
-            (key) => key === jobDailyBackupId
-          )[0];
-          let jobFoundDailyBackup = jobs[jobKeyDailyBackupFound];
-          if (jobFoundDailyBackup) {
-            jobFoundDailyBackup.cancel();
-            scheduleFunction();
-          } else {
-            scheduleFunction();
-          }
-        } else if (!enabled) {
-          let jobId = `${uid}-daily-backup`;
-          let jobs = schedule.scheduledJobs;
-          let jobKeyFound = Object.keys(jobs).filter((key) => key === jobId)[0];
-          let jobFound = jobs[jobKeyFound];
-
-          Users.findOneAndUpdate(
-            {
-              uid: uid,
-            },
-            {
-              $set: {
-                dailyBackup: false,
-              },
-            },
-            {
-              new: true,
-            }
-          )
-
-            .then(() => {
-              if (jobFound) {
-                logger.info("cancelling the  backup ");
-                jobFound.cancel();
-              }
-
-              logger.info(`Daily Backup disabled for - ${uid} `);
-              logger.info("-----------------------------------");
-              return sendResponse(res, httpCodes.OK, {
-                message: "Daily Backup Disabled.",
-              });
-            })
-            .catch((err) => {
-              return sendResponse(res, httpCodes.BAD_REQUEST, {
-                message: "Error occured in disabling daily backup",
-              });
-            });
-        }
-      })
-      .catch((err) => {
-        logger.error("error occured in daily backup - " + err);
-        return sendResponse(res, httpCodes.BAD_REQUEST, {
-          message: "Error occured in  daily backup",
-        });
-      });
   },
 
   // this route called during logout
@@ -287,15 +168,15 @@ module.exports = {
     }
 
     let jobDailyReminderId = `${uid}-daily-reminder`;
-    let jobKeyDailyReminderFound = Object.keys(jobs).filter(
+    let jobKeyDailyReminderFound = Object.keys(jobs).find(
       (key) => key === jobDailyReminderId
-    )[0];
+    );
     let jobFoundDailyReminder = jobs[jobKeyDailyReminderFound];
 
     let jobDailyBackupId = `${uid}-daily-backup`;
-    let jobKeyDailyBackupFound = Object.keys(jobs).filter(
+    let jobKeyDailyBackupFound = Object.keys(jobs).find(
       (key) => key === jobDailyBackupId
-    )[0];
+    );
     let jobFoundDailyBackup = jobs[jobKeyDailyBackupFound];
 
     if (jobFoundDailyBackup) {
@@ -315,104 +196,95 @@ module.exports = {
 
   // this route called during login
   async enableNotifications(req, res) {
-    let { uid } = req.user;
+    try {
+      let { uid } = req.user;
 
-    let jobs = schedule.scheduledJobs;
+      let jobs = schedule.scheduledJobs;
 
-    let jobDailyReminderId = `${uid}-daily-reminder`;
-    let jobKeyDailyReminderFound = Object.keys(jobs).filter(
-      (key) => key === jobDailyReminderId
-    )[0];
-    let jobFoundDailyReminder = jobs[jobKeyDailyReminderFound];
+      let jobDailyReminderId = `${uid}-daily-reminder`;
+      let jobKeyDailyReminderFound = Object.keys(jobs).find(
+        (key) => key === jobDailyReminderId
+      );
+      let jobFoundDailyReminder = jobs[jobKeyDailyReminderFound];
 
-    let jobDailyBackupId = `${uid}-daily-backup`;
-    let jobKeyDailyBackupFound = Object.keys(jobs).filter(
-      (key) => key === jobDailyBackupId
-    )[0];
-    let jobFoundDailyBackup = jobs[jobKeyDailyBackupFound];
+      let jobDailyBackupId = `${uid}-daily-backup`;
+      let jobKeyDailyBackupFound = Object.keys(jobs).find(
+        (key) => key === jobDailyBackupId
+      );
+      let jobFoundDailyBackup = jobs[jobKeyDailyBackupFound];
 
-    Users.findOne({
-      uid: uid,
-    })
+      const dbRef = await db.getDatabase().ref(`/users/${uid}`);
+      let snapshot = await dbRef.once("value");
+      const userData = snapshot.val();
+      if (!userData) {
+        throw "No User Data";
+      }
+      let {
+        dailyBackupEnabled,
+        dailyReminderEnabled,
+        dailyReminderTime,
+        timeZone,
+        displayName,
+        email,
+        active,
+        phoneNumber,
+      } = userData;
+      let display = displayName || email || phoneNumber;
+      dailyReminderEnabled = dailyReminderEnabled ? true : false;
+      dailyBackupEnabled = dailyBackupEnabled ? true : false;
 
-      .then((response) => {
-        let returnData = response;
-
-        let dailyReminder = returnData.dailyReminder;
-        let dailyBackup = returnData.dailyBackup;
-        let timeZone = returnData.timeZone
-          ? returnData.timeZone
-          : "Asia/Calcutta";
-        let display =
-          returnData.displayName || returnData.email || returnData.phoneNumber;
-
-        if (
-          returnData.active &&
-          dailyReminder &&
-          dailyReminder.enabled &&
-          dailyReminder.time
-        ) {
-          let hr = dailyReminder.time.split(":")[0];
-          let min = dailyReminder.time.split(":")[1];
-
-          var rule = new schedule.RecurrenceRule();
-          // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
-          rule.hour = hr;
-          rule.minute = min;
-          rule.tz = timeZone;
-
-          rule.dayOfWeek = new schedule.Range(0, 6);
-          let jobId = `${uid}-daily-reminder`;
-
-          if (jobFoundDailyReminder) {
-            logger.info("canceling the previous daily reminder notification");
-            jobFoundDailyReminder.cancel();
-          }
-          logger.info(
-            `Enabling daily reminder for ${display} at time - ${hr}:${min} - ${timeZone}`
-          );
-
-          schedule.scheduleJob(jobId, rule, function () {
-            sendDailyReminderNotification(returnData);
-          });
+      if (active && dailyReminderEnabled && dailyReminderTime) {
+        let hr = dailyReminderTime.split(":")[0];
+        let min = dailyReminderTime.split(":")[1];
+        var rule = new schedule.RecurrenceRule();
+        rule.hour = hr;
+        rule.minute = min;
+        rule.tz = timeZone || "Asia/Calcutta";
+        rule.dayOfWeek = new schedule.Range(0, 6);
+        if (jobFoundDailyReminder) {
+          logger.info("canceling the previous daily reminder notification");
+          jobFoundDailyReminder.cancel();
         }
+        logger.info(
+          `Enabling daily reminder for ${display} at time - ${hr}:${min} - ${timeZone}`
+        );
+        schedule.scheduleJob(jobDailyReminderId, rule, function () {
+          sendDailyReminderNotification(userData);
+        });
+      }
 
-        if (dailyBackup) {
-          var rule = new schedule.RecurrenceRule();
-          // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
-          let hour = 00;
-          let minute = 01;
-          rule.hour = hour;
-          rule.minute = minute;
-          rule.tz = timeZone;
+      if (dailyBackupEnabled && active) {
+        var rule = new schedule.RecurrenceRule();
+        // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
+        let hour = 00;
+        let minute = 01;
+        rule.hour = hour;
+        rule.minute = minute;
+        rule.tz = timeZone;
 
-          rule.dayOfWeek = new schedule.Range(0, 6);
-          let jobId = `${uid}-daily-backup`;
+        rule.dayOfWeek = new schedule.Range(0, 6);
 
-          if (jobFoundDailyBackup) {
-            logger.info("canceling the previous backup notification");
-            jobFoundDailyBackup.cancel();
-          }
-
-          logger.info(
-            `Enabling daily backup for ${display} at ${hour}:${minute} - ${timeZone}`
-          );
-
-          schedule.scheduleJob(jobId, rule, function () {
-            sendDailyBackupNotification(returnData);
-          });
+        if (jobFoundDailyBackup) {
+          logger.info("canceling the previous backup notification");
+          jobFoundDailyBackup.cancel();
         }
-        logger.info("-----------------------------------");
+        logger.info(
+          `Enabling daily backup for ${display} at ${hour}:${minute} - ${timeZone}`
+        );
+        schedule.scheduleJob(jobDailyBackupId, rule, function () {
+          sendDailyBackupNotification(userData);
+        });
+      }
 
-        return sendResponse(res, httpCodes.OK, {
-          message: "Enabled notifications successfully",
-        });
-      })
-      .catch((err) => {
-        logger.error("err in getting the data" + err);
-        return sendResponse(res, httpCodes.BAD_REQUEST, {
-          message: "Error occured in enabling notification",
-        });
+      logger.info("-----------------------------------");
+      return sendResponse(res, httpCodes.OK, {
+        message: "Enabled notifications successfully",
       });
+    } catch (err) {
+      logger.error("err in getting the data" + err);
+      return sendResponse(res, httpCodes.BAD_REQUEST, {
+        message: "Error occured in enabling notification",
+      });
+    }
   },
 };

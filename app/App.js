@@ -13,20 +13,18 @@ import {AuthenticationContextProvider} from './src/services/authentication/authe
 import {
   Alert,
   AppState,
-  BackHandler,
   DeviceEventEmitter,
   Linking,
   LogBox,
-  NativeModules,
   Platform,
   StatusBar,
   useColorScheme,
 } from 'react-native';
+import RNExitApp from 'react-native-exit-app';
 import {ActionSheetProvider} from '@expo/react-native-action-sheet';
 import {MenuProvider} from 'react-native-popup-menu';
 import {useDispatch, useSelector} from 'react-redux';
 import {
-  fetchChangesMade,
   fetchExchangeRates,
   fetchTheme,
   loadAppStatus,
@@ -37,12 +35,11 @@ import SplashScreen from 'react-native-splash-screen';
 import {fetchAppLock} from './src/store/applock-slice';
 import VersionCheck from 'react-native-version-check';
 import './src/components/notifcications/one-signal';
-import OneSignal from 'react-native-onesignal';
-import remoteConfig from '@react-native-firebase/remote-config';
-import {GetCurrencySymbol} from './src/components/symbol.currency';
-import {TourGuideProvider} from 'rn-tourguide';
+import './src/components/notifcications/push-notification';
+import {OneSignal} from 'react-native-onesignal';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {colors} from './src/infrastructure/theme/colors';
+import {SQLiteContextProvider} from './src/services/sqlite/sqlite.context';
 
 moment.suppressDeprecationWarnings = true;
 if (Platform.OS === 'android') {
@@ -62,16 +59,6 @@ const App = () => {
   const appTheme = useSelector(state => state.service.theme);
   const dispatch = useDispatch();
   const appStatus = useSelector(state => state.service.appStatus);
-  const ONE_SIGNAL_APP_ID = remoteConfig()
-    .getValue('ONE_SIGNAL_APP_ID')
-    .asString();
-
-  try {
-    OneSignal.setAppId(ONE_SIGNAL_APP_ID);
-    // OneSignal.setLogLevel(6, 0);
-  } catch (e) {
-    console.log(e);
-  }
 
   useEffect(() => {
     let iosStateListener = null;
@@ -99,7 +86,6 @@ const App = () => {
     dispatch(fetchAppLock());
     dispatch(fetchTheme());
     dispatch(loadAppStatus());
-    dispatch(fetchChangesMade());
     dispatch(fetchExchangeRates({}));
     return () => {
       iosStateListener?.remove();
@@ -114,6 +100,7 @@ const App = () => {
   }, [appStatus]);
 
   const checkAppUpdateNeeded = async () => {
+    return;
     try {
       const latestVersion = await VersionCheck.getLatestVersion();
       const currentVersion = await VersionCheck.getCurrentVersion();
@@ -130,7 +117,7 @@ const App = () => {
             {
               text: 'Update',
               onPress: () => {
-                BackHandler.exitApp();
+                RNExitApp.exitApp();
                 Linking.openURL(updateNeeded.storeUrl);
               },
               style: 'cancel',
@@ -189,9 +176,11 @@ const App = () => {
                   : MD3MergedDarkTheme
               }>
               {appStatus && appStatus.hideSplashScreen && (
-                <AuthenticationContextProvider>
-                  <Navigation />
-                </AuthenticationContextProvider>
+                <SQLiteContextProvider>
+                  <AuthenticationContextProvider>
+                    <Navigation />
+                  </AuthenticationContextProvider>
+                </SQLiteContextProvider>
               )}
             </PaperProvider>
           </MenuProvider>

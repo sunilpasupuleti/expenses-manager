@@ -2,7 +2,7 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import React, {useContext, useEffect, useRef, useState} from 'react';
 import {useTheme} from 'styled-components/native';
-import _, {keys} from 'lodash';
+import _ from 'lodash';
 import {Dimensions, ScrollView, TouchableOpacity} from 'react-native';
 
 import {View} from 'react-native';
@@ -24,9 +24,36 @@ import {
 } from '../../components/sheet-stats/sheet-stats.styles';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {useIsFocused} from '@react-navigation/native';
+import {SheetDetailsContext} from '../../../../services/sheetDetails/sheetDetails.context';
+
+const getLast12MonthsDates = () => {
+  const dates = [];
+  for (let i = 11; i >= 0; i--) {
+    const date = moment().subtract(i, 'months').format('YYYY-MM-DD');
+    dates.push(date);
+  }
+  return dates;
+};
+
+const getLast14DaysDates = () => {
+  const dates = [];
+  for (let i = 13; i >= 0; i--) {
+    const date = moment().subtract(i, 'days').format('YYYY-MM-DD');
+    dates.push(date);
+  }
+  return dates;
+};
+
+const last12MonthsDates = getLast12MonthsDates();
+const last14DaysDates = getLast14DaysDates();
+
+// const last14DaysDates = getDatesInRange(last14DaysStart, last14DaysEnd);
+
 export const SheetTrendsScreen = ({navigation, route}) => {
   const theme = useTheme();
-  const {currentSheet, onCheckUpcomingSheetDetails} = useContext(SheetsContext);
+  const {currentSheet} = useContext(SheetsContext);
+  const {onCheckUpcomingSheetDetails, getSheetDetailsTrends} =
+    useContext(SheetDetailsContext);
 
   const chartConfig = {
     backgroundGradientFromOpacity: 0,
@@ -43,7 +70,12 @@ export const SheetTrendsScreen = ({navigation, route}) => {
     },
   };
   const routeIsFocused = useIsFocused();
-
+  const [sheetDetails, setSheetDetails] = useState({
+    last14DaysTotalCount: 0,
+    last12MonthsTotalCount: 0,
+    last12MonthsTransactions: [],
+    last14DaysTransactions: [],
+  });
   const [groupedDetails, setGroupedDetails] = useState(null);
   const [activeType, setActiveType] = useState('expense');
   const [chartData, setChartData] = useState({
@@ -74,32 +106,11 @@ export const SheetTrendsScreen = ({navigation, route}) => {
 
   useEffect(() => {
     if (routeIsFocused) {
-      onCheckUpcomingSheetDetails();
+      onSetNavigationOptions();
+      onGetSheetDetailsTrends(currentSheet, activeType);
+      checkUpcomingDetails();
     }
   }, [routeIsFocused]);
-
-  useEffect(() => {
-    if (routeIsFocused && currentSheet) {
-      navigation.setOptions({
-        headerTitle:
-          currentSheet?.name?.length > 25
-            ? currentSheet.name.substring(0, 25) + '...'
-            : currentSheet.name,
-        headerLeft: () => (
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <FlexRow>
-              <Ionicons
-                name="chevron-back-outline"
-                size={25}
-                color={theme.colors.brand.primary}></Ionicons>
-              <Text color={theme.colors.brand.primary}>Back</Text>
-            </FlexRow>
-          </TouchableOpacity>
-        ),
-        headerRight: () => null,
-      });
-    }
-  }, [routeIsFocused, currentSheet]);
 
   useEffect(() => {
     setTooltipPos(prevstate => ({
@@ -112,20 +123,7 @@ export const SheetTrendsScreen = ({navigation, route}) => {
         visible: false,
       },
     }));
-    if (currentSheet && currentSheet.details) {
-      let expense = currentSheet.details.filter(s => s.type === 'expense');
-      let income = currentSheet.details.filter(s => s.type === 'income');
-
-      const groupByCategory = item => item.category.name;
-      let expenseGrouped = _(expense).groupBy(groupByCategory).value();
-      let incomeGrouped = _(income).groupBy(groupByCategory).value();
-      if (activeType === 'expense') {
-        setGroupedDetails(expenseGrouped);
-      } else {
-        setGroupedDetails(incomeGrouped);
-      }
-    }
-  }, [currentSheet, activeType]);
+  }, [activeType]);
 
   useEffect(() => {
     if (groupedDetails) {
@@ -133,62 +131,51 @@ export const SheetTrendsScreen = ({navigation, route}) => {
     }
   }, [groupedDetails]);
 
-  const onReturnLast14DaysDetails = () => {
-    let sdetails = [];
-    Object.keys(groupedDetails).map(key => {
-      groupedDetails[key].forEach(element => {
-        sdetails.push(element);
-      });
-    });
-    let startOf = moment().format('YYYY-MM-DD');
-    let endOf = moment()
-      .subtract(14, 'days')
-      .subtract(1, 'days')
-      .format('YYYY-MM-DD');
-
-    let duplicateEndOf = moment().subtract(14, 'days').format('YYYY-MM-DD');
-
-    let betweenDateDetails = {};
-    while (moment(duplicateEndOf).isBefore(startOf)) {
-      betweenDateDetails[duplicateEndOf] = [];
-      duplicateEndOf = moment(duplicateEndOf)
-        .add(1, 'days')
-        .format('YYYY-MM-DD');
-    }
-    sdetails.forEach(s => {
-      let sheetDate = moment(s.date).format('YYYY-MM-DD');
-      let exists = moment(sheetDate).isBetween(endOf, startOf);
-      if (exists) {
-        betweenDateDetails[sheetDate].push(s);
+  const checkUpcomingDetails = () => {
+    onCheckUpcomingSheetDetails(currentSheet, transactionExists => {
+      if (transactionExists) {
+        onGetSheetDetailsTrends(currentSheet, activeType);
       }
     });
-    return betweenDateDetails;
   };
 
-  const onReturnLast12MonthsDetails = () => {
-    let sdetails = [];
-    Object.keys(groupedDetails).map(key => {
-      groupedDetails[key].forEach(element => {
-        sdetails.push(element);
-      });
+  const onSetNavigationOptions = () => {
+    navigation.setOptions({
+      headerTitle:
+        currentSheet?.name?.length > 25
+          ? currentSheet.name.substring(0, 25) + '...'
+          : currentSheet.name,
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <FlexRow>
+            <Ionicons
+              name="chevron-back-outline"
+              size={25}
+              color={theme.colors.brand.primary}></Ionicons>
+            <Text color={theme.colors.brand.primary}>Back</Text>
+          </FlexRow>
+        </TouchableOpacity>
+      ),
+      headerRight: () => null,
     });
-    // last 12 months details
-    let last12MonthsDetails = {};
-    for (let i = 1; i <= 12; i++) {
-      last12MonthsDetails[moment().subtract(i, 'months').format('YYYY-MM')] =
-        [];
+  };
+
+  const onGetSheetDetailsTrends = async (sheet, type) => {
+    const data = await getSheetDetailsTrends(sheet, type);
+    // console.log(data);
+    if (data) {
+      setSheetDetails(data);
+      onSetChartData(data);
+      // onSetChartData(data.transactions);
     }
-    const groupByMonthAndYear = item => moment(item.date).format('YYYY-MM');
-    let grouped = _(sdetails).groupBy(groupByMonthAndYear).value();
-    Object.keys(grouped).map(key => {
-      last12MonthsDetails[key] = grouped[key];
-    });
-    return last12MonthsDetails;
   };
 
-  const onSetChartData = () => {
-    let last14daysDetails = onReturnLast14DaysDetails();
-    let last12MonthsDetails = onReturnLast12MonthsDetails();
+  const onSetChartData = result => {
+    const onFormatMonth = date => moment(date).format('YYYY-MM');
+    const onFormatDate = date => moment(date).format('DD');
+
+    let {last14DaysTransactions, last12MonthsTransactions} = result;
+
     let data = {
       last14days: {
         datasets: [],
@@ -198,30 +185,46 @@ export const SheetTrendsScreen = ({navigation, route}) => {
       last12months: {
         datasets: [],
         labels: [],
+        keys: [],
       },
     };
-    //  chart data for last 14 days
 
-    Object.keys(last14daysDetails).map((key, index) => {
-      data.last14days.keys.push(key);
-      data.last14days.labels.push(moment(key).format('DD'));
-      let details = last14daysDetails[key];
-      let totalAmount = 0;
-      details.forEach(element => {
-        totalAmount += element.amount;
-      });
-      data.last14days.datasets.push(totalAmount);
+    last12MonthsDates.forEach(dt => {
+      let dataFound = last12MonthsTransactions.find(
+        t => onFormatMonth(t.date) === onFormatMonth(dt),
+      );
+      let label, amount;
+      if (dataFound) {
+        let {date, totalAmount} = dataFound;
+        label = onFormatMonth(date);
+        amount = totalAmount;
+      } else {
+        label = onFormatMonth(dt);
+        amount = 0;
+      }
+      data.last12months.labels.push(label);
+      data.last12months.datasets.push(amount);
+      data.last12months.keys.push(dt);
     });
-    // chart data for last 12 months
-    Object.keys(last12MonthsDetails).map((key, index) => {
-      data.last12months.labels.push(moment(key).format('YYYY-MM'));
-      let details = last12MonthsDetails[key];
-      let totalAmount = 0;
-      details.forEach(element => {
-        totalAmount += element.amount;
-      });
-      data.last12months.datasets.push(totalAmount);
+
+    last14DaysDates.forEach(dt => {
+      let dataFound = last14DaysTransactions.find(
+        t => onFormatDate(t.date) === onFormatDate(dt),
+      );
+      let label, amount;
+      if (dataFound) {
+        let {date, totalAmount} = dataFound;
+        label = onFormatDate(date);
+        amount = totalAmount;
+      } else {
+        label = onFormatDate(dt);
+        amount = 0;
+      }
+      data.last14days.labels.push(label);
+      data.last14days.datasets.push(amount);
+      data.last14days.keys.push(dt);
     });
+
     let sortedlabels = [...data.last12months.labels].sort();
     let datasets = [];
     sortedlabels.forEach((l, index) => {
@@ -230,8 +233,7 @@ export const SheetTrendsScreen = ({navigation, route}) => {
     });
     data.last12months.datasets = datasets;
     data.last12months.labels = sortedlabels;
-
-    let last12monthsVal = moment(data.last12months.labels[0]).format(
+    let last12monthsVal = moment(data.last12months.keys[0]).format(
       'MMM, YYYY - ',
     );
     last12monthsVal +=
@@ -245,16 +247,13 @@ export const SheetTrendsScreen = ({navigation, route}) => {
       value: last12monthsVal,
       visible: true,
     };
-
     let last14daysVal = moment(data.last14days.keys[0]).format(
       'ddd, DD MMM, YYYY - ',
     );
-
     last14daysVal +=
       GetCurrencySymbol(currentSheet.currency) +
       ' ' +
       GetCurrencyLocalString(data.last14days.datasets[0]);
-
     let last14days = {
       x: 20,
       y: 166,
@@ -268,12 +267,14 @@ export const SheetTrendsScreen = ({navigation, route}) => {
     });
     setChartData(data);
   };
+
   const onSetActiveType = type => {
     setActiveType(type);
+    onGetSheetDetailsTrends(currentSheet, type);
   };
 
   return (
-    <SafeArea style={{backgroundColor: theme.colors.bg.primary}}>
+    <SafeArea child={true}>
       {chartData &&
         chartData.last14days &&
         chartData.last12months &&

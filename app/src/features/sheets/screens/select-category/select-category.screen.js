@@ -22,64 +22,51 @@ import {
 import _ from 'lodash';
 import {Spacer} from '../../../../components/spacer/spacer.component';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {CategoriesContext} from '../../../../services/categories/categories.context';
+import {searchKeywordRegex} from '../../../../components/utility/helper';
+import {useIsFocused} from '@react-navigation/native';
+import {View} from 'react-native';
 
 export const SelectCategoryScreen = ({navigation, route}) => {
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState('');
-  const {categories: allCategories} = useContext(SheetsContext);
+  const {getCategories, onSearchCategories} = useContext(CategoriesContext);
   const theme = useTheme();
+  const routeIsFocused = useIsFocused();
   useEffect(() => {
     if (route.params.type) {
-      if (route.params.type === 'expense') {
-        const sortedExpenses = _.orderBy(
-          allCategories.expense,
-          ['name'],
-          ['asc'],
-        );
-        setCategories(sortedExpenses);
-      } else {
-        const sortedIncome = _.orderBy(allCategories.income, ['name'], ['asc']);
-        setCategories(sortedIncome);
-      }
+      onGetCategories(route.params.type);
     }
     if (route.params.selectedCategory) {
       setSelectedCategory(route.params.selectedCategory);
       if (route.params.addedNewCategoryAndSelected) {
-        navigation.navigate('AddSheetDetail', {
-          selectedCategory: route.params.selectedCategory,
-        });
+        // navigation.navigate('AddSheetDetail', {
+        //   selectedCategory: route.params.selectedCategory,
+        // });
       }
     }
   }, [route.params]);
 
+  const onGetCategories = async type => {
+    if (type) {
+      let data = await getCategories(type);
+      setCategories(data);
+    }
+  };
+
   useEffect(() => {
-    const sortedExpenses = _.orderBy(allCategories.expense, ['name'], ['asc']);
-    const sortedIncome = _.orderBy(allCategories.income, ['name'], ['asc']);
-
-    setCategories(
-      route.params.type === 'expense' ? sortedExpenses : sortedIncome,
-    );
-    if (searchKeyword !== '') {
-      let filtered = categories.filter(c => {
-        return c.name
-          .toLowerCase()
-          .includes(searchKeyword.trim().toLowerCase());
-      });
-      const sortedFiltered = _.orderBy(filtered, ['name'], ['asc']);
-
-      setCategories(sortedFiltered);
+    if (searchKeyword !== null && searchKeywordRegex.test(searchKeyword)) {
+      onSearch(route.params.type);
+    } else if (searchKeyword === '') {
+      onGetCategories(route.params.type);
     }
   }, [searchKeyword]);
 
-  useEffect(() => {
-    const sortedExpenses = _.orderBy(allCategories.expense, ['name'], ['asc']);
-    const sortedIncome = _.orderBy(allCategories.income, ['name'], ['asc']);
-
-    setCategories(
-      route.params.type === 'expense' ? sortedExpenses : sortedIncome,
-    );
-  }, [allCategories]);
+  const onSearch = async type => {
+    let result = await onSearchCategories(_.toLower(searchKeyword), type);
+    setCategories(result);
+  };
 
   useEffect(() => {
     navigation.setOptions({
@@ -98,7 +85,7 @@ export const SelectCategoryScreen = ({navigation, route}) => {
   }, []);
 
   return (
-    <SafeArea>
+    <SafeArea child={true}>
       <MainWrapper>
         <Input
           value={searchKeyword}

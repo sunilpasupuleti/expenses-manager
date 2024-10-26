@@ -8,7 +8,6 @@ import messaging from '@react-native-firebase/messaging';
 import AppFake from './AppFake';
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
-  // use backgroundmessage handler from firebase because one signal does not support background listener
   console.log('HEADLESS BACKGROUND');
 });
 

@@ -15,6 +15,7 @@ import {Spacer} from '../../../../components/spacer/spacer.component';
 import {Alert, FlatList, TouchableOpacity} from 'react-native';
 import React, {useContext, useRef} from 'react';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import _ from 'lodash';
 
 import {
   Menu,
@@ -27,7 +28,7 @@ import {
   GetCurrencyLocalString,
   GetCurrencySymbol,
 } from '../../../../components/symbol.currency';
-import {SheetsContext} from '../../../../services/sheets/sheets.context';
+import {SheetDetailsContext} from '../../../../services/sheetDetails/sheetDetails.context';
 moment.suppressDeprecationWarnings = true;
 
 export const SheetDetailsInfo = ({
@@ -37,14 +38,13 @@ export const SheetDetailsInfo = ({
   sheet,
   totalBalance,
   editFromUpcomingScreen = false,
+  onGetSheetDetails,
+  analyticsScreenReportKey,
 }) => {
   const theme = useTheme();
-  const {
-    onDeleteSheetDetails,
-    onDuplicateSheetDetail,
-    categories,
-    onChangeSheetDetailType,
-  } = useContext(SheetsContext);
+
+  const {onDeleteSheetDetail, onDuplicateSheetDetail, onChangeSheetDetailType} =
+    useContext(SheetDetailsContext);
 
   const onPressEditButton = sheetDetail => {
     navigation.navigate('AddSheetDetail', {
@@ -57,7 +57,9 @@ export const SheetDetailsInfo = ({
   const onPressDeleteButton = sheetDetail => {
     return Alert.alert(
       'Confirm?',
-      `Are you sure you want to delete this "${sheetDetail.type.toUpperCase()}" ? You won't be able to revert this back?`,
+      `Are you sure you want to delete this "${_.toUpper(
+        sheetDetail.type,
+      )}" ? You won't be able to revert this back?`,
       [
         // No buton to dismiss the alert
         {
@@ -70,15 +72,9 @@ export const SheetDetailsInfo = ({
         {
           text: 'Delete',
           onPress: () => {
-            onDeleteSheetDetails(
-              sheetDetail,
-              editFromUpcomingScreen,
-              updatedSheet => {
-                if (editFromUpcomingScreen) {
-                  navigation.navigate('Transactions');
-                }
-              },
-            );
+            onDeleteSheetDetail(sheet, sheetDetail, () => {
+              onGetSheetDetails(sheet, null, analyticsScreenReportKey);
+            });
           },
         },
       ],
@@ -86,10 +82,14 @@ export const SheetDetailsInfo = ({
   };
 
   const onDuplicateButton = sheetDetail => {
-    onDuplicateSheetDetail(sheetDetail, editFromUpcomingScreen, sh => {
-      if (editFromUpcomingScreen) {
-        navigation.navigate('Transactions');
-      }
+    onDuplicateSheetDetail(sheet, sheetDetail, () => {
+      onGetSheetDetails(sheet, null, analyticsScreenReportKey);
+    });
+  };
+
+  const onPressChangeSheetType = sheetDetail => {
+    onChangeSheetDetailType(sheet, sheetDetail, () => {
+      onGetSheetDetails(sheet, null, analyticsScreenReportKey);
     });
   };
 
@@ -131,12 +131,18 @@ export const SheetDetailsInfo = ({
           <FlatList
             data={sheetDetails}
             renderItem={({item: sd, index}) => {
-              let category = categories[sd.type].filter(
-                c => c.id === sd.category.id,
-              )[0];
-              if (!category) {
-                category = sd.category;
-              }
+              let {
+                category = {icon: null, name: null},
+                type,
+                amount,
+                notes,
+                showTime,
+                time,
+                id,
+              } = sd;
+
+              // console.log(id, amount, '--', totalBalance);
+              let {icon, color, name: categoryName} = category;
               return (
                 <Menu
                   onBackdropPress={() => menuRefs.current[index].close()}
@@ -158,10 +164,10 @@ export const SheetDetailsInfo = ({
                       },
                       TriggerTouchableComponent: TouchableOpacity,
                     }}>
-                    <SheetDetailCategoryColor color={category.color}>
-                      {category.icon && (
+                    <SheetDetailCategoryColor color={color}>
+                      {icon && (
                         <MaterialCommunityIcon
-                          name={category.icon}
+                          name={icon}
                           size={16}
                           color="#fff"
                         />
@@ -170,18 +176,19 @@ export const SheetDetailsInfo = ({
                     <SheetDetailInfo>
                       <FlexRow justifyContent="space-between">
                         <SheetDetailCategory>
-                          {category.name}{' '}
+                          {categoryName}{' '}
                         </SheetDetailCategory>
-                        <SheetDetailAmount type={sd.type}>
-                          {sd.type === 'expense' && '-'}
+                        <SheetDetailAmount type={type}>
+                          {type === 'expense' && '-'}
                           {GetCurrencySymbol(sheet.currency)}{' '}
-                          {GetCurrencyLocalString(sd.amount)}
+                          {GetCurrencyLocalString(amount)}
                         </SheetDetailAmount>
                       </FlexRow>
                       <SheetDetailNotes>
-                        {sd.notes}
-                        {sd.showTime &&
-                          ' at ' + moment(sd.time).format('hh:mm A')}
+                        {notes}
+                        {showTime
+                          ? ' at ' + moment(time).format('hh:mm A')
+                          : null}
                       </SheetDetailNotes>
                     </SheetDetailInfo>
                   </MenuTrigger>
@@ -197,20 +204,12 @@ export const SheetDetailsInfo = ({
                       customStyles={menuOptionStyles}
                       onSelect={() => {
                         menuRefs.current[index].close();
-                        onChangeSheetDetailType(
-                          sd,
-                          editFromUpcomingScreen,
-                          sheet => {
-                            if (editFromUpcomingScreen) {
-                              navigation.navigate('Transactions');
-                            }
-                          },
-                        );
+                        onPressChangeSheetType(sd);
                       }}>
                       <FlexRow justifyContent="space-between">
                         <Text color="#2f2f2f" fontfamily="heading">
                           Change type to{' '}
-                          {sd.type === 'expense' ? 'income' : 'expense'}
+                          {type === 'expense' ? 'income' : 'expense'}
                         </Text>
                         <Ionicons name="camera-reverse-outline" size={20} />
                       </FlexRow>
@@ -222,12 +221,12 @@ export const SheetDetailsInfo = ({
                         menuRefs.current[index].close();
                         navigation.navigate('MoveSheet', {
                           sheetDetail: sd,
-                          editFromUpcomingScreen: editFromUpcomingScreen,
+                          sheet: sheet,
                         });
                       }}>
                       <FlexRow justifyContent="space-between">
                         <Text color="#2f2f2f" fontfamily="heading">
-                          Move {sd.type}
+                          Move {type}
                         </Text>
                         <Ionicons name="folder-outline" size={20} />
                       </FlexRow>
@@ -241,7 +240,7 @@ export const SheetDetailsInfo = ({
                       }}>
                       <FlexRow justifyContent="space-between">
                         <Text color="#2f2f2f" fontfamily="heading">
-                          Duplicate {sd.type}
+                          Duplicate {type}
                         </Text>
                         <Ionicons name="duplicate-outline" size={20} />
                       </FlexRow>
@@ -255,7 +254,7 @@ export const SheetDetailsInfo = ({
                       }}>
                       <FlexRow justifyContent="space-between">
                         <Text color="red" fontfamily="heading">
-                          Delete {sd.type}
+                          Delete {type}
                         </Text>
                         <Ionicons name="trash-outline" size={20} color="red" />
                       </FlexRow>
@@ -265,7 +264,7 @@ export const SheetDetailsInfo = ({
                 </Menu>
               );
             }}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.id + Math.random()}
           />
         </>
       )}

@@ -13,7 +13,6 @@ import {SettingsContext} from '../../services/settings/settings.context';
 
 export const SelectBaseCurrency = () => {
   const theme = useTheme();
-  const [loading, setLoading] = useState(false);
   const [currencies, setCurrencies] = useState([]);
   const [selectedCurrency, setSelectedCurrency] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -21,17 +20,14 @@ export const SelectBaseCurrency = () => {
   const {baseCurrency, setBaseCurrency, onUpdateBaseCurrency} =
     useContext(SettingsContext);
 
-  const onClickAddAndContinue = () => {
-    if (selectedCurrency) {
-      setLoading(true);
+  const onClickAddAndContinue = currency => {
+    if (currency) {
       onUpdateBaseCurrency(
-        selectedCurrency,
+        currency,
         () => {
-          setLoading(false);
           onHideDialog();
         },
         () => {
-          setLoading(false);
           onHideDialog();
         },
       );
@@ -98,7 +94,7 @@ export const SelectBaseCurrency = () => {
           },
         }}>
         <Dialog.Title
-          style={{alignSelf: 'center', fontWeight: 'bold', paddingTop: 20}}>
+          style={{alignSelf: 'center', fontWeight: 'bold', paddingTop: 0}}>
           Select Your Base Currency
         </Dialog.Title>
         {selectedCurrency && (
@@ -116,32 +112,17 @@ export const SelectBaseCurrency = () => {
             <Spacer size="medium" />
           </>
         )}
-        <Input
-          value={searchKeyword}
-          placeholder="Search currencies"
-          clearButtonMode="while-editing"
-          onChangeText={k => setSearchKeyword(k)}
-        />
-
-        <TouchableOpacity
-          onPress={onClickAddAndContinue}
+        <View
           style={{
-            position: 'absolute',
-            right: -10,
-            top: -20,
-            backgroundColor:
-              !selectedCurrency || loading
-                ? '#aaa'
-                : theme.colors.brand.primary,
-            padding: 10,
-            paddingLeft: 20,
-            paddingRight: 20,
-            borderRadius: 20,
+            padding: 5,
           }}>
-          <MaterialCommunityIcons name={'check-bold'} size={20} color={'#fff'}>
-            {loading ? 'Updating' : 'Continue'}
-          </MaterialCommunityIcons>
-        </TouchableOpacity>
+          <Input
+            value={searchKeyword}
+            placeholder="Search currencies"
+            clearButtonMode="while-editing"
+            onChangeText={k => setSearchKeyword(k)}
+          />
+        </View>
 
         <Spacer size="large" />
         {currencies && currencies.length > 0 ? (
@@ -155,7 +136,7 @@ export const SelectBaseCurrency = () => {
                 <TouchableHighlightWithColor
                   key={c}
                   onPress={() => {
-                    setSelectedCurrency(c);
+                    onClickAddAndContinue(c);
                   }}
                   style={
                     selectedCurrency === c && {

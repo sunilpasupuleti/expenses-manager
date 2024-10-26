@@ -1,4 +1,3 @@
-const { getMessaging } = require("firebase-admin/messaging");
 const logger = require("../middleware/logger/logger");
 
 const OneSignal = require("onesignal-node");
@@ -13,25 +12,27 @@ const client = new OneSignal.Client(
 
 module.exports = {
   async sendDailyReminderNotification(data) {
-    let display = data.displayName || data.email || data.phoneNumber;
-    logger.info("sending daily reminder notification to  - " + display);
-    let title = "Reminder 🔔";
-    let body = `Have you recorded your transactions..🤔? If not 😕 do it now.`;
-    let notificationData = {
-      type: "daily-reminder",
-      uid: data.uid,
-    };
-    let bigPictureUrl = getFirebaseAccessUrl("notification/daily_reminder.jpg");
-    let largeIconUrl = getFirebaseAccessUrl("notification/wallet.jpeg");
-    let collapseId = "daily-reminder";
     try {
+      let display = data.displayName || data.email || data.phoneNumber;
+      logger.info("sending daily reminder notification to  - " + display);
+      let title = "Reminder 🔔";
+      let body = `Have you recorded your transactions..🤔? If not 😕 do it now.`;
+      let notificationData = {
+        type: "daily-reminder",
+        uid: data.uid,
+      };
+      let bigPictureUrl = getFirebaseAccessUrl(
+        "notification/daily_reminder.jpg"
+      );
+      let largeIconUrl = getFirebaseAccessUrl("notification/wallet.jpeg");
+      let collapseId = "daily-reminder";
+
       const res = await client.createNotification({
         name: "Daily Reminder",
         headings: {
           en: title,
         },
         priority: 7,
-
         android_accent_color: "5756d5",
         ios_sound: "notification_primary.wav",
         ios_attachments: {
@@ -44,17 +45,8 @@ module.exports = {
         contents: {
           en: body,
         },
+
         collapse_id: collapseId,
-        // buttons: [
-        //   {
-        //     id: "daily_reminder_yes",
-        //     text: "Do it now",
-        //   },
-        //   {
-        //     id: "no",
-        //     text: "Later",
-        //   },
-        // ],
         filters: [
           {
             field: "tag",
@@ -77,27 +69,47 @@ module.exports = {
   },
 
   async sendDailyBackupNotification(data) {
-    let display = data.displayName || data.email || data.phoneNumber;
-
-    logger.info("sending daily backup notification to  - " + display);
-
-    let title = "Backup Progressing 🔄";
-    let body = `Please hold on, we're currently backing up your data.`;
-    let notificationData = {
-      type: "daily-backup",
-      uid: data.uid,
-    };
-    let bigPictureUrl = getFirebaseAccessUrl("notification/daily_backup.jpeg");
-    let largeIconUrl = getFirebaseAccessUrl("notification/backup.png");
-
-    let collapseId = "daily-backup";
-
     try {
+      let display = data.displayName || data.email || data.phoneNumber;
+      let platform = data.platform;
+      let buttons = [];
+
+      logger.info("sending daily backup notification to  - " + display);
+
+      let title = "Backup Progressing 🔄";
+      let body = `Please hold on, we're currently backing up your data.`;
+      let notificationData = {
+        type: "daily-backup",
+        uid: data.uid,
+      };
+      let bigPictureUrl = getFirebaseAccessUrl(
+        "notification/daily_backup.jpeg"
+      );
+      let largeIconUrl = getFirebaseAccessUrl("notification/backup.png");
+
+      let collapseId = "daily-backup";
+
+      if (platform === "ios") {
+        title = "Backup Needed 📲";
+        body = "Please backup your data to ensure it's safe.";
+        buttons = [
+          {
+            id: "backup_now",
+            text: "Backup Now",
+          },
+          {
+            id: "no",
+            text: "Dismiss",
+          },
+        ];
+      }
+
       const res = await client.createNotification({
         name: "Daily Backup",
         headings: {
           en: title,
         },
+        app_url: "expenses-manager://Settings/Sync/",
         priority: 7,
         android_accent_color: "5756d5",
         ios_sound: "notification_primary.wav",
@@ -112,7 +124,7 @@ module.exports = {
           en: body,
         },
         collapse_id: collapseId,
-        buttons: [],
+        buttons: buttons,
         filters: [
           {
             field: "tag",
@@ -123,7 +135,7 @@ module.exports = {
         ],
         data: notificationData,
       });
-      createDailyBackupFromTempData(data);
+      // createDailyBackupFromTempData(data);
       logger.info(JSON.stringify(res.body));
     } catch (err) {
       if (err instanceof OneSignal.HTTPError) {
