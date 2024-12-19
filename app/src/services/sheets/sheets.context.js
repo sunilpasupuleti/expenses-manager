@@ -65,8 +65,11 @@ export const SheetsContext = createContext({
   setCurrentSheet: null,
 });
 
-const SmsListener = NativeModules.SmsListener;
-const smsListenerEmitter = new NativeEventEmitter(SmsListener);
+const {SmsListener, AlarmManagerModule} = NativeModules;
+const smsListenerEmitter =
+  Platform.OS === 'android' ? new NativeEventEmitter(SmsListener) : null;
+const alarmEmitter =
+  Platform.OS === 'android' ? new NativeEventEmitter(AlarmManagerModule) : null;
 
 export const SheetsContextProvider = ({children}) => {
   const [currentSheet, setCurrentSheet] = useState();

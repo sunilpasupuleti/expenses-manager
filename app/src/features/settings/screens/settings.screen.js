@@ -65,6 +65,10 @@ export const SettingsScreen = ({navigation}) => {
     .getValue('ACCOUNT_DELETION_URL')
     .asString();
 
+  const PRIVACY_POLICY_URL = remoteConfig()
+    .getValue('PRIVACY_POLICY_URL')
+    .asString();
+
   const APP_STORE_URL = remoteConfig().getValue('APP_STORE_URL').asString();
 
   const PLAY_STORE_URL = remoteConfig().getValue('PLAY_STORE_URL').asString();
@@ -137,6 +141,7 @@ export const SettingsScreen = ({navigation}) => {
   useEffect(() => {
     if (userAdditionalDetails) {
       let dailyBackup = userAdditionalDetails.dailyBackupEnabled ? true : false;
+
       setIsDailyBackUpEnabled(dailyBackup);
       let autoFetch = userAdditionalDetails.autoFetchTransactions
         ? true
@@ -183,6 +188,10 @@ export const SettingsScreen = ({navigation}) => {
         purpose: 'setpin',
       });
     }
+  };
+
+  const openPrivacyPolicy = () => {
+    Linking.openURL(PRIVACY_POLICY_URL);
   };
 
   const onRevealSecretKey = async () => {
@@ -317,7 +326,10 @@ export const SettingsScreen = ({navigation}) => {
       );
     };
     try {
+      console.log('---', '---');
+
       let transactions = await onGetSheetsAndTransactions();
+
       const transactionExists = transactions && transactions.length > 0;
       proceedLogout(transactionExists);
     } catch (e) {
@@ -784,6 +796,22 @@ export const SettingsScreen = ({navigation}) => {
                     </SettingIconWrapper>
 
                     <SettingTitle>Review the App</SettingTitle>
+                  </FlexRow>
+                </Setting>
+              </SettingsCardContent>
+
+              <SettingsCardContent onPress={openPrivacyPolicy}>
+                <Setting justifyContent="space-between">
+                  <FlexRow>
+                    <SettingIconWrapper color={'#757575'}>
+                      <MaterialCommunityIcons
+                        name="file-document-outline"
+                        size={20}
+                        color="#fff"
+                      />
+                    </SettingIconWrapper>
+
+                    <SettingTitle>Privacy Policy</SettingTitle>
                   </FlexRow>
                 </Setting>
               </SettingsCardContent>

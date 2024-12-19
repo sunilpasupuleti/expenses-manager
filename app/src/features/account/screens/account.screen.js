@@ -1,6 +1,7 @@
 import React, {useContext, useState, useEffect} from 'react';
 import {
   Image,
+  Linking,
   Platform,
   TouchableOpacity,
   View,
@@ -18,7 +19,7 @@ import {
   OtherLoginButtonsContainer,
 } from '../components/account.styles';
 import * as Animatable from 'react-native-animatable';
-
+import remoteConfig from '@react-native-firebase/remote-config';
 import {Text} from '../../../components/typography/text.component';
 import {Button} from 'react-native-paper';
 import {SafeArea} from '../../../components/utility/safe-area.component';
@@ -28,6 +29,9 @@ import {AppleButton} from '@invertase/react-native-apple-authentication';
 import {useSelector} from 'react-redux';
 
 export const AccountScreen = ({navigation}) => {
+  const PRIVACY_POLICY_URL = remoteConfig()
+    .getValue('PRIVACY_POLICY_URL')
+    .asString();
   const [email, setEmail] = useState({value: null, error: false});
   const [password, setPassword] = useState({value: null, error: false});
   const [confirmPassword, setConfirmPassword] = useState({
@@ -130,6 +134,10 @@ export const AccountScreen = ({navigation}) => {
   const onChangeMode = mode => {
     onResetAllValues();
     setMode(mode);
+  };
+
+  const openPrivacyPolicy = () => {
+    Linking.openURL(PRIVACY_POLICY_URL);
   };
 
   useEffect(() => {
@@ -275,6 +283,13 @@ export const AccountScreen = ({navigation}) => {
             </>
           )}
           <Spacer size={'large'} />
+          <TouchableOpacity onPress={openPrivacyPolicy}>
+            <Hyperlink fontsize="12px">
+              By continuing, you agree to our Privacy Policy
+            </Hyperlink>
+          </TouchableOpacity>
+          <Spacer size={'large'} />
+
           <Button
             theme={{roundness: 10}}
             mode="contained"

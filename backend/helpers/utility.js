@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const logger = require("../middleware/logger/logger");
 const ObjectId = mongoose.Types.ObjectId;
 const jwt = require("jsonwebtoken");
+const moment = require("moment");
+const storage = require("firebase-admin/storage");
 const FIREBASE_STORAGE_URL = process.env.FIREBASE_STORAGE_URL;
 
 module.exports = {
@@ -16,6 +18,9 @@ module.exports = {
   cryptoDecrypt,
   cryptoEncrypt,
   getFirebaseAccessUrl,
+  firebaseRemoveFiles,
+  formatDate,
+  getCurrentDate,
   adminRole: "admin",
 };
 
@@ -83,4 +88,38 @@ function validateParamsObjectId(paramName) {
       });
     }
   };
+}
+
+function formatDate(date) {
+  return moment(date).format("YYYY-MM-DD HH:mm:ss");
+}
+
+function getCurrentDate() {
+  return moment().format("YYYY-MM-DD HH:mm:ss");
+}
+
+async function firebaseRemoveFiles(paths) {
+  return Promise.all(
+    paths.map(async (path) => {
+      try {
+        const bucket = storage.getStorage().bucket();
+        let file = bucket.file(path);
+
+        let fileExists = await file.exists();
+
+        if (fileExists[0]) {
+          await file.delete();
+        }
+        return true;
+      } catch (e) {
+        // skip deletion if file not exists
+        console.log(
+          e.toString(),
+          "Error occurred while removing firebase cloud file at path:",
+          path
+        );
+        return false;
+      }
+    })
+  );
 }

@@ -13,7 +13,6 @@ const schedule = require("node-schedule");
 const Users = require("./models/Users");
 const socketIo = require("socket.io");
 const cookieParser = require("cookie-parser");
-
 const {
   sendDailyReminderNotification,
   sendDailyBackupNotification,
@@ -39,7 +38,6 @@ var accessLogStream = rfs.createStream("api.log", {
 });
 
 app.use(morgan("dev", {}));
-
 app.use(morgan("combined", { stream: accessLogStream }));
 
 /**

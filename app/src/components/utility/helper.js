@@ -9,6 +9,7 @@ import {
 import {GetCurrencyLocalString, GetCurrencySymbol} from '../symbol.currency';
 import momentTz from 'moment-timezone';
 import {getTimeZone} from 'react-native-localize';
+import PushNotification from 'react-native-push-notification';
 
 const FIREBASE_STORAGE_URL = remoteConfig()
   .getValue('FIREBASE_STORAGE_URL')
@@ -427,3 +428,40 @@ export const getPdfAccountStyles = theme => `
     `;
 
 export const searchKeywordRegex = /^[^\s].*$/;
+
+export const sendLocalNotification = (
+  notification = {
+    title: '',
+    subtitle: '',
+    message: '',
+    image: null,
+  },
+  data,
+) => {
+  let {title, subtitle, message, image} = notification;
+  let picturePath = image || 'notification/local_transaction_added.png';
+  let pictureUrl = getFirebaseAccessUrl(picturePath);
+  PushNotification.localNotification(
+    {
+      channelId: 'expenses-manager-local-notification',
+      title: title,
+      message: message,
+      userInfo: data,
+      ongoing: false,
+      playSound: true,
+      vibrate: true,
+      vibration: 300,
+      priority: 'high',
+      invokeApp: false,
+      allowWhileIdle: true,
+      soundName: 'notification_primary.wav',
+      picture: pictureUrl,
+      bigPictureUrl: pictureUrl,
+      largeIconUrl: pictureUrl,
+      // only ios
+      subtitle: subtitle,
+      actions: ['Dismiss'],
+    },
+    scheduled => {},
+  );
+};

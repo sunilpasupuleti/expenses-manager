@@ -91,8 +91,8 @@ android {
         applicationId "com.webwizard.expensesmanager"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 18
-        versionName "2.1.2"
+        versionCode 19
+        versionName "3.0"
     }
 
     signingConfigs {
@@ -132,7 +132,11 @@ dependencies {
 
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-    
+    implementation 'com.facebook.react:react-native:+'
+// added
+    implementation 'androidx.work:work-runtime-ktx:2.9.0'
+
+
     // implementation("com.facebook.react:flipper-integration")
    
     if (hermesEnabled.toBoolean()) {

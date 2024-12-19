@@ -44,8 +44,10 @@ import {getCountry} from 'react-native-localize';
 import {useSelector} from 'react-redux';
 import {ScrollView} from 'react-native-gesture-handler';
 
-const SmsListener = NativeModules.SmsListener;
-const smsListenerEmitter = new NativeEventEmitter(SmsListener);
+const SmsListener =
+  Platform.OS === 'android' ? NativeModules.SmsListener : null;
+const smsListenerEmitter =
+  Platform.OS === 'android' ? new NativeEventEmitter(SmsListener) : null;
 
 export const PhoneLoginScreen = ({navigation, route}) => {
   const [phone, setPhone] = useState({valreacue: '', error: false});

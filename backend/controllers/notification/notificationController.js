@@ -126,13 +126,13 @@ module.exports = {
         const rule = new schedule.RecurrenceRule();
         let hour = 00;
         let minute = 01;
-        // rule.hour = hour;
-        // rule.minute = minute;
+        rule.hour = hour;
+        rule.minute = minute;
         rule.tz = timeZone;
 
         rule.dayOfWeek = new schedule.Range(0, 6);
 
-        rule.minute = new schedule.Range(0, 59, 1); //for every one minute
+        // rule.minute = new schedule.Range(0, 59, 2); //for every one minute
         // get user data
         logger.info(
           `Enabling daily backup for ${userData.displayName} at time - ${hour}:${minute} - ${timeZone}`

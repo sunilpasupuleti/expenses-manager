@@ -1,6 +1,6 @@
 {
   "name": "expensesmanager",
-  "version": "2.1.2",
+  "version": "3.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",

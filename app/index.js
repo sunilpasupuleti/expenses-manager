@@ -4,22 +4,7 @@ import React from 'react';
 import App from './App';
 import {name as appName} from './app.json';
 import store from './src/store';
-import messaging from '@react-native-firebase/messaging';
-import AppFake from './AppFake';
-
-messaging().setBackgroundMessageHandler(async remoteMessage => {
-  console.log('HEADLESS BACKGROUND');
-});
-
-function HeadlessCheck({isHeadless}) {
-  if (isHeadless) {
-    console.log('Headless');
-    return <AppFake />;
-    /* Notice this component, it is not the App Component but a different one*/
-  }
-
-  return <Redux />;
-}
+import {headlessTask} from './headlessTask';
 
 const Redux = () => {
   return (
@@ -29,4 +14,5 @@ const Redux = () => {
   );
 };
 
-AppRegistry.registerComponent(appName, () => HeadlessCheck);
+AppRegistry.registerComponent(appName, () => Redux);
+AppRegistry.registerHeadlessTask('AlarmTask', () => headlessTask);

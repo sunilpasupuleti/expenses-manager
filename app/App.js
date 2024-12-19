@@ -34,9 +34,6 @@ import moment from 'moment';
 import SplashScreen from 'react-native-splash-screen';
 import {fetchAppLock} from './src/store/applock-slice';
 import VersionCheck from 'react-native-version-check';
-import './src/components/notifcications/one-signal';
-import './src/components/notifcications/push-notification';
-import {OneSignal} from 'react-native-onesignal';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {colors} from './src/infrastructure/theme/colors';
 import {SQLiteContextProvider} from './src/services/sqlite/sqlite.context';
@@ -100,7 +97,6 @@ const App = () => {
   }, [appStatus]);
 
   const checkAppUpdateNeeded = async () => {
-    return;
     try {
       const latestVersion = await VersionCheck.getLatestVersion();
       const currentVersion = await VersionCheck.getCurrentVersion();

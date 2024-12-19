@@ -10,14 +10,13 @@ import {
   firebaseRemoveFile,
   firebaseUploadFile,
   getDataFromRows,
-  getFirebaseAccessUrl,
+  sendLocalNotification,
 } from '../../components/utility/helper';
 import remoteConfig from '@react-native-firebase/remote-config';
 import {SQLiteContext} from '../sqlite/sqlite.context';
-import {Alert} from 'react-native';
+import {Alert, NativeEventEmitter, NativeModules, Platform} from 'react-native';
 import moment from 'moment';
 import {SheetsContext} from '../sheets/sheets.context';
-import PushNotification from 'react-native-push-notification';
 import useHttp from '../../hooks/use-http';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {
@@ -27,6 +26,13 @@ import {
   transformSheetDetailsDashboard,
   transformSheetDetailsTrends,
 } from '../../components/utility/dataProcessHelper';
+import {navigationRef} from '../../infrastructure/navigation/rootnavigation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Clipboard from '@react-native-clipboard/clipboard';
+
+const {AlarmManagerModule} = NativeModules;
+const alarmEmitter =
+  Platform.OS === 'android' ? new NativeEventEmitter(AlarmManagerModule) : null;
 
 export const SheetDetailsContext = createContext({
   getSheetDetails: (sheet, searchKeyword) => null,
@@ -48,13 +54,14 @@ export const SheetDetailsContext = createContext({
 
 export const SheetDetailsContextProvider = ({children}) => {
   const {userData} = useContext(AuthenticationContext);
-  const {onGetAndSetCurrentSheet} = useContext(SheetsContext);
+  const {onGetAndSetCurrentSheet, currentSheet} = useContext(SheetsContext);
   const {
     createOrReplaceData,
     updateData,
     getData,
     deleteData,
     db,
+    initializeDB,
     executeQuery,
   } = useContext(SQLiteContext);
   const {isConnected} = useNetInfo();
@@ -62,7 +69,31 @@ export const SheetDetailsContextProvider = ({children}) => {
   const MINDEE_API_KEY = remoteConfig().getValue('MINDEE_API_KEY').asString();
   const MINDEE_API_URL = remoteConfig().getValue('MINDEE_API_URL').asString();
   const {sendRequest} = useHttp();
+
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    // Upcoming sheetdetail
+    if (Platform.OS === 'android') {
+      const subscription = alarmEmitter.addListener(
+        'upcomingSheetDetail',
+        async data => {
+          if (!db) {
+            console.log('no database exists intializing again');
+            await initializeDB(true);
+          }
+          // Giving time to initialize and setting the db variable
+          setTimeout(() => {
+            onSetUpcomingSheetDetailFromEvent(JSON.parse(data));
+          }, 3000);
+        },
+      );
+
+      return () => {
+        subscription.remove();
+      };
+    }
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -71,43 +102,6 @@ export const SheetDetailsContextProvider = ({children}) => {
       }
     })();
   }, [db]);
-
-  const sendNotification = (
-    notification = {
-      title: '',
-      subtitle: '',
-      message: '',
-      image: null,
-    },
-    data,
-  ) => {
-    let {title, subtitle, message, image} = notification;
-    let picturePath = image || 'notification/local_transaction_added.png';
-    let pictureUrl = getFirebaseAccessUrl(picturePath);
-    PushNotification.localNotification(
-      {
-        channelId: 'expenses-manager-local-notification',
-        title: title,
-        message: message,
-        userInfo: data,
-        ongoing: true,
-        playSound: true,
-        vibrate: true,
-        vibration: 300,
-        priority: 'high',
-        invokeApp: false,
-        allowWhileIdle: true,
-        soundName: 'notification_primary.wav',
-        picture: pictureUrl,
-        bigPictureUrl: pictureUrl,
-        largeIconUrl: pictureUrl,
-        // only ios
-        subtitle: subtitle,
-        actions: ['Dismiss'],
-      },
-      scheduled => {},
-    );
-  };
 
   // helpers
   const showLoader = (loaderType, backdrop = true) => {
@@ -577,6 +571,23 @@ export const SheetDetailsContextProvider = ({children}) => {
       const saveSheetDetail = async () => {
         delete sheetDetail.image;
         let result = await createOrReplaceData('Transactions', sheetDetail);
+        if (sheetDetail.upcoming) {
+          const timeInMillis = new Date(sheetDetail.date).getTime();
+          const uniqueCode = Number(`${sheet.id}${result.insertId}`);
+
+          let data = {
+            sheetDetailId: result.insertId,
+            sheetId: sheet.id,
+          };
+
+          AlarmManagerModule.scheduleAlarm(
+            timeInMillis,
+            'upcomingSheetDetail',
+            JSON.stringify(data),
+            uniqueCode,
+          );
+        }
+
         await onGetAndSetCurrentSheet(sheet.id);
         hideLoader();
         callback();
@@ -630,6 +641,23 @@ export const SheetDetailsContextProvider = ({children}) => {
           `WHERE id=?`,
           [sheetDetail.id],
         );
+
+        if (sheetDetail.upcoming) {
+          const timeInMillis = new Date(sheetDetail.date).getTime();
+          let data = {
+            sheetDetailId: sheetDetail.id,
+            sheetId: sheet.id,
+          };
+          const uniqueCode = Number(`${sheet.id}${sheetDetail.id}`);
+
+          AlarmManagerModule.scheduleAlarm(
+            timeInMillis,
+            'upcomingSheetDetail',
+            JSON.stringify(data),
+            uniqueCode,
+          );
+        }
+
         await onGetAndSetCurrentSheet(sheet.id);
         hideLoader();
         callback();
@@ -826,6 +854,75 @@ export const SheetDetailsContextProvider = ({children}) => {
     }
   };
 
+  const onSetUpcomingSheetDetailFromEvent = async data => {
+    try {
+      if (!data) {
+        throw 'No data';
+      }
+      let query = `
+      SELECT t.*,
+      t.id AS transaction_id,
+      a.*,
+      a.id AS account_id
+      FROM Transactions AS t
+      JOIN Accounts AS a ON t.accountId = a.id
+      WHERE t.id = ${data.sheetDetailId};
+  `;
+
+      let result = await getData(query);
+
+      let resultData = await getDataFromRows(result.rows);
+
+      if (!resultData[0]) {
+        throw 'No Transaction Found';
+      }
+
+      const {transaction_id, notes, name, imageUrl, date} = resultData[0];
+      const currentDate = moment().set({second: 0, millisecond: 0});
+      let upcoming = moment(date).isSameOrAfter(currentDate);
+      if (upcoming) {
+        let updateQuery = `
+        UPDATE Transactions
+        SET upcoming = 0
+        WHERE id = ${transaction_id}
+        `;
+
+        const updateResult = await executeQuery(updateQuery);
+
+        const notificationInfo = {
+          title: `New Transaction ${notes ? `:${notes}` : ''}`,
+          message: `Added to - ${name} `,
+          image: imageUrl,
+        };
+        const currentRoute = navigationRef?.current?.getCurrentRoute();
+        const activeRoute = currentRoute?.name;
+
+        if (activeRoute) {
+          const reRenderSubRoutes = [
+            'SheetStats',
+            'SheetTrends',
+            'Dashboard',
+            'Transactions',
+          ];
+          if (
+            reRenderSubRoutes.includes(activeRoute) &&
+            currentSheet?.id === data?.sheetId
+          ) {
+            return navigationRef.current.setParams({reRender: true});
+          }
+
+          navigationRef.current.setParams({reRender: true});
+        }
+
+        sendLocalNotification(notificationInfo, resultData);
+      }
+    } catch (err) {
+      console.log(err.message);
+
+      // showNotification('error', err.message || err.toString());
+    }
+  };
+
   const onCheckUpcomingSheetDetails = async (
     sheet = null,
     callback = () => null,
@@ -856,6 +953,7 @@ export const SheetDetailsContextProvider = ({children}) => {
         if (sheet) {
           query += ` AND accountId=${sheet.id}`;
         }
+
         await executeQuery(updateQuery);
         data.forEach(async transaction => {
           let {accountId} = transaction;
@@ -870,8 +968,7 @@ export const SheetDetailsContextProvider = ({children}) => {
             message: `Added to - ${accountData.name} `,
             image: transaction.imageUrl,
           };
-          console.log(notificationInfo);
-          sendNotification(notificationInfo, transaction);
+          sendLocalNotification(notificationInfo, transaction);
         });
         if (sheet) {
           let exists = data.find(d => d.accountId === sheet.id);
@@ -890,6 +987,7 @@ export const SheetDetailsContextProvider = ({children}) => {
   const onGetSheetsAndTransactions = async () => {
     return new Promise(async (resolve, reject) => {
       let {uid} = userData;
+
       try {
         let query = `
           SELECT 

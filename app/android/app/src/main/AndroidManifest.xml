@@ -1,23 +1,28 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
-    <uses-permission android:name="android.permission.ACTION_OPEN_DOCUMENT"/>
-    <uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL"/>
-    <uses-permission android:name="android.permission.MANAGE_DOCUMENTS"/>
-    <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
-    <uses-permission android:name="android.permission.READ_SMS"/>
-    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
-    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <application
+<manifest
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:tools="http://schemas.android.com/tools">
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+	<uses-permission android:name="android.permission.ACTION_OPEN_DOCUMENT"/>
+	<uses-permission android:name="android.permission.MEDIA_CONTENT_CONTROL"/>
+	<uses-permission android:name="android.permission.MANAGE_DOCUMENTS"/>
+	<uses-permission android:name="android.permission.VIBRATE"/>
+	<uses-permission android:name="android.permission.USE_BIOMETRIC"/>
+	<uses-permission android:name="android.permission.READ_SMS"/>
+	<uses-permission android:name="android.permission.RECEIVE_SMS"/>
+	<uses-permission android:name="android.permission.USE_FINGERPRINT"/>
+	<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+	<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+	<uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+	<uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+	<uses-permission android:name="android.permission.USE_EXACT_ALARM"/>
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+	<uses-permission android:name="android.permission.BIND_JOB_SERVICE" />
+	<application
       android:name=".MainApplication"
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"
@@ -25,54 +30,68 @@
       android:allowBackup="false"
       android:theme="@style/AppTheme"
       android:supportsRtl="true">
-       <!-- added -->
-       <receiver android:name=".alarmmanager.AlarmReceiver"
+		<!-- added -->
+
+ <meta-data android:name="com.onesignal.NotificationServiceExtension"
+     android:value="com.webwizard.expensesmanager.NotificationServiceExtension" />
+
+		<receiver android:name="com.webwizard.expensesmanager.alarmmanager.AlarmReceiver"
           android:exported="true"
           android:enabled="true">
-          <intent-filter>
-              <action android:name="android.intent.action.BOOT_COMPLETED" />
-          </intent-filter>
-      </receiver>
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED" />
+			</intent-filter>
+		</receiver>
 
-        <meta-data  android:name="com.dieam.reactnativepushnotification.notification_foreground"
+		<service
+    android:name="com.webwizard.expensesmanager.alarmmanager.AlarmService"
+    android:permission="android.permission.BIND_JOB_SERVICE"
+    android:exported="true" />
+		<service
+        android:name="com.facebook.react.HeadlessJsTaskService" />
+		<service
+        android:name="com.webwizard.expensesmanager.alarmmanager.AlarmTaskService"
+        android:permission="android.permission.BIND_JOB_SERVICE"
+        android:exported="false"/>
+		<meta-data  android:name="com.dieam.reactnativepushnotification.notification_foreground"
                     android:value="false"/>
-        <meta-data  android:name="com.dieam.reactnativepushnotification.notification_color"
-                    android:resource="@color/app_bg"/> 
-        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" android:exported="false" />
-        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" android:exported="false" />
-        <receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver" android:exported="false">
-            <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
-                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
-            </intent-filter>
-        </receiver>
-      <service
+		<meta-data  android:name="com.dieam.reactnativepushnotification.notification_color"
+                    android:resource="@color/app_bg"/>
+		<receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationActions" android:exported="false" />
+		<receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationPublisher" android:exported="false" />
+		<receiver android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationBootEventReceiver" android:exported="false">
+			<intent-filter>
+				<action android:name="android.intent.action.BOOT_COMPLETED" />
+				<action android:name="android.intent.action.QUICKBOOT_POWERON" />
+				<action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+			</intent-filter>
+		</receiver>
+		<service
             android:name="com.dieam.reactnativepushnotification.modules.RNPushNotificationListenerService"
             android:exported="false" >
-            <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT" />
-            </intent-filter>
-      </service>
-      <!-- added -->
-      <!-- <meta-data android:name="com.onesignal.NotificationOpened.DEFAULT" android:value="DISABLE" /> -->
-      <activity
+			<intent-filter>
+				<action android:name="com.google.firebase.MESSAGING_EVENT" />
+			</intent-filter>
+		</service>
+		<!-- added -->
+		<!-- <meta-data android:name="com.onesignal.NotificationOpened.DEFAULT" android:value="DISABLE" /> -->
+		<activity
         android:name=".MainActivity"
         android:label="@string/app_name"
         android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|screenSize|smallestScreenSize|uiMode"
         android:launchMode="singleTask"
         android:windowSoftInputMode="adjustResize"
         android:exported="true">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-        <intent-filter>
-          <action android:name="android.intent.action.VIEW" />
-          <category android:name="android.intent.category.DEFAULT" />
-          <category android:name="android.intent.category.BROWSABLE" />
-          <data android:scheme="expenses-manager" />
-        </intent-filter>
-      </activity>
-    </application>
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+			<intent-filter>
+				<action android:name="android.intent.action.VIEW" />
+				<category android:name="android.intent.category.DEFAULT" />
+				<category android:name="android.intent.category.BROWSABLE" />
+				<data android:scheme="expenses-manager" />
+			</intent-filter>
+		</activity>
+	</application>
 </manifest>

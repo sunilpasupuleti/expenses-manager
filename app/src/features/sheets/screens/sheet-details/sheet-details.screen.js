@@ -86,6 +86,7 @@ export const SheetDetailsScreen = ({navigation, route}) => {
     transactions: [],
     upcomingTransactions: [],
   });
+  const {reRender} = route.params || {};
 
   const {currentSheet} = useContext(SheetsContext);
   const {onSmartScanReceipt} = useContext(SheetDetailsContext);
@@ -113,6 +114,15 @@ export const SheetDetailsScreen = ({navigation, route}) => {
       setSearchKeyword(null);
     }
   }, [routeIsFocused]);
+
+  useEffect(() => {
+    if (reRender) {
+      navigation.setParams({reRender: false});
+      onGetSheetDetails(currentSheet, null, filterParams);
+    } else {
+      setSearchKeyword(null);
+    }
+  }, [reRender]);
 
   const setNavigationOptions = () => {
     navigation.setOptions({

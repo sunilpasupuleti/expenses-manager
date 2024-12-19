@@ -17,7 +17,7 @@ import {
   AccountsInsertTrigger,
   AccountsUpdateTrigger,
 } from './sqliteTriggers';
-import {dbBackupPath, dbPath} from '../../../config';
+import {DB_BACKUP_PATH, DB_PATH} from '../../../config';
 import {Platform} from 'react-native';
 import RNFS from 'react-native-fs';
 
@@ -69,11 +69,12 @@ export const SQLiteContextProvider = ({children}) => {
           return;
         }
         const database = await SQLite.openDatabase({
-          name: dbPath,
+          name: DB_PATH,
           // effect for ios only
           location: 'Documents',
         });
         const version = await database.executeSql('SELECT sqlite_version()');
+
         console.log(version[0].rows.item(0));
 
         //   Migrate db
@@ -120,7 +121,7 @@ export const SQLiteContextProvider = ({children}) => {
             ? RNFS.DocumentDirectoryPath
             : `${RNFS.DocumentDirectoryPath.replace('files', 'databases')}`;
 
-        const srcFile = `${sourceDir}/${dbPath}`;
+        const srcFile = `${sourceDir}/${DB_PATH}`;
         const exists = await RNFS.exists(srcFile);
 
         if (exists) {
@@ -128,7 +129,7 @@ export const SQLiteContextProvider = ({children}) => {
             Platform.OS === 'ios'
               ? RNFS.DocumentDirectoryPath
               : RNFS.DocumentDirectoryPath;
-          const backupFile = `${backupDir}/${dbBackupPath}`; // Change this to your desired backup file name
+          const backupFile = `${backupDir}/${DB_BACKUP_PATH}`; // Change this to your desired backup file name
           if (await RNFS.exists(backupFile)) {
             await RNFS.unlink(backupFile);
           }
@@ -153,7 +154,7 @@ export const SQLiteContextProvider = ({children}) => {
           Platform.OS === 'ios'
             ? RNFS.DocumentDirectoryPath
             : RNFS.DocumentDirectoryPath;
-        const backupFile = `${sourceDir}/${dbBackupPath}`;
+        const backupFile = `${sourceDir}/${DB_BACKUP_PATH}`;
         const backupExists = await RNFS.exists(backupFile);
 
         if (backupExists) {
@@ -162,7 +163,7 @@ export const SQLiteContextProvider = ({children}) => {
               ? RNFS.DocumentDirectoryPath
               : RNFS.DocumentDirectoryPath;
 
-          const originalFile = `${originalDir}/${dbPath}`; // Adjust this to your database file name
+          const originalFile = `${originalDir}/${DB_PATH}`; // Adjust this to your database file name
           if (await RNFS.exists(originalFile)) {
             await RNFS.unlink(originalFile);
           }
@@ -285,6 +286,9 @@ export const SQLiteContextProvider = ({children}) => {
   const executeQuery = async (query, values = []) => {
     return new Promise(async (resolve, reject) => {
       try {
+        if (!db) {
+          await initializeDB(true);
+        }
         let results = await db.executeSql(
           query,
           values.length > 0 ? values : [],

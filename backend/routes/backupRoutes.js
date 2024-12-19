@@ -8,6 +8,7 @@ const {
   getBackup,
   createBackup,
   createBackupTemp,
+  dailyBackupFileUpload,
 } = require("../controllers/backup/backupController");
 
 router.post("/", VerifyToken, createBackup);
@@ -18,5 +19,7 @@ router.post("/temp", VerifyToken, createBackupTemp);
 router.get("/all", VerifyToken, getBackups);
 
 router.get("/", VerifyToken, getBackup);
+
+router.post("/upload", VerifyToken, dailyBackupFileUpload);
 
 module.exports = router;

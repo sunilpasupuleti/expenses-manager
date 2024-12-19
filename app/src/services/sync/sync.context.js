@@ -36,7 +36,7 @@ import _ from 'lodash';
 import {Alert, Platform} from 'react-native';
 import RNFS from 'react-native-fs';
 import RNFetchBlob from 'rn-fetch-blob';
-import {dbPath} from '../../../config';
+import {DB_PATH} from '../../../config';
 import {getTimeZone} from 'react-native-localize';
 import momentTz from 'moment-timezone';
 import {navigate} from '../../infrastructure/navigation/rootnavigation';
@@ -423,7 +423,7 @@ export const SyncContextProvider = ({children}) => {
           const basePath = RNFS.DocumentDirectoryPath;
           if (await RNFS.exists(path)) {
             await closeDatabase();
-            const originalFile = `${basePath}/${dbPath}`;
+            const originalFile = `${basePath}/${DB_PATH}`;
             await removeFile(originalFile);
             await RNFS.copyFile(path, originalFile);
             await initializeDB(true);
@@ -485,7 +485,7 @@ export const SyncContextProvider = ({children}) => {
   const onGetRestoresFromiCloud = async () => {
     return new Promise(async (resolve, reject) => {
       try {
-        hideLoader('restore', true);
+        showLoader('restore', true);
         if (
           (await isICloudAvailable()) &&
           defaultICloudContainerPath + '/Documents'
@@ -493,6 +493,7 @@ export const SyncContextProvider = ({children}) => {
           const files = await readDir(
             defaultICloudContainerPath + '/Documents',
           );
+
           if (!files || files.length === 0) {
             showNotification('info', 'There were no backups found');
             resolve([]);
@@ -505,11 +506,13 @@ export const SyncContextProvider = ({children}) => {
             let structuredFiles = [];
             files.map(file => {
               let fileName = file.split('/Documents/')[1];
+
               const regex = /(transactions-.*?\.db)\.?(?:icloud)?$/;
               const match = regex.exec(fileName);
               if (match && match[1]) {
                 fileName = match[1];
               }
+
               const dateRegex = /transactions-(.*?)\.db/;
               const extensionRegex = /\.db$/;
               const dateMatch = dateRegex.exec(fileName);
@@ -532,8 +535,14 @@ export const SyncContextProvider = ({children}) => {
                 structuredFiles.push(obj);
               }
             });
+
             structuredFiles = _.orderBy(structuredFiles, ['datetime'], 'desc');
-            resolve(structuredFiles);
+            if (!structuredFiles || structuredFiles.length === 0) {
+              showNotification('info', 'There were no backups found');
+              resolve([]);
+            } else {
+              resolve(structuredFiles);
+            }
           }
           hideLoader();
         } else {

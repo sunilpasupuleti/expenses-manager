@@ -100,6 +100,7 @@ export const AuthenticationContextProvider = ({children}) => {
             await onSignInSuccess();
           }
         } catch (err) {
+          onLogout(true);
           dispatch(
             notificationActions.showToast({
               message: err + ' Error in Sign in ',
@@ -299,6 +300,10 @@ export const AuthenticationContextProvider = ({children}) => {
     showLoader();
     try {
       const signInResponse = await GoogleSignin.signIn();
+      if (signInResponse.type && signInResponse.type === 'cancelled') {
+        hideLoader();
+        return;
+      }
 
       const {idToken} = signInResponse?.data;
 
@@ -491,13 +496,14 @@ export const AuthenticationContextProvider = ({children}) => {
     return new Promise(async (resolve, reject) => {
       try {
         // await deleteAllTablesData();
-
         const userResult = await getData(
           `SELECT * FROM Users WHERE uid='${uid}' LIMIT 1`,
         );
+
         const accountsResult = await getData(
           `SELECT * FROM Accounts WHERE uid='${uid}'`,
         );
+
         const transactionsResult = await getData(`SELECT * FROM Transactions`);
         const accounts = await getDataFromRows(accountsResult.rows);
         const transactions = await getDataFromRows(transactionsResult.rows);
@@ -562,6 +568,7 @@ export const AuthenticationContextProvider = ({children}) => {
             totalIncome: 0,
             uid: uid,
           };
+
           if (!details || details.length === 0) {
             details = [];
           }
@@ -572,7 +579,9 @@ export const AuthenticationContextProvider = ({children}) => {
 
           let accountInsertRes = await createOrReplaceData('Accounts', account);
           let accountInsertData = await getDataFromRows(accountInsertRes.rows);
-          const accountId = accountInsertData[0].id;
+          const accountId = accountInsertRes.insertId;
+
+          // const accountId = accountInsertData[0].id;
           if (details?.length > 0) {
             for (let j = 0; j < details.length; j++) {
               const {
@@ -625,7 +634,9 @@ export const AuthenticationContextProvider = ({children}) => {
                 category.name,
               )}%'`;
               const categoriesResult = await getData(categoriesQuery);
+
               const categories = await getDataFromRows(categoriesResult.rows);
+
               const categoryExists = categories[0];
 
               if (categoryExists) {
@@ -653,8 +664,8 @@ export const AuthenticationContextProvider = ({children}) => {
                 let insertedCategoryData = await getDataFromRows(
                   insertedCategoryRes.rows,
                 );
-
-                transaction.categoryId = insertedCategoryData[0].id;
+                transaction.categoryId = insertedCategoryRes.insertId;
+                // transaction.categoryId = insertedCategoryData[0].id;
               }
               await createOrReplaceData('Transactions', transaction);
               // transactionsToInsert.push(transaction);
@@ -756,15 +767,20 @@ export const AuthenticationContextProvider = ({children}) => {
         if (transformedData.email) {
           oneSignalTags.email = transformedData.email;
         }
-        OneSignal.login(uid);
-        OneSignal.User.addTags(oneSignalTags);
+
+        await OneSignal.login(uid);
+
+        await OneSignal.User.addTags(oneSignalTags);
 
         // console.log(transformedData, 'transformed');
         await createOrReplaceData('Users', transformedData, 'uid');
+
         await database()
           .ref('/users/' + transformedData.uid)
           .update(transformedData);
+
         await onTransformDataIntoDb(uid);
+
         setUserData(transformedData);
         setUserAdditionalDetails(transformedData);
         resolve(true);
@@ -793,22 +809,23 @@ export const AuthenticationContextProvider = ({children}) => {
     });
   };
 
-  const onLogout = async () => {
+  const onLogout = async (initialSignInFailure = false) => {
     const signOut = async () => {
-      await deleteAllTablesData(true);
-      await deleteUserPinCode('@expenses-manager-logged');
-      await deleteUserPinCode('@expenses-manager-app-lock');
-      await resetPinCodeInternalStates();
-      await AsyncStorage.removeItem('@expenses-manager-removed-transactions');
-      await AsyncStorage.removeItem('@expenses-manager-uid');
+      if (!initialSignInFailure) {
+        await deleteAllTablesData(true);
+        await deleteUserPinCode('@expenses-manager-app-lock');
+        await resetPinCodeInternalStates();
+        await AsyncStorage.removeItem('@expenses-manager-removed-transactions');
+        await AsyncStorage.removeItem('@expenses-manager-uid');
+        await AsyncStorage.removeItem('@expenses-manager-data');
+        hideNotification();
+      }
       await AsyncStorage.removeItem('@expenses-manager-logged');
-      await AsyncStorage.removeItem('@expenses-manager-data');
       authStateTriggered = false;
       setUserData(null);
       setUserAdditionalDetails(null);
       messaging().deleteToken();
       dispatch(serviceActions.setAppStatus({authenticated: false}));
-      hideNotification();
     };
     OneSignal.logout();
     OneSignal.User.removeTags(['uid', 'email', 'dailyUpdateUid']);

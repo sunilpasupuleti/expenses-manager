@@ -4,7 +4,7 @@ import {useDispatch} from 'react-redux';
 import {loaderActions} from '../../store/loader-slice';
 import {notificationActions} from '../../store/notification-slice';
 import {AuthenticationContext} from '../authentication/authentication.context';
-import {Alert, Platform} from 'react-native';
+import {Alert, NativeEventEmitter, NativeModules, Platform} from 'react-native';
 import Share from 'react-native-share';
 import DocumentPicker from 'react-native-document-picker';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -34,6 +34,10 @@ import {
 import database from '@react-native-firebase/database';
 import {SQLiteContext} from '../sqlite/sqlite.context';
 import {SheetDetailsContext} from '../sheetDetails/sheetDetails.context';
+
+const {AlarmManagerModule} = NativeModules;
+const alarmEmitter =
+  Platform.OS === 'android' ? new NativeEventEmitter(AlarmManagerModule) : null;
 
 export const SettingsContext = createContext({
   onExportData: () => null,
@@ -89,6 +93,22 @@ export const SettingsContextProvider = ({children}) => {
     }
   }, [db, userAdditionalDetails]);
 
+  // useEffect(() => {
+  //   if (!userAdditionalDetails || !userData) return;
+  //   const {uid} = userData;
+  //   const {dailyBackupEnabled} = userAdditionalDetails;
+  //   const data = JSON.stringify({uid});
+  //   console.log(data, dailyBackupEnabled);
+
+  //   if (dailyBackupEnabled) {
+  //     console.log('Scheduling daily backup');
+  //     AlarmManagerModule.scheduleDailyBackupAlarm('dailyBackup', data, uid);
+  //   } else {
+  //     console.log('Cancelling daily backup');
+  //     AlarmManagerModule.cancelDailyBackupAlarm('dailyBackup', uid);
+  //   }
+  // }, [userAdditionalDetails?.dailyBackupEnabled, userData?.uid]);
+
   // helpers
   const showLoader = (loaderType, backdrop = true) => {
     let options = {};
@@ -141,6 +161,7 @@ export const SettingsContextProvider = ({children}) => {
         'mm',
       )}`;
       transformedData.dailyReminderTime = formattedTime;
+
       sendRequest(
         {
           type: 'POST',
@@ -239,7 +260,6 @@ export const SettingsContextProvider = ({children}) => {
       let results = await updateData('Users', transformedData, `WHERE uid=?`, [
         uid,
       ]);
-      console.log(results);
 
       await database().ref(`/users/${uid}`).update(transformedData);
       if (enabled && Platform.OS === 'android') {

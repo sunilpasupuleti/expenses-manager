@@ -16,7 +16,12 @@ import {
   PLAY_STORE_URL,
   WEB_CLIENT_ID,
   FIREBASE_DATABASE_URL,
+  DB_PATH,
+  DB_BACKUP_PATH,
+  PRIVACY_POLICY_URL,
 } from '../../config';
+import initializeOneSignal from '../components/notifcications/one-signal';
+import initializePushNotification from '../components/notifcications/push-notification';
 
 export const fetchTheme = createAsyncThunk('service/fetchTheme', async () => {
   try {
@@ -121,9 +126,12 @@ export const loadAppStatus = createAsyncThunk(
         FIREBASE_STORAGE_BUCKET: FIREBASE_STORAGE_BUCKET,
         FIREBASE_STORAGE_URL: FIREBASE_STORAGE_URL,
         FIREBASE_DATABASE_URL: FIREBASE_DATABASE_URL,
+        DB_PATH: DB_PATH,
+        DB_BACKUP_PATH: DB_BACKUP_PATH,
+        PRIVACY_POLICY_URL: PRIVACY_POLICY_URL,
       })
       .then(() => {
-        // remoteConfig().fetchAndActivate();
+        remoteConfig().fetchAndActivate();
       })
       .then(fetchedRemotely => {
         if (fetchedRemotely) {
@@ -134,6 +142,8 @@ export const loadAppStatus = createAsyncThunk(
           );
         }
       });
+    initializePushNotification();
+    initializeOneSignal();
 
     const logged = await AsyncStorage.getItem(`@expenses-manager-logged`).then(
       d => {

@@ -54,6 +54,7 @@ export const SheetTrendsScreen = ({navigation, route}) => {
   const {currentSheet} = useContext(SheetsContext);
   const {onCheckUpcomingSheetDetails, getSheetDetailsTrends} =
     useContext(SheetDetailsContext);
+  const {reRender} = route.params || {};
 
   const chartConfig = {
     backgroundGradientFromOpacity: 0,
@@ -111,6 +112,13 @@ export const SheetTrendsScreen = ({navigation, route}) => {
       checkUpcomingDetails();
     }
   }, [routeIsFocused]);
+
+  useEffect(() => {
+    if (reRender) {
+      onGetSheetDetailsTrends(currentSheet, activeType);
+      navigation.setParams({reRender: false});
+    }
+  }, [reRender]);
 
   useEffect(() => {
     setTooltipPos(prevstate => ({

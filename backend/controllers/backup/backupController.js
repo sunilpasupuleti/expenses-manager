@@ -1,6 +1,4 @@
 const httpstatus = require("http-status-codes");
-const moment = require("moment");
-const momentTz = require("moment-timezone");
 const logger = require("../../middleware/logger/logger");
 const _ = require("lodash");
 const Users = require("../../models/Users");
@@ -10,17 +8,23 @@ const {
   decryptAES,
   encryptAES,
   getFirebaseAccessUrl,
+  firebaseRemoveFiles,
+  getCurrentDate,
+  formatDate,
 } = require("../../helpers/utility");
 const Backups = require("../../models/Backups");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
-
+const admin = require("firebase-admin");
 const OneSignal = require("onesignal-node");
 const BackupsTemp = require("../../models/BackupsTemp");
 const client = new OneSignal.Client(
   process.env.ONE_SIGNAL_APP_ID,
   process.env.ONE_SIGNAL_API_KEY
 );
+const db = require("firebase-admin/database");
+const fs = require("fs");
+const { sendNotification } = require("../../helpers/notificationHelpers");
 
 module.exports = {
   async getBackups(req, res) {
@@ -673,6 +677,124 @@ module.exports = {
             message: "Error occured " + err,
           });
         });
+    }
+  },
+
+  async dailyBackupFileUpload(req, res) {
+    let title = "Backup Progressing 🔄";
+    let body = `Please hold on, we're currently backing up your data.`;
+    let notificationData = {
+      type: "daily-backup",
+    };
+    let bigPictureUrl = "notification/daily_backup.jpeg";
+    let largeIconUrl = "notification/backup.png";
+    let collapseId = "daily-backup";
+
+    try {
+      const { file: base64File, uid, date, filename } = req.body;
+
+      if (!base64File || !uid || !filename) {
+        throw new Error("Missing required data");
+      }
+
+      const user = req.user;
+      if (!user || !user.uid) {
+        throw "Auth Failed";
+      }
+      //  to send notificaiton
+      await sendNotification({
+        title,
+        body,
+        notificationData,
+        bigPictureUrl,
+        largeIconUrl,
+        collapseId,
+        uid: user.uid,
+      });
+
+      const fileBuffer = Buffer.from(base64File, "base64");
+      const uploadPath = `users/${user.uid}/backups/${filename}`;
+      const bucket = admin.storage().bucket();
+      const file = bucket.file(uploadPath);
+      await file.save(fileBuffer, {
+        metadata: {
+          contentType: "application/octet-stream",
+        },
+      });
+
+      let snapshot = await db
+        .getDatabase()
+        .ref(`/users/${user.uid}/backups`)
+        .once("value");
+      let backups = snapshot.val() || {};
+      const backupsLength = Object.keys(backups).length;
+      const allowedBackups = 9;
+      if (backupsLength > allowedBackups) {
+        const formattedBackups = _.map(backups, (backup, key) => ({
+          datetime: formatDate(backup.date),
+          id: key,
+        }));
+        // Sort the array by the 'datetime' key
+        const sortedBackups = _.orderBy(formattedBackups, ["datetime"]);
+        const backupKeys = _.map(sortedBackups, "id");
+        // delete old ones
+        const numBackupsToDelete = backupsLength - allowedBackups;
+        const backupsToDelete = backupKeys.slice(0, numBackupsToDelete);
+        const removeFilePaths = [];
+        for (const key of backupsToDelete) {
+          const backupRef = db
+            .getDatabase()
+            .ref(`/users/${uid}/backups/${key}`);
+          await backupRef.remove();
+          const value = backups[key];
+          removeFilePaths.push(value.path);
+        }
+        await firebaseRemoveFiles(removeFilePaths);
+      }
+
+      const lastSynced = getCurrentDate();
+      await db.getDatabase().ref(`/users/${uid}`).update({
+        lastSynced: lastSynced,
+        lastDailyBackup: date,
+      });
+      await db.getDatabase().ref(`/users/${uid}/backups`).push({
+        path: uploadPath,
+        date: date,
+      });
+
+      title = "Backup Successful ✅";
+      body = `Your data backup is complete and securely stored.`;
+      bigPictureUrl = "notification/daily_backup_success.jpeg";
+      await sendNotification({
+        title,
+        body,
+        notificationData,
+        bigPictureUrl,
+        largeIconUrl,
+        collapseId,
+        uid: user.uid,
+      });
+      return sendResponse(res, httpCodes.OK, {
+        message: "Backup Successfull",
+      });
+    } catch (err) {
+      console.log(err);
+
+      title = "Backup Failed ❌";
+      body = err.toString();
+      bigPictureUrl = "notification/daily_backup_failure.jpeg";
+      await sendNotification({
+        title,
+        body,
+        notificationData,
+        bigPictureUrl,
+        largeIconUrl,
+        collapseId,
+        uid: req?.user?.uid,
+      });
+      return sendResponse(res, httpCodes.INTERNAL_SERVER_ERROR, {
+        message: "Error occured " + err.toString(),
+      });
     }
   },
 };

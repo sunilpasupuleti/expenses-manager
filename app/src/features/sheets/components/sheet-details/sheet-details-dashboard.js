@@ -52,6 +52,7 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
   });
 
   const [activeType, setActiveType] = useState('income');
+  const {reRender} = route.params || {};
 
   useEffect(() => {
     if (routeIsFocused) {
@@ -60,6 +61,13 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
       onGetSheetDetailsDashboard(currentSheet, activeType);
     }
   }, [routeIsFocused]);
+
+  useEffect(() => {
+    if (reRender) {
+      onGetSheetDetailsDashboard(currentSheet, activeType);
+      navigation.setParams({reRender: false});
+    }
+  }, [reRender]);
 
   useEffect(() => {
     if (currentSheet && currentSheet.details) {

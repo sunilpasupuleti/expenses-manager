@@ -47,6 +47,7 @@ export const SheetStatsScreen = ({navigation, route}) => {
   const [report, setReport] = useState({key: 'monthly', value: 'Monthly'});
   const [chartData, setChartData] = useState(null);
   const routeIsFocused = useIsFocused();
+  const {reRender} = route.params || {};
 
   let menuRef = useRef();
   const menuOptionStyles = {
@@ -60,6 +61,13 @@ export const SheetStatsScreen = ({navigation, route}) => {
       checkUpcomingDetails();
     }
   }, [routeIsFocused]);
+
+  useEffect(() => {
+    if (reRender) {
+      onGetSheetDetailsAnalytics(currentSheet, activeType, report.key);
+      navigation.setParams({reRender: false});
+    }
+  }, [reRender]);
 
   useEffect(() => {
     if (routeIsFocused) {

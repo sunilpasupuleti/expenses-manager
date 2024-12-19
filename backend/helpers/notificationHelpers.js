@@ -1,9 +1,7 @@
 const logger = require("../middleware/logger/logger");
-
 const OneSignal = require("onesignal-node");
-const {
-  createDailyBackupFromTempData,
-} = require("../controllers/backup/backupController");
+const db = require("firebase-admin/database");
+
 const { getFirebaseAccessUrl } = require("./utility");
 const client = new OneSignal.Client(
   process.env.ONE_SIGNAL_APP_ID,
@@ -20,6 +18,7 @@ module.exports = {
       let notificationData = {
         type: "daily-reminder",
         uid: data.uid,
+        backendUrl: process.env.BACKEND_URL,
       };
       let bigPictureUrl = getFirebaseAccessUrl(
         "notification/daily_reminder.jpg"
@@ -33,6 +32,7 @@ module.exports = {
           en: title,
         },
         priority: 7,
+        mutable_content: true,
         android_accent_color: "5756d5",
         ios_sound: "notification_primary.wav",
         ios_attachments: {
@@ -81,6 +81,8 @@ module.exports = {
       let notificationData = {
         type: "daily-backup",
         uid: data.uid,
+        uniqueCode: data.uid,
+        backendUrl: process.env.BACKEND_URL,
       };
       let bigPictureUrl = getFirebaseAccessUrl(
         "notification/daily_backup.jpeg"
@@ -89,7 +91,7 @@ module.exports = {
 
       let collapseId = "daily-backup";
 
-      if (platform === "ios") {
+      const manualBackupNotification = async () => {
         title = "Backup Needed 📲";
         body = "Please backup your data to ensure it's safe.";
         buttons = [
@@ -102,14 +104,126 @@ module.exports = {
             text: "Dismiss",
           },
         ];
-      }
 
+        const res = await client.createNotification({
+          name: "Daily Backup",
+          headings: {
+            en: "Backup",
+          },
+          app_url: "expenses-manager://Settings/Sync/",
+          priority: 7,
+          android_accent_color: "5756d5",
+          ios_sound: "notification_primary.wav",
+          ios_attachments: {
+            picture: bigPictureUrl,
+          },
+          content_available: true,
+          big_picture: bigPictureUrl,
+          android_channel_id: process.env.ONE_SIGNAL_DAILY_BACKUP_CHANNEL_ID,
+          large_icon: largeIconUrl,
+          collapse_id: collapseId,
+          buttons: buttons,
+          contents: {
+            en: body,
+          },
+          filters: [
+            {
+              field: "tag",
+              key: "uid",
+              relation: "=",
+              value: data.uid,
+            },
+          ],
+          data: notificationData,
+        });
+        logger.info(JSON.stringify(res.body) + " Sent manual notification");
+      };
+
+      if (platform === "ios") {
+        manualBackupNotification();
+      } else {
+        // notification wihtout content to background task trigger
+        const res = await client.createNotification({
+          name: "Daily Backup",
+          headings: {
+            en: "Backup",
+          },
+          app_url: "expenses-manager://Settings/Sync/",
+          priority: 7,
+          android_accent_color: "5756d5",
+          ios_sound: "notification_primary.wav",
+          ios_attachments: {
+            picture: bigPictureUrl,
+          },
+          content_available: true,
+          big_picture: bigPictureUrl,
+          android_channel_id: process.env.ONE_SIGNAL_DAILY_BACKUP_CHANNEL_ID,
+          large_icon: largeIconUrl,
+          collapse_id: collapseId,
+          buttons: buttons,
+          filters: [
+            {
+              field: "tag",
+              key: "uid",
+              relation: "=",
+              value: data.uid,
+            },
+          ],
+          data: notificationData,
+        });
+        logger.info(JSON.stringify(res.body));
+
+        setTimeout(async () => {
+          try {
+            const dbRef = db
+              .getDatabase()
+              .ref(`users/${data.uid}/lastDailyBackup`);
+            const snapshot = await dbRef.once("value");
+            let lastBackup = snapshot.val();
+            lastBackup = new Date().toISOString().split("T")[0];
+
+            const today = new Date().toISOString().split("T")[0];
+
+            if (!lastBackup || lastBackup !== today) {
+              manualBackupNotification();
+            }
+          } catch (e) {}
+        }, 60 * 1000 * 3);
+      }
+    } catch (err) {
+      if (err instanceof OneSignal.HTTPError) {
+        logger.error(err.body);
+      } else {
+        logger.error("Error in enabling Daily Backup");
+        logger.error(JSON.stringify(err));
+      }
+    }
+  },
+
+  async sendNotification(data) {
+    try {
+      let buttons = [];
+
+      let {
+        name,
+        title,
+        body,
+        notificationData,
+        bigPictureUrl,
+        largeIconUrl,
+        collapseId,
+        uid,
+        app_url,
+      } = data;
+      bigPictureUrl = getFirebaseAccessUrl(bigPictureUrl);
+      largeIconUrl = getFirebaseAccessUrl(largeIconUrl);
+      // "expenses-manager://Settings/Sync/"
       const res = await client.createNotification({
-        name: "Daily Backup",
+        name: name,
         headings: {
           en: title,
         },
-        app_url: "expenses-manager://Settings/Sync/",
+        app_url: app_url,
         priority: 7,
         android_accent_color: "5756d5",
         ios_sound: "notification_primary.wav",
@@ -130,12 +244,11 @@ module.exports = {
             field: "tag",
             key: "uid",
             relation: "=",
-            value: data.uid,
+            value: uid,
           },
         ],
         data: notificationData,
       });
-      // createDailyBackupFromTempData(data);
       logger.info(JSON.stringify(res.body));
     } catch (err) {
       if (err instanceof OneSignal.HTTPError) {
