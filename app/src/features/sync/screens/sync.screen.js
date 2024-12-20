@@ -46,6 +46,7 @@ export const SyncScreen = ({navigation, route}) => {
     onRestoreFromiCloud,
     onBackupToiCloud,
     onDeleteBackupFromiCloud,
+    onRecoverLostData,
   } = useContext(SyncContext);
   const {onLogout} = useContext(AuthenticationContext);
 
@@ -55,9 +56,10 @@ export const SyncScreen = ({navigation, route}) => {
 
   const [restoreDates, setRestoreDates] = useState([]);
   const [iCloudRestoreDates, setiCloudRestoreDates] = useState([]);
-  const {userAdditionalDetails} = useContext(AuthenticationContext);
-
-  const dispatch = useDispatch();
+  const {userAdditionalDetails, userDetailsFirebase} = useContext(
+    AuthenticationContext,
+  );
+  const [dataRecovered, setDataRecovered] = useState(false);
 
   useEffect(() => {
     navigation.setOptions({
@@ -76,6 +78,12 @@ export const SyncScreen = ({navigation, route}) => {
       headerLeft: () => null,
     });
   }, []);
+
+  useEffect(() => {
+    if (userDetailsFirebase) {
+      setDataRecovered(userDetailsFirebase.dataRecovered ? true : false);
+    }
+  }, [userDetailsFirebase]);
 
   useEffect(() => {
     (async () => {
@@ -107,6 +115,10 @@ export const SyncScreen = ({navigation, route}) => {
 
   const onPressRestoreButton = () => {
     restoreData();
+  };
+
+  const onPressRecoverLostData = () => {
+    onRecoverLostData();
   };
 
   const onPressGetRestoreDates = async () => {
@@ -248,6 +260,29 @@ export const SyncScreen = ({navigation, route}) => {
               </SettingsCardContent>
             </SettingsCard>
           </Spacer>
+          {!dataRecovered && (
+            <Spacer size={'large'}>
+              <SettingsCard
+                style={{backgroundColor: theme.colors.bg.card, margin: 1}}>
+                <SettingsCardContent onPress={onPressRecoverLostData}>
+                  <Setting justifyContent="space-between">
+                    <FlexRow>
+                      <SettingIconWrapper color="#FF4C4C">
+                        <Ionicons
+                          name="refresh-circle"
+                          size={20}
+                          color="#fff"
+                        />
+                      </SettingIconWrapper>
+                      <SettingTitle>Recover Lost Data</SettingTitle>
+                    </FlexRow>
+                    <Ionicons name="chevron-forward" size={25} color="#aaa" />
+                  </Setting>
+                </SettingsCardContent>
+              </SettingsCard>
+            </Spacer>
+          )}
+
           <Spacer size="xlarge" />
           {userAdditionalDetails?.lastSynced && (
             <LastSyncedContainer>

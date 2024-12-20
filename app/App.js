@@ -29,6 +29,7 @@ import {
   fetchTheme,
   loadAppStatus,
   setAppState,
+  setAppUpdateNeeded,
 } from './src/store/service-slice';
 import moment from 'moment';
 import SplashScreen from 'react-native-splash-screen';
@@ -106,6 +107,7 @@ const App = () => {
 
       let updateNeeded = await VersionCheck.needUpdate();
       if (updateNeeded && updateNeeded.isNeeded) {
+        dispatch(setAppUpdateNeeded(true));
         Alert.alert(
           `Plese Update the app from ${currentVersion} to ${latestVersion} `,
           'You will have to update your app to the latest version to continue using.',
@@ -121,6 +123,8 @@ const App = () => {
           ],
           {cancelable: false},
         );
+      } else {
+        dispatch(setAppUpdateNeeded(false));
       }
     } catch (error) {}
   };

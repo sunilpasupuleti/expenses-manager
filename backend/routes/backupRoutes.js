@@ -9,12 +9,15 @@ const {
   createBackup,
   createBackupTemp,
   dailyBackupFileUpload,
+  getTempBackup,
 } = require("../controllers/backup/backupController");
 
 router.post("/", VerifyToken, createBackup);
 
 // to daily backup the data
 router.post("/temp", VerifyToken, createBackupTemp);
+
+router.get("/temp", VerifyToken, getTempBackup);
 
 router.get("/all", VerifyToken, getBackups);
 

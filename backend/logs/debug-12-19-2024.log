@@ -1,0 +1,56 @@
+12/19/2024, 11:12:23 PM [info]  Message :  server started on port number 3000 }
+12/19/2024, 11:12:27 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+12/19/2024, 11:15:21 PM [info]  Message :  server started on port number 3000 }
+12/19/2024, 11:15:25 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+12/19/2024, 11:15:45 PM [info]  Message :  server started on port number 3000 }
+12/19/2024, 11:15:48 PM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+12/20/2024, 4:17:43 AM [info]  Message :  server started on port number 3000 }
+12/20/2024, 4:17:46 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+12/20/2024, 4:18:46 AM [info]  Message :  server started on port number 3000 }
+12/20/2024, 4:18:49 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+12/20/2024, 4:31:53 AM [info]  Message :  server started on port number 3000 }
+12/20/2024, 4:31:57 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+12/20/2024, 4:32:39 AM [info]  Message :  server started on port number 3000 }
+12/20/2024, 4:32:43 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+12/20/2024, 4:34:32 AM [info]  Message :  server started on port number 3000 }
+12/20/2024, 4:34:35 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+12/20/2024, 4:34:38 AM [info]  Message :  server started on port number 3000 }
+12/20/2024, 4:34:41 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+12/20/2024, 4:34:42 AM [info]  Message :  server started on port number 3000 }
+12/20/2024, 4:34:46 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+12/20/2024, 4:34:48 AM [error]  Message :  error occured - We are really! Our systems worked hard but unfortunately no data found to recover!
+12/20/2024, 4:35:02 AM [info]  Message :  server started on port number 3000 }
+12/20/2024, 4:35:06 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+12/20/2024, 4:35:08 AM [error]  Message :  error occured - We are really! Our systems worked hard but unfortunately no data found to recover!
+12/20/2024, 4:35:15 AM [info]  Message :  server started on port number 3000 }
+12/20/2024, 4:35:19 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+12/20/2024, 4:35:28 AM [info]  Message :  server started on port number 3000 }
+12/20/2024, 4:35:32 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+12/20/2024, 4:36:07 AM [info]  Message :  server started on port number 3000 }
+12/20/2024, 4:36:11 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+12/20/2024, 7:23:53 AM [error]  Message :  error occured - We are really! Our systems worked hard but unfortunately no data was found to recover!
+12/20/2024, 7:25:18 AM [error]  Message :  error occured - We are really! Our systems worked hard but unfortunately no data was found to recover!
+12/20/2024, 7:25:37 AM [error]  Message :  error occured - We are really! Our systems worked hard but unfortunately no data was found to recover!
+12/20/2024, 7:26:14 AM [info]  Message :  server started on port number 3000 }
+12/20/2024, 7:26:18 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+12/20/2024, 7:26:49 AM [error]  Message :  error occured - We are really! Our systems worked hard but unfortunately no data was found to recover!
+12/20/2024, 7:27:02 AM [info]  Message :  server started on port number 3000 }
+12/20/2024, 7:27:06 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+12/20/2024, 7:27:07 AM [error]  Message :  error occured - We are really! Our systems worked hard but unfortunately no data was found to recover!
+12/20/2024, 7:34:09 AM [error]  Message :  error occured - Error: Malformed UTF-8 data
+12/20/2024, 7:34:36 AM [info]  Message :  server started on port number 3000 }
+12/20/2024, 7:34:40 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+12/20/2024, 7:48:48 AM [info]  Message :  server started on port number 3000 }
+12/20/2024, 7:48:52 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+12/20/2024, 7:49:03 AM [info]  Message :  server started on port number 3000 }
+12/20/2024, 7:49:07 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+12/20/2024, 7:49:08 AM [info]  Message :  server started on port number 3000 }
+12/20/2024, 7:49:12 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+12/20/2024, 7:49:19 AM [info]  Message :  server started on port number 3000 }
+12/20/2024, 7:49:23 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+12/20/2024, 7:50:25 AM [error]  Message :  error occured - TypeError: Assignment to constant variable.
+12/20/2024, 7:50:38 AM [info]  Message :  server started on port number 3000 }
+12/20/2024, 7:50:42 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+12/20/2024, 7:50:44 AM [error]  Message :  error occured - We are really! Our systems worked hard but unfortunately no data was found to recover!
+12/20/2024, 7:52:17 AM [error]  Message :  error occured - We are really! Our systems worked hard but unfortunately no data was found to recover!
+12/20/2024, 7:53:29 AM [error]  Message :  error occured - We are really! Our systems worked hard but unfortunately no data was found to recover!

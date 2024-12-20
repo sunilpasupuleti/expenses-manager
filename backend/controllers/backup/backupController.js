@@ -414,6 +414,66 @@ module.exports = {
     }
   },
 
+  async getTempBackup(req, res) {
+    let noBackup = false;
+    try {
+      let user = req.user;
+      let uid = user.uid;
+      const data = await BackupsTemp.findOne({
+        uid: uid,
+      });
+
+      if (!data) {
+        noBackup = true;
+        throw "We are really! Our systems worked hard but unfortunately no data was found to recover!";
+      }
+
+      let result = _.cloneDeep(data._doc);
+      // decrypt categories
+      result.categories.income.forEach((c) => {
+        c.name = decryptAES(c.name, uid);
+      });
+
+      result.categories.expense.forEach((c) => {
+        c.name = decryptAES(c.name, uid);
+      });
+      // decrypt sheets
+      result.sheets.forEach((sh, shIndex) => {
+        let sheet = { ...sh };
+
+        sheet.name = decryptAES(sheet.name, uid);
+        sheet.currency = decryptAES(sheet.currency, uid);
+        sheet.totalBalance = +decryptAES(sheet.totalBalance, uid);
+
+        // decrypt transactions
+        sheet.details.forEach((sd, sdIndex) => {
+          let sheetDetail = {
+            ...sd,
+          };
+          sheetDetail.amount = +decryptAES(sheetDetail.amount, uid);
+          if (sheetDetail.notes) {
+            sheetDetail.notes = decryptAES(sheetDetail.notes, uid);
+          }
+          let category = { ...sheetDetail.category };
+          category.name = decryptAES(category.name, uid);
+          sheetDetail.category = category;
+          sheet.details[sdIndex] = sheetDetail;
+        });
+        result.sheets[shIndex] = sheet;
+      });
+      return sendResponse(res, httpCodes.OK, {
+        message: "Backup fetched successfully",
+        backup: result,
+      });
+    } catch (err) {
+      logger.error("error occured - " + err);
+      return sendResponse(res, httpCodes.INTERNAL_SERVER_ERROR, {
+        message: err.toString(),
+        noBackup: noBackup,
+      });
+    }
+  },
+
   async getBackup(req, res) {
     let user = req.user;
     let uid = user.uid;
@@ -422,6 +482,8 @@ module.exports = {
       let userData = await Users.findOne({
         uid: uid,
       }).populate("backups");
+      console.log(userData);
+
       let backUp = userData.backups[userData.backups.length - 1];
       if (backUp) {
         backupId = backUp._id;

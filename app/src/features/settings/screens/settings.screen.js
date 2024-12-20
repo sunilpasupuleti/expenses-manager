@@ -54,13 +54,14 @@ import {getFirebaseAccessUrl} from '../../../components/utility/helper';
 import {SettingsContext} from '../../../services/settings/settings.context';
 import {SheetDetailsContext} from '../../../services/sheetDetails/sheetDetails.context';
 import _ from 'lodash';
+import {SQLiteContext} from '../../../services/sqlite/sqlite.context';
 
 export const SettingsScreen = ({navigation}) => {
   const {onLogout, userData, userAdditionalDetails} = useContext(
     AuthenticationContext,
   );
   const {onGetSheetsAndTransactions} = useContext(SheetDetailsContext);
-
+  const {deleteAllTablesData} = useContext(SQLiteContext);
   const ACCOUNT_DELETION_URL = remoteConfig()
     .getValue('ACCOUNT_DELETION_URL')
     .asString();
@@ -167,6 +168,15 @@ export const SettingsScreen = ({navigation}) => {
     }
   }, [userAdditionalDetails]);
 
+  const showNotification = (status = 'error', message) => {
+    dispatch(
+      notificationActions.showToast({
+        status: status,
+        message: message,
+      }),
+    );
+  };
+
   const onSetScreenLock = async () => {
     if (isAppLockEnabled) {
       await deleteUserPinCode('@expenses-manager-app-lock');
@@ -176,12 +186,7 @@ export const SettingsScreen = ({navigation}) => {
           enabled: false,
         }),
       );
-      dispatch(
-        notificationActions.showToast({
-          status: 'success',
-          message: 'App Lock Disabled',
-        }),
-      );
+      showNotification('success', 'App lock disabled successfully');
     } else {
       dispatch(applockActions.showChoosePinLock({type: 'choose'}));
       navigation.navigate('Applock', {
@@ -326,8 +331,6 @@ export const SettingsScreen = ({navigation}) => {
       );
     };
     try {
-      console.log('---', '---');
-
       let transactions = await onGetSheetsAndTransactions();
 
       const transactionExists = transactions && transactions.length > 0;
@@ -337,6 +340,38 @@ export const SettingsScreen = ({navigation}) => {
     }
   };
 
+  const onPressClearData = async () => {
+    const onClear = async () => {
+      try {
+        await deleteAllTablesData(false, false);
+        showNotification(
+          'success',
+          'All accounts and transactions have been cleared.',
+        );
+      } catch (err) {
+        console.log('Error in clearing the data', err);
+        showNotification('error', err.toString());
+      }
+    };
+    Alert.alert(
+      'Clear All Data?',
+      'This will delete all your accounts, transactions, and related data from the app. This action cannot be undone',
+      [
+        {
+          text: 'Cancel',
+          style: 'destructive',
+        },
+        {
+          text: 'Clear',
+          onPress: async () => {
+            await onClear();
+          },
+          style: 'default',
+        },
+      ],
+      {cancelable: false},
+    );
+  };
   return (
     <SafeArea child={true}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -739,6 +774,18 @@ export const SettingsScreen = ({navigation}) => {
                     </SettingIconWrapper>
 
                     <SettingTitle>Import data from JSON file</SettingTitle>
+                  </FlexRow>
+                </Setting>
+              </SettingsCardContent>
+
+              <SettingsCardContent onPress={onPressClearData}>
+                <Setting justifyContent="space-between">
+                  <FlexRow>
+                    <SettingIconWrapper color="red">
+                      <AntDesign name="delete" size={20} color="#fefefe" />
+                    </SettingIconWrapper>
+
+                    <SettingTitle>Clear All Data</SettingTitle>
                   </FlexRow>
                 </Setting>
               </SettingsCardContent>

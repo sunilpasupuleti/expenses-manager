@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useContext} from 'react';
 import {createContext, useEffect, useState} from 'react';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {serviceActions} from '../../store/service-slice';
 import auth from '@react-native-firebase/auth';
 import {notificationActions} from '../../store/notification-slice';
@@ -36,7 +36,7 @@ import {SQLiteContext} from '../sqlite/sqlite.context';
 import _ from 'lodash';
 import RNFetchBlob from 'rn-fetch-blob';
 import Share from 'react-native-share';
-import {defaultCategories} from '../categories/categories.context';
+import defaultCategories from '../../components/utility/defaultCategories.json';
 
 GoogleSignin.configure({
   webClientId: remoteConfig().getValue('WEB_CLIENT_ID').asString(),
@@ -44,6 +44,7 @@ GoogleSignin.configure({
 
 export const AuthenticationContext = createContext({
   userAdditionalDetails: null,
+  userDetailsFirebase: null,
   onGoogleAuthentication: () => null,
   onAppleAuthentication: () => null,
   onSignInWithEmail: () => null,
@@ -55,6 +56,7 @@ export const AuthenticationContext = createContext({
   setUserData: null,
   onLogout: () => null,
   onSetUserAdditionalDetails: data => null,
+  onSetUserDetailsFirebase: data => null,
   onGetUserDetails: (successCallBack, errorCallback) => null,
   fetchedUserDetails: false,
 });
@@ -64,11 +66,13 @@ let authStateTriggered = false;
 export const AuthenticationContextProvider = ({children}) => {
   const [userData, setUserData] = useState(null);
   const [userAdditionalDetails, setUserAdditionalDetails] = useState(null);
+  const [userDetailsFirebase, setUserDetailsFirebase] = useState(null);
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
   const dispatch = useDispatch();
   const {sendRequest} = useHttp();
   const {createOrReplaceData, getData, deleteAllTablesData, db, executeQuery} =
     useContext(SQLiteContext);
+  const appUpdateNeeded = useSelector(state => state.service.appUpdateNeeded);
 
   useEffect(() => {
     console.log(
@@ -87,8 +91,14 @@ export const AuthenticationContextProvider = ({children}) => {
       checkSmsReceivePermission();
     }
 
-    // checkFirstLaunch();
+    checkFirstLaunch();
   }, []);
+
+  useEffect(() => {
+    if (appUpdateNeeded) {
+      onLogout(true);
+    }
+  }, [appUpdateNeeded]);
 
   useEffect(() => {
     if (db) {
@@ -177,6 +187,10 @@ export const AuthenticationContextProvider = ({children}) => {
 
   const onSetUserAdditionalDetails = data => {
     setUserAdditionalDetails(data);
+  };
+
+  const onSetUserDetailsFirebase = data => {
+    setUserDetailsFirebase(data);
   };
 
   const checkSmsReadPermission = async () => {
@@ -361,9 +375,7 @@ export const AuthenticationContextProvider = ({children}) => {
       }
       auth()
         .signInWithCredential(appleCredentials)
-        .then(res => {
-          // onSignInSuccess(res);
-        })
+        .then(res => {})
         .catch(err => {
           hideLoader();
           console.log('error in google sign in ', err);
@@ -383,7 +395,6 @@ export const AuthenticationContextProvider = ({children}) => {
   const onSignInWithEmail = async (email, password) => {
     try {
       let result = await auth().signInWithEmailAndPassword(email, password);
-      // onSignInSuccess(result);
       return {status: true};
     } catch (e) {
       console.log(e, 'error with sign in with email and password');
@@ -409,7 +420,6 @@ export const AuthenticationContextProvider = ({children}) => {
   const onSignUpWithEmail = async (email, password) => {
     try {
       let result = await auth().createUserWithEmailAndPassword(email, password);
-      // onSignInSuccess(result);
       return {status: true};
     } catch (e) {
       console.log(e, 'error with sign in with email and password');
@@ -491,203 +501,12 @@ export const AuthenticationContextProvider = ({children}) => {
     }
   };
 
-  // used to tranform the local storage data to current app update format sqlite
-  const onTransformDataIntoDb = async uid => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        // await deleteAllTablesData();
-        const userResult = await getData(
-          `SELECT * FROM Users WHERE uid='${uid}' LIMIT 1`,
-        );
-
-        const accountsResult = await getData(
-          `SELECT * FROM Accounts WHERE uid='${uid}'`,
-        );
-
-        const transactionsResult = await getData(`SELECT * FROM Transactions`);
-        const accounts = await getDataFromRows(accountsResult.rows);
-        const transactions = await getDataFromRows(transactionsResult.rows);
-        const users = await getDataFromRows(userResult.rows);
-        if (!users[0]) {
-          resolve(true);
-          return;
-        }
-
-        let query = `SELECT * FROM Categories WHERE uid='${uid}'`;
-        let result = await getData(query);
-        showLoader(
-          'app',
-          true,
-          "Please wait while we're setting up the app for you.",
-        );
-
-        if (result.rows.length === 0) {
-          console.log('no categories exists');
-          let values = defaultCategories
-            .map(category => {
-              const {name, type, color, icon, isDefault} = category;
-              return `('${name}', '${type}', '${color}','${icon}', ${
-                isDefault ? 1 : 0
-              },'${uid}') `;
-            })
-            .join(',');
-          let insertQuery = `INSERT INTO Categories (name, type, color, icon, isDefault, uid) VALUES ${values}`;
-          await executeQuery(insertQuery);
-        }
-
-        let rawData = await AsyncStorage.getItem('@expenses-manager-data');
-
-        if ((accounts?.length > 0 && transactions?.length > 0) || !rawData) {
-          resolve(true);
-          return;
-        }
-        const data = JSON.parse(rawData);
-        const sheets = data.sheets || [];
-        const notValid = [];
-
-        for (let i = 0; i < sheets.length; i++) {
-          let {
-            details,
-            upcoming: upcomingDetails,
-            name,
-            currency,
-            showTotalBalance,
-            updatedAt,
-            archived,
-            pinned,
-          } = sheets[i];
-          const account = {
-            name: _.capitalize(_.trim(name)),
-            showSummary: showTotalBalance ? 1 : 0,
-            updatedAt: formatDate(updatedAt),
-            currency: currency,
-            archived: archived ? 1 : 0,
-            pinned: pinned ? 1 : 0,
-            totalBalance: 0,
-            totalExpense: 0,
-            totalIncome: 0,
-            uid: uid,
-          };
-
-          if (!details || details.length === 0) {
-            details = [];
-          }
-
-          if (upcomingDetails && upcomingDetails.length > 0) {
-            details = [...details, ...upcomingDetails];
-          }
-
-          let accountInsertRes = await createOrReplaceData('Accounts', account);
-          let accountInsertData = await getDataFromRows(accountInsertRes.rows);
-          const accountId = accountInsertRes.insertId;
-
-          // const accountId = accountInsertData[0].id;
-          if (details?.length > 0) {
-            for (let j = 0; j < details.length; j++) {
-              const {
-                category,
-                amount,
-                notes,
-                type,
-                showTime,
-                image,
-                date,
-                time,
-              } = details[j];
-
-              const transaction = {
-                amount: parseFloat(amount),
-                notes: notes || '',
-                type: type,
-                showTime: showTime ? 1 : 0,
-                accountId: accountId,
-              };
-
-              if (showTime) {
-                const transactionTime = formatDate(time);
-                const minutes = moment(transactionTime).minutes();
-                const hours = moment(transactionTime).hours();
-                const dte = new Date(date);
-                dte.setHours(hours, minutes, 0);
-                transaction.date = formatDate(dte);
-                transaction.time = transactionTime;
-              } else {
-                let dte = new Date(date);
-                dte.setHours(0, 0, 0);
-                transaction.date = formatDate(dte);
-              }
-
-              transaction.upcoming = moment(transaction.date).isAfter(moment())
-                ? 1
-                : 0;
-
-              if (image?.url) {
-                transaction.imageUrl = image.url;
-              }
-              if (image?.extension) {
-                transaction.imageExtension = image.extension;
-              }
-              if (image?.type) {
-                transaction.imageType = image.type;
-              }
-              const categoriesQuery = `SELECT * FROM Categories WHERE uid='${uid}' AND type='${type}' AND LOWER(name) LIKE '%${_.toLower(
-                category.name,
-              )}%'`;
-              const categoriesResult = await getData(categoriesQuery);
-
-              const categories = await getDataFromRows(categoriesResult.rows);
-
-              const categoryExists = categories[0];
-
-              if (categoryExists) {
-                transaction.categoryId = categoryExists.id;
-              } else {
-                const alphanumericPattern = /^[A-Za-z0-9\s]+$/;
-                const validCategory = alphanumericPattern.test(category.name);
-                if (!validCategory) {
-                  transaction.category = category;
-                  notValid.push(transaction);
-                  continue;
-                }
-                const categoryObj = {
-                  name: category.name,
-                  color: category.color,
-                  type: type,
-                  uid: uid,
-                };
-
-                let insertedCategoryRes = await createOrReplaceData(
-                  'Categories',
-                  categoryObj,
-                );
-
-                let insertedCategoryData = await getDataFromRows(
-                  insertedCategoryRes.rows,
-                );
-                transaction.categoryId = insertedCategoryRes.insertId;
-                // transaction.categoryId = insertedCategoryData[0].id;
-              }
-              await createOrReplaceData('Transactions', transaction);
-              // transactionsToInsert.push(transaction);
-            }
-          }
-        }
-        resolve(true);
-      } catch (e) {
-        reject(e);
-        showNotification(
-          'error',
-          'Error occured in transacforming your previous data ' + e.toString(),
-        );
-      }
-    });
-  };
-
   const onSignInSuccess = async () => {
     return new Promise(async (resolve, reject) => {
       try {
         let currentUser = await auth().currentUser;
         const uid = currentUser.uid;
+
         let jwtToken = await auth().currentUser.getIdToken();
         let token = await messaging()
           .getToken()
@@ -721,6 +540,7 @@ export const AuthenticationContextProvider = ({children}) => {
         OneSignal.InAppMessages.addTrigger('new_announcement', 'true');
 
         if (dataFromFirebase) {
+          onSetUserDetailsFirebase(dataFromFirebase);
           const {
             displayName,
             email,
@@ -775,11 +595,26 @@ export const AuthenticationContextProvider = ({children}) => {
         // console.log(transformedData, 'transformed');
         await createOrReplaceData('Users', transformedData, 'uid');
 
+        // create default categories if not exists
+        let query = `SELECT * FROM Categories WHERE uid='${uid}'`;
+        let result = await getData(query);
+        if (result.rows.length === 0) {
+          let values = defaultCategories
+            .map(category => {
+              const {name, type, color, icon, isDefault} = category;
+              return `('${name}', '${type}', '${color}','${icon}', ${
+                isDefault ? 1 : 0
+              },'${uid}') `;
+            })
+            .join(',');
+
+          let insertQuery = `INSERT INTO Categories (name, type, color, icon, isDefault, uid) VALUES ${values}`;
+          await executeQuery(insertQuery);
+        }
+
         await database()
           .ref('/users/' + transformedData.uid)
           .update(transformedData);
-
-        await onTransformDataIntoDb(uid);
 
         setUserData(transformedData);
         setUserAdditionalDetails(transformedData);
@@ -893,6 +728,8 @@ export const AuthenticationContextProvider = ({children}) => {
         setUserData,
         setUserAdditionalDetails,
         onSetUserAdditionalDetails,
+        onSetUserDetailsFirebase,
+        userDetailsFirebase,
         userAdditionalDetails,
         onGetUserDetails,
       }}>

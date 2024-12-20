@@ -36,7 +36,6 @@ import _ from 'lodash';
 import {Alert, Platform} from 'react-native';
 import RNFS from 'react-native-fs';
 import RNFetchBlob from 'rn-fetch-blob';
-import {DB_PATH} from '../../../config';
 import {getTimeZone} from 'react-native-localize';
 import momentTz from 'moment-timezone';
 import {navigate} from '../../infrastructure/navigation/rootnavigation';
@@ -44,6 +43,7 @@ import {
   useNetInfo,
   fetch as netInfoFetch,
 } from '@react-native-community/netinfo';
+import defaultCategories from '../../components/utility/defaultCategories.json';
 
 export const SyncContext = createContext({
   backUpData: () => null,
@@ -53,12 +53,15 @@ export const SyncContext = createContext({
   onRestoreFromiCloud: () => null,
   onGetRestoresFromiCloud: successCallBack => null,
   onDeleteBackupFromiCloud: () => null,
+  onRecoverLostData: () => null,
 });
 
 export const SyncContextProvider = ({children}) => {
   const {userData} = useContext(AuthenticationContext);
   const {onGetSheetsAndTransactions} = useContext(SheetDetailsContext);
-  const {onSetUserAdditionalDetails} = useContext(AuthenticationContext);
+  const {onSetUserAdditionalDetails, onSetUserDetailsFirebase} = useContext(
+    AuthenticationContext,
+  );
   const {
     onBackUpDatabase,
     closeDatabase,
@@ -66,10 +69,12 @@ export const SyncContextProvider = ({children}) => {
     getData,
     restoreDbFromBackup,
     db,
+    executeQuery,
+    createOrReplaceData,
   } = useContext(SQLiteContext);
   const dispatch = useDispatch();
+  const {sendRequest} = useHttp();
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
-  const appState = useSelector(state => state.service.appState);
   const {isConnected} = useNetInfo();
 
   useEffect(() => {
@@ -78,13 +83,276 @@ export const SyncContextProvider = ({children}) => {
     }
   }, [userData, db]);
 
-  const showLoader = (loaderType, backdrop = true) => {
+  const onRestoreRecoveredDataIntoDb = async (uid, rawData) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        // await deleteAllTablesData();
+        const userResult = await getData(
+          `SELECT * FROM Users WHERE uid='${uid}' LIMIT 1`,
+        );
+        const users = await getDataFromRows(userResult.rows);
+        if (!users[0]) {
+          resolve(true);
+          return;
+        }
+
+        let query = `SELECT * FROM Categories WHERE uid='${uid}'`;
+        let result = await getData(query);
+
+        if (result.rows.length === 0) {
+          let values = defaultCategories
+            .map(category => {
+              const {name, type, color, icon, isDefault} = category;
+              return `('${name}', '${type}', '${color}','${icon}', ${
+                isDefault ? 1 : 0
+              },'${uid}') `;
+            })
+            .join(',');
+          let insertQuery = `INSERT INTO Categories (name, type, color, icon, isDefault, uid) VALUES ${values}`;
+          await executeQuery(insertQuery);
+        }
+        const data = rawData;
+        const sheets = data.sheets || [];
+        const notValid = [];
+
+        for (let i = 0; i < sheets.length; i++) {
+          let {
+            details,
+            upcoming: upcomingDetails,
+            name,
+            currency,
+            showTotalBalance,
+            updatedAt,
+            archived,
+            pinned,
+          } = sheets[i];
+          const account = {
+            name: _.capitalize(_.trim(name)),
+            showSummary: showTotalBalance ? 1 : 0,
+            updatedAt: formatDate(updatedAt),
+            currency: currency,
+            archived: archived ? 1 : 0,
+            pinned: pinned ? 1 : 0,
+            totalBalance: 0,
+            totalExpense: 0,
+            totalIncome: 0,
+            uid: uid,
+          };
+
+          if (!details || details.length === 0) {
+            details = [];
+          }
+
+          if (upcomingDetails && upcomingDetails.length > 0) {
+            details = [...details, ...upcomingDetails];
+          }
+
+          let accountInsertRes = await createOrReplaceData('Accounts', account);
+          let accountInsertData = await getDataFromRows(accountInsertRes.rows);
+          const accountId = accountInsertRes.insertId;
+          // const accountId = accountInsertData[0].id;
+          if (details?.length > 0) {
+            for (let j = 0; j < details.length; j++) {
+              const {
+                category,
+                amount,
+                notes,
+                type,
+                showTime,
+                image,
+                date,
+                time,
+              } = details[j];
+
+              const transaction = {
+                amount: parseFloat(amount),
+                notes: notes || '',
+                type: type,
+                showTime: showTime ? 1 : 0,
+                accountId: accountId,
+              };
+
+              if (showTime) {
+                const transactionTime = formatDate(time);
+                const minutes = moment(transactionTime).minutes();
+                const hours = moment(transactionTime).hours();
+                const dte = new Date(date);
+                dte.setHours(hours, minutes, 0);
+                transaction.date = formatDate(dte);
+                transaction.time = transactionTime;
+              } else {
+                let dte = new Date(date);
+                dte.setHours(0, 0, 0);
+                transaction.date = formatDate(dte);
+              }
+
+              transaction.upcoming = moment(transaction.date).isAfter(moment())
+                ? 1
+                : 0;
+
+              if (image?.url) {
+                transaction.imageUrl = image.url;
+              }
+              if (image?.extension) {
+                transaction.imageExtension = image.extension;
+              }
+              if (image?.type) {
+                transaction.imageType = image.type;
+              }
+              const categoriesQuery = `SELECT * FROM Categories WHERE uid='${uid}' AND type='${type}' AND LOWER(name) LIKE '%${_.toLower(
+                category.name,
+              )}%'`;
+              const categoriesResult = await getData(categoriesQuery);
+
+              const categories = await getDataFromRows(categoriesResult.rows);
+
+              const categoryExists = categories[0];
+
+              if (categoryExists) {
+                transaction.categoryId = categoryExists.id;
+              } else {
+                const alphanumericPattern = /^[A-Za-z0-9\s]+$/;
+                const validCategory = alphanumericPattern.test(category.name);
+                if (!validCategory) {
+                  transaction.category = category;
+                  notValid.push(transaction);
+                  continue;
+                }
+                const categoryObj = {
+                  name: category.name,
+                  color: category.color,
+                  type: type,
+                  uid: uid,
+                };
+
+                let insertedCategoryRes = await createOrReplaceData(
+                  'Categories',
+                  categoryObj,
+                );
+
+                let insertedCategoryData = await getDataFromRows(
+                  insertedCategoryRes.rows,
+                );
+                transaction.categoryId = insertedCategoryRes.insertId;
+                // transaction.categoryId = insertedCategoryData[0].id;
+              }
+              await createOrReplaceData('Transactions', transaction);
+              // transactionsToInsert.push(transaction);
+            }
+          }
+        }
+        resolve(true);
+        hideLoader();
+        showNotification('success', 'Data recovered successfully');
+        const transformedData = {
+          dataRecovered: 1,
+        };
+        await database().ref(`/users/${uid}`).update(transformedData);
+        onSetUserDetailsFirebase(p => ({
+          ...p,
+          dataRecovered: transformedData.dataRecovered,
+        }));
+      } catch (err) {
+        reject(err);
+        console.log(err, 'error in recovering the data ');
+        hideLoader();
+        showNotification(
+          'error',
+          'Error in recovering your data ' + err.toString(),
+        );
+      }
+    });
+  };
+
+  const onRecoverLostData = async () => {
+    try {
+      const netStatus = await netInfoFetch();
+      if (!netStatus.isConnected) {
+        throw 'Check your internet connection & try again';
+      }
+
+      const onRecover = async () => {
+        showLoader(
+          'app',
+          true,
+          "Please wait while we're recovering the data for you.",
+        );
+        let jwtToken = await auth().currentUser.getIdToken();
+        sendRequest(
+          {
+            type: 'GET',
+            url: BACKEND_URL + '/backup/temp',
+            headers: {
+              authorization: 'Bearer ' + jwtToken,
+            },
+          },
+          {
+            successCallback: async res => {
+              if (!res.backup) {
+                throw 'No Data sent from backend';
+              }
+              // console.log(res.backup, 'RESS');
+              await onRestoreRecoveredDataIntoDb(userData.uid, res.backup);
+              // Clipboard.setString(JSON.stringify(res.backup));
+            },
+            errorCallback: async (err, data) => {
+              if (data?.noBackup) {
+                const transformedData = {
+                  dataRecovered: 1,
+                };
+                await database()
+                  .ref(`/users/${userData.uid}`)
+                  .update(transformedData);
+                onSetUserDetailsFirebase(p => ({
+                  ...p,
+                  dataRecovered: transformedData.dataRecovered,
+                }));
+              }
+              hideLoader();
+              showNotification('error', err.toString());
+            },
+          },
+        );
+      };
+
+      Alert.alert(
+        'Recover Data Confirmation?',
+        'Data recovery will proceed if data is found. It may create duplicate accounts, which you can delete if needed.',
+        [
+          {
+            text: 'Cancel',
+            style: 'destructive',
+          },
+          {
+            text: 'Recover',
+            onPress: async () => {
+              await onRecover();
+            },
+            style: 'default',
+          },
+        ],
+        {cancelable: false},
+      );
+    } catch (err) {
+      console.log(err, 'error in recovering the data from server');
+      hideLoader();
+      showNotification(
+        'error',
+        'Error in recovering your data ' + err.toString(),
+      );
+    }
+  };
+
+  const showLoader = (loaderType, backdrop = true, loaderText = '') => {
     let options = {};
     if (loaderType) {
       options.loaderType = loaderType;
     }
     if (backdrop) {
       options.backdrop = backdrop;
+    }
+    if (loaderText) {
+      options.loaderText = loaderText;
     }
     dispatch(loaderActions.showLoader(options));
   };
@@ -567,6 +835,7 @@ export const SyncContextProvider = ({children}) => {
         onGetRestoresFromiCloud,
         onRestoreFromiCloud,
         onDeleteBackupFromiCloud,
+        onRecoverLostData,
       }}>
       {children}
     </SyncContext.Provider>

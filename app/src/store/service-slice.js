@@ -108,6 +108,13 @@ export const setAppState = createAsyncThunk(
   },
 );
 
+export const setAppUpdateNeeded = createAsyncThunk(
+  'service/setAppUpdateNeeded',
+  async appUpdateNeeded => {
+    return appUpdateNeeded;
+  },
+);
+
 export const loadAppStatus = createAsyncThunk(
   'service/loadAppStatus',
   async () => {
@@ -172,6 +179,7 @@ const serviceSlice = createSlice({
     theme: 'automatic',
     exchangeRates: null,
     appState: AppState.currentState,
+    appUpdateNeeded: null,
     appStatus: {
       hideSplashScreen: false,
       authenticated: false,
@@ -206,6 +214,10 @@ const serviceSlice = createSlice({
 
     builder.addCase(setAppState.fulfilled, (state, action) => {
       state.appState = action.payload;
+    });
+
+    builder.addCase(setAppUpdateNeeded.fulfilled, (state, action) => {
+      state.appUpdateNeeded = action.payload;
     });
 
     builder.addCase(fetchExchangeRates.fulfilled, (state, action) => {

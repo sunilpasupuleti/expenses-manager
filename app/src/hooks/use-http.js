@@ -69,7 +69,8 @@ const useHttp = () => {
             console.log(err);
             console.log(message ? message : err, ' - error in http call');
             setError(message);
-            callbacks.errorCallback && callbacks.errorCallback(message);
+            callbacks.errorCallback &&
+              callbacks.errorCallback(message, err?.response?.data);
           });
       } catch (err) {
         callbacks.errorCallback && callbacks.errorCallback(err);

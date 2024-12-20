@@ -29,7 +29,10 @@ export const SQLiteContext = createContext({
   initializeDB: () => {},
   onBackUpDatabase: () => {},
   onRestoreDatabase: () => {},
-  deleteAllTablesData: () => {},
+  deleteAllTablesData: (
+    includeUserTable = false,
+    includeCategoriesTable = true,
+  ) => {},
   createOrReplaceData: (schema, data, key) => {},
   getData: query => {},
   executeQuery: query => {},
@@ -179,13 +182,18 @@ export const SQLiteContextProvider = ({children}) => {
     });
   };
 
-  const deleteAllTablesData = async (includeUserTable = false) => {
+  const deleteAllTablesData = async (
+    includeUserTable = false,
+    includeCategoriesTable = true,
+  ) => {
     return new Promise(async (resolve, reject) => {
       try {
         if (includeUserTable) {
           await db.executeSql('DELETE FROM Users;');
         }
-        await db.executeSql('DELETE FROM Categories;');
+        if (includeCategoriesTable) {
+          await db.executeSql('DELETE FROM Categories;');
+        }
         await db.executeSql('DELETE FROM Accounts;');
         await db.executeSql('DELETE FROM Transactions;');
         resolve(true);
