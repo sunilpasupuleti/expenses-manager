@@ -122,7 +122,6 @@ const SendNotifications = ({ title }) => {
 
   const [activeDevices, setActiveDevices] = useState([]);
   const [orgActiveDevices, setOrgActiveDevices] = useState([]);
-  const [allUsers, setAllUsers] = useState([]);
 
   const { onEmitEvent, socket, onFetchEvent } = useContext(SocketContext);
 
@@ -139,23 +138,23 @@ const SendNotifications = ({ title }) => {
 
   const handleSelectAllClick = (event) => {
     if (event.target.checked) {
-      const newSelected = activeDevices.map((n) => n.playerId);
+      const newSelected = activeDevices.map((device) => device.id);
       setSelectedUsers(newSelected);
       return;
     }
     setSelectedUsers([]);
   };
 
-  const handleClick = (event, playerId) => {
+  const handleClick = (event, deviceId) => {
     let currentSelectedUsers = [...selectedUsers];
-    const alreadySelected = currentSelectedUsers.find((id) => id === playerId);
+    const alreadySelected = currentSelectedUsers.find((id) => id === deviceId);
 
     if (alreadySelected) {
-      currentSelectedUsers = selectedUsers.filter((id) => id !== playerId);
+      currentSelectedUsers = selectedUsers.filter((id) => id !== deviceId);
     } else {
-      activeDevices.filter((a) => {
-        if (a.playerId === playerId) {
-          currentSelectedUsers.push(playerId);
+      activeDevices.filter((device) => {
+        if (device.id === deviceId) {
+          currentSelectedUsers.push(deviceId);
         }
       });
     }
@@ -199,50 +198,14 @@ const SendNotifications = ({ title }) => {
     onGetActiveDevicesList(
       (result) => {
         if (result && result.activeDevices) {
-          setAllUsers(result.users);
-          let actDevices = result.activeDevices;
-          let structuredDevicesList = [];
-
-          actDevices.forEach((a) => {
-            let tags = a.tags;
-            if (a.id) {
-              let obj = {
-                device: {
-                  os: a.device_os,
-                  model: a.device_model,
-                },
-                playerId: a.id,
-                last_active: a.last_active,
-                lastActive: moment
-                  .unix(a.last_active)
-                  .format("DD MMM YYYY, hh:mm:ss A"),
-              };
-              if (tags && tags.uid) {
-                let user = result.users.find((u) => u.uid === tags.uid);
-                obj.displayName = user?.displayName;
-                obj.email = user?.email;
-                obj.phoneNumber = user?.phoneNumber;
-                obj.photoURL = user?.photoURL;
-                obj.providerId = user?.providerId;
-                obj.uid = user?.uid;
-                obj._id = user?._id;
-                obj.platform = user?.platform;
-              }
-              structuredDevicesList.push(obj);
-            }
-          });
-          let activeDevicesList = _.orderBy(
-            structuredDevicesList,
-            "last_active",
-            "desc"
-          );
+          const activeDevicesList = result.activeDevices;
           setActiveDevices(activeDevicesList);
           setOrgActiveDevices(activeDevicesList);
         }
       },
-      () => {
+      (error) => {
         showNotification({
-          message: "An Error occured while fetching the active users list",
+          message: error?.message || "Error occured",
           status: "error",
         });
       },
@@ -274,31 +237,13 @@ const SendNotifications = ({ title }) => {
       setActiveDevices(orgActiveDevices);
       return;
     }
-    let filteredData = orgActiveDevices.filter((user) => {
-      let m = user;
+    let filteredData = orgActiveDevices.filter((device) => {
+      let userData = device.userData || {}; // Ensure userData is always an object
 
-      let displayNameFound = m.displayName
-        ? m.displayName.toLowerCase().includes(value)
-        : false;
-      let emailFound = m.email ? m.email.toLowerCase().includes(value) : false;
-      let phoneNumberFound = m.phoneNumber
-        ? m.phoneNumber.toLowerCase().includes(value)
-        : false;
-      let uidFound = m.uid ? m.uid.toLowerCase().includes(value) : false;
-      let providerIdFound = m.providerId
-        ? m.providerId.toLowerCase().includes(value)
-        : false;
-      let platformFound = m.platform
-        ? m.platform.toLowerCase().includes(value)
-        : false;
-
-      return (
-        displayNameFound ||
-        emailFound ||
-        phoneNumberFound ||
-        uidFound ||
-        providerIdFound ||
-        platformFound
+      return _.some(
+        [...Object.values(device), ...Object.values(userData)],
+        (field) =>
+          typeof field === "string" && field.toLowerCase().includes(value)
       );
     });
     setActiveDevices(filteredData);
@@ -637,7 +582,7 @@ const SendNotifications = ({ title }) => {
                         id="tableTitle"
                         component="div"
                       >
-                        Select Users
+                        Total Users {activeDevices?.length || 0}
                       </Typography>
                     )}
                   </Toolbar>
@@ -706,21 +651,34 @@ const SendNotifications = ({ title }) => {
                               page * rowsPerPage + rowsPerPage
                             )
                           : activeDevices
-                        ).map((user, index) => {
-                          const isItemSelected = isSelected(user.playerId);
+                        ).map((device, index) => {
+                          const user = device.userData || {};
+                          const {
+                            displayName = " - ",
+                            email = " - ",
+                            phoneNumber = " - ",
+                            uid = null,
+                            photoURL: userImageUrl = null,
+                          } = user;
+                          const {
+                            device_model = " Unknown ",
+                            device_os = " Unknown ",
+                            id: deviceId,
+                            last_active = null,
+                          } = device || {};
+
+                          const isItemSelected = isSelected(deviceId);
                           const labelId = `enhanced-table-checkbox-${index}`;
                           let photoURL = null;
-                          if (user.photoURL) {
-                            photoURL = user.photoURL.startsWith(
-                              `users/${user?.uid}`
-                            )
-                              ? getFirebaseAccessUrl(user.photoURL)
-                              : user.photoURL;
+                          if (userImageUrl) {
+                            photoURL = userImageUrl.startsWith(`users/${uid}`)
+                              ? getFirebaseAccessUrl(userImageUrl)
+                              : userImageUrl;
                           }
                           return (
                             <TableRow
                               onClick={(event) => {
-                                handleClick(event, user.playerId);
+                                handleClick(event, deviceId);
                               }}
                               key={index}
                               sx={{
@@ -742,20 +700,13 @@ const SendNotifications = ({ title }) => {
                                   }}
                                 />
                               </TableCell>
+                              <TableCell>{displayName}</TableCell>
+                              <TableCell>{email}</TableCell>
                               <TableCell>
-                                {user.displayName ? user.displayName : " - "}
+                                Model : {device_model} <br />
+                                Os : {device_os}
                               </TableCell>
-                              <TableCell>
-                                {user.email ? user.email : " - "}
-                              </TableCell>
-                              <TableCell>
-                                Model : {user.device.model} <br />
-                                Os : {user.device.os}
-                              </TableCell>
-                              <TableCell>
-                                {user.phoneNumber ? user.phoneNumber : "-"}
-                              </TableCell>
-                              {}
+                              <TableCell>{phoneNumber}</TableCell>
                               <TableCell>
                                 {photoURL ? (
                                   <TableProfileContainer
@@ -774,20 +725,20 @@ const SendNotifications = ({ title }) => {
                               <TableCell>
                                 <Tooltip
                                   onClick={() =>
-                                    copyContentToClipboard(
-                                      user.uid ? user.uid : user.playerId
-                                    )
+                                    copyContentToClipboard(uid || deviceId)
                                   }
                                   className="pointer"
                                   title="copy"
                                 >
-                                  <strong>
-                                    {user.uid ? user.uid : user.playerId}
-                                  </strong>
+                                  <strong>{uid || deviceId}</strong>
                                 </Tooltip>
                               </TableCell>
                               <TableCell>
-                                {user.lastActive ? user.lastActive : "-"}
+                                {last_active
+                                  ? moment(last_active).format(
+                                      "DD MMM YYYY, hh:mm:ss A"
+                                    )
+                                  : "-"}
                               </TableCell>
                             </TableRow>
                           );

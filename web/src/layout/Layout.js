@@ -99,9 +99,12 @@ const Layout = (props) => {
                 />
               }
             >
-              <Route path="users" element={<UsersElement title="Users" />} />
               <Route
-                path="account-deletion"
+                path="users/:version"
+                element={<UsersElement title="Users" />}
+              />
+              <Route
+                path="account-deletion/:status"
                 element={
                   <AdminAccountDeletionElement title="Account Deletion" />
                 }

@@ -4,14 +4,17 @@ const {
   getFirebaseAccessUrl,
 } = require("../../../helpers/utility");
 const logger = require("../../../middleware/logger/logger");
-const Users = require("../../../models/Users");
 const OneSignal = require("onesignal-node");
-const { storage } = require("firebase-admin");
+const { storage, database } = require("firebase-admin");
 const client = new OneSignal.Client(
   process.env.ONE_SIGNAL_APP_ID,
   process.env.ONE_SIGNAL_API_KEY
 );
 const _ = require("lodash");
+const axios = require("axios");
+const zlib = require("zlib");
+const Papa = require("papaparse");
+const moment = require("moment");
 
 function base64ToBuffer(base64String) {
   const base64Data = base64String.replace(/^data:image\/\w+;base64,/, "");
@@ -19,35 +22,6 @@ function base64ToBuffer(base64String) {
   return buffer;
 }
 
-const getDevicesList = async (offsets) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      let fullDevicesList = [];
-      const getListPromises = offsets.map(async (offset) => {
-        try {
-          let devices = (
-            await client.viewDevices({
-              offset: offset,
-            })
-          ).body.players;
-          return {
-            offset: offset,
-            devices: devices,
-          };
-        } catch (e) {
-          throw e;
-        }
-      });
-      const results = await Promise.all(getListPromises);
-      results.forEach((r) => {
-        fullDevicesList.push(...r.devices);
-      });
-      resolve(fullDevicesList);
-    } catch (e) {
-      reject(e.toString());
-    }
-  });
-};
 module.exports = {
   async sendDailyUpdateNotificationsToUsers(req, res) {
     logger.info("sending daily update notifications to users  - ");
@@ -214,35 +188,86 @@ module.exports = {
   },
 
   async getActiveDevicesList(req, res) {
-    let offsets = [700, 600, 500, 400, 300, 200, 100, 0];
-
     try {
-      let fullDevicesList = await getDevicesList(offsets);
-      let uniqueDevices = _.uniqBy(fullDevicesList, (m) => {
-        return m.id;
+      const csvResponse = await client.exportCSV({
+        segment_name: "Subscribed Users",
+      });
+      const csvUrl = csvResponse?.body?.csv_file_url;
+
+      if (!csvUrl) {
+        throw "There was a problem in downloading the CSV file";
+      }
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      const response = await axios({
+        url: csvUrl,
+        method: "GET",
+        responseType: "arraybuffer",
       });
 
-      let activeDevices = uniqueDevices.filter((d) => !d.invalid_identifier);
-      let users = await Users.find({})
-        .select({
-          email: 1,
-          displayName: 1,
-          photoURL: 1,
-          fcmToken: 1,
-          phoneNumber: 1,
-          providerId: 1,
-          lastLogin: 1,
-          uid: 1,
-          platform: 1,
-          _id: 1,
-        })
-        .sort({ createdAt: -1 });
+      const decompressed = zlib.gunzipSync(response.data);
+      const csvString = decompressed.toString();
+
+      const { data } = Papa.parse(csvString, {
+        header: true,
+        skipEmptyLines: true,
+      });
+
+      const enrichedUsers = await Promise.all(
+        _.compact(
+          _.map(data, async (entry) => {
+            try {
+              const tags = entry.tags ? JSON.parse(entry.tags) : {};
+              entry.tags = tags;
+              const uid = tags?.uid;
+
+              let userData = null;
+              // Fetch user details from Firebase
+              if (uid) {
+                const userSnapshot = await database()
+                  .ref(`users/${uid}`)
+                  .once("value");
+                const user = userSnapshot.val();
+
+                if (user) {
+                  userData = {
+                    displayName: user.displayName || "",
+                    email: user.email || "",
+                    phoneNumber: user.phoneNumber || "",
+                    photoURL: user.photoURL || "",
+                    providerId: user.providerId || "",
+                    uid: user.uid,
+                    platform: user.platform || "",
+                  };
+                }
+              }
+              if (entry.last_active) {
+                entry.last_active = moment
+                  .utc(entry.last_active, "YYYY-MM-DD HH:mm")
+                  .local() // Automatically converts to local timezone
+                  .format("YYYY-MM-DD HH:mm:ss"); // Format properly
+              }
+
+              const structuredObj = {
+                ...entry,
+                userData,
+              };
+
+              return structuredObj;
+            } catch (error) {
+              console.error("Error processing entry:", error);
+              return null;
+            }
+          })
+        )
+      );
+      const sortedUsers = _.orderBy(enrichedUsers, ["last_active"], ["desc"]);
       return sendResponse(res, httpCodes.OK, {
         message: "Active users list",
-        activeDevices: activeDevices,
-        users: users,
+        activeDevices: sortedUsers,
       });
     } catch (e) {
+      console.log(e);
       logger.error(e);
       return sendResponse(res, httpCodes.INTERNAL_SERVER_ERROR, {
         message: e.toString(),

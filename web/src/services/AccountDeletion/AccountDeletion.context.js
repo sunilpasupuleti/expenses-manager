@@ -4,7 +4,7 @@ import { createContext } from "react";
 import useHttp from "../../hooks/useHttp";
 
 export const AccountDeletionContext = createContext({
-  onGetRequests: (callback, errorCallBack, loader, notify) => null,
+  onGetRequests: (status, callback, errorCallBack, loader, notify) => null,
   onCreateRequest: (
     accountKey,
     data,
@@ -25,6 +25,7 @@ export const AccountDeletionContextProvider = ({ children }) => {
   const accountDeletionUrl = "/admin/account-deletion";
 
   const onGetRequests = async (
+    status,
     callback = () => {},
     errorCallBack = () => {},
     loader = true,
@@ -32,7 +33,7 @@ export const AccountDeletionContextProvider = ({ children }) => {
   ) => {
     sendRequest(
       {
-        url: accountDeletionUrl,
+        url: `${accountDeletionUrl}/${status}`,
         type: "GET",
       },
       {

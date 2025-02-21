@@ -13,6 +13,7 @@ const Users = require("../../../models/Users");
 const logger = require("../../../middleware/logger/logger");
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
+const { database } = require("firebase-admin");
 
 async function deleteUserFiles(folderName) {
   let bucket = firebaseAdmin.storage().bucket();
@@ -39,177 +40,165 @@ async function deleteUserFiles(folderName) {
 
 module.exports = {
   async createRequest(req, res) {
-    let uid = req.params.accountKey;
-    let { reason } = req.body;
+    try {
+      let { reason } = req.body;
+      const user = req.account;
+      if (!user) {
+        throw "Sorry user not found";
+      }
+      const uid = user.uid;
+      let data = {
+        reason: reason,
+        uid: uid,
+        status: "pending",
+        createdAt: Date.now(),
+      };
 
-    let user = await Users.findOne({
-      uid: uid,
-    });
+      await database().ref(`accountDeletions/${uid}`).set(data);
 
-    let data = {
-      reason: reason,
-      uid: uid,
-      user: user._id,
-    };
-
-    AccountDeletion.create(data)
-      .then((result) => {
-        return sendResponse(res, httpCodes.OK, {
-          requestId: result._id,
-          message:
-            "Account Deletion request submitted successfully, we will reach you out soon.",
-        });
-      })
-      .catch((err) => {
-        logger.error(
-          " Error occured while creating account deletion request to the database " +
-            err
-        );
-        return sendResponse(res, httpCodes.INTERNAL_SERVER_ERROR, {
-          message: "Error occured while saving " + err,
-        });
+      return sendResponse(res, httpCodes.OK, {
+        requestId: uid,
+        message:
+          "Account Deletion request submitted successfully, we will reach you out soon.",
       });
+    } catch (err) {
+      logger.error(
+        " Error occured while creating account deletion request to the database " +
+          err
+      );
+      return sendResponse(res, httpCodes.INTERNAL_SERVER_ERROR, {
+        message: err.toString(),
+      });
+    }
   },
 
   async getRequests(req, res) {
-    let requests = await AccountDeletion.find({})
-      .populate("user")
-      .sort({ createdAt: -1 });
+    try {
+      const { status } = req.params;
+      const allowedStatus = ["pending", "deleted", "rejected", "all"];
 
-    return sendResponse(res, httpCodes.OK, {
-      message: "Deletion requests",
-      requests: requests,
-    });
+      if (!status || !allowedStatus.includes(status)) {
+        throw "Invalid Status Provided";
+      }
+
+      const dbRef = await database().ref("accountDeletions");
+      const snapshot =
+        status === "all"
+          ? await dbRef.once("value")
+          : await dbRef.orderByChild("status").equalTo(status).once("value");
+
+      const requests = snapshot.val() || {};
+      const enrichedRequests = await Promise.all(
+        _.map(requests, async (request, key) => {
+          const userSnapshot = await database()
+            .ref(`users/${request.uid}`)
+            .once("value");
+          const user = userSnapshot.val() || {};
+          const { displayName, email, phoneNumber, photoURL } = user;
+          const lastUpdate = request.updatedAt || request.createdAt || 0;
+          return {
+            ...request,
+            name: displayName || "",
+            email: email || "",
+            phoneNumber: phoneNumber || "",
+            photoURL: photoURL || "",
+            lastUpdate: lastUpdate,
+          };
+        })
+      );
+
+      const sortedRequests = _.orderBy(
+        enrichedRequests,
+        ["lastUpdate"], // Sorting priorities
+        ["desc"] // Sort in descending order (latest first)
+      );
+
+      return sendResponse(res, httpCodes.OK, {
+        message: "Deletion requests",
+        requests: sortedRequests,
+      });
+    } catch (err) {
+      logger.error(err.toString());
+      return sendResponse(res, httpCodes.INTERNAL_SERVER_ERROR, {
+        message: err.toString(),
+      });
+    }
   },
 
   async getRequestStatus(req, res) {
-    let { id } = req.query;
+    try {
+      const deletionRequest = req.deletionRequest;
 
-    let dataFromRequestId = null;
-    let dataFromAccountKey = null;
-
-    let request;
-
-    dataFromAccountKey = await AccountDeletion.findOne({
-      uid: id,
-    });
-
-    if (!dataFromAccountKey) {
-      let validObjectId = ObjectId.isValid(id);
-      if (!validObjectId) {
-        return sendResponse(res, httpCodes.BAD_REQUEST, {
-          message: "Invalid Account Key or Request Id",
-        });
-      }
-      dataFromRequestId = await AccountDeletion.findOne({
-        _id: id,
+      return sendResponse(res, httpCodes.OK, {
+        message: "Status",
+        request: deletionRequest,
       });
-      request = dataFromRequestId;
-    } else {
-      request = dataFromAccountKey;
-    }
-
-    if (!request) {
-      return sendResponse(res, httpCodes.BAD_REQUEST, {
-        message: "Record Not Found",
+    } catch (err) {
+      logger.error(
+        "Error Occured in getting the request status : " + err.toString()
+      );
+      return sendResponse(res, httpCodes.INTERNAL_SERVER_ERROR, {
+        message: err.toString(),
       });
     }
-
-    return sendResponse(res, httpCodes.OK, {
-      message: "Status",
-      request: request,
-    });
   },
 
   async rejectRequest(req, res) {
-    let requestId = req.params.requestId;
-    let { rejectedReason } = req.body;
-    AccountDeletion.findOneAndUpdate(
-      {
-        _id: requestId,
-      },
-      {
-        $set: {
-          status: "rejected",
-          rejectedReason: rejectedReason,
-        },
-      }
-    ).then(() => {
+    try {
+      let uid = req.params.requestId;
+      let { rejectedReason } = req.body;
+      const requestRef = database().ref(`accountDeletions/${uid}`);
+      await requestRef.update({
+        status: "rejected",
+        rejectedReason: rejectedReason,
+        updatedAt: Date.now(),
+      });
       return sendResponse(res, httpCodes.OK, {
         message: "Status changed to rejected",
       });
-    });
+    } catch (err) {
+      logger.error("Error in rejecting the request " + err.toString());
+      return sendResponse(res, httpCodes.INTERNAL_SERVER_ERROR, {
+        message: err.toString(),
+      });
+    }
   },
 
   async deleteAccount(req, res) {
-    let requestId = req.params.requestId;
-    let request = await AccountDeletion.findOne({ _id: requestId }).populate(
-      "user"
-    );
-    let user = request.user;
-
-    // delete user related files
-    await deleteUserFiles(`users/${user.uid}`);
-    // delete user tempBackUpdata
-    await BackupsTemp.findOneAndDelete({
-      uid: user.uid,
-    });
-
-    // delete backups
-    let backups = [];
-    user.backups.forEach((backup) => {
-      backups.push(backup._id);
-    });
-
-    await Backups.deleteMany({
-      _id: { $in: backups },
-    });
-
-    // delete user
-    await Users.findOneAndDelete({
-      _id: user._id,
-    });
-
-    // delete from firebase
-
-    await firebaseAdmin
-      .auth()
-      .deleteUser(user.uid)
-      .then(() => {
-        // update status
-        let referenceData = {
-          name: user.displayName,
-          email: user.email,
-          phoneNumber: user.phoneNumber,
-        };
-        AccountDeletion.findOneAndUpdate(
-          {
-            _id: requestId,
-          },
-          {
-            $set: {
-              status: "deleted",
-              referenceData: referenceData,
-            },
-          }
-        )
-          .then(() => {
-            return sendResponse(res, httpCodes.OK, {
-              message: "Account and its data deleted successfully",
-            });
-          })
-          .catch((err) => {
-            logger.error("Error occured while deleting data " + err);
-            return sendResponse(res, httpCodes.INTERNAL_SERVER_ERROR, {
-              message: "Error Occured while deleting account " + err,
-            });
-          });
-      })
-      .catch((err) => {
-        logger.error("Error occured while deleting user from firebase " + err);
-        return sendResponse(res, httpCodes.INTERNAL_SERVER_ERROR, {
-          message: "Error Occured while deleting user from firebase " + err,
-        });
+    try {
+      const { requestId } = req.params;
+      const requestRef = database().ref(`accountDeletions/${requestId}`);
+      const requestSnapshot = await requestRef.once("value");
+      const request = requestSnapshot.val();
+      const userRef = database().ref(`users/${request.uid}`);
+      const userSnapshot = await userRef.once("value");
+      const user = userSnapshot.val();
+      const { uid, displayName, email, phoneNumber, photoURL } = user;
+      await firebaseAdmin.auth().revokeRefreshTokens(uid);
+      // delete user related files
+      await deleteUserFiles(`users/${uid}`);
+      // delete user from firebase
+      await firebaseAdmin.auth().deleteUser(uid);
+      await userRef.remove();
+      let referenceData = {
+        name: displayName || "",
+        email: email || "",
+        phoneNumber: phoneNumber || "",
+        photoURL: photoURL || "",
+        updatedAt: Date.now(),
+      };
+      await requestRef.update({
+        status: "deleted",
+        ...referenceData,
       });
+      return sendResponse(res, httpCodes.OK, {
+        message: "Account and its data deleted successfully",
+      });
+    } catch (err) {
+      logger.error("Error occured while deleting user from firebase " + err);
+      return sendResponse(res, httpCodes.INTERNAL_SERVER_ERROR, {
+        message: "Error Occured while deleting user from firebase " + err,
+      });
+    }
   },
 };

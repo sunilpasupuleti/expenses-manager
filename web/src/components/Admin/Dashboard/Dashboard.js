@@ -28,6 +28,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { styled as scStyled } from "styled-components";
 import { Avatar, Menu, MenuItem, Tooltip } from "@mui/material";
 import { useState } from "react";
+import { getFirebaseAccessUrl } from "../../../utility/helper";
 
 const drawerWidth = 240;
 
@@ -172,8 +173,28 @@ const Dashboard = ({ title }) => {
 
   const pathNames = {
     notification: "/dashboard/send-notifications",
-    users: "/dashboard/users",
-    accountDeletion: "/dashboard/account-deletion",
+    users: "/dashboard/users/new-version",
+    accountDeletion: "/dashboard/account-deletion/pending",
+  };
+
+  const getActiveClassNames = (mainPath, subPaths = []) => {
+    const finalSubpaths = subPaths.map((subPath) => `${mainPath}/${subPath}`);
+    const data = [mainPath, ...finalSubpaths];
+    return data;
+  };
+
+  const pathActiveClasses = {
+    notification: getActiveClassNames("/dashboard/send-notifications"),
+    accountDeletion: getActiveClassNames("/dashboard/account-deletion", [
+      "pending",
+      "rejected",
+      "deleted",
+      "all",
+    ]),
+    users: getActiveClassNames("/dashboard/users", [
+      "new-version",
+      "old-version",
+    ]),
   };
 
   return userData ? (
@@ -211,7 +232,9 @@ const Dashboard = ({ title }) => {
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                 <Avatar
                   alt={userData?.name}
-                  src="/static/images/avatar/2.jpg"
+                  src={getFirebaseAccessUrl(
+                    process.env.REACT_APP_ADMIN_PROFILE_URL
+                  )}
                 />
               </IconButton>
             </Tooltip>
@@ -255,11 +278,11 @@ const Dashboard = ({ title }) => {
         <List>
           <ListItem
             disablePadding
-            sx={ListItemStyles([pathNames.users])}
+            sx={ListItemStyles(pathActiveClasses.users)}
             onClick={() => navigate(pathNames.users)}
           >
             <ListItemButton sx={ListItemButtonStyles}>
-              <ListItemIcon sx={ListItemIconStyles([pathNames.users])}>
+              <ListItemIcon sx={ListItemIconStyles(pathActiveClasses.users)}>
                 <UserIcon />
               </ListItemIcon>
               <ListItemText primary={"Users"} sx={{ opacity: open ? 1 : 0 }} />
@@ -268,11 +291,13 @@ const Dashboard = ({ title }) => {
 
           <ListItem
             disablePadding
-            sx={ListItemStyles([pathNames.notification])}
+            sx={ListItemStyles(pathActiveClasses.notification)}
             onClick={() => navigate(pathNames.notification)}
           >
             <ListItemButton sx={ListItemButtonStyles}>
-              <ListItemIcon sx={ListItemIconStyles([pathNames.notification])}>
+              <ListItemIcon
+                sx={ListItemIconStyles(pathActiveClasses.notification)}
+              >
                 <NotificationIcon />
               </ListItemIcon>
               <ListItemText
@@ -284,12 +309,12 @@ const Dashboard = ({ title }) => {
 
           <ListItem
             disablePadding
-            sx={ListItemStyles([pathNames.accountDeletion])}
+            sx={ListItemStyles(pathActiveClasses.accountDeletion)}
             onClick={() => navigate(pathNames.accountDeletion)}
           >
             <ListItemButton sx={ListItemButtonStyles}>
               <ListItemIcon
-                sx={ListItemIconStyles([pathNames.accountDeletion])}
+                sx={ListItemIconStyles(pathActiveClasses.accountDeletion)}
               >
                 <DeletionIcon />
               </ListItemIcon>

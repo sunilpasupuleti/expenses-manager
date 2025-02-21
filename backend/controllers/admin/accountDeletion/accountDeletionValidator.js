@@ -1,61 +1,63 @@
 const { sendResponse, httpCodes } = require("../../../helpers/utility");
-const AccountDeletion = require("../../../models/AccountDeletion");
-const Users = require("../../../models/Users");
-const mongoose = require("mongoose");
+const { database } = require("firebase-admin");
+const _ = require("lodash");
 
 module.exports = {
   async validateRequestId(req, res, next) {
-    let requestId = req.params.requestId;
-    let request = await AccountDeletion.findOne({
-      _id: requestId,
-    });
-    if (!request) {
+    try {
+      let uid = req.params.requestId;
+      const requestSnapshot = await database()
+        .ref(`users/${uid}`)
+        .once("value");
+      if (!requestSnapshot.exists()) {
+        throw "Invalid Request ID";
+      }
+      next();
+    } catch (err) {
       return sendResponse(res, httpCodes.BAD_REQUEST, {
-        message: "Invalid Request Id",
+        message: err.toString(),
       });
     }
-    next();
   },
 
   async validateCreateRequest(req, res, next) {
-    const { reason } = req.body;
-    let accountKey = req.params.accountKey;
+    try {
+      const { reason } = req.body;
+      let accountKey = req.params.accountKey;
 
-    if (!accountKey) {
+      if (!accountKey) {
+        throw "Account Key Required";
+      }
+      const userSnapshot = await database()
+        .ref(`users/${accountKey}`)
+        .once("value");
+      const user = userSnapshot.val();
+      if (!user) {
+        throw "Invalid Account Key or Account doesn't exist";
+      }
+      const requestSnapshot = await database()
+        .ref(`accountDeletions`)
+        .orderByChild("uid")
+        .equalTo(accountKey)
+        .once("value");
+      const requests = (await requestSnapshot.val()) || {};
+      const hasActiveRequest = _.some(requests, (request) =>
+        ["pending"].includes(request.status)
+      );
+      if (hasActiveRequest) {
+        throw "A request is already in progress with a status of PENDING. You can track the status on the Track Status page.";
+      }
+
+      if (!reason) {
+        throw "Reason Required";
+      }
+      req.account = user;
+      next();
+    } catch (err) {
       return sendResponse(res, httpCodes.BAD_REQUEST, {
-        message: "Account Key required",
+        message: err.toString(),
       });
     }
-
-    let account = await Users.findOne({
-      uid: accountKey,
-    });
-    if (!account) {
-      return sendResponse(res, httpCodes.BAD_REQUEST, {
-        message: "Invalid Account Key",
-      });
-    }
-
-    let requestAlreadyPresent = await AccountDeletion.findOne({
-      uid: accountKey,
-      status: { $ne: "rejected" },
-    });
-
-    if (requestAlreadyPresent) {
-      return sendResponse(res, httpCodes.BAD_REQUEST, {
-        message:
-          "A request was alredy present and the status is " +
-          requestAlreadyPresent.status?.toUpperCase(),
-      });
-    }
-
-    if (!reason) {
-      return sendResponse(res, httpCodes.BAD_REQUEST, {
-        message: "Reason required",
-      });
-    }
-
-    next();
   },
 
   async validateRejectRequest(req, res, next) {
@@ -69,29 +71,45 @@ module.exports = {
   },
 
   async validateDeleteAccount(req, res, next) {
-    let requestId = req.params.requestId;
-
-    let requestAlreadyPresent = await AccountDeletion.findOne({
-      _id: requestId,
-    });
-
-    if (requestAlreadyPresent && requestAlreadyPresent.status === "deleted") {
+    try {
+      let requestId = req.params.requestId;
+      const requestSnapshot = await database()
+        .ref(`accountDeletions/${requestId}`)
+        .once("value");
+      if (!requestSnapshot.exists()) {
+        throw "Request not found";
+      }
+      const request = requestSnapshot.val();
+      if (request.status === "deleted") {
+        throw "The user was already deleted";
+      }
+      next();
+    } catch (err) {
       return sendResponse(res, httpCodes.BAD_REQUEST, {
-        message: "The user was already deleted",
+        message: err.toString(),
       });
     }
-    next();
   },
 
   async validateGetStatus(req, res, next) {
-    const { requestId, accountKey } = req.query;
+    try {
+      const { id } = req.query;
 
-    if (!requestId || !accountKey) {
+      if (!id) {
+        throw "Account Key required to proceed";
+      }
+      const requestSnapshot = await database()
+        .ref(`accountDeletions/${id}`)
+        .once("value");
+      if (!requestSnapshot.exists()) {
+        throw "Deletion request not found.";
+      }
+      req.deletionRequest = requestSnapshot.val();
+      next();
+    } catch (err) {
       return sendResponse(res, httpCodes.BAD_REQUEST, {
-        message: "Account key or Request Id needed to proceed",
+        message: err.toString(),
       });
     }
-
-    next();
   },
 };

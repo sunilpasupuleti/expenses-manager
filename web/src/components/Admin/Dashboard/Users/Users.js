@@ -5,8 +5,12 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
@@ -34,6 +38,7 @@ import { useSelector } from "react-redux";
 import ViewIcon from "@mui/icons-material/RemoveRedEye";
 import NavigationTransition from "../../../../shared/NavigationTransition/NavigationTransition";
 import { getFirebaseAccessUrl } from "../../../../utility/helper";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 
 const LottieContainer = styled.div`
   height: 300px;
@@ -86,7 +91,8 @@ const Users = ({ title }) => {
 
   const [users, setUsers] = useState([]);
   const [orgUsers, setOrgUsers] = useState([]);
-
+  const { version } = useParams();
+  const navigate = useNavigate();
   // for table of users
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(40);
@@ -124,15 +130,20 @@ const Users = ({ title }) => {
     }
   };
 
+  useEffect(() => {
+    if (version) {
+      document.title = title + " - " + version;
+      getUsers();
+    }
+  }, [version]);
+
   //   table completed
 
-  useEffect(() => {
-    document.title = title;
-    getUsers();
-  }, []);
+  useEffect(() => {}, []);
 
   const getUsers = () => {
     onGetUsers(
+      version,
       (result) => {
         if (result && result.users) {
           let usersList = result.users;
@@ -144,7 +155,10 @@ const Users = ({ title }) => {
       (error) => {
         console.log(error);
         showNotification({
-          message: "An Error occured while fetching the  users list",
+          message:
+            error.message ||
+            "An Error occured while fetching the  users list " +
+              error.toString(),
           status: "error",
         });
       },
@@ -233,6 +247,11 @@ const Users = ({ title }) => {
     }
   };
 
+  const handleVersionChange = async (event) => {
+    const value = event.target.value;
+    navigate(`/dashboard/users/${value}`);
+  };
+
   return isLoading ? null : (
     <NavigationTransition>
       <Card>
@@ -254,7 +273,7 @@ const Users = ({ title }) => {
             </Box>
 
             <Grid container spacing={2}>
-              <Grid item md={12}>
+              <Grid item md={8}>
                 <TextField
                   sx={{ mt: 2, ml: 1, width: "98%" }}
                   variant="standard"
@@ -266,6 +285,21 @@ const Users = ({ title }) => {
                   value={searchKeyword}
                   onChange={onChangeSearchKeyword}
                 />
+              </Grid>
+              <Grid item md={4}>
+                <FormControl fullWidth>
+                  <InputLabel id="version">Age</InputLabel>
+                  <Select
+                    labelId="version-label"
+                    id="version"
+                    value={version}
+                    label="Version"
+                    onChange={handleVersionChange}
+                  >
+                    <MenuItem value={"new-version"}>New Version</MenuItem>
+                    <MenuItem value={"old-version"}>Old Version</MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
             </Grid>
 
@@ -538,7 +572,7 @@ const Users = ({ title }) => {
                   <TableRow>
                     <TableCell>Backups</TableCell>
                     <TableCell>
-                      {returnSelectedUserValue("backups").length}
+                      {returnSelectedUserValue("backups").length || 0}
                     </TableCell>
                   </TableRow>
                   <TableRow>
@@ -575,25 +609,39 @@ const Users = ({ title }) => {
                     </TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell>Created At</TableCell>
+                    <TableCell>Last Synced</TableCell>
                     <TableCell>
-                      {selectedUser.createdAt
-                        ? moment(selectedUser.createdAt).format(
+                      {selectedUser.lastSynced
+                        ? moment(selectedUser.lastSynced).format(
                             "DD MMM YYYY, hh:mm:ss A"
                           )
                         : "-"}
                     </TableCell>
                   </TableRow>
-                  <TableRow>
-                    <TableCell>Updated At</TableCell>
-                    <TableCell>
-                      {selectedUser.updatedAt
-                        ? moment(selectedUser.updatedAt).format(
-                            "DD MMM YYYY, hh:mm:ss A"
-                          )
-                        : "-"}
-                    </TableCell>
-                  </TableRow>
+                  {version === "old-version" && (
+                    <>
+                      <TableRow>
+                        <TableCell>Created At</TableCell>
+                        <TableCell>
+                          {selectedUser.createdAt
+                            ? moment(selectedUser.createdAt).format(
+                                "DD MMM YYYY, hh:mm:ss A"
+                              )
+                            : "-"}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Updated At</TableCell>
+                        <TableCell>
+                          {selectedUser.updatedAt
+                            ? moment(selectedUser.updatedAt).format(
+                                "DD MMM YYYY, hh:mm:ss A"
+                              )
+                            : "-"}
+                        </TableCell>
+                      </TableRow>
+                    </>
+                  )}
                 </TableBody>
               </Table>
             </TableContainer>

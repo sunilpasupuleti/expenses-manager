@@ -143,7 +143,7 @@ const Status = ({ title }) => {
             let request = data.request;
             if (request.status === "rejected") {
               status = "error";
-              msg = `Your submit request is rejected with reason ${request.rejectedReason}`;
+              msg = `Reason : "${request.rejectedReason}"`;
             } else if (request.status === "pending") {
               status = "info";
               msg = `Your request is in process, you will be notified soon.`;

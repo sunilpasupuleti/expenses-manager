@@ -54,7 +54,7 @@ export const AuthenticationContext = createContext({
   onResetPassword: () => null,
   userData: null,
   setUserData: null,
-  onLogout: () => null,
+  onLogout: (forceLogout = false) => null,
   onSetUserAdditionalDetails: data => null,
   onSetUserDetailsFirebase: data => null,
   onGetUserDetails: (successCallBack, errorCallback) => null,
@@ -101,19 +101,37 @@ export const AuthenticationContextProvider = ({children}) => {
   }, [appUpdateNeeded]);
 
   useEffect(() => {
+    if (!userData?.uid) return;
+
+    const deletionRef = database().ref(`/accountDeletions/${userData.uid}`);
+    const listener = deletionRef.on('value', async snapshot => {
+      const data = snapshot.val();
+
+      if (data?.status === 'deleted') {
+        console.log('Account deletion detected via listener. Logging out...');
+        await onLogout(true, true);
+      }
+    });
+    return () => deletionRef.off('value', listener);
+  }, [userData?.uid]);
+
+  useEffect(() => {
     if (db) {
       const unsubcribe = auth().onAuthStateChanged(async user => {
         try {
-          if (user && !authStateTriggered) {
+          if (!user) {
+            onLogout(true);
+          } else if (user && !authStateTriggered) {
             // auth flag is used to prevent calling auth change state multiple times
             authStateTriggered = true;
+
             await onSignInSuccess();
           }
         } catch (err) {
           onLogout(true);
           dispatch(
             notificationActions.showToast({
-              message: err + ' Error in Sign in ',
+              message: err.toString() + ' Error in Sign in ',
               status: 'error',
             }),
           );
@@ -507,6 +525,17 @@ export const AuthenticationContextProvider = ({children}) => {
         let currentUser = await auth().currentUser;
         const uid = currentUser.uid;
 
+        const accountDeletionRequest = (
+          await database().ref(`/accountDeletions/${uid}`).once('value')
+        ).val();
+
+        if (accountDeletionRequest?.status === 'deleted') {
+          console.log('Account is marked as deleted. Logging out...');
+          await onLogout(true, true);
+          resolve(false);
+          return;
+        }
+
         let jwtToken = await auth().currentUser.getIdToken();
         let token = await messaging()
           .getToken()
@@ -539,13 +568,13 @@ export const AuthenticationContextProvider = ({children}) => {
 
         OneSignal.InAppMessages.addTrigger('new_announcement', 'true');
 
-        if (dataFromFirebase) {
+        if (dataFromFirebase && dataFromFirebase.uid) {
           onSetUserDetailsFirebase(dataFromFirebase);
           const {
             displayName,
             email,
             photoURL,
-            uid,
+            uid: dbUid,
             baseCurrency,
             phoneNumber,
             providerId,
@@ -559,7 +588,7 @@ export const AuthenticationContextProvider = ({children}) => {
           transformedData.email = email;
           transformedData.photoURL = photoURL;
           transformedData.providerId = providerId;
-          transformedData.uid = uid;
+          transformedData.uid = dbUid;
           transformedData.phoneNumber = phoneNumber;
           transformedData.providerId = providerId;
           transformedData.baseCurrency = baseCurrency;
@@ -644,9 +673,9 @@ export const AuthenticationContextProvider = ({children}) => {
     });
   };
 
-  const onLogout = async (initialSignInFailure = false) => {
+  const onLogout = async (forceLogout = false, accountDeleted = false) => {
     const signOut = async () => {
-      if (!initialSignInFailure) {
+      if (!forceLogout) {
         await deleteAllTablesData(true);
         await deleteUserPinCode('@expenses-manager-app-lock');
         await resetPinCodeInternalStates();
@@ -692,7 +721,9 @@ export const AuthenticationContextProvider = ({children}) => {
         active: 0,
         fcmToken: null,
       };
-      await database().ref(`/users/${uid}`).update(transformedData);
+      if (!accountDeleted) {
+        await database().ref(`/users/${uid}`).update(transformedData);
+      }
     } else {
       signOut();
     }

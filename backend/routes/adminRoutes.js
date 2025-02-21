@@ -22,6 +22,7 @@ const {
   validateRejectRequest,
   validateRequestId,
   validateDeleteAccount,
+  validateGetStatus,
 } = require("../controllers/admin/accountDeletion/accountDeletionValidator");
 const {
   createRequest,
@@ -45,7 +46,7 @@ router.route("/auth/refresh").get(refreshToken);
 router.route("/auth/signout").get(signout);
 
 // get Users list
-router.route("/user").get(VerifyAdminToken, getUsers);
+router.route("/user/:version").get(VerifyAdminToken, getUsers);
 
 // Get active devices list for sending notification
 router
@@ -69,15 +70,19 @@ router
   .route("/account-deletion/:accountKey")
   .post(validateCreateRequest, createRequest);
 
+// get request status
+router
+  .route("/account-deletion/status")
+  .get(validateGetStatus, getRequestStatus);
+
 // get requests
-router.route("/account-deletion").get(VerifyAdminToken, getRequests);
+router.route("/account-deletion/:status").get(VerifyAdminToken, getRequests);
 
 // reject request
 router
   .route("/account-deletion/:requestId")
   .put(
     VerifyAdminToken,
-    validateParamsObjectId("requestId"),
     validateRequestId,
     validateRejectRequest,
     rejectRequest
@@ -88,13 +93,9 @@ router
   .route("/account-deletion/:requestId")
   .delete(
     VerifyAdminToken,
-    validateParamsObjectId("requestId"),
     validateRequestId,
     validateDeleteAccount,
     deleteAccount
   );
-
-// get request status
-router.route("/account-deletion/status").get(getRequestStatus);
 
 module.exports = router;

@@ -10,15 +10,13 @@ const fs = require("fs");
 const rfs = require("rotating-file-stream");
 const path = require("path");
 const schedule = require("node-schedule");
-const Users = require("./models/Users");
 const socketIo = require("socket.io");
 const cookieParser = require("cookie-parser");
 const {
   sendDailyReminderNotification,
   sendDailyBackupNotification,
 } = require("./helpers/notificationHelpers");
-const { storage } = require("firebase-admin");
-
+const { database } = require("firebase-admin");
 /**
  * Morgon
  */
@@ -109,7 +107,7 @@ process.on("SIGINT", function () {
  * Create Server
  */
 
-let productionMode = false;
+let productionMode = true;
 
 const httpServer = require("http").Server(app);
 
@@ -143,101 +141,86 @@ server.listen(process.env.PORT || 8080, async () => {
     storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
   });
 
-  // await uploadFolderToFirebaseCloudStorage(__dirname + "/public", "");
-
   // In case if server restarts reschedule all the jobs with which user have dialy reminder and abckup enabled
 
   let jobs = schedule.scheduledJobs;
 
-  let users = await Users.find().populate("backups");
-  function activateNotifications() {
-    users.forEach((d) => {
-      let userData = d;
-      let timeZone = userData.timeZone ? userData.timeZone : "Asia/Kolkata";
-      let jobDailyReminderId = `${userData.uid}-daily-reminder`;
-      let jobKeyDailyReminderFound = Object.keys(jobs).filter(
-        (key) => key === jobDailyReminderId
-      )[0];
-      let jobFoundDailyReminder = jobs[jobKeyDailyReminderFound];
-
-      let jobDailyBackupId = `${userData.uid}-daily-backup`;
-      let jobKeyDailyBackupFound = Object.keys(jobs).filter(
-        (key) => key === jobDailyBackupId
-      )[0];
-      let jobFoundDailyBackup = jobs[jobKeyDailyBackupFound];
-
-      let display =
-        userData.displayName || userData.email || userData.phoneNumber;
-      let dailyReminder = userData.dailyReminder;
-
-      if (dailyReminder && dailyReminder.enabled) {
-        let hr = dailyReminder.time.split(":")[0];
-        let min = dailyReminder.time.split(":")[1];
-        var rule = new schedule.RecurrenceRule();
-        rule.hour = hr;
-        rule.minute = min;
-        rule.tz = timeZone;
-
-        rule.dayOfWeek = new schedule.Range(0, 6);
-        let jobId = `${userData.uid}-daily-reminder`;
-        logger.info(
-          `Enabling daily reminder for ${display} at time - ${hr}:${min} - ${timeZone}`
-        );
-
-        schedule.scheduleJob(jobId, rule, function () {
-          sendDailyReminderNotification(userData);
-        });
+  async function activateNotifications() {
+    try {
+      const snapshot = await database().ref("users").once("value");
+      const users = snapshot.val();
+      if (!users) {
+        console.log("No users found.");
+        return;
       }
+      Object.values(users).forEach((userData) => {
+        if (!userData) {
+          return;
+        }
+        let timeZone = userData.timeZone || "Asia/Kolkata";
+        let jobDailyReminderId = `${userData.uid}-daily-reminder`;
+        let jobKeyDailyReminderFound = Object.keys(jobs).filter(
+          (key) => key === jobDailyReminderId
+        )[0];
+        let jobFoundDailyReminder = jobs[jobKeyDailyReminderFound];
 
-      if (!jobFoundDailyBackup && userData.dailyBackup) {
-        var rule = new schedule.RecurrenceRule();
-        // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
-        let hour = 00;
-        let minute = 01;
-        rule.hour = hour;
-        rule.tz = timeZone;
+        let jobDailyBackupId = `${userData.uid}-daily-backup`;
+        let jobKeyDailyBackupFound = Object.keys(jobs).filter(
+          (key) => key === jobDailyBackupId
+        )[0];
+        let jobFoundDailyBackup = jobs[jobKeyDailyBackupFound];
 
-        rule.minute = minute;
-        rule.dayOfWeek = new schedule.Range(0, 6);
-        let jobId = `${userData.uid}-daily-backup`;
-        logger.info(`Enabling daily backup for ${display} - ${timeZone}`);
+        let display =
+          userData.displayName || userData.email || userData.phoneNumber;
 
-        logger.info("-----------------------------------");
-        schedule.scheduleJob(jobId, rule, function () {
-          sendDailyBackupNotification(userData);
-        });
-      }
-    });
+        if (!jobKeyDailyReminderFound && userData?.dailyReminderEnabled) {
+          const dailyReminderTime = userData.dailyReminderTime;
+          let hr = dailyReminderTime.split(":")[0];
+          let min = dailyReminderTime.split(":")[1];
+          var rule = new schedule.RecurrenceRule();
+          rule.hour = hr;
+          rule.minute = min;
+          rule.tz = timeZone;
+
+          rule.dayOfWeek = new schedule.Range(0, 6);
+          let jobId = `${userData.uid}-daily-reminder`;
+          logger.info(
+            `Enabling daily reminder for ${display} at time - ${hr}:${min} - ${timeZone}`
+          );
+
+          schedule.scheduleJob(jobId, rule, function () {
+            sendDailyReminderNotification(userData);
+          });
+        }
+
+        if (!jobFoundDailyBackup && userData?.dailyBackupEnabled) {
+          var rule = new schedule.RecurrenceRule();
+          // rule.minute = new schedule.Range(0, 59, 1); //for every one minute
+          let hour = 00;
+          let minute = 01;
+          rule.hour = hour;
+          rule.tz = timeZone;
+
+          rule.minute = minute;
+          rule.dayOfWeek = new schedule.Range(0, 6);
+          let jobId = `${userData.uid}-daily-backup`;
+          logger.info(`Enabling daily backup for ${display} - ${timeZone}`);
+
+          logger.info("-----------------------------------");
+          schedule.scheduleJob(jobId, rule, function () {
+            sendDailyBackupNotification(userData);
+          });
+        }
+      });
+    } catch (error) {
+      logger.error(
+        "Error in fetching notificaiton index users " + error.toString()
+      );
+      console.error("❌ Error fetching users:", error);
+    }
   }
 
   if (productionMode) {
     activateNotifications();
   }
 });
-// let bucket = storage().bucket();
-// async function uploadFolderToFirebaseCloudStorage(
-//   folderPath,
-//   destinationPath
-// ) {
-//   const folderContents = fs.readdirSync(folderPath);
-
-//   for (const file of folderContents) {
-//     const filePath = path.join(folderPath, file);
-
-//     if (fs.statSync(filePath).isDirectory()) {
-//       // Recursively upload sub-folders
-//       const subfolderDestination = path.join(destinationPath, file);
-//       await uploadFolderToFirebaseCloudStorage(
-//         filePath,
-//         subfolderDestination
-//       );
-//     } else {
-//       // Upload individual file
-//       const fileDestination = path.join(destinationPath, file);
-//       await bucket.upload(filePath, {
-//         destination: fileDestination,
-//       });
-//       console.log(`File uploaded: ${fileDestination}`);
-//     }
-//   }
-// }

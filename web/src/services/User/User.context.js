@@ -4,7 +4,7 @@ import { createContext } from "react";
 import useHttp from "../../hooks/useHttp";
 
 export const UserContext = createContext({
-  onGetUsers: (data, callback, errorCallBack, loader, notify) => null,
+  onGetUsers: (version, callback, errorCallBack, loader, notify) => null,
 });
 
 export const UserContextProvider = ({ children }) => {
@@ -13,6 +13,7 @@ export const UserContextProvider = ({ children }) => {
   const userUrl = "/admin/user/";
 
   const onGetUsers = async (
+    version,
     callback = () => {},
     errorCallBack = () => {},
     loader = true,
@@ -20,7 +21,7 @@ export const UserContextProvider = ({ children }) => {
   ) => {
     sendRequest(
       {
-        url: userUrl,
+        url: userUrl + version,
         type: "GET",
       },
       {

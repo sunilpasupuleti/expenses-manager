@@ -7,8 +7,12 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
   Paper,
+  Select,
   Table,
   TableBody,
   TableCell,
@@ -45,6 +49,7 @@ import navigationTransition from "../../../../shared/NavigationTransition/Naviga
 import NavigationTransition from "../../../../shared/NavigationTransition/NavigationTransition";
 import Swal from "sweetalert2";
 import { getFirebaseAccessUrl } from "../../../../utility/helper";
+import { useNavigate, useParams } from "react-router-dom";
 
 const LottieContainer = styled.div`
   height: 300px;
@@ -96,6 +101,8 @@ const AccountDeletion = ({ title }) => {
     AccountDeletionContext
   );
   const { onEmitEvent, socket, onFetchEvent } = useContext(SocketContext);
+  const { status } = useParams();
+  const navigate = useNavigate();
 
   const isLoading = useSelector((state) => state.loader.isLoading);
 
@@ -163,12 +170,15 @@ const AccountDeletion = ({ title }) => {
   //   table completed
 
   useEffect(() => {
-    document.title = title;
-    getRequests();
-  }, []);
+    if (status) {
+      document.title = title + " - " + status;
+      getRequests();
+    }
+  }, [status]);
 
   const getRequests = () => {
     onGetRequests(
+      status,
       (result) => {
         if (result && result.requests) {
           let requestsList = result.requests;
@@ -177,9 +187,12 @@ const AccountDeletion = ({ title }) => {
         }
       },
       (error) => {
+        const message =
+          error.message ||
+          `An Error occured while fetching the requests list ${error.toString()}`;
         console.log(error);
         showNotification({
-          message: "An Error occured while fetching the requests list",
+          message: message,
           status: "error",
         });
       },
@@ -223,7 +236,7 @@ const AccountDeletion = ({ title }) => {
       if (result.isConfirmed) {
         showLoader(dispatch);
         onDeleteAccount(
-          request._id,
+          request.uid,
           () => {
             onEmitEvent("refreshAccountDeletion");
             hideLoader(dispatch);
@@ -261,7 +274,7 @@ const AccountDeletion = ({ title }) => {
     if (!hadErrors) {
       setIsLoading(true);
       onRejectRequest(
-        selectedRequest._id,
+        selectedRequest.uid,
         data,
         () => {
           onEmitEvent("refreshAccountDeletion");
@@ -287,6 +300,11 @@ const AccountDeletion = ({ title }) => {
   const onOpenDialog = (request) => {
     setDialog(true);
     setSelectedRequest(request);
+  };
+
+  const handleStatusChange = async (event) => {
+    const value = event.target.value;
+    navigate(`/dashboard/account-deletion/${value}`);
   };
 
   useEffect(() => {
@@ -318,12 +336,12 @@ const AccountDeletion = ({ title }) => {
                 color="text.primary"
                 gutterBottom
               >
-                TOTAL REQUESTS - {orgRequests.length}
+                TOTAL {_.toUpper(status)} REQUESTS - {orgRequests.length}
               </Typography>
             </Box>
 
             <Grid container spacing={2}>
-              <Grid item md={12}>
+              <Grid item md={8}>
                 <TextField
                   sx={{ mt: 2, ml: 1, width: "98%" }}
                   variant="standard"
@@ -335,6 +353,29 @@ const AccountDeletion = ({ title }) => {
                   value={searchKeyword}
                   onChange={onChangeSearchKeyword}
                 />
+              </Grid>
+              <Grid item md={4}>
+                <FormControl fullWidth>
+                  <InputLabel id="status">Status</InputLabel>
+                  <Select
+                    labelId="status-label"
+                    id="status"
+                    value={status}
+                    label="Status"
+                    onChange={handleStatusChange}
+                  >
+                    <MenuItem value={"all"}>All</MenuItem>
+                    <MenuItem value={"pending"} sx={{ color: "#5bc0de" }}>
+                      Pending
+                    </MenuItem>
+                    <MenuItem value={"rejected"} sx={{ color: "tomato" }}>
+                      Rejected
+                    </MenuItem>
+                    <MenuItem value={"deleted"} sx={{ color: "#198754" }}>
+                      Deleted
+                    </MenuItem>
+                  </Select>
+                </FormControl>
               </Grid>
             </Grid>
 
@@ -367,8 +408,10 @@ const AccountDeletion = ({ title }) => {
                       <TableCell>Phone </TableCell>
                       <TableCell>Profile </TableCell>
                       <TableCell>UID </TableCell>
-                      <TableCell>Created At </TableCell>
-                      <TableCell>Actions</TableCell>
+                      <TableCell>Last Update </TableCell>
+                      {["pending", "all"].includes(status) && (
+                        <TableCell>Actions</TableCell>
+                      )}
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -379,6 +422,15 @@ const AccountDeletion = ({ title }) => {
                         )
                       : requests
                     ).map((request, index) => {
+                      const {
+                        name,
+                        uid,
+                        status,
+                        lastUpdate,
+                        email,
+                        phoneNumber,
+                        reason,
+                      } = request;
                       let user = request.user
                         ? request.user
                         : request.referenceData;
@@ -390,6 +442,7 @@ const AccountDeletion = ({ title }) => {
                           ? getFirebaseAccessUrl(user.photoURL)
                           : user.photoURL;
                       }
+
                       return (
                         <TableRow
                           key={index}
@@ -415,16 +468,10 @@ const AccountDeletion = ({ title }) => {
                                 "REASON : " + request.rejectedReason}
                             </span>
                           </TableCell>
-                          <TableCell>
-                            {user?.displayName ? user.displayName : "-"}
-                          </TableCell>
-                          <TableCell>{request.reason}</TableCell>
-                          <TableCell>
-                            {user?.email ? user.email : "-"}
-                          </TableCell>
-                          <TableCell>
-                            {user?.phoneNumber ? user.phoneNumber : "-"}
-                          </TableCell>
+                          <TableCell>{name || "-"}</TableCell>
+                          <TableCell>{reason}</TableCell>
+                          <TableCell>{email || "-"}</TableCell>
+                          <TableCell>{phoneNumber || "-"}</TableCell>
                           <TableCell>
                             {photoURL ? (
                               <TableProfileContainer
@@ -441,16 +488,18 @@ const AccountDeletion = ({ title }) => {
                             )}
                           </TableCell>
                           <TableCell>
-                            <strong>{user?.uid}</strong>
+                            <strong>{uid}</strong>
                           </TableCell>
                           <TableCell>
-                            {moment(request.createdAt).format(
-                              "DD MMM YYYY, hh:mm:ss A"
-                            )}
+                            {lastUpdate
+                              ? moment(lastUpdate).format(
+                                  "DD MMM YYYY, hh:mm:ss A"
+                                )
+                              : "-"}
                           </TableCell>
 
                           <TableCell>
-                            {request.status === "pending" ? (
+                            {status === "pending" && (
                               <div
                                 style={{
                                   display: "flex",
@@ -482,8 +531,6 @@ const AccountDeletion = ({ title }) => {
                                   />
                                 </Tooltip>
                               </div>
-                            ) : (
-                              "-"
                             )}
                           </TableCell>
                         </TableRow>
@@ -520,7 +567,7 @@ const AccountDeletion = ({ title }) => {
 
             {(!requests || requests.length === 0) && (
               <LottieContainer>
-                <Box component="h3">There are no requests.</Box>
+                <Box component="h3">There are no {status} requests.</Box>
                 <Lottie
                   isClickToPauseDisabled
                   options={{
