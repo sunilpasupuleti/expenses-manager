@@ -22,16 +22,14 @@ jobs:
       - name: Set up GPG
         run: |
           echo "$GPG_PRIVATE_KEY" | base64 -d > private.key
-          export GPG_TTY=$(tty)
           gpg --batch --yes --import private.key
-          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
-          echo "use-agent" >> ~/.gnupg/gpg.conf
           gpg --list-secret-keys --keyid-format LONG
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
 
       - name: Decrypt .env.development.enc
         run: |
+          export GPG_TTY=$(tty)
           sops -d backend/config/.env.development.enc > backend/config/.env.development
 
       - name: Decrypt expensesmanager.json
