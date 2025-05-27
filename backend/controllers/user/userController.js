@@ -25,9 +25,9 @@ module.exports = {
 
       const otp = generateOtp();
 
-      // await sendSMS(phone, OTP_TID, {
-      //   otp: otp,
-      // });
+      await sendSMS(phone, OTP_TID, {
+        otp: otp,
+      });
       console.log(otp);
 
       await saveOtp(phone, otp);
