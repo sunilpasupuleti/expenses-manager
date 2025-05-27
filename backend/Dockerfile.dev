@@ -6,7 +6,8 @@ COPY package*.json ./
 
 COPY . .
 
-RUN npm install -f --silent
+
+RUN npm ci --silent
 
 EXPOSE 3100
 
