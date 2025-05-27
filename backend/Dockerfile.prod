@@ -2,11 +2,11 @@ FROM node:18
 
 WORKDIR /expenses-manager/prod/backend
 
-COPY package*.json ./
+COPY backend/package*.json ./
 
-COPY . .
+COPY backend/ ./
 
-RUN npm install -f --silent
+RUN npm install -f
 
 EXPOSE 3000
 
