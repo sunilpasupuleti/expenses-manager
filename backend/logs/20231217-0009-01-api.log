@@ -1,7 +1,0 @@
-::ffff:192.168.1.249 - - [16/Dec/2023:01:37:51 +0000] "POST /user HTTP/1.1" 200 1069 "-" "expensesmanager/5 CFNetwork/1474 Darwin/23.2.0"
-::ffff:192.168.1.249 - - [16/Dec/2023:01:37:52 +0000] "POST /notification/enable-notifications/ HTTP/1.1" 200 48 "-" "expensesmanager/5 CFNetwork/1474 Darwin/23.2.0"
-::ffff:192.168.1.249 - - [16/Dec/2023:01:37:53 +0000] "GET /backup HTTP/1.1" 200 146706 "-" "expensesmanager/5 CFNetwork/1474 Darwin/23.2.0"
-::ffff:192.168.1.249 - - [16/Dec/2023:01:38:13 +0000] "POST /backup/temp HTTP/1.1" 200 41 "-" "expensesmanager/5 CFNetwork/1474 Darwin/23.2.0"
-::ffff:192.168.1.249 - - [16/Dec/2023:04:52:15 +0000] "GET /user/ HTTP/1.1" 200 654 "-" "expensesmanager/5 CFNetwork/1474 Darwin/23.2.0"
-::ffff:192.168.1.249 - - [16/Dec/2023:04:52:17 +0000] "GET /backup HTTP/1.1" 304 - "-" "expensesmanager/5 CFNetwork/1474 Darwin/23.2.0"
-::ffff:192.168.1.249 - - [16/Dec/2023:07:36:50 +0000] "GET /user/ HTTP/1.1" 304 - "-" "expensesmanager/5 CFNetwork/1474 Darwin/23.2.0"

@@ -1,2 +1,0 @@
-::ffff:10.0.0.7 - - [19/Mar/2025:01:41:09 +0000] "POST /notification/enable-notifications/ HTTP/1.1" 200 48 "-" "expensesmanager/8 CFNetwork/1568.200.51 Darwin/24.2.0"
-::ffff:10.0.0.7 - - [19/Mar/2025:01:42:24 +0000] "GET /plaid/accounts/ HTTP/1.1" 304 - "-" "expensesmanager/8 CFNetwork/1568.200.51 Darwin/24.2.0"

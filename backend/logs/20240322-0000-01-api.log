@@ -1,3 +1,0 @@
-::ffff:192.168.40.73 - - [21/Mar/2024:16:53:27 +0000] "GET /backup HTTP/1.1" 401 207 "-" "expensesmanager/5 CFNetwork/1474 Darwin/23.4.0"
-::ffff:192.168.40.73 - - [21/Mar/2024:17:25:12 +0000] "GET /backup HTTP/1.1" 304 - "-" "expensesmanager/5 CFNetwork/1474 Darwin/23.4.0"
-::ffff:192.168.40.73 - - [21/Mar/2024:17:54:08 +0000] "GET /backup HTTP/1.1" 401 338 "-" "expensesmanager/5 CFNetwork/1474 Darwin/23.4.0"
