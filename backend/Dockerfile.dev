@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:18
 
 WORKDIR /expenses-manager/dev/backend
 
@@ -6,7 +6,7 @@ COPY package*.json ./
 
 COPY . .
 
-RUN npm install -f --silent
+RUN npm install -f
 
 EXPOSE 3100
 
