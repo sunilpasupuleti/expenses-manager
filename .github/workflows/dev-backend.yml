@@ -19,24 +19,41 @@ jobs:
           chmod +x sops
           sudo mv sops /usr/local/bin/sops
 
-      - name: Set up GPG
+      - name: Setup GPG and Unlock Key
         run: |
+          export GPG_TTY=$(tty)
+          export SOPS_GPG_EXEC=gpg
+          export TERM=xterm-256color
+
           mkdir -p ~/.gnupg
           chmod 700 ~/.gnupg
-          echo "$GPG_PRIVATE_KEY" | base64 -d > private.key
-          gpg --batch --yes --import private.key
+
           echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
           echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
-          gpgconf --kill gpg-agent
-          gpgconf --launch gpg-agent
-          gpg --list-secret-keys --keyid-format LONG
+
+          echo "$GPG_PRIVATE_KEY" | base64 -d > private.key
+          echo "$GPG_PASSPHRASE" | \
+            gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --import private.key
+
+          gpg --with-colons --fingerprint | awk -F: '/^fpr:/ {print $10 ":6:"}' | \
+            gpg --import-ownertrust
+
+          # Unlock the GPG key by using dummy encrypt/decrypt
+          echo "unlock" | \
+            gpg --batch --yes --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" \
+            -e -r "$GPG_KEY_EMAIL" | \
+            gpg --batch --yes --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" -d
+
+          rm private.key
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GPG_KEY_EMAIL: "sunil.pandvd22@gmail.com"
 
       - name: Decrypt .env.development.enc
         run: |
+          export SOPS_GPG_EXEC=gpg
           export GPG_TTY=$(tty)
-          export SOPS_PGP_FP=FE6BF3C6BBFC96B7  # ← use actual key fingerprint
           sops -d backend/config/.env.development.enc > backend/config/.env.development
 
       - name: Decrypt expensesmanager.json
