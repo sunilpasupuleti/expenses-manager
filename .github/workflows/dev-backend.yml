@@ -12,6 +12,13 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
+      - name: Install SOPS
+        run: |
+          sudo apt-get install -y gnupg
+          wget https://github.com/getsops/sops/releases/download/v3.7.3/sops-v3.7.3.linux -O sops
+          chmod +x sops
+          sudo mv sops /usr/local/bin/sops
+
       - name: Set up GPG
         run: |
           echo "$GPG_PRIVATE_KEY" | base64 -d > private.key
@@ -21,10 +28,7 @@ jobs:
 
       - name: Decrypt .env.development.enc
         run: |
-          gpg --quiet --batch --yes --decrypt --passphrase="$GPG_PASSPHRASE" \
-          --output backend/config/.env.development backend/config/.env.development.enc
-        env:
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          sops -d backend/config/.env.development.enc > backend/config/.env.development
 
       - name: Decrypt expensesmanager.json
         run: |
