@@ -21,12 +21,12 @@ jobs:
 
       - name: Set up GPG
         run: |
+          mkdir -p ~/.gnupg
+          chmod 700 ~/.gnupg
           echo "$GPG_PRIVATE_KEY" | base64 -d > private.key
           gpg --batch --yes --import private.key
           echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
-          echo "use-agent" >> ~/.gnupg/gpg.conf
           echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
-          export GPG_TTY=$(tty)
           gpgconf --kill gpg-agent
           gpgconf --launch gpg-agent
           gpg --list-secret-keys --keyid-format LONG
@@ -36,10 +36,8 @@ jobs:
       - name: Decrypt .env.development.enc
         run: |
           export GPG_TTY=$(tty)
+          export SOPS_PGP_FP=FE6BF3C6BBFC96B7  # ← use actual key fingerprint
           sops -d backend/config/.env.development.enc > backend/config/.env.development
-        env:
-          SOPS_PGP_FP: ${{ secrets.GPG_KEY_FP }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Decrypt expensesmanager.json
         run: |
