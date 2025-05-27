@@ -5,29 +5,27 @@ on:
     branches: [development]
 
 jobs:
+  setup-and-decrypt:
+    uses: ./.github/workflows/setup-gpg.yml
+    with:
+      gpg_key_email: "sunil.pandvd22@gmail.com"
+    secrets:
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
   build-and-deploy:
+    needs: setup-and-decrypt
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Set up GPG
-        run: |
-          echo "$GPG_PRIVATE_KEY" | base64 -d > private.key
-          gpg --no-tty --batch --yes --import private.key
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-
       - name: Decrypt .env.development.enc
         run: |
-          echo "$GPG_PRIVATE_KEY" | base64 -d > private.key
-          gpg --import private.key
-          gpg --quiet --batch --yes --decrypt --passphrase="$GPG_PASSPHRASE" \
-            --output web/.env.development web/.env.development.enc
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          export GPG_TTY=$(tty)
+          export SOPS_GPG_EXEC=gpg
+          sops -d web/.env.development.enc > web/.env.development
 
       - name: Install dependencies
         run: |
@@ -39,7 +37,7 @@ jobs:
           cd web
           npm run build:dev
 
-      - name: Upload to VPS (development site)
+      - name: Upload built frontend to VPS (development site)
         run: |
           sshpass -p "${{ secrets.PASS_WORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.HOST_NAME }} "rm -rf /var/www/dev.expensesmanager.app/*"
           sshpass -p "${{ secrets.PASS_WORD }}" scp -r web/dist/dev/* ${{ secrets.HOST_NAME }}:/var/www/dev.expensesmanager.app/

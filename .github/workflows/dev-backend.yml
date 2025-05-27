@@ -5,7 +5,16 @@ on:
     branches: [development]
 
 jobs:
+  setup-and-deploy:
+    uses: ./.github/workflows/setup-gpg.yml
+    with:
+      gpg_key_email: "sunil.pandvd22@gmail.com"
+    secrets:
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
   build-and-deploy:
+    needs: setup-and-deploy
     runs-on: ubuntu-latest
 
     steps:
@@ -19,37 +28,6 @@ jobs:
           chmod +x sops
           sudo mv sops /usr/local/bin/sops
 
-      - name: Setup GPG and Unlock Key
-        run: |
-          export GPG_TTY=$(tty)
-          export SOPS_GPG_EXEC=gpg
-          export TERM=xterm-256color
-
-          mkdir -p ~/.gnupg
-          chmod 700 ~/.gnupg
-
-          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
-          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
-
-          echo "$GPG_PRIVATE_KEY" | base64 -d > private.key
-          echo "$GPG_PASSPHRASE" | \
-            gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --import private.key
-
-          gpg --with-colons --fingerprint | awk -F: '/^fpr:/ {print $10 ":6:"}' | \
-            gpg --import-ownertrust
-
-          # Unlock the GPG key by using dummy encrypt/decrypt
-          echo "unlock" | \
-            gpg --batch --yes --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" \
-            -e -r "$GPG_KEY_EMAIL" | \
-            gpg --batch --yes --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" -d
-
-          rm private.key
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-          GPG_KEY_EMAIL: "sunil.pandvd22@gmail.com"
-
       - name: Decrypt .env.development.enc
         run: |
           export SOPS_GPG_EXEC=gpg
@@ -59,14 +37,9 @@ jobs:
       - name: Decrypt expensesmanager.json
         run: |
           gpg --quiet --batch --yes --decrypt --passphrase="$GPG_PASSPHRASE" \
-          --output backend/config/expensesmanager.json backend/config/expensesmanager.json.enc
+            --output backend/config/expensesmanager.json backend/config/expensesmanager.json.enc
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
-      - name: Clean up decrypted files
-        run: |
-          rm backend/config/.env.development
-          rm backend/config/expensesmanager.json
 
       - name: Upload .env.development to VPS
         run: |
@@ -92,3 +65,8 @@ jobs:
 
       - name: Push image to Docker Hub
         run: docker push sunilpasupuleti/expenses-manager-backend-dev:latest
+
+      - name: Clean up decrypted files
+        run: |
+          rm backend/config/.env.development
+          rm backend/config/expensesmanager.json

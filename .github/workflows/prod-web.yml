@@ -1,33 +1,31 @@
-name: Web Prod CI/CD
+name: Web Dev CI/CD
 
 on:
   push:
     branches: [master]
 
 jobs:
+  setup-and-decrypt:
+    uses: ./.github/workflows/setup-gpg.yml
+    with:
+      gpg_key_email: "sunil.pandvd22@gmail.com"
+    secrets:
+      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
   build-and-deploy:
+    needs: setup-and-decrypt
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Set up GPG
-        run: |
-          echo "$GPG_PRIVATE_KEY" | base64 -d > private.key
-          gpg --no-tty --batch --yes --import private.key
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-
       - name: Decrypt .env.production.enc
         run: |
-          echo "$GPG_PRIVATE_KEY" | base64 -d > private.key
-          gpg --import private.key
-          gpg --quiet --batch --yes --decrypt --passphrase="$GPG_PASSPHRASE" \
-            --output web/.env.production web/.env.production.enc
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          export GPG_TTY=$(tty)
+          export SOPS_GPG_EXEC=gpg
+          sops -d web/.env.production.enc > web/.env.production
 
       - name: Install dependencies
         run: |
@@ -39,11 +37,11 @@ jobs:
           cd web
           npm run build:prod
 
-      - name: Upload to VPS (production site)
+      - name: Upload built frontend to VPS (production site)
         run: |
           sshpass -p "${{ secrets.PASS_WORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.HOST_NAME }} "rm -rf /var/www/expensesmanager.app/*"
           sshpass -p "${{ secrets.PASS_WORD }}" scp -r web/dist/prod/* ${{ secrets.HOST_NAME }}:/var/www/expensesmanager.app/
 
       - name: Upload graphics folder to VPS
         run: |
-          sshpass -p "${{ secrets.PASS_WORD }}" scp -r graphics ${{ secrets.HOST_NAME }}:/var/www/dev.expensesmanager.app/
+          sshpass -p "${{ secrets.PASS_WORD }}" scp -r graphics ${{ secrets.HOST_NAME }}:/var/www/expensesmanager.app/

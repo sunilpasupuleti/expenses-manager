@@ -1,0 +1,43 @@
+name: Setup GPG and Unlock Key
+
+on:
+  workflow_call:
+    inputs:
+      gpg_key_email:
+        required: true
+        type: string
+    secrets:
+      GPG_PRIVATE_KEY:
+        required: true
+      GPG_PASSPHRASE:
+        required: true
+
+jobs:
+  setup-gpg:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up GPG and Unlock Key
+        run: |
+          export GPG_TTY=$(tty)
+          export SOPS_GPG_EXEC=gpg
+          export TERM=xterm-256color
+
+          mkdir -p ~/.gnupg
+          chmod 700 ~/.gnupg
+
+          echo "allow-loopback-pinentry" >> ~/.gnupg/gpg-agent.conf
+          echo "pinentry-mode loopback" >> ~/.gnupg/gpg.conf
+
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | base64 -d > private.key
+          echo "${{ secrets.GPG_PASSPHRASE }}" | \
+            gpg --batch --yes --pinentry-mode loopback --passphrase-fd 0 --import private.key
+
+          gpg --with-colons --fingerprint | awk -F: '/^fpr:/ {print $10 ":6:"}' | \
+            gpg --import-ownertrust
+
+          echo "unlock" | \
+            gpg --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" \
+            -e -r "${{ inputs.gpg_key_email }}" | \
+            gpg --batch --yes --pinentry-mode loopback --passphrase "${{ secrets.GPG_PASSPHRASE }}" -d
+
+          rm private.key
