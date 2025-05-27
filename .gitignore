@@ -81,6 +81,12 @@ app/config.js
 backend/config/ssl/
 backend/config/AuthKey_78MHH3V4YC.p8
 backend/config/expensesmanager.json
+backend/config/.env.development
+backend/config/.env.production
+web/.env.development
+web/.env.production
+
+
 
 # Yarn
 .yarn/*
