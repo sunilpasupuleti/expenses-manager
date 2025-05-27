@@ -1,25 +1,30 @@
-name: Web Dev CI/CD
+name: Web Prod CI/CD
 
 on:
   push:
     branches: [master]
 
 jobs:
-  setup-and-decrypt:
-    uses: ./.github/workflows/setup-gpg.yml
-    with:
-      gpg_key_email: "sunil.pandvd22@gmail.com"
-    secrets:
-      GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-      GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
-
   build-and-deploy:
-    needs: setup-and-decrypt
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
+
+      - name: Install SOPS
+        run: |
+          sudo apt-get install -y gnupg
+          wget https://github.com/getsops/sops/releases/download/v3.7.3/sops-v3.7.3.linux -O sops
+          chmod +x sops
+          sudo mv sops /usr/local/bin/sops
+
+      - name: Setup GPG and Unlock Key
+        uses: ./.github/actions/setup-gpg
+        with:
+          gpg_key_email: "sunil.pandvd22@gmail.com"
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg_passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Decrypt .env.production.enc
         run: |

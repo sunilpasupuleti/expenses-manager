@@ -12,26 +12,31 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Set up GPG
+      - name: Install SOPS
         run: |
-          echo "$GPG_PRIVATE_KEY" | base64 -d > private.key
-          gpg --import private.key
-        env:
-          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          sudo apt-get install -y gnupg
+          wget https://github.com/getsops/sops/releases/download/v3.7.3/sops-v3.7.3.linux -O sops
+          chmod +x sops
+          sudo mv sops /usr/local/bin/sops
 
-      - name: Decrypt .env.production.enc
-        run: |
-          gpg --quiet --batch --yes --decrypt --passphrase="$GPG_PASSPHRASE" \
-          --output backend/config/.env.production backend/config/.env.production.enc
-        env:
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+      - name: Setup GPG and Unlock Key
+        uses: ./.github/actions/setup-gpg
+        with:
+          gpg_key_email: "sunil.pandvd22@gmail.com"
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          gpg_passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
-      - name: Decrypt expensesmanager.json
+      - name: Decrypt .env.production.enc using SOPS
         run: |
-          gpg --quiet --batch --yes --decrypt --passphrase="$GPG_PASSPHRASE" \
-          --output backend/config/expensesmanager.json backend/config/expensesmanager.json.enc
-        env:
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          export SOPS_GPG_EXEC=gpg
+          export GPG_TTY=$(tty)
+          sops -d backend/config/.env.production.enc > backend/config/.env.production
+
+      - name: Decrypt expensesmanager.json using SOPS
+        run: |
+          export SOPS_GPG_EXEC=gpg
+          export GPG_TTY=$(tty)
+          sops -d backend/config/expensesmanager.json.enc > backend/config/expensesmanager.json
 
       - name: Upload .env.production to VPS
         run: |
@@ -57,3 +62,8 @@ jobs:
 
       - name: Push image to Docker Hub
         run: docker push sunilpasupuleti/expenses-manager-backend-prod:latest
+
+      - name: Clean up decrypted files
+        run: |
+          rm backend/config/.env.production
+          rm backend/config/expensesmanager.json
