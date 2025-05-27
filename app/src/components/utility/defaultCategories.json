@@ -1,0 +1,139 @@
+[
+  {
+    "name": "Groceries",
+    "type": "expense",
+    "color": "#a2c484",
+    "icon": "basket"
+  },
+  {
+    "name": "Rent/Mortgage",
+    "type": "expense",
+    "color": "#f9d078",
+    "icon": "home"
+  },
+  {
+    "name": "Utilities",
+    "type": "expense",
+    "color": "#d8b364",
+    "icon": "lightbulb-on-outline"
+  },
+  {
+    "name": "Transportation",
+    "type": "expense",
+    "color": "#e0627a",
+    "icon": "car"
+  },
+  {
+    "name": "Insurance",
+    "type": "expense",
+    "color": "#95a5c5",
+    "icon": "shield-account"
+  },
+  {
+    "name": "Phone/Internet Bill",
+    "type": "expense",
+    "color": "#7986cb",
+    "icon": "wifi"
+  },
+  {
+    "name": "Food & Drinks",
+    "type": "expense",
+    "color": "#e59866",
+    "icon": "food"
+  },
+  {
+    "name": "Clothing & Shoes",
+    "type": "expense",
+    "color": "#c5b3db",
+    "icon": "tshirt-crew"
+  },
+  {
+    "name": "Personal Care",
+    "type": "expense",
+    "color": "#81a296",
+    "icon": "brush"
+  },
+  {
+    "name": "Entertainment",
+    "type": "expense",
+    "color": "#f7cac9",
+    "icon": "movie"
+  },
+  {
+    "name": "Medicines",
+    "type": "expense",
+    "color": "#d98b9b",
+    "icon": "pill"
+  },
+  {
+    "name": "Credit Card",
+    "type": "expense",
+    "color": "#e08e79",
+    "icon": "credit-card"
+  },
+  {
+    "name": "Savings & Investments",
+    "type": "expense",
+    "color": "#d8b364",
+    "icon": "piggy-bank"
+  },
+  {
+    "name": "Miscellaneous",
+    "type": "expense",
+    "isDefault": 1,
+    "color": "#9a9a9a",
+    "icon": "dots-horizontal"
+  },
+  {
+    "name": "Salary",
+    "type": "income",
+    "color": "#FE6667",
+    "icon": "laptop"
+  },
+  {
+    "name": "Business Income",
+    "type": "income",
+    "color": "#f7cac9",
+    "icon": "storefront-outline"
+  },
+  {
+    "name": "Investments",
+    "type": "income",
+    "color": "#0F9F08",
+    "icon": "chart-line"
+  },
+  {
+    "name": "Pocket Money",
+    "type": "income",
+    "color": "#c2e0f0",
+    "icon": "wallet-outline"
+  },
+  {
+    "name": "Miscellaneous",
+    "type": "income",
+    "isDefault": 1,
+    "color": "#9a9a9a",
+    "icon": "dots-horizontal"
+  },
+  {
+    "name": "Loan Repayment",
+    "type": "expense",
+    "color": "#FFB74D",
+    "icon": "bank-transfer-out",
+    "isLoanRelated": 1
+  },
+  {
+    "name": "Interest Payment",
+    "type": "expense",
+    "color": "#EF9A9A",
+    "icon": "currency-usd",
+    "isLoanRelated": 1
+  },
+  {
+    "name": "EMI Payment",
+    "type": "expense",
+    "color": "#81D4FA",
+    "icon": "calendar-month",
+    "isLoanRelated": 1
+  }
+]

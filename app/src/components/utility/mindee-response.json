@@ -1,0 +1,269 @@
+{
+  "api_request": {
+    "error": {},
+    "resources": ["document"],
+    "status": "success",
+    "status_code": 201,
+    "url": "https://api.mindee.net/v1/products/mindee/expense_receipts/v5/predict"
+  },
+  "document": {
+    "id": "0a21daf3-66d1-4bb8-8870-ed10f7a21550",
+    "inference": {
+      "extras": {},
+      "finished_at": "2023-07-30T00:57:57.139811",
+      "is_rotation_applied": true,
+      "pages": [
+        {
+          "extras": {},
+          "id": 0,
+          "orientation": {"value": 0},
+          "prediction": {
+            "category": {"confidence": 0.54, "value": "food"},
+            "date": {
+              "confidence": 0.99,
+              "polygon": [
+                [0.447, 0.392],
+                [0.573, 0.392],
+                [0.573, 0.413],
+                [0.447, 0.413]
+              ],
+              "value": "2018-07-21"
+            },
+            "document_type": {"confidence": 1, "value": "EXPENSE RECEIPT"},
+            "line_items": [
+              {
+                "confidence": 0.97,
+                "description": "Near Buy ML 29",
+                "polygon": [
+                  [0.206, 0.476],
+                  [0.75, 0.47],
+                  [0.751, 0.497],
+                  [0.206, 0.504]
+                ],
+                "quantity": 1,
+                "total_amount": 161,
+                "unit_price": null
+              }
+            ],
+            "locale": {
+              "confidence": 0.89,
+              "country": null,
+              "currency": "INR",
+              "language": "en",
+              "value": null
+            },
+            "orientation": {"confidence": 0.99, "degrees": 0},
+            "subcategory": {"confidence": 0.63, "value": "shopping"},
+            "supplier_address": {
+              "confidence": 0.72,
+              "polygon": [
+                [0.22, 0.146],
+                [0.729, 0.146],
+                [0.729, 0.22],
+                [0.22, 0.22]
+              ],
+              "value": "cmr a ral shop no id floor vizag"
+            },
+            "supplier_company_registrations": [],
+            "supplier_name": {"confidence": 0, "polygon": [], "value": null},
+            "supplier_phone_number": {
+              "confidence": 0.52,
+              "polygon": [
+                [0.529, 0.268],
+                [0.667, 0.268],
+                [0.667, 0.297],
+                [0.529, 0.297]
+              ],
+              "value": "952255488"
+            },
+            "taxes": [
+              {
+                "base": 161,
+                "code": null,
+                "confidence": 0.99,
+                "polygon": [
+                  [0.464, 0.765],
+                  [0.752, 0.765],
+                  [0.752, 0.798],
+                  [0.464, 0.798]
+                ],
+                "rate": 2.5,
+                "value": 4.03
+              }
+            ],
+            "time": {
+              "confidence": 0.99,
+              "polygon": [
+                [0.585, 0.387],
+                [0.667, 0.387],
+                [0.667, 0.411],
+                [0.585, 0.411]
+              ],
+              "value": "15:38"
+            },
+            "tip": {"confidence": 0, "polygon": [], "value": null},
+            "total_amount": {
+              "confidence": 0.99,
+              "polygon": [
+                [0.653, 0.801],
+                [0.752, 0.801],
+                [0.752, 0.826],
+                [0.653, 0.826]
+              ],
+              "value": 169
+            },
+            "total_net": {"confidence": 0, "polygon": [], "value": null},
+            "total_tax": {"confidence": 0.99, "polygon": [], "value": 4.03}
+          }
+        }
+      ],
+      "prediction": {
+        "category": {"confidence": 0.54, "value": "food"},
+        "date": {
+          "confidence": 0.99,
+          "page_id": 0,
+          "polygon": [
+            [0.447, 0.392],
+            [0.573, 0.392],
+            [0.573, 0.413],
+            [0.447, 0.413]
+          ],
+          "value": "2018-07-21"
+        },
+        "document_type": {"confidence": 1, "value": "EXPENSE RECEIPT"},
+        "line_items": [
+          {
+            "confidence": 0.97,
+            "description": "Near Buy ML 29",
+            "page_id": 0,
+            "polygon": [
+              [0.206, 0.476],
+              [0.75, 0.47],
+              [0.751, 0.497],
+              [0.206, 0.504]
+            ],
+            "quantity": 1,
+            "total_amount": 161,
+            "unit_price": null
+          }
+        ],
+        "locale": {
+          "confidence": 0.89,
+          "country": null,
+          "currency": "INR",
+          "language": "en",
+          "value": null
+        },
+        "subcategory": {"confidence": 0.63, "value": "shopping"},
+        "supplier_address": {
+          "confidence": 0.72,
+          "page_id": 0,
+          "polygon": [
+            [0.22, 0.146],
+            [0.729, 0.146],
+            [0.729, 0.22],
+            [0.22, 0.22]
+          ],
+          "value": "cmr a ral shop no id floor vizag"
+        },
+        "supplier_company_registrations": [],
+        "supplier_name": {
+          "confidence": 0,
+          "page_id": null,
+          "polygon": [],
+          "value": null
+        },
+        "supplier_phone_number": {
+          "confidence": 0.52,
+          "page_id": 0,
+          "polygon": [
+            [0.529, 0.268],
+            [0.667, 0.268],
+            [0.667, 0.297],
+            [0.529, 0.297]
+          ],
+          "value": "952255488"
+        },
+        "taxes": [
+          {
+            "base": 161,
+            "code": null,
+            "confidence": 0.99,
+            "page_id": 0,
+            "polygon": [
+              [0.464, 0.765],
+              [0.752, 0.765],
+              [0.752, 0.798],
+              [0.464, 0.798]
+            ],
+            "rate": 2.5,
+            "value": 4.03
+          }
+        ],
+        "time": {
+          "confidence": 0.99,
+          "page_id": 0,
+          "polygon": [
+            [0.585, 0.387],
+            [0.667, 0.387],
+            [0.667, 0.411],
+            [0.585, 0.411]
+          ],
+          "value": "15:38"
+        },
+        "tip": {"confidence": 0, "page_id": null, "polygon": [], "value": null},
+        "total_amount": {
+          "confidence": 0.99,
+          "page_id": 0,
+          "polygon": [
+            [0.653, 0.801],
+            [0.752, 0.801],
+            [0.752, 0.826],
+            [0.653, 0.826]
+          ],
+          "value": 169
+        },
+        "total_net": {
+          "confidence": 0,
+          "page_id": null,
+          "polygon": [],
+          "value": null
+        },
+        "total_tax": {
+          "confidence": 0.99,
+          "page_id": 0,
+          "polygon": [],
+          "value": 4.03
+        }
+      },
+      "processing_time": 1.006,
+      "product": {
+        "features": [
+          "locale",
+          "category",
+          "subcategory",
+          "document_type",
+          "date",
+          "time",
+          "total_amount",
+          "total_net",
+          "total_tax",
+          "tip",
+          "taxes",
+          "supplier_name",
+          "supplier_company_registrations",
+          "supplier_address",
+          "supplier_phone_number",
+          "orientation",
+          "line_items"
+        ],
+        "name": "mindee/expense_receipts",
+        "type": "standard",
+        "version": "5.0"
+      },
+      "started_at": "2023-07-30T00:57:56.134139"
+    },
+    "n_pages": 1,
+    "name": "from_b64.jpg"
+  }
+}

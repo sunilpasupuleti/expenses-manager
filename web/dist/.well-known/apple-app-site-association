@@ -1,0 +1,13 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "VMGHBGB9S9.com.webwizard.expensesmanager",
+        "paths": [
+          "/plaid-oauth-redirect.html*"
+        ]
+      }
+    ]
+  }
+}

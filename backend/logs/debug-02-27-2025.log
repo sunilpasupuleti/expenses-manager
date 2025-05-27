@@ -1,0 +1,339 @@
+2/28/2025, 2:00:56 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:00:57 AM [debug]  Message :  CLIENT CONNECTED with ID -  aPgpKgtdosIQEWNiAAAB
+2/28/2025, 2:00:58 AM [debug]  Message :  CLIENT CONNECTED with ID -  2-LiM6qHLtLovP4GAAAD
+2/28/2025, 2:01:00 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 2:01:02 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:01:04 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:01:04 AM [debug]  Message :  CLIENT CONNECTED with ID -  dcHrfxLBoP2nq3U-AAAB
+2/28/2025, 2:01:04 AM [debug]  Message :  CLIENT CONNECTED with ID -  RDv3lXl8tVYVDZmPAAAD
+2/28/2025, 2:01:07 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 2:01:09 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:01:10 AM [debug]  Message :  CLIENT CONNECTED with ID -  qZrs3ezfyQfuH7WwAAAB
+2/28/2025, 2:01:10 AM [debug]  Message :  CLIENT CONNECTED with ID -  rw3dGj1x9YX055HpAAAD
+2/28/2025, 2:01:12 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 2:01:23 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:01:25 AM [debug]  Message :  CLIENT CONNECTED with ID -  _Y9gRrdwUsDET-ZtAAAB
+2/28/2025, 2:01:25 AM [debug]  Message :  CLIENT CONNECTED with ID -  yCkXCLHew3_ATNtUAAAD
+2/28/2025, 2:01:28 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 2:01:42 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:01:44 AM [debug]  Message :  CLIENT CONNECTED with ID -  dLKHs2yB7PVYMDKcAAAB
+2/28/2025, 2:01:44 AM [debug]  Message :  CLIENT CONNECTED with ID -  poFybSkCVRR-ss5zAAAD
+2/28/2025, 2:01:46 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 2:07:11 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:07:12 AM [debug]  Message :  CLIENT CONNECTED with ID -  8EXUUtnIYqzNlOEQAAAB
+2/28/2025, 2:07:12 AM [debug]  Message :  CLIENT CONNECTED with ID -  hJxCzxQlkJpavPThAAAD
+2/28/2025, 2:07:15 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 2:09:05 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:09:06 AM [debug]  Message :  CLIENT CONNECTED with ID -  _Dwu4n66E3M4tzdAAAAB
+2/28/2025, 2:09:06 AM [debug]  Message :  CLIENT CONNECTED with ID -  11eBEH_L-LeEIYyzAAAD
+2/28/2025, 2:09:10 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 2:11:58 AM [info]  Message :  -----------------------------------
+2/28/2025, 2:12:31 AM [error]  Message :  Error exchanging public token: AxiosError: Request failed with status code 400
+2/28/2025, 2:13:15 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:13:16 AM [debug]  Message :  CLIENT CONNECTED with ID -  xwU8NjBq1QjwW79JAAAB
+2/28/2025, 2:13:16 AM [debug]  Message :  CLIENT CONNECTED with ID -  LveWgBWtcLnCeDctAAAD
+2/28/2025, 2:13:18 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:13:19 AM [debug]  Message :  CLIENT CONNECTED with ID -  EHjTw8eMnPvWqXXHAAAB
+2/28/2025, 2:13:19 AM [debug]  Message :  CLIENT CONNECTED with ID -  6YOqA7Utrh58tnfSAAAD
+2/28/2025, 2:13:22 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 2:14:45 AM [error]  Message :  Error exchanging public token: AxiosError: Request failed with status code 400
+2/28/2025, 2:16:17 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:16:18 AM [debug]  Message :  CLIENT CONNECTED with ID -  dfg-zbTt5zA4zMvOAAAB
+2/28/2025, 2:16:18 AM [debug]  Message :  CLIENT CONNECTED with ID -  kELqvZBoIcyyajfdAAAD
+2/28/2025, 2:16:21 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 2:16:24 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:16:26 AM [debug]  Message :  CLIENT CONNECTED with ID -  vKqzAe8h_kdGRCg6AAAB
+2/28/2025, 2:16:26 AM [debug]  Message :  CLIENT CONNECTED with ID -  RyTcdBIdy81x6ZT1AAAD
+2/28/2025, 2:16:29 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 2:16:33 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:16:34 AM [debug]  Message :  CLIENT CONNECTED with ID -  fzFqz0pfoRpU9c17AAAB
+2/28/2025, 2:16:35 AM [debug]  Message :  CLIENT CONNECTED with ID -  bHP3Z31ecEJsim52AAAD
+2/28/2025, 2:16:37 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:16:38 AM [debug]  Message :  CLIENT CONNECTED with ID -  zCd8ryW95y-MzyqdAAAB
+2/28/2025, 2:16:38 AM [debug]  Message :  CLIENT CONNECTED with ID -  vRnyj8G3Emo-bv5aAAAD
+2/28/2025, 2:16:41 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 2:17:16 AM [error]  Message :  Failed to exchance public token AxiosError: Request failed with status code 400
+2/28/2025, 2:18:16 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:18:17 AM [debug]  Message :  CLIENT CONNECTED with ID -  HwIkUU_ua0ldNlOSAAAB
+2/28/2025, 2:18:18 AM [debug]  Message :  CLIENT CONNECTED with ID -  58bqtjI2oNP1eAhEAAAD
+2/28/2025, 2:18:20 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 2:19:15 AM [error]  Message :  provided public token is in an invalid format. expected format: public-<environment>-<identifier>
+2/28/2025, 2:19:26 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:19:27 AM [debug]  Message :  CLIENT CONNECTED with ID -  w6kjk4jplzppa1pLAAAB
+2/28/2025, 2:19:28 AM [debug]  Message :  CLIENT CONNECTED with ID -  WNjSmonvBAW7Scg3AAAD
+2/28/2025, 2:19:30 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 2:19:48 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:19:49 AM [debug]  Message :  CLIENT CONNECTED with ID -  fWr2fPcFo0UqHca6AAAB
+2/28/2025, 2:19:49 AM [debug]  Message :  CLIENT CONNECTED with ID -  kgFW2uyD2RdeY9zEAAAD
+2/28/2025, 2:19:50 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:19:51 AM [debug]  Message :  CLIENT CONNECTED with ID -  M8tt1PFRqGAv8L38AAAB
+2/28/2025, 2:19:52 AM [debug]  Message :  CLIENT CONNECTED with ID -  D-DKvlRfXzJrB6fbAAAD
+2/28/2025, 2:19:54 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 2:22:25 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:22:26 AM [debug]  Message :  CLIENT CONNECTED with ID -  klJLwRsFxNipsaClAAAB
+2/28/2025, 2:22:27 AM [debug]  Message :  CLIENT CONNECTED with ID -  vYgxonyLQjTvnx-MAAAD
+2/28/2025, 2:22:30 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 2:22:40 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 2:22:41 AM [debug]  Message :  CLIENT CONNECTED with ID -  JaQrNSGpoRhQ8cleAAAB
+2/28/2025, 2:22:41 AM [debug]  Message :  CLIENT CONNECTED with ID -  qlMd_uLGMc_sHKWaAAAD
+2/28/2025, 2:22:44 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 2:22:56 AM [info]  Message :  -----------------------------------
+2/28/2025, 5:48:23 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 5:48:23 AM [debug]  Message :  CLIENT CONNECTED with ID -  7LpMjZrtR8KMND3GAAAB
+2/28/2025, 5:48:24 AM [debug]  Message :  CLIENT CONNECTED with ID -  WkvQuyEAdw9evfbrAAAD
+2/28/2025, 5:48:27 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 5:51:04 AM [info]  Message :  -----------------------------------
+2/28/2025, 5:51:16 AM [error]  Message :  Error generating link token: AxiosError: Request failed with status code 400
+2/28/2025, 5:51:36 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 5:51:36 AM [debug]  Message :  CLIENT CONNECTED with ID -  xIkobIjbPSJsfpP1AAAB
+2/28/2025, 5:51:36 AM [debug]  Message :  CLIENT CONNECTED with ID -  ePstOY49PM12lvsDAAAD
+2/28/2025, 5:51:40 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 5:51:41 AM [error]  Message :  Error generating link token: AxiosError: Request failed with status code 400
+2/28/2025, 5:52:27 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 5:52:27 AM [debug]  Message :  CLIENT CONNECTED with ID -  BoBgGnLvTLT_EFyRAAAB
+2/28/2025, 5:52:27 AM [debug]  Message :  CLIENT CONNECTED with ID -  kNpheV97_yTGJmhLAAAD
+2/28/2025, 5:52:31 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 5:52:34 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 5:52:35 AM [debug]  Message :  CLIENT CONNECTED with ID -  _hk_dVxzJpT0LF1oAAAB
+2/28/2025, 5:52:35 AM [debug]  Message :  CLIENT CONNECTED with ID -  9nj0zYXVqLDnqf33AAAD
+2/28/2025, 5:52:39 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 5:52:43 AM [error]  Message :  a user already exists for this client user id
+2/28/2025, 5:56:04 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 5:56:05 AM [debug]  Message :  CLIENT CONNECTED with ID -  pj8DFv8ZBe1AD2gSAAAB
+2/28/2025, 5:56:05 AM [debug]  Message :  CLIENT CONNECTED with ID -  dp-vXT_3tIZnP7_PAAAD
+2/28/2025, 5:56:09 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 6:00:52 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:00:53 AM [debug]  Message :  CLIENT CONNECTED with ID -  SNtfUaEVtz2i7je4AAAB
+2/28/2025, 6:00:53 AM [debug]  Message :  CLIENT CONNECTED with ID -  gySwliBnhmIhNn4_AAAD
+2/28/2025, 6:00:57 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 6:01:09 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:01:11 AM [debug]  Message :  CLIENT CONNECTED with ID -  bTco16zx9_SaJgVgAAAB
+2/28/2025, 6:01:11 AM [debug]  Message :  CLIENT CONNECTED with ID -  WRImxj7iuepDvlt3AAAD
+2/28/2025, 6:01:14 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 6:02:39 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:02:40 AM [debug]  Message :  CLIENT CONNECTED with ID -  czU13wPi9664_WYGAAAB
+2/28/2025, 6:02:40 AM [debug]  Message :  CLIENT CONNECTED with ID -  eLFuhPAn5eyQTe3hAAAD
+2/28/2025, 6:02:43 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 6:02:56 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:02:56 AM [debug]  Message :  CLIENT CONNECTED with ID -  lyXatcN8eTkj-bDTAAAB
+2/28/2025, 6:02:57 AM [debug]  Message :  CLIENT CONNECTED with ID -  kk01ip8GvwOIxdKPAAAD
+2/28/2025, 6:03:01 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 6:03:03 AM [error]  Message :  a user already exists for this client user id
+2/28/2025, 6:03:20 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:03:21 AM [debug]  Message :  CLIENT CONNECTED with ID -  LHUht1U_fydBjLHeAAAB
+2/28/2025, 6:03:21 AM [debug]  Message :  CLIENT CONNECTED with ID -  63NMSYhD_dFX8DtdAAAD
+2/28/2025, 6:03:25 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 6:12:28 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:12:29 AM [debug]  Message :  CLIENT CONNECTED with ID -  lKj_X9iW0JSXsSg5AAAB
+2/28/2025, 6:12:29 AM [debug]  Message :  CLIENT CONNECTED with ID -  fPQAX3GqVbWPQcCwAAAD
+2/28/2025, 6:12:32 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 6:18:00 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:18:01 AM [debug]  Message :  CLIENT CONNECTED with ID -  ZS17hixOjN3fU0UdAAAB
+2/28/2025, 6:18:02 AM [debug]  Message :  CLIENT CONNECTED with ID -  4sClhleT7ZbMFKiNAAAD
+2/28/2025, 6:18:05 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 6:18:18 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:18:19 AM [debug]  Message :  CLIENT CONNECTED with ID -  FSWGGqTzHVJ8ZanaAAAB
+2/28/2025, 6:18:19 AM [debug]  Message :  CLIENT CONNECTED with ID -  -bTLLGGxbgb7yhblAAAD
+2/28/2025, 6:18:22 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 6:18:24 AM [error]  Message :  Failed to generate link token ReferenceError: s is not defined
+2/28/2025, 6:18:50 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:18:51 AM [debug]  Message :  CLIENT CONNECTED with ID -  rj0YF_SvzhRusBJfAAAB
+2/28/2025, 6:18:51 AM [debug]  Message :  CLIENT CONNECTED with ID -  cRt9HEReSBQE_ig0AAAD
+2/28/2025, 6:18:54 AM [error]  Message :  the following required fields are missing: user_token
+2/28/2025, 6:18:54 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 6:21:11 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:21:13 AM [debug]  Message :  CLIENT CONNECTED with ID -  oQOUzto7fYu2DdvPAAAB
+2/28/2025, 6:21:13 AM [debug]  Message :  CLIENT CONNECTED with ID -  7Gx0yp8FeUockjQFAAAD
+2/28/2025, 6:21:15 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 6:21:26 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:21:27 AM [debug]  Message :  CLIENT CONNECTED with ID -  7rGCgzDH_X-BFw4oAAAB
+2/28/2025, 6:21:28 AM [debug]  Message :  CLIENT CONNECTED with ID -  gfJ-8_rZmCHc8n7OAAAD
+2/28/2025, 6:21:30 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 6:21:33 AM [error]  Message :  a user already exists for this client user id
+2/28/2025, 6:22:13 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:22:15 AM [debug]  Message :  CLIENT CONNECTED with ID -  atd0qhd_QPlErhL9AAAB
+2/28/2025, 6:22:15 AM [debug]  Message :  CLIENT CONNECTED with ID -  mkKM89VbGHIRyTCZAAAD
+2/28/2025, 6:22:17 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 6:24:41 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:24:42 AM [debug]  Message :  CLIENT CONNECTED with ID -  PVrXlkAEqDsvl4CJAAAB
+2/28/2025, 6:24:42 AM [debug]  Message :  CLIENT CONNECTED with ID -  L8KVUxR0gvBC-s2kAAAD
+2/28/2025, 6:24:45 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 6:24:46 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:24:47 AM [debug]  Message :  CLIENT CONNECTED with ID -  bh7MIrGn7IbYL-cSAAAB
+2/28/2025, 6:24:48 AM [debug]  Message :  CLIENT CONNECTED with ID -  CARf--ybLFki246qAAAD
+2/28/2025, 6:24:50 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 6:24:53 AM [error]  Message :  a user already exists for this client user id
+2/28/2025, 6:28:44 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:28:45 AM [debug]  Message :  CLIENT CONNECTED with ID -  ejnQ2yGuasdrs11KAAAB
+2/28/2025, 6:28:46 AM [debug]  Message :  CLIENT CONNECTED with ID -  O4WCyLrbIfcnfWDpAAAD
+2/28/2025, 6:28:48 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 6:28:49 AM [error]  Message :  the following required fields are missing: user_token
+2/28/2025, 6:30:44 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:30:46 AM [debug]  Message :  CLIENT CONNECTED with ID -  I75m-PHSqa0oGxBFAAAB
+2/28/2025, 6:30:46 AM [debug]  Message :  CLIENT CONNECTED with ID -  9vbYXARrHHY5lMpCAAAD
+2/28/2025, 6:30:48 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 6:36:29 AM [info]  Message :  SMS Sent Successfully: {"message-count":"1","messages":[{"to":"16474589275","message-id":"43f050f7-5065-4b54-ba98-79a9d39b6ebf","status":"0","remaining-balance":"7.07653917","message-price":"0.01343000","network":"302220","messageId":"43f050f7-5065-4b54-ba98-79a9d39b6ebf","remainingBalance":"7.07653917","messagePrice":"0.01343000"}],"messageCount":"1"}
+2/28/2025, 6:36:31 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  I75m-PHSqa0oGxBFAAAB
+2/28/2025, 6:36:32 AM [error]  Message :  unauthorized, there is no access token but refesh token
+2/28/2025, 6:36:35 AM [debug]  Message :  CLIENT CONNECTED with ID -  yZAzDH97s7YcWbwNAAAF
+2/28/2025, 6:36:42 AM [info]  Message :  SMS Sent Successfully: {"message-count":"2","messages":[{"to":"16474589275","message-id":"437ccb89-3ec7-47d4-a2b4-fb163866a870","status":"0","remaining-balance":"7.04967917","message-price":"0.01343000","network":"302220","messageId":"437ccb89-3ec7-47d4-a2b4-fb163866a870","remainingBalance":"7.04967917","messagePrice":"0.01343000"},{"to":"16474589275","message-id":"dfb00c79-9d63-4536-be2d-bfce108b4c61","status":"0","remaining-balance":"7.04967917","message-price":"0.01343000","network":"302220","messageId":"dfb00c79-9d63-4536-be2d-bfce108b4c61","remainingBalance":"7.04967917","messagePrice":"0.01343000"}],"messageCount":"2"}
+2/28/2025, 6:36:43 AM [error]  Message :  Error in verifying token {"code":"auth/user-not-found","message":"There is no user record corresponding to the provided identifier."}
+2/28/2025, 6:38:40 AM [info]  Message :  -----------------------------------
+2/28/2025, 6:41:57 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:41:59 AM [debug]  Message :  CLIENT CONNECTED with ID -  qFBcndiGyirGZ2lNAAAB
+2/28/2025, 6:41:59 AM [debug]  Message :  CLIENT CONNECTED with ID -  BGhwDgsku8HvpxR0AAAD
+2/28/2025, 6:42:02 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 6:42:48 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:42:49 AM [debug]  Message :  CLIENT CONNECTED with ID -  n8LxFlIr9WSG9-szAAAB
+2/28/2025, 6:42:49 AM [debug]  Message :  CLIENT CONNECTED with ID -  -KXM_OIFfzS7EOlLAAAD
+2/28/2025, 6:42:52 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 6:44:14 AM [error]  Message :  the following required fields are missing: user, user.client_user_id
+2/28/2025, 6:44:54 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:44:54 AM [debug]  Message :  CLIENT CONNECTED with ID -  q8vPY6BQqkv9zab_AAAB
+2/28/2025, 6:44:54 AM [debug]  Message :  CLIENT CONNECTED with ID -  nfno5WvtouQj5jXkAAAD
+2/28/2025, 6:44:58 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 6:45:23 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:45:24 AM [debug]  Message :  CLIENT CONNECTED with ID -  tm1gj7NwgHkH7-3nAAAB
+2/28/2025, 6:45:24 AM [debug]  Message :  CLIENT CONNECTED with ID -  LB1CwSXj2fnktnVtAAAD
+2/28/2025, 6:45:28 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 6:45:28 AM [error]  Message :  the following required fields are missing: user, user.client_user_id
+2/28/2025, 6:45:50 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:45:50 AM [debug]  Message :  CLIENT CONNECTED with ID -  A5buPlLdWTGqpV4wAAAB
+2/28/2025, 6:45:50 AM [debug]  Message :  CLIENT CONNECTED with ID -  hBWv9ir6H7tVXZzIAAAD
+2/28/2025, 6:45:54 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 6:45:55 AM [error]  Message :  the following required fields are missing: user, user.client_user_id
+2/28/2025, 6:46:05 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:46:05 AM [debug]  Message :  CLIENT CONNECTED with ID -  vNrylaoZ2IoB3An9AAAB
+2/28/2025, 6:46:05 AM [debug]  Message :  CLIENT CONNECTED with ID -  bv_kMEA2qRTaUsT4AAAD
+2/28/2025, 6:46:10 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 6:47:10 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:47:10 AM [debug]  Message :  CLIENT CONNECTED with ID -  2udgNhlatmaUZ8qkAAAB
+2/28/2025, 6:47:11 AM [debug]  Message :  CLIENT CONNECTED with ID -  8B9tUiezf5tscKyqAAAD
+2/28/2025, 6:47:15 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 6:55:46 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:55:46 AM [debug]  Message :  CLIENT CONNECTED with ID -  g5pqqdVy-6yD-VPzAAAB
+2/28/2025, 6:55:46 AM [debug]  Message :  CLIENT CONNECTED with ID -  bFfGMz4zgopuyR8JAAAD
+2/28/2025, 6:55:51 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 6:56:01 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 6:56:01 AM [debug]  Message :  CLIENT CONNECTED with ID -  ii30cqinQjXK7pU8AAAB
+2/28/2025, 6:56:02 AM [debug]  Message :  CLIENT CONNECTED with ID -  3jFXdEz_aRNCfQMwAAAD
+2/28/2025, 6:56:05 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 7:02:56 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 7:02:56 AM [debug]  Message :  CLIENT CONNECTED with ID -  IpBTp2eOqPCZn9rQAAAB
+2/28/2025, 7:02:57 AM [debug]  Message :  CLIENT CONNECTED with ID -  Y17CHgzaoEL2qyonAAAD
+2/28/2025, 7:03:00 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 7:03:22 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 7:03:22 AM [debug]  Message :  CLIENT CONNECTED with ID -  CnniLeE1oqoVPYnnAAAB
+2/28/2025, 7:03:23 AM [debug]  Message :  CLIENT CONNECTED with ID -  GqppBS308j7UkMGOAAAD
+2/28/2025, 7:03:26 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 7:04:02 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 7:04:03 AM [debug]  Message :  CLIENT CONNECTED with ID -  7PG413dUeykXhd3qAAAB
+2/28/2025, 7:04:03 AM [debug]  Message :  CLIENT CONNECTED with ID -  SdrGmSeRB0YpCDHuAAAD
+2/28/2025, 7:04:06 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 7:04:17 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 7:04:17 AM [debug]  Message :  CLIENT CONNECTED with ID -  itRfPbyiJQlSIHXMAAAB
+2/28/2025, 7:04:17 AM [debug]  Message :  CLIENT CONNECTED with ID -  WXTjNR836HwOb9zJAAAD
+2/28/2025, 7:04:21 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 7:04:22 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 7:04:23 AM [debug]  Message :  CLIENT CONNECTED with ID -  5INdovid0YaYHg8rAAAB
+2/28/2025, 7:04:23 AM [debug]  Message :  CLIENT CONNECTED with ID -  eeXMfU--zSTF88gwAAAD
+2/28/2025, 7:04:27 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 7:10:00 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 7:10:02 AM [debug]  Message :  CLIENT CONNECTED with ID -  zkdhuSs5qLuu_SU1AAAB
+2/28/2025, 7:10:03 AM [debug]  Message :  CLIENT CONNECTED with ID -  0yEEFkJvCY4mhv0_AAAD
+2/28/2025, 7:10:04 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 7:11:28 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 7:11:29 AM [debug]  Message :  CLIENT CONNECTED with ID -  oRZKudEu3dUfCs_bAAAB
+2/28/2025, 7:11:29 AM [debug]  Message :  CLIENT CONNECTED with ID -  Ye0vjJ0xqN5E5hJAAAAD
+2/28/2025, 7:11:32 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 7:18:14 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 7:18:15 AM [debug]  Message :  CLIENT CONNECTED with ID -  Mu9P3UgWRzWbDlVtAAAB
+2/28/2025, 7:18:16 AM [debug]  Message :  CLIENT CONNECTED with ID -  fAslbMcqhl10S6IzAAAD
+2/28/2025, 7:18:18 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 7:18:33 AM [info]  Message :  -----------------------------------
+2/28/2025, 7:18:40 AM [info]  Message :  -----------------------------------
+2/28/2025, 7:18:46 AM [info]  Message :  -----------------------------------
+2/28/2025, 7:19:18 AM [error]  Message :  Failed to exchance public token error
+2/28/2025, 7:19:48 AM [error]  Message :  Failed to exchance public token error
+2/28/2025, 7:20:04 AM [error]  Message :  Failed to exchance public token error
+2/28/2025, 7:20:34 AM [error]  Message :  Failed to exchance public token error
+2/28/2025, 7:21:49 AM [error]  Message :  Failed to exchance public token error
+2/28/2025, 7:22:35 AM [error]  Message :  Failed to exchance public token error
+2/28/2025, 7:29:49 AM [error]  Message :  Failed to exchance public token error
+2/28/2025, 7:30:35 AM [error]  Message :  Failed to exchance public token error
+2/28/2025, 7:32:02 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 7:32:03 AM [debug]  Message :  CLIENT CONNECTED with ID -  itT0uWUOI83mpK-CAAAB
+2/28/2025, 7:32:03 AM [debug]  Message :  CLIENT CONNECTED with ID -  0clkCw7quKLlG0wWAAAD
+2/28/2025, 7:32:06 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 7:32:10 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 7:32:11 AM [debug]  Message :  CLIENT CONNECTED with ID -  QXuBCmOXIwMAv4WlAAAB
+2/28/2025, 7:32:11 AM [debug]  Message :  CLIENT CONNECTED with ID -  tKKGGPwKOYyFADF9AAAD
+2/28/2025, 7:32:13 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 7:32:14 AM [debug]  Message :  CLIENT CONNECTED with ID -  6kxqdx_Srlom0L6jAAAB
+2/28/2025, 7:32:15 AM [debug]  Message :  CLIENT CONNECTED with ID -  Sqh22SPv86ZPTZ8bAAAD
+2/28/2025, 7:32:16 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 7:50:09 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 7:50:14 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 7:50:15 AM [debug]  Message :  CLIENT CONNECTED with ID -  -xIXKn_CNDFe5d7cAAAB
+2/28/2025, 7:50:16 AM [debug]  Message :  CLIENT CONNECTED with ID -  oD7uCbct2ulDKyxmAAAD
+2/28/2025, 8:04:23 AM [info]  Message :  -----------------------------------
+2/28/2025, 8:06:58 AM [info]  Message :  -----------------------------------
+2/28/2025, 8:09:41 AM [info]  Message :  -----------------------------------
+2/28/2025, 8:10:25 AM [info]  Message :  -----------------------------------
+2/28/2025, 8:11:03 AM [info]  Message :  -----------------------------------
+2/28/2025, 8:12:31 AM [info]  Message :  -----------------------------------
+2/28/2025, 8:12:38 AM [info]  Message :  -----------------------------------
+2/28/2025, 8:15:04 AM [info]  Message :  ---------------------
+2/28/2025, 8:21:53 AM [debug]  Message :  CLIENT CONNECTED with ID -  RNzsn8V2cMdssbNlAAAF
+2/28/2025, 8:21:53 AM [info]  Message :  -----------------------------------
+2/28/2025, 9:51:16 AM [debug]  Message :  CLIENT CONNECTED with ID -  VYEdUBzmRw_sZIP_AAAH
+2/28/2025, 9:51:16 AM [info]  Message :  ---------------------
+2/28/2025, 9:51:26 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  VYEdUBzmRw_sZIP_AAAH
+2/28/2025, 9:51:26 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  RNzsn8V2cMdssbNlAAAF
+2/28/2025, 9:51:56 AM [debug]  Message :  CLIENT CONNECTED with ID -  02FO0aMRz3F4O8RIAAAJ
+2/28/2025, 9:51:56 AM [info]  Message :  ---------------------
+2/28/2025, 9:52:19 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  02FO0aMRz3F4O8RIAAAJ
+2/28/2025, 9:53:20 AM [debug]  Message :  CLIENT CONNECTED with ID -  UhaBlk-AHDxUoU6bAAAL
+2/28/2025, 9:53:20 AM [info]  Message :  -----------------------------------
+2/28/2025, 9:56:13 AM [debug]  Message :  CLIENT CONNECTED with ID -  PswbIrPIPu3dXpukAAAN
+2/28/2025, 9:56:13 AM [info]  Message :  -----------------------------------
+2/28/2025, 9:59:13 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  PswbIrPIPu3dXpukAAAN
+2/28/2025, 9:59:13 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  UhaBlk-AHDxUoU6bAAAL
+2/28/2025, 9:59:14 AM [debug]  Message :  CLIENT CONNECTED with ID -  fSdNw1id-r2vHMnIAAAP
+2/28/2025, 9:59:14 AM [info]  Message :  -----------------------------------
+2/28/2025, 10:01:27 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 10:01:28 AM [debug]  Message :  CLIENT CONNECTED with ID -  Q8VG_4XAkBXxj72ZAAAB
+2/28/2025, 10:01:28 AM [debug]  Message :  CLIENT CONNECTED with ID -  QoYgEKjeUUqNqxsuAAAD
+2/28/2025, 10:01:30 AM [debug]  Message :  CLIENT CONNECTED with ID -  CWz7Mu0HpYZYIoyoAAAF
+2/28/2025, 10:01:30 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 10:01:36 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 10:01:37 AM [debug]  Message :  CLIENT CONNECTED with ID -  fxOyufZzXz09qPksAAAB
+2/28/2025, 10:01:37 AM [debug]  Message :  CLIENT CONNECTED with ID -  0fHLnHLyEFEGpHKhAAAD
+2/28/2025, 10:01:37 AM [debug]  Message :  CLIENT CONNECTED with ID -  Eqt9sbbztiKt-fJlAAAF
+2/28/2025, 10:01:39 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 10:02:03 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  Eqt9sbbztiKt-fJlAAAF
+2/28/2025, 10:02:04 AM [debug]  Message :  CLIENT CONNECTED with ID -  Q_OaFRWbLeABcE2GAAAH
+2/28/2025, 10:02:05 AM [info]  Message :  -----------------------------------
+2/28/2025, 10:03:02 AM [info]  Message :  -----------------------------------
+2/28/2025, 10:03:05 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  Q_OaFRWbLeABcE2GAAAH
+2/28/2025, 10:03:06 AM [debug]  Message :  CLIENT CONNECTED with ID -  LId4nfSPxRoSdlcBAAAJ
+2/28/2025, 10:03:06 AM [info]  Message :  -----------------------------------
+2/28/2025, 10:03:24 AM [info]  Message :  -----------------------------------
+2/28/2025, 10:03:29 AM [info]  Message :  -----------------------------------
+2/28/2025, 10:03:30 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  LId4nfSPxRoSdlcBAAAJ
+2/28/2025, 10:03:31 AM [debug]  Message :  CLIENT CONNECTED with ID -  E4UBfqzhBShfIs6HAAAL
+2/28/2025, 10:03:31 AM [info]  Message :  -----------------------------------
+2/28/2025, 10:10:44 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  E4UBfqzhBShfIs6HAAAL
+2/28/2025, 10:10:46 AM [debug]  Message :  CLIENT CONNECTED with ID -  Mi4i4DTNnWPI_uzHAAAN
+2/28/2025, 10:10:46 AM [info]  Message :  -----------------------------------
+2/28/2025, 10:10:48 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  Mi4i4DTNnWPI_uzHAAAN
+2/28/2025, 10:10:49 AM [debug]  Message :  CLIENT CONNECTED with ID -  f5zxEKGZiIOfgsiuAAAP
+2/28/2025, 10:10:49 AM [info]  Message :  -----------------------------------
+2/28/2025, 10:12:13 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 10:12:14 AM [debug]  Message :  CLIENT CONNECTED with ID -  NEKUh3yBPy4Cl_rqAAAB
+2/28/2025, 10:12:16 AM [debug]  Message :  CLIENT CONNECTED with ID -  e9hlJ2YpQZB6qcrbAAAD
+2/28/2025, 10:12:16 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 10:12:17 AM [debug]  Message :  CLIENT CONNECTED with ID -  uExYwj3AvdLjR1bhAAAF
+2/28/2025, 10:57:42 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  NEKUh3yBPy4Cl_rqAAAB
+2/28/2025, 10:57:44 AM [debug]  Message :  CLIENT CONNECTED with ID -  mRdxScDKc6obp0qJAAAH
+2/28/2025, 10:57:44 AM [info]  Message :  -----------------------------------

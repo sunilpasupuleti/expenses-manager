@@ -1,0 +1,42 @@
+name: Web Dev CI/CD
+
+on:
+  push:
+    branches: [development]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Decrypt .env.development.enc
+        run: |
+          echo "$GPG_PRIVATE_KEY" | base64 -d > private.key
+          gpg --import private.key
+          gpg --quiet --batch --yes --decrypt --passphrase="$GPG_PASSPHRASE" \
+            --output web/.env.development web/.env.development.enc
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Install dependencies
+        run: |
+          cd web
+          npm install -f
+
+      - name: Build the frontend (dev)
+        run: |
+          cd web
+          npm run build:dev
+
+      - name: Upload to VPS (development site)
+        run: |
+          sshpass -p "${{ secrets.PASS_WORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.HOST_NAME }} "rm -rf /var/www/dev.expensesmanager.app/*"
+          sshpass -p "${{ secrets.PASS_WORD }}" scp -r web/dist/dev/* ${{ secrets.HOST_NAME }}:/var/www/dev.expensesmanager.app/
+
+      - name: Upload graphics folder to VPS
+        run: |
+          sshpass -p "${{ secrets.PASS_WORD }}" scp -r graphics ${{ secrets.HOST_NAME }}:/var/www/dev.expensesmanager.app/

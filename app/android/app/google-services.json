@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "4544693826",
+    "firebase_url": "https://expensesmanager-da065-default-rtdb.firebaseio.com",
+    "project_id": "expensesmanager-da065",
+    "storage_bucket": "expensesmanager-da065.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:4544693826:android:34d6f095429fd4c1548fdb",
+        "android_client_info": {
+          "package_name": "com.webwizard.expensesmanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "4544693826-g2f2fc73fp6lppvsj181le6sgi593snr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.webwizard.expensesmanager",
+            "certificate_hash": "3e62d3d2d29b796a0552361ac79300492b7f4f43"
+          }
+        },
+        {
+          "client_id": "4544693826-h8rvgntcgr38tbd65n0i6h2vurqgb6on.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.webwizard.expensesmanager",
+            "certificate_hash": "4965b1e9e042963f6c830cc2d603b5715c893727"
+          }
+        },
+        {
+          "client_id": "4544693826-dcfvcng0op5c5me3homei0mcki4k6ue9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhR9uJvwGgxkoH62C9ECs87DnHE3mE7bU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "4544693826-dcfvcng0op5c5me3homei0mcki4k6ue9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "4544693826-7mabkjo0tovttcsaqr5cd7vqo74s047i.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.webwizard.expensesmanager"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

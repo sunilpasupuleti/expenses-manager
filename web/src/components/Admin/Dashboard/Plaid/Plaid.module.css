@@ -1,0 +1,53 @@
+.summaryContainer {
+  margin-bottom: 1.5rem;
+}
+
+.totalApiCard {
+  background: linear-gradient(135deg, #1de9b6 0%, #00c853 100%);
+  color: #fff;
+  height: 100%;
+  padding: 24px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.totalApiTitle {
+  font-size: 1.25rem !important;
+  font-weight: 600 !important;
+  margin-bottom: 8px;
+  text-align: center;
+  color: white !important;
+}
+
+.totalApiCount {
+  font-size: 3rem !important;
+  font-weight: 800 !important;
+  text-align: center;
+  color: white !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Card color classes */
+.accountBalanceCard {
+  background-color: #7e57c2 !important;
+  color: #fff !important;
+}
+
+.linkAccountCard {
+  background-color: #1e88e5 !important;
+  color: #fff !important;
+}
+
+.unlinkAccountCard {
+  background-color: tomato !important;
+  color: #fff !important;
+}
+
+.transactionsCard {
+  background-color: #009688 !important;
+  color: #fff !important;
+}

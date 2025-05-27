@@ -1,0 +1,73 @@
+{
+  "name": "web",
+  "version": "0.1.0",
+  "homepage": "https://expensesmanager.app",
+  "private": true,
+  "dependencies": {
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/lab": "^5.0.0-alpha.134",
+    "@mui/material": "^5.13.5",
+    "@mui/styled-engine-sc": "^5.12.0",
+    "@mui/x-date-pickers": "^7.28.0",
+    "@react-spring/parallax": "^9.7.3",
+    "@react-spring/web": "^9.7.3",
+    "@reduxjs/toolkit": "^1.9.5",
+    "@testing-library/jest-dom": "^5.16.5",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.4.0",
+    "clsx": "^2.1.1",
+    "dayjs": "^1.11.13",
+    "firebase": "^11.5.0",
+    "framer-motion": "^10.13.1",
+    "i": "^0.3.7",
+    "lodash": "^4.17.21",
+    "moment": "^2.29.4",
+    "npm": "^9.7.1",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-intersection-observer": "^9.5.2",
+    "react-lottie": "^1.2.3",
+    "react-redux": "^8.1.0",
+    "react-router-dom": "^6.13.0",
+    "react-scripts": "5.0.1",
+    "react-scroll": "^1.8.9",
+    "react-toastify": "^9.1.3",
+    "recharts": "^2.15.1",
+    "socket.io-client": "^4.6.2",
+    "styled-components": "^6.0.0-rc.3",
+    "sweetalert2": "^11.7.12",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "env-cmd -f .env.development react-scripts start",
+    "build:dev": "BUILD_PATH=./dist/dev env-cmd -f .env.development react-scripts build",
+    "build:prod": "BUILD_PATH=./dist/prod env-cmd -f .env.production react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "env-cmd": "^10.1.0"
+  }
+}

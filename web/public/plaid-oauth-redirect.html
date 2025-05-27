@@ -1,0 +1,37 @@
+<!-- public/oauth-redirect.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Plaid OAuth Redirect</title>
+  </head>
+
+  <style>
+    .page-center {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+  </style>
+  <body>
+    <div class="page-center">
+      <h1>Redirecting to Expenses Manager...</h1>
+    </div>
+  </body>
+
+  <script>
+    window.onload = function () {
+      const query = window.location.search;
+      const frontend_url =
+        "https://f9dd-2607-fea8-1ddf-4900-c49f-5167-dea7-bca.ngrok-free.app";
+      const frontend_url1 = "expenses-manager:/";
+      if (query.includes("oauth_state_id")) {
+        const redirect = `${frontend_url1}/plaid${query}`;
+        console.log(redirect);
+
+        // window.location.replace(redirect);
+      }
+    };
+  </script>
+</html>

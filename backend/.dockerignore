@@ -1,0 +1,24 @@
+# Ignore node dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Ignore Docker build artifacts
+Dockerfile
+.dockerignore
+
+# Ignore Git-related files
+.git
+.gitignore
+
+# Ignore environment variable files
+.env*
+config/.env*
+
+# Optional: Ignore logs and OS files
+logs/
+*.log
+.DS_Store
+
+# Optional: Ignore coverage and test artifacts
+coverage

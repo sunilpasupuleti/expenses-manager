@@ -1,0 +1,328 @@
+2/28/2025, 11:14:38 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:14:39 AM [debug]  Message :  CLIENT CONNECTED with ID -  i0v6rGwXz6xIta8DAAAB
+2/28/2025, 11:14:39 AM [debug]  Message :  CLIENT CONNECTED with ID -  IZtbM3SMhYGSWhuaAAAD
+2/28/2025, 11:14:39 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:14:41 AM [debug]  Message :  CLIENT CONNECTED with ID -  aK_v1_r4EF2qnRTdAAAB
+2/28/2025, 11:14:41 AM [debug]  Message :  CLIENT CONNECTED with ID -  Cy4CJq1KmlnytIvVAAAD
+2/28/2025, 11:14:41 AM [debug]  Message :  CLIENT CONNECTED with ID -  ILuydUCusrKtkC3NAAAF
+2/28/2025, 11:14:42 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 11:15:29 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:15:30 AM [debug]  Message :  CLIENT CONNECTED with ID -  3kGWuPmJILMheil-AAAB
+2/28/2025, 11:15:30 AM [debug]  Message :  CLIENT CONNECTED with ID -  VH9TEoyU6GTqQjkQAAAD
+2/28/2025, 11:15:32 AM [debug]  Message :  CLIENT CONNECTED with ID -  rzVhIZzIWngHAN6MAAAF
+2/28/2025, 11:15:32 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 11:18:19 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:18:20 AM [debug]  Message :  CLIENT CONNECTED with ID -  TrKDCXxaCAb66gbtAAAB
+2/28/2025, 11:18:20 AM [debug]  Message :  CLIENT CONNECTED with ID -  yHvY1hRHtZyDF3ZuAAAD
+2/28/2025, 11:18:21 AM [debug]  Message :  CLIENT CONNECTED with ID -  7Mr78fT7x691UONAAAAF
+2/28/2025, 11:18:22 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 11:18:54 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:18:55 AM [debug]  Message :  CLIENT CONNECTED with ID -  oZ91TbpWSpiZHFoqAAAB
+2/28/2025, 11:18:56 AM [debug]  Message :  CLIENT CONNECTED with ID -  Jrwtn0j5ziAgqZMFAAAD
+2/28/2025, 11:18:56 AM [debug]  Message :  CLIENT CONNECTED with ID -  _UnTLBU4FFqWyDISAAAF
+2/28/2025, 11:18:57 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 11:24:01 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:24:02 AM [debug]  Message :  CLIENT CONNECTED with ID -  v4kQoeSjjgTn33NSAAAB
+2/28/2025, 11:24:03 AM [debug]  Message :  CLIENT CONNECTED with ID -  FjnwTEaI4QtHVyL2AAAD
+2/28/2025, 11:24:03 AM [debug]  Message :  CLIENT CONNECTED with ID -  OX_nBXE1q05DsX4iAAAF
+2/28/2025, 11:24:04 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 11:24:14 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:24:16 AM [debug]  Message :  CLIENT CONNECTED with ID -  JmOFlYcOsz2RJpnnAAAB
+2/28/2025, 11:24:16 AM [debug]  Message :  CLIENT CONNECTED with ID -  1z0PTTPd6kiom-wDAAAD
+2/28/2025, 11:24:16 AM [debug]  Message :  CLIENT CONNECTED with ID -  ZLEPUU4315M__QoxAAAF
+2/28/2025, 11:24:17 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 11:24:25 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:24:26 AM [debug]  Message :  CLIENT CONNECTED with ID -  2v82EIPuPoTB-VBbAAAB
+2/28/2025, 11:24:27 AM [debug]  Message :  CLIENT CONNECTED with ID -  _lbpYwqXVO7szO6WAAAD
+2/28/2025, 11:24:28 AM [debug]  Message :  CLIENT CONNECTED with ID -  58sqxjEAUAa0X_5eAAAF
+2/28/2025, 11:24:29 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 11:24:41 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:24:41 AM [debug]  Message :  CLIENT CONNECTED with ID -  Af5XVPuekh6NSz6aAAAB
+2/28/2025, 11:24:42 AM [debug]  Message :  CLIENT CONNECTED with ID -  jGdkr_7Xk_TDOqrhAAAD
+2/28/2025, 11:24:43 AM [debug]  Message :  CLIENT CONNECTED with ID -  kJyLGoqL5MObznDSAAAF
+2/28/2025, 11:24:44 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 11:24:56 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:24:58 AM [debug]  Message :  CLIENT CONNECTED with ID -  BROens9J9aenCwlDAAAB
+2/28/2025, 11:24:58 AM [debug]  Message :  CLIENT CONNECTED with ID -  IuW0vTtS1KRbwP6HAAAD
+2/28/2025, 11:24:59 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:25:00 AM [debug]  Message :  CLIENT CONNECTED with ID -  NYpN7p_V9a0qR47ZAAAB
+2/28/2025, 11:25:01 AM [debug]  Message :  CLIENT CONNECTED with ID -  FTt0uyH1DHqW3Zg9AAAD
+2/28/2025, 11:25:01 AM [debug]  Message :  CLIENT CONNECTED with ID -  1cVoVZX4HhruzoMpAAAF
+2/28/2025, 11:25:01 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:25:03 AM [debug]  Message :  CLIENT CONNECTED with ID -  9WuLU_BOvY1DKZ50AAAB
+2/28/2025, 11:25:03 AM [debug]  Message :  CLIENT CONNECTED with ID -  o31NsPqx_ry8hmwsAAAD
+2/28/2025, 11:25:04 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 11:25:05 AM [debug]  Message :  CLIENT CONNECTED with ID -  YT3C6UMJS4oCZ495AAAF
+2/28/2025, 11:25:09 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:25:10 AM [debug]  Message :  CLIENT CONNECTED with ID -  C-cRh1L0EqiO3-uBAAAB
+2/28/2025, 11:25:11 AM [debug]  Message :  CLIENT CONNECTED with ID -  DLal-zyczHxYUbyiAAAD
+2/28/2025, 11:25:12 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 11:25:12 AM [debug]  Message :  CLIENT CONNECTED with ID -  UJSdhkCB4A_vNjYyAAAF
+2/28/2025, 11:25:58 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:25:59 AM [debug]  Message :  CLIENT CONNECTED with ID -  TyxHy-CghaaktWMaAAAB
+2/28/2025, 11:25:59 AM [debug]  Message :  CLIENT CONNECTED with ID -  u_X5MFwGqnfnclHOAAAD
+2/28/2025, 11:25:59 AM [debug]  Message :  CLIENT CONNECTED with ID -  H_jiVfp2LQXP1kE_AAAF
+2/28/2025, 11:26:01 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 11:26:07 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:26:08 AM [debug]  Message :  CLIENT CONNECTED with ID -  1y2lv4SYGpIpAMbNAAAB
+2/28/2025, 11:26:08 AM [debug]  Message :  CLIENT CONNECTED with ID -  7rkMUd2mq-Ubdv4bAAAD
+2/28/2025, 11:26:09 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:26:11 AM [debug]  Message :  CLIENT CONNECTED with ID -  SE7q7rk0g-D4Dmq-AAAB
+2/28/2025, 11:26:11 AM [debug]  Message :  CLIENT CONNECTED with ID -  FYmmOwAYnxCA05wGAAAD
+2/28/2025, 11:26:11 AM [debug]  Message :  CLIENT CONNECTED with ID -  3PusUGQ6mHMZU01KAAAF
+2/28/2025, 11:26:12 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/28/2025, 11:27:08 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:27:09 AM [debug]  Message :  CLIENT CONNECTED with ID -  foAP2MeCL9aRPO4WAAAB
+2/28/2025, 11:27:09 AM [debug]  Message :  CLIENT CONNECTED with ID -  -WF6S28k-_azl3PvAAAD
+2/28/2025, 11:27:09 AM [debug]  Message :  CLIENT CONNECTED with ID -  rVJKv0kMOEA8syHKAAAF
+2/28/2025, 11:27:11 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 11:27:43 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:27:44 AM [debug]  Message :  CLIENT CONNECTED with ID -  STrT5-dMtypjiERNAAAB
+2/28/2025, 11:27:45 AM [debug]  Message :  CLIENT CONNECTED with ID -  fRwidu7THOrZEYwiAAAD
+2/28/2025, 11:27:46 AM [debug]  Message :  CLIENT CONNECTED with ID -  hiSvAWQtUKCHSoDQAAAF
+2/28/2025, 11:27:46 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 11:27:57 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:27:58 AM [debug]  Message :  CLIENT CONNECTED with ID -  p3HC2agYFE5LZPgAAAAB
+2/28/2025, 11:27:59 AM [debug]  Message :  CLIENT CONNECTED with ID -  9oniaw1-mB8MH8FjAAAD
+2/28/2025, 11:27:59 AM [debug]  Message :  CLIENT CONNECTED with ID -  2zAm41RxSYvAiB4pAAAF
+2/28/2025, 11:28:00 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 11:28:04 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  2zAm41RxSYvAiB4pAAAF
+2/28/2025, 11:28:05 AM [debug]  Message :  CLIENT CONNECTED with ID -  u1sWko60qmBRJW1bAAAH
+2/28/2025, 11:28:07 AM [info]  Message :  -----------------------------------
+2/28/2025, 11:36:11 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:36:12 AM [debug]  Message :  CLIENT CONNECTED with ID -  hUHmo_XoJcg2LMrdAAAB
+2/28/2025, 11:36:13 AM [debug]  Message :  CLIENT CONNECTED with ID -  UjVgMPn49pSlLJ9RAAAD
+2/28/2025, 11:36:14 AM [debug]  Message :  CLIENT CONNECTED with ID -  F2BPD8orwU2NREBLAAAF
+2/28/2025, 11:36:14 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/28/2025, 11:36:17 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  UjVgMPn49pSlLJ9RAAAD
+2/28/2025, 11:36:18 AM [debug]  Message :  CLIENT CONNECTED with ID -  CZyk86GNUGh8HM5MAAAH
+2/28/2025, 11:36:19 AM [info]  Message :  -----------------------------------
+2/28/2025, 11:36:21 AM [error]  Message :  Failed to generate link token  shit ass function
+2/28/2025, 11:36:43 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  CZyk86GNUGh8HM5MAAAH
+2/28/2025, 11:36:44 AM [debug]  Message :  CLIENT CONNECTED with ID -  owPpEtZSqykRxs5VAAAJ
+2/28/2025, 11:36:44 AM [info]  Message :  -----------------------------------
+2/28/2025, 11:36:49 AM [error]  Message :  Failed to generate link token  shit ass function
+2/28/2025, 11:39:17 AM [error]  Message :  Failed to generate link token  shit ass function
+2/28/2025, 11:39:37 AM [error]  Message :  Failed to generate link token  shit ass function
+2/28/2025, 11:41:57 AM [error]  Message :  Failed to generate link token  shit ass function
+2/28/2025, 11:42:27 AM [error]  Message :  Failed to generate link token  shit ass function
+2/28/2025, 11:42:29 AM [error]  Message :  Failed to generate link token  shit ass function
+2/28/2025, 11:42:30 AM [error]  Message :  Failed to generate link token  shit ass function
+2/28/2025, 11:42:41 AM [error]  Message :  Failed to generate link token  shit ass function
+2/28/2025, 11:42:42 AM [error]  Message :  Failed to generate link token  shit ass function
+2/28/2025, 11:42:43 AM [error]  Message :  Failed to generate link token  shit ass function
+2/28/2025, 11:42:58 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:42:59 AM [debug]  Message :  CLIENT CONNECTED with ID -  rYZEC0YCOTIduieRAAAB
+2/28/2025, 11:43:00 AM [debug]  Message :  CLIENT CONNECTED with ID -  JtGqD4QpJ2PzZoDYAAAD
+2/28/2025, 11:43:01 AM [debug]  Message :  CLIENT CONNECTED with ID -  ww_AN-53tZQjfjnXAAAF
+2/28/2025, 11:43:01 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 11:43:13 AM [info]  Message :  server started on port number 3000 }
+2/28/2025, 11:43:14 AM [debug]  Message :  CLIENT CONNECTED with ID -  8z7DzYr-mnsoI_BjAAAB
+2/28/2025, 11:43:14 AM [debug]  Message :  CLIENT CONNECTED with ID -  CiGsbQ0xwy6zFhZVAAAD
+2/28/2025, 11:43:15 AM [debug]  Message :  CLIENT CONNECTED with ID -  0SmTOqj8Owi-0AqDAAAF
+2/28/2025, 11:43:16 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/28/2025, 11:43:16 AM [info]  Message :  -----------------------------------
+2/28/2025, 11:43:55 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  0SmTOqj8Owi-0AqDAAAF
+2/28/2025, 11:43:56 AM [debug]  Message :  CLIENT CONNECTED with ID -  w5A5OGPzcWnXfyZbAAAH
+2/28/2025, 11:43:57 AM [info]  Message :  -----------------------------------
+2/28/2025, 11:44:05 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  w5A5OGPzcWnXfyZbAAAH
+2/28/2025, 11:44:07 AM [debug]  Message :  CLIENT CONNECTED with ID -  MAg1n_UXAPipQyobAAAJ
+2/28/2025, 11:44:08 AM [info]  Message :  -----------------------------------
+2/28/2025, 11:45:12 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  MAg1n_UXAPipQyobAAAJ
+2/28/2025, 11:45:13 AM [debug]  Message :  CLIENT CONNECTED with ID -  5Kto9XBviiKxcc_WAAAL
+2/28/2025, 11:45:13 AM [info]  Message :  -----------------------------------
+2/28/2025, 11:51:07 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  5Kto9XBviiKxcc_WAAAL
+2/28/2025, 11:51:08 AM [debug]  Message :  CLIENT CONNECTED with ID -  svDExeCiRxc4AW__AAAN
+2/28/2025, 11:51:08 AM [info]  Message :  -----------------------------------
+2/28/2025, 11:51:19 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  svDExeCiRxc4AW__AAAN
+2/28/2025, 11:51:20 AM [debug]  Message :  CLIENT CONNECTED with ID -  ZilMj_Nwucc6R2qqAAAP
+2/28/2025, 11:51:21 AM [info]  Message :  -----------------------------------
+2/28/2025, 11:51:46 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  ZilMj_Nwucc6R2qqAAAP
+2/28/2025, 11:51:47 AM [debug]  Message :  CLIENT CONNECTED with ID -  ijX3cTYNvFWz-b_HAAAR
+2/28/2025, 11:51:47 AM [info]  Message :  -----------------------------------
+2/28/2025, 11:57:58 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  8z7DzYr-mnsoI_BjAAAB
+2/28/2025, 11:57:58 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  CiGsbQ0xwy6zFhZVAAAD
+2/28/2025, 11:57:59 AM [debug]  Message :  CLIENT CONNECTED with ID -  thSy1Tl7K86CJqOWAAAT
+2/28/2025, 11:57:59 AM [debug]  Message :  CLIENT CONNECTED with ID -  YBZZX7wrwAvhdL6LAAAV
+2/28/2025, 11:59:06 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  thSy1Tl7K86CJqOWAAAT
+2/28/2025, 11:59:06 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  YBZZX7wrwAvhdL6LAAAV
+2/28/2025, 11:59:06 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  ijX3cTYNvFWz-b_HAAAR
+2/28/2025, 11:59:07 AM [debug]  Message :  CLIENT CONNECTED with ID -  3kfez9Ed6ukLSTFlAAAX
+2/28/2025, 11:59:07 AM [debug]  Message :  CLIENT CONNECTED with ID -  rdq97-Bhvs3RQdH5AAAZ
+2/28/2025, 11:59:08 AM [debug]  Message :  CLIENT CONNECTED with ID -  Lhsk41aGbuykGpMCAAAb
+2/28/2025, 12:14:59 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  3kfez9Ed6ukLSTFlAAAX
+2/28/2025, 12:14:59 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  rdq97-Bhvs3RQdH5AAAZ
+2/28/2025, 12:14:59 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  Lhsk41aGbuykGpMCAAAb
+2/28/2025, 12:15:00 PM [debug]  Message :  CLIENT CONNECTED with ID -  J8pVz0J-Li9-yK7MAAAd
+2/28/2025, 12:15:00 PM [debug]  Message :  CLIENT CONNECTED with ID -  T2yazlQAn1oreE8cAAAf
+2/28/2025, 12:15:01 PM [debug]  Message :  CLIENT CONNECTED with ID -  HGPt208EJYhFHTr-AAAh
+2/28/2025, 12:18:15 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  J8pVz0J-Li9-yK7MAAAd
+2/28/2025, 12:18:15 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  T2yazlQAn1oreE8cAAAf
+2/28/2025, 12:18:15 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  HGPt208EJYhFHTr-AAAh
+2/28/2025, 12:18:17 PM [debug]  Message :  CLIENT CONNECTED with ID -  3hJ6sojPK7rnvEXRAAAj
+2/28/2025, 12:18:17 PM [debug]  Message :  CLIENT CONNECTED with ID -  IBEP9i20kem80R5hAAAl
+2/28/2025, 12:18:19 PM [debug]  Message :  CLIENT CONNECTED with ID -  QFbbpCYR9lDxqq_TAAAn
+2/28/2025, 12:36:01 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  3hJ6sojPK7rnvEXRAAAj
+2/28/2025, 12:36:01 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  IBEP9i20kem80R5hAAAl
+2/28/2025, 12:36:01 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  QFbbpCYR9lDxqq_TAAAn
+2/28/2025, 12:36:02 PM [debug]  Message :  CLIENT CONNECTED with ID -  _2q5z7triBrqq4MpAAAp
+2/28/2025, 12:36:02 PM [debug]  Message :  CLIENT CONNECTED with ID -  _oYI7M5l5plT-V5MAAAr
+2/28/2025, 12:36:03 PM [debug]  Message :  CLIENT CONNECTED with ID -  WT21z6JSQ8n-MK7mAAAt
+2/28/2025, 12:52:58 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  _2q5z7triBrqq4MpAAAp
+2/28/2025, 12:52:58 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  _oYI7M5l5plT-V5MAAAr
+2/28/2025, 12:52:58 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  WT21z6JSQ8n-MK7mAAAt
+2/28/2025, 12:53:00 PM [debug]  Message :  CLIENT CONNECTED with ID -  U128HSwfjUht9UgdAAAv
+2/28/2025, 12:53:00 PM [debug]  Message :  CLIENT CONNECTED with ID -  4mI0sYfq4at2jpn3AAAx
+2/28/2025, 12:53:00 PM [debug]  Message :  CLIENT CONNECTED with ID -  ko2_cd_cuoCKN6EtAAAz
+2/28/2025, 1:10:29 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  U128HSwfjUht9UgdAAAv
+2/28/2025, 1:10:29 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  4mI0sYfq4at2jpn3AAAx
+2/28/2025, 1:10:29 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  ko2_cd_cuoCKN6EtAAAz
+2/28/2025, 1:10:31 PM [debug]  Message :  CLIENT CONNECTED with ID -  TiNKka8s7nDIaeN5AAA1
+2/28/2025, 1:10:31 PM [debug]  Message :  CLIENT CONNECTED with ID -  FEpYIv9QaxzlTmhiAAA3
+2/28/2025, 1:10:33 PM [debug]  Message :  CLIENT CONNECTED with ID -  qKmYc7-yhIMuDMD1AAA5
+2/28/2025, 1:28:10 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  TiNKka8s7nDIaeN5AAA1
+2/28/2025, 1:28:10 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  FEpYIv9QaxzlTmhiAAA3
+2/28/2025, 1:28:10 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  qKmYc7-yhIMuDMD1AAA5
+2/28/2025, 1:28:12 PM [debug]  Message :  CLIENT CONNECTED with ID -  mKWZ5DJ9upY_OBx3AAA7
+2/28/2025, 1:28:12 PM [debug]  Message :  CLIENT CONNECTED with ID -  0_WjWAvC_MR5ud4nAAA9
+2/28/2025, 1:28:14 PM [debug]  Message :  CLIENT CONNECTED with ID -  WoLwG9wyIiYYjlRaAAA_
+2/28/2025, 2:47:04 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  mKWZ5DJ9upY_OBx3AAA7
+2/28/2025, 2:47:04 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  0_WjWAvC_MR5ud4nAAA9
+2/28/2025, 2:47:04 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  WoLwG9wyIiYYjlRaAAA_
+2/28/2025, 2:47:05 PM [debug]  Message :  CLIENT CONNECTED with ID -  TsateFVYyCYY8kZVAABB
+2/28/2025, 2:47:05 PM [debug]  Message :  CLIENT CONNECTED with ID -  NOmV7YbFIW-e0XcyAABD
+2/28/2025, 2:47:07 PM [debug]  Message :  CLIENT CONNECTED with ID -  RAX_wr5C791Am8Y6AABF
+2/28/2025, 3:02:59 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  TsateFVYyCYY8kZVAABB
+2/28/2025, 3:02:59 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  NOmV7YbFIW-e0XcyAABD
+2/28/2025, 3:02:59 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  RAX_wr5C791Am8Y6AABF
+2/28/2025, 3:03:01 PM [debug]  Message :  CLIENT CONNECTED with ID -  9qhkQMG5GNjuTzyWAABH
+2/28/2025, 3:03:01 PM [debug]  Message :  CLIENT CONNECTED with ID -  FbKk3xR4O1a-FO18AABJ
+2/28/2025, 3:03:03 PM [debug]  Message :  CLIENT CONNECTED with ID -  ryjn9OWcMgEqd6FwAABL
+2/28/2025, 3:19:39 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  ryjn9OWcMgEqd6FwAABL
+2/28/2025, 3:19:42 PM [debug]  Message :  CLIENT CONNECTED with ID -  v94cQObxEJUnknCqAABN
+2/28/2025, 3:35:50 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  9qhkQMG5GNjuTzyWAABH
+2/28/2025, 3:35:50 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  FbKk3xR4O1a-FO18AABJ
+2/28/2025, 3:35:50 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  v94cQObxEJUnknCqAABN
+2/28/2025, 3:35:52 PM [debug]  Message :  CLIENT CONNECTED with ID -  i0W192ozAm5xKM7MAABP
+2/28/2025, 3:35:52 PM [debug]  Message :  CLIENT CONNECTED with ID -  V5H_jCETihtZShPBAABR
+2/28/2025, 3:35:52 PM [debug]  Message :  CLIENT CONNECTED with ID -  _g9RKrJ6GC4jE-eUAABT
+2/28/2025, 4:55:13 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  V5H_jCETihtZShPBAABR
+2/28/2025, 4:55:13 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  _g9RKrJ6GC4jE-eUAABT
+2/28/2025, 4:55:13 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  i0W192ozAm5xKM7MAABP
+2/28/2025, 4:55:16 PM [debug]  Message :  CLIENT CONNECTED with ID -  l3CUU2nwVCs_bE5iAABV
+2/28/2025, 4:55:16 PM [debug]  Message :  CLIENT CONNECTED with ID -  f-gErGiOZePEYfsJAABX
+2/28/2025, 4:55:17 PM [debug]  Message :  CLIENT CONNECTED with ID -  r7tfxQNy2ZE4WADWAABZ
+2/28/2025, 5:07:10 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  l3CUU2nwVCs_bE5iAABV
+2/28/2025, 5:07:10 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  f-gErGiOZePEYfsJAABX
+2/28/2025, 5:07:10 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  r7tfxQNy2ZE4WADWAABZ
+2/28/2025, 5:07:11 PM [debug]  Message :  CLIENT CONNECTED with ID -  rC9okZvukbkkyYXvAABb
+2/28/2025, 5:07:11 PM [debug]  Message :  CLIENT CONNECTED with ID -  fRh-W69R_jFE17XgAABd
+2/28/2025, 5:07:14 PM [debug]  Message :  CLIENT CONNECTED with ID -  _6bTol-RfoDa8dAeAABf
+2/28/2025, 5:24:45 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  rC9okZvukbkkyYXvAABb
+2/28/2025, 5:24:45 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  fRh-W69R_jFE17XgAABd
+2/28/2025, 5:24:45 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  _6bTol-RfoDa8dAeAABf
+2/28/2025, 5:24:47 PM [debug]  Message :  CLIENT CONNECTED with ID -  4Nv7pPVlxpcfU_I6AABh
+2/28/2025, 5:24:47 PM [debug]  Message :  CLIENT CONNECTED with ID -  Xssm6tKedwSnK_7TAABj
+2/28/2025, 5:24:49 PM [debug]  Message :  CLIENT CONNECTED with ID -  JO0huY3v1m_CLzE1AABl
+2/28/2025, 5:40:36 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  4Nv7pPVlxpcfU_I6AABh
+2/28/2025, 5:40:36 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  Xssm6tKedwSnK_7TAABj
+2/28/2025, 5:40:36 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  JO0huY3v1m_CLzE1AABl
+2/28/2025, 5:40:38 PM [debug]  Message :  CLIENT CONNECTED with ID -  14Eb7nR3wsjKFJjYAABn
+2/28/2025, 5:40:38 PM [debug]  Message :  CLIENT CONNECTED with ID -  7fVNfvZ6G3NB7qE-AABp
+2/28/2025, 5:40:38 PM [debug]  Message :  CLIENT CONNECTED with ID -  vNnEuy85BjPSKcejAABr
+2/28/2025, 6:25:30 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  14Eb7nR3wsjKFJjYAABn
+2/28/2025, 6:25:30 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  7fVNfvZ6G3NB7qE-AABp
+2/28/2025, 6:25:30 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  vNnEuy85BjPSKcejAABr
+2/28/2025, 6:25:31 PM [debug]  Message :  CLIENT CONNECTED with ID -  Axu1LHGankKSfle3AABt
+2/28/2025, 6:25:32 PM [debug]  Message :  CLIENT CONNECTED with ID -  j5xEj5ykV0Zw4Yj-AABv
+2/28/2025, 6:25:33 PM [debug]  Message :  CLIENT CONNECTED with ID -  ctedunOQmMJ3hE0UAABx
+2/28/2025, 6:34:37 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  Axu1LHGankKSfle3AABt
+2/28/2025, 6:34:37 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  j5xEj5ykV0Zw4Yj-AABv
+2/28/2025, 6:34:37 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  ctedunOQmMJ3hE0UAABx
+2/28/2025, 6:34:38 PM [debug]  Message :  CLIENT CONNECTED with ID -  MI0FRaKnQPLSKrzyAABz
+2/28/2025, 6:34:39 PM [debug]  Message :  CLIENT CONNECTED with ID -  zBMrvUmhN_nJhk4GAAB1
+2/28/2025, 6:34:39 PM [debug]  Message :  CLIENT CONNECTED with ID -  R50L-Lu9FNVZIWIfAAB3
+2/28/2025, 6:51:06 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  MI0FRaKnQPLSKrzyAABz
+2/28/2025, 6:51:06 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  zBMrvUmhN_nJhk4GAAB1
+2/28/2025, 6:51:06 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  R50L-Lu9FNVZIWIfAAB3
+2/28/2025, 6:51:07 PM [debug]  Message :  CLIENT CONNECTED with ID -  2thZ9grtcQVunUvpAAB5
+2/28/2025, 6:51:08 PM [debug]  Message :  CLIENT CONNECTED with ID -  Go0upX2T43WmiRQ4AAB7
+2/28/2025, 6:51:10 PM [debug]  Message :  CLIENT CONNECTED with ID -  cxewQnT9B9QD9zt7AAB9
+2/28/2025, 7:07:53 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  2thZ9grtcQVunUvpAAB5
+2/28/2025, 7:07:53 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  Go0upX2T43WmiRQ4AAB7
+2/28/2025, 7:07:53 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  cxewQnT9B9QD9zt7AAB9
+2/28/2025, 7:07:54 PM [debug]  Message :  CLIENT CONNECTED with ID -  4oGc96l05z0yoMtNAAB_
+2/28/2025, 7:07:55 PM [debug]  Message :  CLIENT CONNECTED with ID -  y_QuttlsR4hjazr0AACB
+2/28/2025, 7:07:58 PM [debug]  Message :  CLIENT CONNECTED with ID -  7LTBSenfP-MnzdG5AACD
+2/28/2025, 7:08:13 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  4oGc96l05z0yoMtNAAB_
+2/28/2025, 7:08:13 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  y_QuttlsR4hjazr0AACB
+2/28/2025, 7:08:15 PM [debug]  Message :  CLIENT CONNECTED with ID -  FtNcEJwQYgbhd_nBAACF
+2/28/2025, 7:08:15 PM [debug]  Message :  CLIENT CONNECTED with ID -  Hiv2ElZUlOMDA6zcAACH
+2/28/2025, 8:25:43 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  7LTBSenfP-MnzdG5AACD
+2/28/2025, 8:25:46 PM [debug]  Message :  CLIENT CONNECTED with ID -  vVn3CKnxQSoert1DAACJ
+2/28/2025, 9:05:21 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  FtNcEJwQYgbhd_nBAACF
+2/28/2025, 9:05:21 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  Hiv2ElZUlOMDA6zcAACH
+2/28/2025, 9:05:21 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  vVn3CKnxQSoert1DAACJ
+2/28/2025, 9:05:22 PM [debug]  Message :  CLIENT CONNECTED with ID -  c591r30trrcQ0sjfAACL
+2/28/2025, 9:05:22 PM [debug]  Message :  CLIENT CONNECTED with ID -  aJZU-UgdlxZ193H2AACN
+2/28/2025, 9:05:24 PM [debug]  Message :  CLIENT CONNECTED with ID -  tgiWQIvYAvXPPYgtAACP
+2/28/2025, 9:18:20 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  tgiWQIvYAvXPPYgtAACP
+2/28/2025, 9:18:22 PM [debug]  Message :  CLIENT CONNECTED with ID -  vuRGFsiIN5clqATBAACR
+2/28/2025, 9:28:14 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  c591r30trrcQ0sjfAACL
+2/28/2025, 9:28:14 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  aJZU-UgdlxZ193H2AACN
+2/28/2025, 9:28:14 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  vuRGFsiIN5clqATBAACR
+2/28/2025, 9:28:16 PM [debug]  Message :  CLIENT CONNECTED with ID -  W6y0ZVpSmpcqTqQJAACT
+2/28/2025, 9:28:16 PM [debug]  Message :  CLIENT CONNECTED with ID -  t3S3vfJiD99xOyyZAACV
+2/28/2025, 9:28:19 PM [debug]  Message :  CLIENT CONNECTED with ID -  i74dL8oHrzjA_854AACX
+2/28/2025, 9:38:19 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  W6y0ZVpSmpcqTqQJAACT
+2/28/2025, 9:38:19 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  t3S3vfJiD99xOyyZAACV
+2/28/2025, 9:38:19 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  i74dL8oHrzjA_854AACX
+2/28/2025, 9:38:20 PM [debug]  Message :  CLIENT CONNECTED with ID -  58PFtbQbogsus4TVAACZ
+2/28/2025, 9:38:21 PM [debug]  Message :  CLIENT CONNECTED with ID -  sg7DMp76gSvquM4KAACb
+2/28/2025, 9:38:21 PM [debug]  Message :  CLIENT CONNECTED with ID -  -r0FLzT0kiAFrOTXAACd
+2/28/2025, 9:39:58 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  58PFtbQbogsus4TVAACZ
+2/28/2025, 9:39:58 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  sg7DMp76gSvquM4KAACb
+2/28/2025, 9:39:58 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  -r0FLzT0kiAFrOTXAACd
+2/28/2025, 9:39:59 PM [debug]  Message :  CLIENT CONNECTED with ID -  dGOjIwhM8-1QkumWAACf
+2/28/2025, 9:40:00 PM [debug]  Message :  CLIENT CONNECTED with ID -  wZXj2XIr5J8MxqcdAACh
+2/28/2025, 9:40:00 PM [debug]  Message :  CLIENT CONNECTED with ID -  m15QgTRppc8lxLXZAACj
+2/28/2025, 9:55:43 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  dGOjIwhM8-1QkumWAACf
+2/28/2025, 9:55:43 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  wZXj2XIr5J8MxqcdAACh
+2/28/2025, 9:55:43 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  m15QgTRppc8lxLXZAACj
+2/28/2025, 9:55:45 PM [debug]  Message :  CLIENT CONNECTED with ID -  GB32SwTof6uoJ91dAACl
+2/28/2025, 9:55:45 PM [debug]  Message :  CLIENT CONNECTED with ID -  SbJuxJccZRoqR_HYAACn
+2/28/2025, 9:55:45 PM [debug]  Message :  CLIENT CONNECTED with ID -  vd9GDVzBwQWpVv8FAACp
+2/28/2025, 10:31:25 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  GB32SwTof6uoJ91dAACl
+2/28/2025, 10:31:25 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  SbJuxJccZRoqR_HYAACn
+2/28/2025, 10:31:25 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  vd9GDVzBwQWpVv8FAACp
+2/28/2025, 10:31:26 PM [debug]  Message :  CLIENT CONNECTED with ID -  i4RJ1MkPvhcUVZmfAACr
+2/28/2025, 10:31:26 PM [debug]  Message :  CLIENT CONNECTED with ID -  dMbXwPzGkbxy2OXsAACt
+2/28/2025, 10:31:28 PM [debug]  Message :  CLIENT CONNECTED with ID -  nZsf1j4D1ahpl1-RAACv
+2/28/2025, 10:37:09 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  i4RJ1MkPvhcUVZmfAACr
+2/28/2025, 10:37:09 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  dMbXwPzGkbxy2OXsAACt
+2/28/2025, 10:37:09 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  nZsf1j4D1ahpl1-RAACv
+2/28/2025, 10:37:11 PM [debug]  Message :  CLIENT CONNECTED with ID -  VHfKVNBPhjpVdHUWAACx
+2/28/2025, 10:37:11 PM [debug]  Message :  CLIENT CONNECTED with ID -  tmW27eda0HO4iO2gAACz
+2/28/2025, 10:37:11 PM [debug]  Message :  CLIENT CONNECTED with ID -  0O8G5C_8pijfSboSAAC1
+2/28/2025, 10:52:56 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  VHfKVNBPhjpVdHUWAACx
+2/28/2025, 10:52:56 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  tmW27eda0HO4iO2gAACz
+2/28/2025, 10:52:56 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  0O8G5C_8pijfSboSAAC1
+2/28/2025, 10:52:58 PM [debug]  Message :  CLIENT CONNECTED with ID -  5c3r9pT1O1yXVvmqAAC3
+2/28/2025, 10:52:58 PM [debug]  Message :  CLIENT CONNECTED with ID -  L_zOpMOHUha-uo3oAAC5
+2/28/2025, 10:53:00 PM [debug]  Message :  CLIENT CONNECTED with ID -  xDpZkuVycOqhFUPiAAC7
+2/28/2025, 11:40:47 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  5c3r9pT1O1yXVvmqAAC3
+2/28/2025, 11:40:47 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  L_zOpMOHUha-uo3oAAC5
+2/28/2025, 11:40:48 PM [debug]  Message :  CLIENT CONNECTED with ID -  LMW6HZ92uaz5DVpTAAC9
+2/28/2025, 11:40:49 PM [debug]  Message :  CLIENT CONNECTED with ID -  SUsJPm9k-7cGweiuAAC_
+2/28/2025, 11:54:42 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  LMW6HZ92uaz5DVpTAAC9
+2/28/2025, 11:54:42 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  SUsJPm9k-7cGweiuAAC_
+2/28/2025, 11:54:43 PM [debug]  Message :  CLIENT CONNECTED with ID -  UGnyRncAIUheAuNMAADB
+2/28/2025, 11:54:44 PM [debug]  Message :  CLIENT CONNECTED with ID -  eC1S5DfxZuvrHOk2AADD
+3/1/2025, 12:46:57 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  UGnyRncAIUheAuNMAADB
+3/1/2025, 12:46:57 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  eC1S5DfxZuvrHOk2AADD
+3/1/2025, 12:46:59 AM [debug]  Message :  CLIENT CONNECTED with ID -  Dab6CYBrJD7I1OnoAADF
+3/1/2025, 12:46:59 AM [debug]  Message :  CLIENT CONNECTED with ID -  ufdfec4NSYV9YaQpAADH
+3/1/2025, 11:25:25 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  Dab6CYBrJD7I1OnoAADF
+3/1/2025, 11:25:25 PM [warn]  Message :  CLIENT DISCONNECTED with ID -  ufdfec4NSYV9YaQpAADH
+3/1/2025, 11:25:26 PM [debug]  Message :  CLIENT CONNECTED with ID -  k2OXIqP6WztQk09CAADJ
+3/1/2025, 11:25:26 PM [debug]  Message :  CLIENT CONNECTED with ID -  9H5gV1fu9Xz0Rqv7AADL

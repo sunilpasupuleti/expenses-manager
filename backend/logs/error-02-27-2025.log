@@ -1,0 +1,26 @@
+2/28/2025, 2:12:31 AM [error]  Message :  Error exchanging public token: AxiosError: Request failed with status code 400
+2/28/2025, 2:14:45 AM [error]  Message :  Error exchanging public token: AxiosError: Request failed with status code 400
+2/28/2025, 2:17:16 AM [error]  Message :  Failed to exchance public token AxiosError: Request failed with status code 400
+2/28/2025, 2:19:15 AM [error]  Message :  provided public token is in an invalid format. expected format: public-<environment>-<identifier>
+2/28/2025, 5:51:16 AM [error]  Message :  Error generating link token: AxiosError: Request failed with status code 400
+2/28/2025, 5:51:41 AM [error]  Message :  Error generating link token: AxiosError: Request failed with status code 400
+2/28/2025, 5:52:43 AM [error]  Message :  a user already exists for this client user id
+2/28/2025, 6:03:03 AM [error]  Message :  a user already exists for this client user id
+2/28/2025, 6:18:24 AM [error]  Message :  Failed to generate link token ReferenceError: s is not defined
+2/28/2025, 6:18:54 AM [error]  Message :  the following required fields are missing: user_token
+2/28/2025, 6:21:33 AM [error]  Message :  a user already exists for this client user id
+2/28/2025, 6:24:53 AM [error]  Message :  a user already exists for this client user id
+2/28/2025, 6:28:49 AM [error]  Message :  the following required fields are missing: user_token
+2/28/2025, 6:36:32 AM [error]  Message :  unauthorized, there is no access token but refesh token
+2/28/2025, 6:36:43 AM [error]  Message :  Error in verifying token {"code":"auth/user-not-found","message":"There is no user record corresponding to the provided identifier."}
+2/28/2025, 6:44:14 AM [error]  Message :  the following required fields are missing: user, user.client_user_id
+2/28/2025, 6:45:28 AM [error]  Message :  the following required fields are missing: user, user.client_user_id
+2/28/2025, 6:45:55 AM [error]  Message :  the following required fields are missing: user, user.client_user_id
+2/28/2025, 7:19:18 AM [error]  Message :  Failed to exchance public token error
+2/28/2025, 7:19:48 AM [error]  Message :  Failed to exchance public token error
+2/28/2025, 7:20:04 AM [error]  Message :  Failed to exchance public token error
+2/28/2025, 7:20:34 AM [error]  Message :  Failed to exchance public token error
+2/28/2025, 7:21:49 AM [error]  Message :  Failed to exchance public token error
+2/28/2025, 7:22:35 AM [error]  Message :  Failed to exchance public token error
+2/28/2025, 7:29:49 AM [error]  Message :  Failed to exchance public token error
+2/28/2025, 7:30:35 AM [error]  Message :  Failed to exchance public token error

@@ -1,0 +1,59 @@
+name: Backend Prod CI/CD
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Set up GPG
+        run: |
+          echo "$GPG_PRIVATE_KEY" | base64 -d > private.key
+          gpg --import private.key
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
+      - name: Decrypt .env.production.enc
+        run: |
+          gpg --quiet --batch --yes --decrypt --passphrase="$GPG_PASSPHRASE" \
+          --output backend/config/.env.production backend/config/.env.production.enc
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Decrypt expensesmanager.json
+        run: |
+          gpg --quiet --batch --yes --decrypt --passphrase="$GPG_PASSPHRASE" \
+          --output backend/config/expensesmanager.json backend/config/expensesmanager.json.enc
+        env:
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Upload .env.production to VPS
+        run: |
+          sshpass -p "${{ secrets.PASS_WORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.HOST_NAME }} "mkdir -p /expenses-manager/prod/backend/config"
+          sshpass -p "${{ secrets.PASS_WORD }}" scp -o StrictHostKeyChecking=no backend/config/.env.production ${{ secrets.HOST_NAME }}:/expenses-manager/prod/backend/config/.env.production
+
+      - name: Upload expensesmanager.json to VPS
+        run: |
+          sshpass -p "${{ secrets.PASS_WORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.HOST_NAME }} "mkdir -p /expenses-manager/prod/backend/config"
+          sshpass -p "${{ secrets.PASS_WORD }}" scp backend/config/expensesmanager.json ${{ secrets.HOST_NAME }}:/expenses-manager/prod/backend/config/expensesmanager.json
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_TOKEN }}
+
+      - name: Build Docker image (prod)
+        run: docker build -f backend/Dockerfile.prod -t expenses-manager-backend-prod .
+
+      - name: Tag Docker image
+        run: docker tag expenses-manager-backend-prod sunilpasupuleti/expenses-manager-backend-prod:latest
+
+      - name: Push image to Docker Hub
+        run: docker push sunilpasupuleti/expenses-manager-backend-prod:latest

@@ -1,0 +1,9 @@
+*.css linguist-detectable=false
+*.html linguist-detectable=false
+*.js linguist-detectable=false
+*.scss linguist-detectable=false
+*.java linguist-detectable=true
+*.c linguist-detectable=false
+*.cc linguist-detectable=false
+*.ipynb linguist-detectable=false
+*.mm linguist-detectable=true

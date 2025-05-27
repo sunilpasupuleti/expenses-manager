@@ -1,0 +1,5 @@
+::1 - - [08/Apr/2025:14:28:33 +0000] "POST /bank-account/publicTokenWebhook?uid=iyWQr1RjYGYoZgnuevZ4p6zVtuw1 HTTP/1.1" 400 36 "-" "Go-http-client/2.0"
+::1 - - [08/Apr/2025:14:34:29 +0000] "POST /bank-account/publicTokenWebhook?uid=iyWQr1RjYGYoZgnuevZ4p6zVtuw1 HTTP/1.1" 400 44 "-" "Go-http-client/2.0"
+::1 - - [08/Apr/2025:14:34:29 +0000] "POST /bank-account/publicTokenWebhook?uid=iyWQr1RjYGYoZgnuevZ4p6zVtuw1 HTTP/1.1" 400 44 "-" "Go-http-client/2.0"
+::1 - - [08/Apr/2025:14:34:29 +0000] "POST /bank-account/publicTokenWebhook?uid=iyWQr1RjYGYoZgnuevZ4p6zVtuw1 HTTP/1.1" 400 44 "-" "Go-http-client/2.0"
+::1 - - [08/Apr/2025:14:34:30 +0000] "POST /bank-account/publicTokenWebhook?uid=iyWQr1RjYGYoZgnuevZ4p6zVtuw1 HTTP/1.1" 400 44 "-" "Go-http-client/2.0"

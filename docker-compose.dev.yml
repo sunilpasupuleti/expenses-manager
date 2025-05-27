@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: expenses-manager-dev-backend
+    container_name: expenses-manager-dev-backend
+    restart: always
+    volumes:
+      - ./backend:/expenses-manager/backend
+      - /expenses-manager/backend/node_modules
+    ports:
+      - "3100:3100"
+    networks:
+      - expenses-manager-dev
+
+networks:
+  expenses-manager-dev:
+    driver: bridge
+
+volumes:
+  node_modules:
+  web-root:
+    driver: local

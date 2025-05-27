@@ -1,0 +1,14 @@
+FROM node:18-alpine
+
+WORKDIR /expenses-manager/prod/backend
+
+COPY package*.json ./
+
+COPY . .
+
+RUN npm install -f --silent
+
+EXPOSE 3000
+
+CMD ["npm","run","prod"]
+ 

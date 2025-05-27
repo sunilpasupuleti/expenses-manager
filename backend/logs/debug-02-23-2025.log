@@ -1,0 +1,240 @@
+2/24/2025, 6:58:39 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 6:58:40 AM [info]  Message :  Enabling daily backup for RAYAPUDI NAGA GANESH MANIKANTA - Asia/Kolkata
+2/24/2025, 6:58:40 AM [info]  Message :  -----------------------------------
+2/24/2025, 6:58:40 AM [info]  Message :  Enabling daily backup for Swetha Vijayakumar - Asia/Kolkata
+2/24/2025, 6:58:40 AM [info]  Message :  -----------------------------------
+2/24/2025, 6:58:40 AM [info]  Message :  Enabling daily reminder for +919413008003 at time - 20:00 - Asia/Kolkata
+2/24/2025, 6:58:40 AM [info]  Message :  Enabling daily backup for +919413008003 - Asia/Kolkata
+2/24/2025, 6:58:40 AM [info]  Message :  -----------------------------------
+2/24/2025, 6:58:40 AM [info]  Message :  Enabling daily backup for Tree2Box - Asia/Kolkata
+2/24/2025, 6:58:40 AM [info]  Message :  -----------------------------------
+2/24/2025, 6:58:40 AM [info]  Message :  Enabling daily backup for Chun Guan Neo - Asia/Singapore
+2/24/2025, 6:58:40 AM [info]  Message :  -----------------------------------
+2/24/2025, 6:58:40 AM [info]  Message :  Enabling daily reminder for Sunil Kumar at time - 09:56 - America/Toronto
+2/24/2025, 6:58:40 AM [info]  Message :  Enabling daily backup for Sunil Kumar - America/Toronto
+2/24/2025, 6:58:40 AM [info]  Message :  -----------------------------------
+2/24/2025, 6:58:40 AM [info]  Message :  Enabling daily reminder for +919999999999 at time - 15:51 - America/Toronto
+2/24/2025, 6:58:40 AM [info]  Message :  Enabling daily reminder for +16474589275 at time - 20:29 - America/Toronto
+2/24/2025, 6:58:40 AM [info]  Message :  Enabling daily backup for +16474589275 - America/Toronto
+2/24/2025, 6:58:40 AM [info]  Message :  -----------------------------------
+2/24/2025, 6:58:40 AM [info]  Message :  Enabling daily reminder for bhaskar.cheerup@gmail.com at time - 09:43 - Asia/Calcutta
+2/24/2025, 6:58:40 AM [info]  Message :  Enabling daily backup for bhaskar.cheerup@gmail.com - Asia/Calcutta
+2/24/2025, 6:58:40 AM [info]  Message :  -----------------------------------
+2/24/2025, 6:58:40 AM [info]  Message :  Enabling daily backup for +918892249434 - Asia/Kolkata
+2/24/2025, 6:58:40 AM [info]  Message :  -----------------------------------
+2/24/2025, 6:58:40 AM [info]  Message :  Enabling daily backup for keithleuterio06@gmail.com - Europe/Malta
+2/24/2025, 6:58:40 AM [info]  Message :  -----------------------------------
+2/24/2025, 6:58:43 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/24/2025, 6:59:00 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 6:59:04 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/24/2025, 6:59:12 AM [error]  Message :  unauthorized, there is no access token but refesh token
+2/24/2025, 6:59:16 AM [debug]  Message :  CLIENT CONNECTED with ID -  DHoYZc5inBM0RtBEAAAB
+2/24/2025, 6:59:20 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  DHoYZc5inBM0RtBEAAAB
+2/24/2025, 6:59:20 AM [debug]  Message :  CLIENT CONNECTED with ID -  Y3TalALDSCzBwtUNAAAD
+2/24/2025, 7:00:17 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:00:21 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/24/2025, 7:00:21 AM [debug]  Message :  CLIENT CONNECTED with ID -  lHZ3LSd7f9Bjtev7AAAB
+2/24/2025, 7:13:34 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:13:36 AM [debug]  Message :  CLIENT CONNECTED with ID -  WVZYNG4qoVJ6-XfhAAAB
+2/24/2025, 7:13:40 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/24/2025, 7:14:22 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:14:23 AM [debug]  Message :  CLIENT CONNECTED with ID -  unumjwp4TctwDloRAAAB
+2/24/2025, 7:14:28 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/24/2025, 7:16:32 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:16:33 AM [debug]  Message :  CLIENT CONNECTED with ID -  WfY_B1IpcigIV7e2AAAB
+2/24/2025, 7:16:37 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/24/2025, 7:16:46 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:16:46 AM [debug]  Message :  CLIENT CONNECTED with ID -  dBkAEk51qonZq1hPAAAB
+2/24/2025, 7:16:51 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/24/2025, 7:22:19 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:22:20 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:22:22 AM [debug]  Message :  CLIENT CONNECTED with ID -  TB6D74809ceqnmCmAAAB
+2/24/2025, 7:22:25 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/24/2025, 7:24:20 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:24:21 AM [debug]  Message :  CLIENT CONNECTED with ID -  qx7a96q8bhHnrd-tAAAB
+2/24/2025, 7:24:25 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:24:26 AM [debug]  Message :  CLIENT CONNECTED with ID -  z13v8FG0P9Pz6hSCAAAB
+2/24/2025, 7:24:29 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:24:29 AM [debug]  Message :  CLIENT CONNECTED with ID -  kCNSm-lalwvUyRshAAAB
+2/24/2025, 7:24:35 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/24/2025, 7:25:07 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:25:07 AM [debug]  Message :  CLIENT CONNECTED with ID -  5Z_7vyINkrYPnNqUAAAB
+2/24/2025, 7:25:13 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/24/2025, 7:26:04 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:26:05 AM [debug]  Message :  CLIENT CONNECTED with ID -  hJxjHMTQFwQTvJI9AAAB
+2/24/2025, 7:26:10 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/24/2025, 7:29:29 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:29:30 AM [debug]  Message :  CLIENT CONNECTED with ID -  qs7mYkU2tTeO5sWVAAAB
+2/24/2025, 7:29:34 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/24/2025, 7:29:40 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:29:41 AM [debug]  Message :  CLIENT CONNECTED with ID -  tD3zFga7d2jlhb93AAAB
+2/24/2025, 7:29:46 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/24/2025, 7:31:33 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:31:33 AM [debug]  Message :  CLIENT CONNECTED with ID -  _DwWKMWb8J51vyvTAAAB
+2/24/2025, 7:31:38 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/24/2025, 7:31:41 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:31:42 AM [debug]  Message :  CLIENT CONNECTED with ID -  yJLsVuNJkmI3auncAAAB
+2/24/2025, 7:31:47 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/24/2025, 7:33:09 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:33:10 AM [debug]  Message :  CLIENT CONNECTED with ID -  siZlHbwEoJgsSMRlAAAB
+2/24/2025, 7:33:15 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/24/2025, 7:34:41 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:34:41 AM [debug]  Message :  CLIENT CONNECTED with ID -  jyTtRVmeFZyork4zAAAB
+2/24/2025, 7:34:42 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:34:43 AM [debug]  Message :  CLIENT CONNECTED with ID -  8hGFFIKJGtvn-eDQAAAB
+2/24/2025, 7:34:46 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:34:47 AM [debug]  Message :  CLIENT CONNECTED with ID -  SjFJJKlQayHoKupkAAAB
+2/24/2025, 7:34:53 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/24/2025, 7:34:55 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:34:56 AM [debug]  Message :  CLIENT CONNECTED with ID -  qqPRPnjuX3mBoDrtAAAB
+2/24/2025, 7:35:00 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/24/2025, 7:35:10 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:35:11 AM [debug]  Message :  CLIENT CONNECTED with ID -  iXJT7e30id_Ab4XRAAAB
+2/24/2025, 7:35:15 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/24/2025, 7:35:15 AM [debug]  Message :  CLIENT CONNECTED with ID -  -joWUBNdl0RmQEFwAAAD
+2/24/2025, 7:35:23 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  -joWUBNdl0RmQEFwAAAD
+2/24/2025, 7:35:24 AM [debug]  Message :  CLIENT CONNECTED with ID -  QbxKmg7zXIP0I_M7AAAF
+2/24/2025, 7:36:41 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:36:42 AM [debug]  Message :  CLIENT CONNECTED with ID -  taWc2RHiTn8cCIC-AAAB
+2/24/2025, 7:36:42 AM [debug]  Message :  CLIENT CONNECTED with ID -  O0E7yUrgzN8S_DPuAAAD
+2/24/2025, 7:36:46 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/24/2025, 7:36:55 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:36:56 AM [debug]  Message :  CLIENT CONNECTED with ID -  gkvOR2u7ExpOSPfuAAAB
+2/24/2025, 7:36:56 AM [debug]  Message :  CLIENT CONNECTED with ID -  Fw1Os1FEs6QG7EpKAAAD
+2/24/2025, 7:37:02 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/24/2025, 7:37:13 AM [error]  Message :   Error occured while creating account deletion request to the database hold on
+2/24/2025, 7:37:21 AM [error]  Message :  Error in sending email Error: Can't send mail - all recipients were rejected: 553 5.7.1 <support@expensesmaager.app>: Sender address rejected: not owned by user support@expensesmanager.app
+2/24/2025, 7:37:55 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:37:56 AM [debug]  Message :  CLIENT CONNECTED with ID -  VEepo5rIpIrYDQi2AAAB
+2/24/2025, 7:37:57 AM [debug]  Message :  CLIENT CONNECTED with ID -  W2znGiv6kfm9FniKAAAD
+2/24/2025, 7:38:00 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/24/2025, 7:38:02 AM [error]  Message :   Error occured while creating account deletion request to the database hold on
+2/24/2025, 7:39:12 AM [debug]  Message :  CLIENT CONNECTED with ID -  K_0oy7bJrZ_y5TXQAAAF
+2/24/2025, 7:39:13 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  K_0oy7bJrZ_y5TXQAAAF
+2/24/2025, 7:39:45 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:39:45 AM [debug]  Message :  CLIENT CONNECTED with ID -  FNxsRiOSf1AnUi2qAAAB
+2/24/2025, 7:39:45 AM [debug]  Message :  CLIENT CONNECTED with ID -  b7D0C-WRN3rr0U_eAAAD
+2/24/2025, 7:39:50 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/24/2025, 7:39:53 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:39:53 AM [debug]  Message :  CLIENT CONNECTED with ID -  o1owy-1noQHkhbAkAAAB
+2/24/2025, 7:39:54 AM [debug]  Message :  CLIENT CONNECTED with ID -  yVpHY1Qr9b_jbkfGAAAD
+2/24/2025, 7:39:58 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:39:58 AM [debug]  Message :  CLIENT CONNECTED with ID -  VX3aeNiycZqUPnAuAAAB
+2/24/2025, 7:39:59 AM [debug]  Message :  CLIENT CONNECTED with ID -  Tb7DC9YnuHShX0f-AAAD
+2/24/2025, 7:40:03 AM [error]  Message :   Error occured while creating account deletion request to the database hold on
+2/24/2025, 7:40:04 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/24/2025, 7:40:08 AM [info]  Message :  Success sending email [object Object]
+2/24/2025, 7:40:59 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 7:40:59 AM [debug]  Message :  CLIENT CONNECTED with ID -  YMUe1Phecsa93V1qAAAB
+2/24/2025, 7:41:00 AM [debug]  Message :  CLIENT CONNECTED with ID -  A8gX6EL7MNTadKE1AAAD
+2/24/2025, 7:41:04 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/24/2025, 7:41:33 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  YMUe1Phecsa93V1qAAAB
+2/24/2025, 7:41:33 AM [debug]  Message :  CLIENT CONNECTED with ID -  OKOJO2uEYFBsfHv1AAAF
+2/24/2025, 7:41:41 AM [error]  Message :   Error occured while creating account deletion request to the database hold on
+2/24/2025, 7:41:44 AM [info]  Message :  Success sending email {"accepted":["sunil.pandvd41@gmail.com"],"rejected":[],"ehlo":["PIPELINING","SIZE 104857600","ETRN","AUTH PLAIN LOGIN","AUTH=PLAIN LOGIN","ENHANCEDSTATUSCODES","8BITMIME","DSN"],"envelopeTime":739,"messageTime":1029,"messageSize":1148,"response":"250 2.0.0 Ok: queued as 75B6980065","envelope":{"from":"support@expensesmanager.app","to":["sunil.pandvd41@gmail.com"]},"messageId":"<71cc7f68-fe68-7779-0222-6689c771361f@expensesmanager.app>"}
+2/24/2025, 7:42:31 AM [error]  Message :   Error occured while creating account deletion request to the database hold on
+2/24/2025, 7:42:36 AM [info]  Message :  Success sending email {"accepted":["sunil.pandvd22@gmail.com"],"rejected":[],"ehlo":["PIPELINING","SIZE 104857600","ETRN","AUTH PLAIN LOGIN","AUTH=PLAIN LOGIN","ENHANCEDSTATUSCODES","8BITMIME","DSN"],"envelopeTime":1042,"messageTime":1572,"messageSize":1144,"response":"250 2.0.0 Ok: queued as 9FE5A8005E","envelope":{"from":"support@expensesmanager.app","to":["sunil.pandvd22@gmail.com"]},"messageId":"<f51e2c86-ff89-8016-7b03-4ff5742884a3@expensesmanager.app>"}
+2/24/2025, 8:06:54 AM [error]  Message :   Error occured while creating account deletion request to the database hold on
+2/24/2025, 8:07:00 AM [info]  Message :  Success sending email {"accepted":["sunil.pandvd22@gmail.com"],"rejected":[],"ehlo":["PIPELINING","SIZE 104857600","ETRN","AUTH PLAIN LOGIN","AUTH=PLAIN LOGIN","ENHANCEDSTATUSCODES","8BITMIME","DSN"],"envelopeTime":2321,"messageTime":1621,"messageSize":1144,"response":"250 2.0.0 Ok: queued as 7043D9296D","envelope":{"from":"support@expensesmanager.app","to":["sunil.pandvd22@gmail.com"]},"messageId":"<0d145d51-d27a-d6d8-e256-e49d5dbf16ac@expensesmanager.app>"}
+2/24/2025, 8:08:40 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 8:08:40 AM [debug]  Message :  CLIENT CONNECTED with ID -  F4UX6BF2DEbhQu0_AAAB
+2/24/2025, 8:08:41 AM [debug]  Message :  CLIENT CONNECTED with ID -  LDC5Yeu0tGjic7WxAAAD
+2/24/2025, 8:08:45 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/24/2025, 8:08:55 AM [info]  Message :  Success sending email {"accepted":["sunil.pandvd22@gmail.com"],"rejected":[],"ehlo":["PIPELINING","SIZE 104857600","ETRN","AUTH PLAIN LOGIN","AUTH=PLAIN LOGIN","ENHANCEDSTATUSCODES","8BITMIME","DSN"],"envelopeTime":1030,"messageTime":1315,"messageSize":1144,"response":"250 2.0.0 Ok: queued as 2C874925F6","envelope":{"from":"support@expensesmanager.app","to":["sunil.pandvd22@gmail.com"]},"messageId":"<de7f08d7-89dc-bac4-2d80-580122a0b873@expensesmanager.app>"}
+2/24/2025, 8:09:32 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  F4UX6BF2DEbhQu0_AAAB
+2/24/2025, 8:09:32 AM [error]  Message :  unauthorized, there is no access token but refesh token
+2/24/2025, 8:09:36 AM [debug]  Message :  CLIENT CONNECTED with ID -  yDa6xdqv8hdjY2QiAAAF
+2/24/2025, 8:09:36 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  yDa6xdqv8hdjY2QiAAAF
+2/24/2025, 8:09:36 AM [debug]  Message :  CLIENT CONNECTED with ID -  tad1vWrgqpj07FWjAAAH
+2/24/2025, 8:12:44 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 8:12:44 AM [debug]  Message :  CLIENT CONNECTED with ID -  AtIz-60l6u-4o6meAAAB
+2/24/2025, 8:12:44 AM [debug]  Message :  CLIENT CONNECTED with ID -  MPkCUQ35pmLWAndOAAAD
+2/24/2025, 8:12:49 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/24/2025, 8:13:48 AM [info]  Message :  Success sending email {"accepted":["sunil.pandvd22@gmail.com"],"rejected":[],"ehlo":["PIPELINING","SIZE 104857600","ETRN","AUTH PLAIN LOGIN","AUTH=PLAIN LOGIN","ENHANCEDSTATUSCODES","8BITMIME","DSN"],"envelopeTime":1585,"messageTime":2599,"messageSize":1621,"response":"250 2.0.0 Ok: queued as 62C239296D","envelope":{"from":"support@expensesmanager.app","to":["sunil.pandvd22@gmail.com"]},"messageId":"<0e991058-15d2-0916-8a2b-e1eba68c22e8@expensesmanager.app>"}
+2/24/2025, 8:16:02 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  MPkCUQ35pmLWAndOAAAD
+2/24/2025, 8:16:03 AM [debug]  Message :  CLIENT CONNECTED with ID -  Rxf7ZW6s2-GmF6UbAAAF
+2/24/2025, 8:16:12 AM [info]  Message :  Success sending email {"accepted":["sunil.pandvd22@gmail.com"],"rejected":[],"ehlo":["PIPELINING","SIZE 104857600","ETRN","AUTH PLAIN LOGIN","AUTH=PLAIN LOGIN","ENHANCEDSTATUSCODES","8BITMIME","DSN"],"envelopeTime":970,"messageTime":2096,"messageSize":1621,"response":"250 2.0.0 Ok: queued as 159BF92501","envelope":{"from":"support@expensesmanager.app","to":["sunil.pandvd22@gmail.com"]},"messageId":"<2a80da76-dbd2-fbdc-b34a-cd93a7d3f323@expensesmanager.app>"}
+2/24/2025, 8:18:38 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  AtIz-60l6u-4o6meAAAB
+2/24/2025, 8:18:39 AM [debug]  Message :  CLIENT CONNECTED with ID -  78UzBQbHCkRCkQL7AAAH
+2/24/2025, 8:18:54 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  Rxf7ZW6s2-GmF6UbAAAF
+2/24/2025, 8:18:54 AM [debug]  Message :  CLIENT CONNECTED with ID -  mERPdtGOFqpSMTL5AAAJ
+2/24/2025, 8:18:56 AM [info]  Message :  Success sending email {"accepted":["sunil.pandvd41@gmail.com"],"rejected":[],"ehlo":["PIPELINING","SIZE 104857600","ETRN","AUTH PLAIN LOGIN","AUTH=PLAIN LOGIN","ENHANCEDSTATUSCODES","8BITMIME","DSN"],"envelopeTime":2043,"messageTime":1338,"messageSize":1148,"response":"250 2.0.0 Ok: queued as 2C799925F6","envelope":{"from":"support@expensesmanager.app","to":["sunil.pandvd41@gmail.com"]},"messageId":"<fbe83e3c-8a78-b355-6666-ade4c9cb6c98@expensesmanager.app>"}
+2/24/2025, 8:19:28 AM [info]  Message :  Success sending email {"accepted":["sunil.pandvd41@gmail.com"],"rejected":[],"ehlo":["PIPELINING","SIZE 104857600","ETRN","AUTH PLAIN LOGIN","AUTH=PLAIN LOGIN","ENHANCEDSTATUSCODES","8BITMIME","DSN"],"envelopeTime":984,"messageTime":1017,"messageSize":1625,"response":"250 2.0.0 Ok: queued as AA1F09272C","envelope":{"from":"support@expensesmanager.app","to":["sunil.pandvd41@gmail.com"]},"messageId":"<b0935775-0d1b-30e3-2a8c-ba44d0e9c05f@expensesmanager.app>"}
+2/24/2025, 8:20:23 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  78UzBQbHCkRCkQL7AAAH
+2/24/2025, 8:20:23 AM [debug]  Message :  CLIENT CONNECTED with ID -  zF_QvtUXVX09QWH_AAAL
+2/24/2025, 8:21:51 AM [info]  Message :  Success sending email {"accepted":["sunil.pandvd41@gmail.com"],"rejected":[],"ehlo":["PIPELINING","SIZE 104857600","ETRN","AUTH PLAIN LOGIN","AUTH=PLAIN LOGIN","ENHANCEDSTATUSCODES","8BITMIME","DSN"],"envelopeTime":975,"messageTime":1513,"messageSize":1148,"response":"250 2.0.0 Ok: queued as 4F6388005C","envelope":{"from":"support@expensesmanager.app","to":["sunil.pandvd41@gmail.com"]},"messageId":"<b564595f-c7be-4be5-908a-a273fb7c85f6@expensesmanager.app>"}
+2/24/2025, 8:24:50 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 8:24:51 AM [debug]  Message :  CLIENT CONNECTED with ID -  7jvG_qmFpNkiO29zAAAB
+2/24/2025, 8:24:51 AM [debug]  Message :  CLIENT CONNECTED with ID -  seNW2mDo7FVt3kAgAAAD
+2/24/2025, 8:24:55 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/24/2025, 8:25:13 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 8:25:14 AM [debug]  Message :  CLIENT CONNECTED with ID -  v7wc6oj48uK1hTWuAAAB
+2/24/2025, 8:25:14 AM [debug]  Message :  CLIENT CONNECTED with ID -  iq0nE_2x24yWbjBEAAAD
+2/24/2025, 8:25:18 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-00.lrqxoge.mongodb.net
+2/24/2025, 8:25:20 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  iq0nE_2x24yWbjBEAAAD
+2/24/2025, 8:25:20 AM [debug]  Message :  CLIENT CONNECTED with ID -  Jlo-xjgi9ae4eGlyAAAF
+2/24/2025, 8:25:56 AM [info]  Message :  Success sending email {"accepted":["sunil.pandvd41@gmail.com"],"rejected":[],"ehlo":["PIPELINING","SIZE 104857600","ETRN","AUTH PLAIN LOGIN","AUTH=PLAIN LOGIN","ENHANCEDSTATUSCODES","8BITMIME","DSN"],"envelopeTime":2092,"messageTime":1576,"messageSize":1733,"response":"250 2.0.0 Ok: queued as F005680053","envelope":{"from":"support@expensesmanager.app","to":["sunil.pandvd41@gmail.com"]},"messageId":"<f2d13769-cc28-4dd4-a223-c682284b55c7@expensesmanager.app>"}
+2/24/2025, 8:27:17 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  Jlo-xjgi9ae4eGlyAAAF
+2/24/2025, 8:27:17 AM [debug]  Message :  CLIENT CONNECTED with ID -  NW_Ysn_5Y0_HbFnoAAAH
+2/24/2025, 8:27:36 AM [info]  Message :  Success sending email {"accepted":["sunil.pandvd41@gmail.com"],"rejected":[],"ehlo":["PIPELINING","SIZE 104857600","ETRN","AUTH PLAIN LOGIN","AUTH=PLAIN LOGIN","ENHANCEDSTATUSCODES","8BITMIME","DSN"],"envelopeTime":973,"messageTime":1352,"messageSize":1733,"response":"250 2.0.0 Ok: queued as 43BE080053","envelope":{"from":"support@expensesmanager.app","to":["sunil.pandvd41@gmail.com"]},"messageId":"<0b5afbe9-58ff-8c7f-5c49-4d2f2ce98bd2@expensesmanager.app>"}
+2/24/2025, 8:28:28 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  NW_Ysn_5Y0_HbFnoAAAH
+2/24/2025, 8:28:29 AM [debug]  Message :  CLIENT CONNECTED with ID -  tvV3ygLEdkk2gEm0AAAJ
+2/24/2025, 8:30:21 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 8:30:22 AM [debug]  Message :  CLIENT CONNECTED with ID -  GIOSeb_r6YOJ6wzvAAAB
+2/24/2025, 8:30:23 AM [debug]  Message :  CLIENT CONNECTED with ID -  oTdckPbiMJ7TvPBZAAAD
+2/24/2025, 8:30:27 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/24/2025, 8:32:53 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 8:32:53 AM [debug]  Message :  CLIENT CONNECTED with ID -  vFCNHcznODtRtTqBAAAB
+2/24/2025, 8:32:53 AM [debug]  Message :  CLIENT CONNECTED with ID -  ydNvpTDRXbulTMjYAAAD
+2/24/2025, 8:32:59 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-02.lrqxoge.mongodb.net
+2/24/2025, 8:33:21 AM [info]  Message :  Success sending email {"accepted":["sunil.pandvd41@gmail.com"],"rejected":[],"ehlo":["PIPELINING","SIZE 104857600","ETRN","AUTH PLAIN LOGIN","AUTH=PLAIN LOGIN","ENHANCEDSTATUSCODES","8BITMIME","DSN"],"envelopeTime":2031,"messageTime":1015,"messageSize":2018,"response":"250 2.0.0 Ok: queued as 8D1A380053","envelope":{"from":"support@expensesmanager.app","to":["sunil.pandvd41@gmail.com"]},"messageId":"<d587e352-0ddd-d10f-929a-a5e9a59e8ed1@expensesmanager.app>"}
+2/24/2025, 8:34:30 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  vFCNHcznODtRtTqBAAAB
+2/24/2025, 8:34:31 AM [debug]  Message :  CLIENT CONNECTED with ID -  zv7QZJl48hSLg2ATAAAF
+2/24/2025, 8:35:00 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  ydNvpTDRXbulTMjYAAAD
+2/24/2025, 8:35:01 AM [debug]  Message :  CLIENT CONNECTED with ID -  rWipPCN5lbanG_TSAAAH
+2/24/2025, 8:35:01 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  zv7QZJl48hSLg2ATAAAF
+2/24/2025, 8:35:01 AM [debug]  Message :  CLIENT CONNECTED with ID -  PAvODmQ-1lySE0drAAAJ
+2/24/2025, 8:35:37 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  PAvODmQ-1lySE0drAAAJ
+2/24/2025, 8:35:37 AM [debug]  Message :  CLIENT CONNECTED with ID -  vU-opXQ0zhUGMFb2AAAL
+2/24/2025, 8:35:40 AM [info]  Message :  Success sending email {"accepted":["sunil.pandvd41@gmail.com"],"rejected":[],"ehlo":["PIPELINING","SIZE 104857600","ETRN","AUTH PLAIN LOGIN","AUTH=PLAIN LOGIN","ENHANCEDSTATUSCODES","8BITMIME","DSN"],"envelopeTime":1276,"messageTime":2127,"messageSize":1305,"response":"250 2.0.0 Ok: queued as 3BAA680064","envelope":{"from":"support@expensesmanager.app","to":["sunil.pandvd41@gmail.com"]},"messageId":"<fbbd4c68-16f5-9859-80f9-b163be2786af@expensesmanager.app>"}
+2/24/2025, 8:35:44 AM [info]  Message :  Success sending email {"accepted":["sunil.pandvd41@gmail.com"],"rejected":[],"ehlo":["PIPELINING","SIZE 104857600","ETRN","AUTH PLAIN LOGIN","AUTH=PLAIN LOGIN","ENHANCEDSTATUSCODES","8BITMIME","DSN"],"envelopeTime":989,"messageTime":477,"messageSize":2018,"response":"250 2.0.0 Ok: queued as F14BF9293A","envelope":{"from":"support@expensesmanager.app","to":["sunil.pandvd41@gmail.com"]},"messageId":"<ab6072e7-4ff4-d595-1704-fb7231a5eb72@expensesmanager.app>"}
+2/24/2025, 8:39:44 AM [info]  Message :  server started on port number 3000 }
+2/24/2025, 8:39:45 AM [debug]  Message :  CLIENT CONNECTED with ID -  CU9J519j7Qn2oJFWAAAB
+2/24/2025, 8:39:45 AM [debug]  Message :  CLIENT CONNECTED with ID -  dGmuyApcji_qZ8NkAAAD
+2/24/2025, 8:39:49 AM [info]  Message :  Database Connected (production) : ac-hbi6taw-shard-00-01.lrqxoge.mongodb.net
+2/24/2025, 8:39:56 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  CU9J519j7Qn2oJFWAAAB
+2/24/2025, 8:39:57 AM [debug]  Message :  CLIENT CONNECTED with ID -  oQTM7M5V3Rv41dViAAAF
+2/24/2025, 8:40:26 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  oQTM7M5V3Rv41dViAAAF
+2/24/2025, 8:40:27 AM [debug]  Message :  CLIENT CONNECTED with ID -  cDZS8K2MKXspsUxoAAAH
+2/24/2025, 8:40:32 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  cDZS8K2MKXspsUxoAAAH
+2/24/2025, 8:40:32 AM [debug]  Message :  CLIENT CONNECTED with ID -  1hVEYSG2aVMhZf2RAAAJ
+2/24/2025, 8:40:36 AM [info]  Message :  Success sending email {"accepted":["sunil.pandvd41@gmail.com"],"rejected":[],"ehlo":["PIPELINING","SIZE 104857600","ETRN","AUTH PLAIN LOGIN","AUTH=PLAIN LOGIN","ENHANCEDSTATUSCODES","8BITMIME","DSN"],"envelopeTime":2071,"messageTime":1812,"messageSize":1305,"response":"250 2.0.0 Ok: queued as B4A3092912","envelope":{"from":"support@expensesmanager.app","to":["sunil.pandvd41@gmail.com"]},"messageId":"<4d14dee9-7795-469b-dd32-24242005ed1c@expensesmanager.app>"}
+2/24/2025, 8:40:48 AM [info]  Message :  Success sending email {"accepted":["sunil.pandvd41@gmail.com"],"rejected":[],"ehlo":["PIPELINING","SIZE 104857600","ETRN","AUTH PLAIN LOGIN","AUTH=PLAIN LOGIN","ENHANCEDSTATUSCODES","8BITMIME","DSN"],"envelopeTime":988,"messageTime":814,"messageSize":1890,"response":"250 2.0.0 Ok: queued as 2CBA492947","envelope":{"from":"support@expensesmanager.app","to":["sunil.pandvd41@gmail.com"]},"messageId":"<203e87b8-7346-6c87-0c47-13c0eee10e45@expensesmanager.app>"}
+2/24/2025, 8:45:32 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  dGmuyApcji_qZ8NkAAAD
+2/24/2025, 8:45:33 AM [debug]  Message :  CLIENT CONNECTED with ID -  _OLZLq1asX8ogz2mAAAL
+2/24/2025, 8:45:36 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  1hVEYSG2aVMhZf2RAAAJ
+2/24/2025, 8:45:37 AM [debug]  Message :  CLIENT CONNECTED with ID -  pl7Ik30Cafbs3VipAAAN
+2/24/2025, 8:45:41 AM [info]  Message :  Success sending email {"accepted":["sunil.pandvd41@gmail.com"],"rejected":[],"ehlo":["PIPELINING","SIZE 104857600","ETRN","AUTH PLAIN LOGIN","AUTH=PLAIN LOGIN","ENHANCEDSTATUSCODES","8BITMIME","DSN"],"envelopeTime":2090,"messageTime":1302,"messageSize":1305,"response":"250 2.0.0 Ok: queued as 57D2D925F6","envelope":{"from":"support@expensesmanager.app","to":["sunil.pandvd41@gmail.com"]},"messageId":"<f574f2e4-3f39-7687-ea9f-ec42ce89defa@expensesmanager.app>"}
+2/24/2025, 8:45:47 AM [info]  Message :  Success sending email {"accepted":["sunil.pandvd41@gmail.com"],"rejected":[],"ehlo":["PIPELINING","SIZE 104857600","ETRN","AUTH PLAIN LOGIN","AUTH=PLAIN LOGIN","ENHANCEDSTATUSCODES","8BITMIME","DSN"],"envelopeTime":746,"messageTime":916,"messageSize":1890,"response":"250 2.0.0 Ok: queued as 99B529296A","envelope":{"from":"support@expensesmanager.app","to":["sunil.pandvd41@gmail.com"]},"messageId":"<f10d1318-8a17-98b9-be8b-2ad5eb66fd25@expensesmanager.app>"}
+2/24/2025, 9:23:10 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  _OLZLq1asX8ogz2mAAAL
+2/24/2025, 9:23:10 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  pl7Ik30Cafbs3VipAAAN
+2/24/2025, 9:23:11 AM [debug]  Message :  CLIENT CONNECTED with ID -  JgcdjWEaz0ascUU6AAAP
+2/24/2025, 9:23:11 AM [debug]  Message :  CLIENT CONNECTED with ID -  zXhKs9aQrPMSVoqdAAAR
+2/24/2025, 9:30:10 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  JgcdjWEaz0ascUU6AAAP
+2/24/2025, 9:30:10 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  zXhKs9aQrPMSVoqdAAAR
+2/24/2025, 9:30:11 AM [debug]  Message :  CLIENT CONNECTED with ID -  WsSSPBQQsNlUKWcNAAAT
+2/24/2025, 9:30:11 AM [debug]  Message :  CLIENT CONNECTED with ID -  wLD69uV9RSu6teGaAAAV
+2/24/2025, 9:42:00 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  WsSSPBQQsNlUKWcNAAAT
+2/24/2025, 9:42:00 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  wLD69uV9RSu6teGaAAAV
+2/24/2025, 9:42:01 AM [debug]  Message :  CLIENT CONNECTED with ID -  Vlu93zEXX9EFJs-sAAAX
+2/24/2025, 9:42:01 AM [debug]  Message :  CLIENT CONNECTED with ID -  AsUiGYqTU4lkT8f_AAAZ
+2/24/2025, 10:22:40 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  Vlu93zEXX9EFJs-sAAAX
+2/24/2025, 10:22:40 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  AsUiGYqTU4lkT8f_AAAZ
+2/24/2025, 10:22:41 AM [debug]  Message :  CLIENT CONNECTED with ID -  4tQ_lMCJM010SJvmAAAb
+2/24/2025, 10:22:41 AM [debug]  Message :  CLIENT CONNECTED with ID -  zV-BUu3zw1N76JzbAAAd
+2/24/2025, 10:22:57 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  zV-BUu3zw1N76JzbAAAd
+2/24/2025, 10:22:57 AM [error]  Message :  unauthorized, there is no access token but refesh token
+2/24/2025, 10:29:26 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  4tQ_lMCJM010SJvmAAAb
+2/24/2025, 10:29:26 AM [debug]  Message :  CLIENT CONNECTED with ID -  KruH1N44X67rfmtbAAAf
+2/24/2025, 10:34:50 AM [warn]  Message :  CLIENT DISCONNECTED with ID -  KruH1N44X67rfmtbAAAf
+2/24/2025, 10:34:50 AM [debug]  Message :  CLIENT CONNECTED with ID -  uLw0N2WXryhjmnRUAAAh

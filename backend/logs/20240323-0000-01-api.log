@@ -1,0 +1,1 @@
+::ffff:192.168.40.73 - - [22/Mar/2024:17:56:56 +0000] "GET /backup HTTP/1.1" 304 - "-" "expensesmanager/5 CFNetwork/1474 Darwin/23.4.0"

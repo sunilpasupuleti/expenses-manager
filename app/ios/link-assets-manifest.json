@@ -1,0 +1,137 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/AntDesign.ttf",
+      "sha1": "4e77868439280fb434d4697c7b911271406c81f3"
+    },
+    {
+      "path": "assets/fonts/Entypo.ttf",
+      "sha1": "12b5670eb178138f77285d5f2c246d3cc5fa67d6"
+    },
+    {
+      "path": "assets/fonts/EvilIcons.ttf",
+      "sha1": "91d377ea3cf47490b256c2ed081704a7dabdae0c"
+    },
+    {
+      "path": "assets/fonts/Feather.ttf",
+      "sha1": "e6604258b1ced5efd51360875d782fca65381d47"
+    },
+    {
+      "path": "assets/fonts/FontAwesome.ttf",
+      "sha1": "13b1eab65a983c7a73bc7997c479d66943f7c6cb"
+    },
+    {
+      "path": "assets/fonts/FontAwesome5_Brands.ttf",
+      "sha1": "3fa2d67cef22da5c3f3eb5730c6afbd6fecf0372"
+    },
+    {
+      "path": "assets/fonts/FontAwesome5_Regular.ttf",
+      "sha1": "7d849a3981a716e2ba4a84634bc57d0b8054a6a3"
+    },
+    {
+      "path": "assets/fonts/FontAwesome5_Solid.ttf",
+      "sha1": "c1b9fae262f42868c075ac865a8ab34920e20a2c"
+    },
+    {
+      "path": "assets/fonts/FontAwesome6_Brands.ttf",
+      "sha1": "a14a91d8c170fc9e159040f6794369d829e0859e"
+    },
+    {
+      "path": "assets/fonts/FontAwesome6_Regular.ttf",
+      "sha1": "dad3ad71b383789bb62c249742ef59e34685e7d0"
+    },
+    {
+      "path": "assets/fonts/FontAwesome6_Solid.ttf",
+      "sha1": "3eb9b4b2ea22711b96e3b356196fd20b4f17fb0e"
+    },
+    {
+      "path": "assets/fonts/Fontisto.ttf",
+      "sha1": "c090a3ec96a3f1bb9b615c2f3f204ce0dcdcdbc3"
+    },
+    {
+      "path": "assets/fonts/Foundation.ttf",
+      "sha1": "4b2bce6c792493a4a5716b6fec2dbefe89492c3f"
+    },
+    {
+      "path": "assets/fonts/Ionicons.ttf",
+      "sha1": "86e07c3d974eb09099e6e5a9b3b8310303cf0feb"
+    },
+    {
+      "path": "assets/fonts/Lato-Black.ttf",
+      "sha1": "a001eb827743636e04f8efa7d4aeedf0541c46ac"
+    },
+    {
+      "path": "assets/fonts/Lato-Bold.ttf",
+      "sha1": "542498221d97bee5bdbccf86ee8890bf8e8005c9"
+    },
+    {
+      "path": "assets/fonts/Lato-Regular.ttf",
+      "sha1": "e923c72eda5e50a87e18ff5c71e9ef4b3b6455a3"
+    },
+    {
+      "path": "assets/fonts/MaterialCommunityIcons.ttf",
+      "sha1": "4c2a838b00dbb5e8bb1b368fce0de534e8eb241c"
+    },
+    {
+      "path": "assets/fonts/MaterialIcons.ttf",
+      "sha1": "7e02c3f005532ff4d24148567c84089756a7848a"
+    },
+    {
+      "path": "assets/fonts/Montserrat-Bold.ttf",
+      "sha1": "97e2be433a5c4f622112b723d9ea9a23df6338f4"
+    },
+    {
+      "path": "assets/fonts/Montserrat-Medium.ttf",
+      "sha1": "6fd70300b7e19aa191a5eb06dc0374c46ca97dcb"
+    },
+    {
+      "path": "assets/fonts/Montserrat-Regular.ttf",
+      "sha1": "6b81c92b065c20c37190d983a79fa38cf6e60552"
+    },
+    {
+      "path": "assets/fonts/Montserrat-SemiBold.ttf",
+      "sha1": "201ccee5dcb1e9d38716168f3a56598a6808ed51"
+    },
+    {
+      "path": "assets/fonts/NunitoSans-Bold.ttf",
+      "sha1": "1a43f6ab652eb0c71cd0d748bd8d4bf360903fe1"
+    },
+    {
+      "path": "assets/fonts/NunitoSans-Medium.ttf",
+      "sha1": "947e59a8d3586d17a5f8698ae2f371e580411cdb"
+    },
+    {
+      "path": "assets/fonts/NunitoSans-Regular.ttf",
+      "sha1": "c4bc36919dfa9ee086b71d7b2796fafc22249b97"
+    },
+    {
+      "path": "assets/fonts/NunitoSans-SemiBold.ttf",
+      "sha1": "0ec94b38226fe45cb85bad4cb5f884512bae6eb7"
+    },
+    {
+      "path": "assets/fonts/Octicons.ttf",
+      "sha1": "56acefc0731f35ee23b195b1c8cb5fa94a0db97b"
+    },
+    {
+      "path": "assets/fonts/Oswald-Regular.ttf",
+      "sha1": "4e1b83d4e7f89ac87240e9e70f701160ff62afc1"
+    },
+    {
+      "path": "assets/fonts/SimpleLineIcons.ttf",
+      "sha1": "9ffb81a5a11112e292f2cc323e98486bad597599"
+    },
+    {
+      "path": "assets/fonts/Zocial.ttf",
+      "sha1": "6a48a962b06cc3acbdfd61df0d9a34744eea5e8d"
+    },
+    {
+      "path": "assets/notification_primary.wav",
+      "sha1": "69498c4680fbc0b8f614156de66cfff224f4bfd6"
+    },
+    {
+      "path": "assets/notification_secondary.wav",
+      "sha1": "ba60e048ee0117e345b50b52703abc4130270841"
+    }
+  ]
+}
