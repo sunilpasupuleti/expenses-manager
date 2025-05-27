@@ -36,7 +36,7 @@ jobs:
         run: |
           export SOPS_GPG_EXEC=gpg
           export GPG_TTY=$(tty)
-          sops -d backend/config/expensesmanager.json.enc > backend/config/expensesmanager.json
+          sops -d backend/config/expensesmanager.json.enc | base64 -d > backend/config/expensesmanager.json
 
       - name: Upload .env.production to VPS
         run: |

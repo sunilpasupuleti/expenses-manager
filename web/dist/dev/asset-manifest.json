@@ -1,0 +1,41 @@
+{
+  "files": {
+    "main.css": "/static/css/main.acc708ba.css",
+    "main.js": "/static/js/main.f472eebf.js",
+    "static/js/787.d1d4a2c2.chunk.js": "/static/js/787.d1d4a2c2.chunk.js",
+    "static/media/abstract.webp": "/static/media/abstract.ebc37273fc89799e0502.webp",
+    "static/media/landing.jpg": "/static/media/landing.c3869a1e07dab2ceff4e.jpg",
+    "static/media/logo.png": "/static/media/logo.ebb71bd0fd8be8421eff.png",
+    "static/media/merged.webp": "/static/media/merged.4e125ed491131245d24e.webp",
+    "static/media/4.webp": "/static/media/4.b6028535a5146db7c6ae.webp",
+    "static/media/9.webp": "/static/media/9.1d566449e42e7c3fda8e.webp",
+    "static/media/6.webp": "/static/media/6.be0dc07d372da84488d7.webp",
+    "static/media/2.webp": "/static/media/2.a2cbd7aa724fa330dc72.webp",
+    "static/media/google_play.png": "/static/media/google_play.88c0cf672ae4dd873d7f.png",
+    "static/media/8.webp": "/static/media/8.48718d6a2adaa49fcdc6.webp",
+    "static/media/7.webp": "/static/media/7.a73f5816d6d24b05b92c.webp",
+    "static/media/5.webp": "/static/media/5.aa776654fbc0c66e10e8.webp",
+    "static/media/1.webp": "/static/media/1.b7723219d55dcd9570e0.webp",
+    "static/media/3.webp": "/static/media/3.f59b09c0e71a8ad4ec05.webp",
+    "static/media/instagram.png": "/static/media/instagram.e719d8b29f452a16302d.png",
+    "static/media/app_store.png": "/static/media/app_store.2a8f2a38110b76832fb2.png",
+    "static/media/account-deletion.jpg": "/static/media/account-deletion.da9a5bdfc9295c89f2fa.jpg",
+    "static/media/website.png": "/static/media/website.2fe2d750f14f6f138b4d.png",
+    "static/media/android.webp": "/static/media/android.45d9392bb439b0376d09.webp",
+    "static/media/ios.webp": "/static/media/ios.96ddd4da0a55b46224ff.webp",
+    "static/media/github.png": "/static/media/github.a5527b5c02e754fc4a6d.png",
+    "static/media/icon.jpeg": "/static/media/icon.2eaf6a98ae6cb759b021.jpeg",
+    "static/media/whatsapp.png": "/static/media/whatsapp.1dd8ca2765f1f177ab22.png",
+    "static/media/appstore.png": "/static/media/appstore.2be29c88bfd54927d5e2.png",
+    "static/media/playstore.png": "/static/media/playstore.23f630669d8da5a9a1e4.png",
+    "static/media/linkedin.png": "/static/media/linkedin.f249b38224ca41a0b909.png",
+    "index.html": "/index.html",
+    "main.acc708ba.css.map": "/static/css/main.acc708ba.css.map",
+    "main.f472eebf.js.map": "/static/js/main.f472eebf.js.map",
+    "787.d1d4a2c2.chunk.js.map": "/static/js/787.d1d4a2c2.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.acc708ba.css",
+    "static/js/main.f472eebf.js"
+  ]
+}
