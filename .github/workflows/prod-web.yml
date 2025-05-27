@@ -12,6 +12,13 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
+      - name: Set up GPG
+        run: |
+          echo "$GPG_PRIVATE_KEY" | base64 -d > private.key
+          gpg --no-tty --batch --yes --import private.key
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+
       - name: Decrypt .env.production.enc
         run: |
           echo "$GPG_PRIVATE_KEY" | base64 -d > private.key
