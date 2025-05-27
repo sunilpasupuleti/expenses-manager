@@ -22,7 +22,9 @@ jobs:
       - name: Set up GPG
         run: |
           echo "$GPG_PRIVATE_KEY" | base64 -d > private.key
-          gpg --no-tty --batch --yes --import private.key
+          gpg --batch --yes --import private.key
+          export GPG_TTY=$(tty)
+          gpg --list-secret-keys --keyid-format LONG
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
 
@@ -36,6 +38,11 @@ jobs:
           --output backend/config/expensesmanager.json backend/config/expensesmanager.json.enc
         env:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Clean up decrypted files
+        run: |
+          rm backend/config/.env.development
+          rm backend/config/expensesmanager.json
 
       - name: Upload .env.development to VPS
         run: |
