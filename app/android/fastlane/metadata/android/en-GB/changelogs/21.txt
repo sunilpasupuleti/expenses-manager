@@ -1,0 +1,4 @@
+• Bug Fixes
+• Implemented automatic user logout when account is deleted
+• UI Improvements
+• The app is now smoother and more optimised.

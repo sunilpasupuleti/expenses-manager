@@ -78,6 +78,9 @@ app/config.js
 /coverage
 
 # ignore ssl
+# Ignore all Apple API auth keys
+**/AuthKey_*.p8
+
 backend/config/ssl/
 backend/config/AuthKey_78MHH3V4YC.p8
 backend/config/expensesmanager.json
@@ -85,7 +88,7 @@ backend/config/.env.development
 backend/config/.env.production
 web/.env.development
 web/.env.production
-
+playstore-deploy-key.json
 
 
 # Yarn

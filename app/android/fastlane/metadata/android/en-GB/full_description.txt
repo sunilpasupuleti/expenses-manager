@@ -1,0 +1,69 @@
+Expenses Manager has been crafted to keep track of your spending effortlessly, with useful features in a simple, intuitive interface. And with Back up, it's easy to keep all your expenses in sync across your devices.
+
+Features
+
+.Data Encryption
+
+Your data is encrypted safely 🔐, no one else can read it. Your security is our first priority😃.
+
+- Automatic add transactions from SMS
+
+Enable auto-fetch transactions in settings, and watch as the app automatically reads and displays transactional messages from your SMS. Say goodbye to manual input - effortlessly add transactions to your account with just a pop-up! Enjoy seamless financial management like never before!
+
+.Smart Scanning
+Now scan your receipt/bill directly from the camera and get your expense noted automatically with category filtration and date.
+
+.Exporting
+Export all transactions you enter in multiple ways meaning that you can still make full use of data as you want
+
+.Manage multiple accounts
+You can create multiple accounts and manage them separately, You can also link different currencies to different accounts.
+
+.Categories
+You can detail your category and can add the 'N' number of categories in Expense and Incom.
+You can add a category by preferred name, icon and colour to quickly identify
+
+.Dashboard Analysis
+A separate dashboard is maintained for every account. Category-wise transactions and their usable percentages are shown
+
+.Account Stats
+You can view the complete analysis and its details in a pie chart.
+
+.Account Trends
+You can view the last 14 days and last 12 months analysis in  a Trend chart and line chart
+
+.Account Options
+you can perform actions such as Archive, Pin, Edit, Delete
+
+.Add Image
+You can add an Image to every transaction for future reference
+
+.Currency Rates
+You can get the latest currency rates related to the currency that is linked with the account
+
+.Export as multiple formats
+You can export your data in different Formats like PDF, EXCEL, JSON
+
+.Import from JSON
+You can Export the JSON file and import all the accounts and transactions from the JSON file in the future in case of app loss.
+
+.All Currencies
+Expense Manager supports all currencies you may need especially when travelling. It also supports automatically updated currency rates for major currencies
+
+.Reminder Notifications
+You can set your daily reminder notification at your preferred time, to get you notified to add the transactions of the day that were missing
+
+.Daily Backup
+It's ok don't get worried about your transactions by manually backing up daily. Sit back and relax we will handle it by backing up your data daily at 12:00 AM 
+
+.Previous 10 Restores
+You can restore your data from the past 10 backups
+
+.App Lock
+You can enable the App Lock to secure your app and your transactions
+
+.Quick input
+Enter your expense quickly and easily with minimum effort
+
+.All the small things
+Dark Mode, Quick Actions, Context menus, Swipeable actions

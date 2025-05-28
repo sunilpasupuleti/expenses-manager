@@ -1,0 +1,8 @@
+app_identifier("com.webwizard.expensesmanager") # The bundle identifier of your app
+apple_id("sunilpasupuleti@outlook.com") # Your Apple Developer Portal username
+
+itc_team_id("126456777") # App Store Connect Team ID
+team_id("VMGHBGB9S9") # Developer Portal Team ID
+
+# For more information about the Appfile, see:
+#     https://docs.fastlane.tools/advanced/#appfile
