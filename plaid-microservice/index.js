@@ -4,40 +4,14 @@ const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
 const logger = require("./middleware/logger/logger");
-const morgan = require("morgan");
 const app = express();
-const fs = require("fs");
-const rfs = require("rotating-file-stream");
 const path = require("path");
 const schedule = require("node-schedule");
 const socketIo = require("socket.io");
 const cookieParser = require("cookie-parser");
-const bodyParser = require("body-parser");
 const { database, auth } = require("firebase-admin");
 const _ = require("lodash");
 const { getRedis } = require("./config/redisConfig");
-
-/**
- * Morgon
- */
-let logsPath = __dirname + "/logs";
-if (!fs.existsSync(logsPath)) {
-  fs.mkdirSync(logsPath);
-}
-
-let apiLogsPath = __dirname + "/logs/api.log";
-if (!fs.existsSync(apiLogsPath)) {
-  fs.writeFileSync(apiLogsPath, "");
-}
-// Create rotating write stream
-
-var accessLogStream = rfs.createStream("api.log", {
-  interval: "1d",
-  path: path.join(process.env.LOGPATH),
-});
-
-app.use(morgan("dev", {}));
-app.use(morgan("combined", { stream: accessLogStream }));
 
 app.use(
   cors({
