@@ -1,6 +1,5 @@
 const firebaseAdmin = require("firebase-admin");
 const { cryptoDecrypt, sendResponse, httpCodes } = require("./utility");
-const logger = require("../middleware/logger/logger");
 const jwt = require("jsonwebtoken");
 const jwkToPem = require("jwk-to-pem");
 const { SHA256 } = require("crypto-js");
@@ -32,7 +31,7 @@ module.exports = {
         next();
       })
       .catch((err) => {
-        logger.error("Error in verifying token " + JSON.stringify(err));
+        console.error("Error in verifying token " + JSON.stringify(err));
         return sendResponse(res, httpCodes.UNAUTHORIZED, {
           message: "Token has expired please login again",
           token: "false",
@@ -107,7 +106,7 @@ module.exports = {
 
   VerifyAdminToken: async (req, res, next) => {
     if (!req.cookies || !req.cookies.refreshToken) {
-      logger.error("no refresh token and unauthorized");
+      console.error("no refresh token and unauthorized");
       return sendResponse(res, httpCodes.UNAUTHORIZED, {
         message: "Unauthorized",
         refreshToken: null,
@@ -118,14 +117,14 @@ module.exports = {
       (!req.cookies || !req.cookies.accessToken) &&
       req.cookies.refreshToken
     ) {
-      logger.error("unauthorized, there is no access token but refesh token");
+      console.error("unauthorized, there is no access token but refesh token");
       return sendResponse(res, httpCodes.UNAUTHORIZED, {
         message: "Unauthorized",
         accessToken: null,
       });
     }
     if (!req.cookies.accessToken) {
-      logger.error("unauthorized, there is no access token");
+      console.error("unauthorized, there is no access token");
       return sendResponse(res, httpCodes.UNAUTHORIZED, {
         message: "Unauthorized",
       });
@@ -164,7 +163,7 @@ module.exports = {
       let userData = req.user;
       let role = userData.role;
       if (allowedRoles.includes(role)) {
-        logger.info(`${role} role granted`);
+        console.info(`${role} role granted`);
         next();
       } else {
         return sendResponse(res, httpCodes.UNAUTHORIZED, {

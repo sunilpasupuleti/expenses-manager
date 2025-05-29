@@ -1,7 +1,6 @@
 const schedule = require("node-schedule");
 const { database } = require("firebase-admin");
 const moment = require("moment");
-const logger = require("../../middleware/logger/logger");
 const path = require("path");
 const fs = require("fs");
 const { sendEmail } = require("../mailHelpers");
@@ -77,9 +76,9 @@ async function sendInactivityEmail(
     }
 
     await sendEmail(subject, html, [email], true);
-    logger.info(`📧 ${type} email sent to ${email}`);
+    console.info(`📧 ${type} email sent to ${email}`);
   } catch (err) {
-    logger.error("❌ Failed to send email", err);
+    console.error("❌ Failed to send email", err);
   }
 }
 
@@ -207,9 +206,9 @@ async function detectInactivePlaidUsers() {
         );
     }
 
-    logger.info("✅ Finished processing inactive Plaid users");
+    console.info("✅ Finished processing inactive Plaid users");
   } catch (err) {
-    logger.error("❌ detectInactivePlaidUsers failed:", err);
+    console.error("❌ detectInactivePlaidUsers failed:", err);
   }
 }
 
@@ -218,9 +217,9 @@ async function unlinkToken(uid, token, institutionName, trackerSet) {
   try {
     await plaidClient.itemRemove({ access_token: token });
     trackerSet.add(institutionName);
-    logger.info(`✅ Unlinked token (${institutionName}) for ${uid}`);
+    console.info(`✅ Unlinked token (${institutionName}) for ${uid}`);
   } catch (err) {
-    logger.warn(
+    console.warn(
       `❌ Failed to unlink token (${institutionName}) for ${uid}`,
       err
     );

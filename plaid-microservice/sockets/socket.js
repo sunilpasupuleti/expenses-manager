@@ -1,5 +1,3 @@
-const logger = require("../middleware/logger/logger");
-
 let socketUsers = {};
 
 module.exports = function socket(io) {
@@ -10,11 +8,11 @@ module.exports = function socket(io) {
       socketUsers[socket.id] = metadata;
       // console.log(JSON.parse(handshakeData));
     }
-    logger.debug("CLIENT CONNECTED with ID -  " + socket.id);
+    console.debug("CLIENT CONNECTED with ID -  " + socket.id);
 
     socket.on("disconnect", (data) => {
       delete socketUsers[socket.id];
-      logger.warn("CLIENT DISCONNECTED with ID -  " + socket.id);
+      console.warn("CLIENT DISCONNECTED with ID -  " + socket.id);
     });
   });
 };

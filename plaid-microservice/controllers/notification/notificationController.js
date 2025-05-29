@@ -8,7 +8,6 @@ const {
 } = require("../../helpers/notificationHelpers");
 const Users = require("../../models/Users");
 const { sendResponse, httpCodes } = require("../../helpers/utility");
-const logger = require("../../middleware/logger/logger");
 
 module.exports = {
   async updateDailyReminder(req, res) {
@@ -46,10 +45,10 @@ module.exports = {
 
       if (dailyReminderEnabled) {
         if (jobFound) {
-          logger.info(
+          console.info(
             "Updated time in daily reminder. Cancelling the previous one and scheduling new reminder"
           );
-          logger.info("-----------------------------------");
+          console.info("-----------------------------------");
           jobFound.cancel();
         }
         let hr = dailyReminderTime.split(":")[0];
@@ -62,10 +61,10 @@ module.exports = {
         rule.dayOfWeek = new schedule.Range(0, 6);
 
         // get user data
-        logger.info(
+        console.info(
           `Enabling daily reminder for ${userData.displayName} at time - ${hr}:${min} - ${timeZone}`
         );
-        logger.info("-----------------------------------");
+        console.info("-----------------------------------");
         schedule.scheduleJob(jobId, rule, function () {
           sendDailyReminderNotification(userData);
         });
@@ -74,8 +73,8 @@ module.exports = {
         );
       } else {
         if (jobFound) {
-          logger.info(`Daily reminder disabled for - ${uid} `);
-          logger.info("-----------------------------------");
+          console.info(`Daily reminder disabled for - ${uid} `);
+          console.info("-----------------------------------");
           jobFound.cancel();
         }
         return sendSuccessResponse("Daily Reminder Disabled");
@@ -118,8 +117,8 @@ module.exports = {
       const jobFound = jobs[jobKeyFound];
       if (dailyBackupEnabled) {
         if (jobFound) {
-          logger.info("Found daily backup and cancelling it");
-          logger.info("-----------------------------------");
+          console.info("Found daily backup and cancelling it");
+          console.info("-----------------------------------");
           jobFound.cancel();
         }
 
@@ -134,18 +133,18 @@ module.exports = {
 
         // rule.minute = new schedule.Range(0, 59, 2); //for every one minute
         // get user data
-        logger.info(
+        console.info(
           `Enabling daily backup for ${userData.displayName} at time - ${hour}:${minute} - ${timeZone}`
         );
-        logger.info("-----------------------------------");
+        console.info("-----------------------------------");
         schedule.scheduleJob(jobId, rule, function () {
           sendDailyBackupNotification(userData);
         });
         return sendSuccessResponse("Daily Backup Enabled");
       } else {
         if (jobFound) {
-          logger.info(`Daily Backup disabled for - ${uid} `);
-          logger.info("-----------------------------------");
+          console.info(`Daily Backup disabled for - ${uid} `);
+          console.info("-----------------------------------");
           jobFound.cancel();
         }
         return sendSuccessResponse("Daily Backup Disabled");
@@ -180,15 +179,15 @@ module.exports = {
     let jobFoundDailyBackup = jobs[jobKeyDailyBackupFound];
 
     if (jobFoundDailyBackup) {
-      logger.info("Destroying daily backup " + uid);
+      console.info("Destroying daily backup " + uid);
       jobFoundDailyBackup.cancel();
     }
     if (jobFoundDailyReminder) {
-      logger.info("Destroying daily reminder " + uid);
+      console.info("Destroying daily reminder " + uid);
       jobFoundDailyReminder.cancel();
     }
 
-    logger.info("---------------------");
+    console.info("---------------------");
     return res
       .status(httpstatus.OK)
       .json({ message: "Destroyed daily reminder and daily backup" });
@@ -242,10 +241,10 @@ module.exports = {
         rule.tz = timeZone || "Asia/Calcutta";
         rule.dayOfWeek = new schedule.Range(0, 6);
         if (jobFoundDailyReminder) {
-          logger.info("canceling the previous daily reminder notification");
+          console.info("canceling the previous daily reminder notification");
           jobFoundDailyReminder.cancel();
         }
-        logger.info(
+        console.info(
           `Enabling daily reminder for ${display} at time - ${hr}:${min} - ${timeZone}`
         );
         schedule.scheduleJob(jobDailyReminderId, rule, function () {
@@ -265,10 +264,10 @@ module.exports = {
         rule.dayOfWeek = new schedule.Range(0, 6);
 
         if (jobFoundDailyBackup) {
-          logger.info("canceling the previous backup notification");
+          console.info("canceling the previous backup notification");
           jobFoundDailyBackup.cancel();
         }
-        logger.info(
+        console.info(
           `Enabling daily backup for ${display} at ${hour}:${minute} - ${timeZone}`
         );
         schedule.scheduleJob(jobDailyBackupId, rule, function () {
@@ -276,12 +275,12 @@ module.exports = {
         });
       }
 
-      logger.info("-----------------------------------");
+      console.info("-----------------------------------");
       return sendResponse(res, httpCodes.OK, {
         message: "Enabled notifications successfully",
       });
     } catch (err) {
-      logger.error("err in getting the data" + err);
+      console.error("err in getting the data" + err);
       return sendResponse(res, httpCodes.BAD_REQUEST, {
         message: "Error occured in enabling notification",
       });

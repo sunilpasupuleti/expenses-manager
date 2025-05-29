@@ -3,7 +3,6 @@
 const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
-const logger = require("./middleware/logger/logger");
 const app = express();
 const path = require("path");
 const schedule = require("node-schedule");
@@ -64,13 +63,13 @@ app.use("/", require("./routes/index"));
  * Error handling
  */
 process.on("uncaughtException", (error, promise) => {
-  logger.error("----- uncaught exception  -----");
-  logger.error(error.stack);
+  console.error("----- uncaught exception  -----");
+  console.error(error.stack);
 });
 
 process.on("unhandledRejection", (reason, promise) => {
-  logger.error("----- Reason -----");
-  logger.error(reason);
+  console.error("----- Reason -----");
+  console.error(reason);
 });
 
 process.on("SIGINT", function () {
@@ -97,7 +96,7 @@ global.io = io;
 require("./sockets/socket")(io);
 
 server.listen(process.env.PORT || 8080, async () => {
-  logger.info(`server started on port number ${process.env.PORT} }`);
+  console.info(`server started on port number ${process.env.PORT} }`);
 
   /**
    * Firebase config

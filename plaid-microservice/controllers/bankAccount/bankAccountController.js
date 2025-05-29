@@ -4,7 +4,6 @@ const {
   encryptAES,
   decryptAES,
 } = require("../../helpers/utility");
-const logger = require("../../middleware/logger/logger");
 const { database } = require("firebase-admin");
 const moment = require("moment");
 const _ = require("lodash");
@@ -212,7 +211,7 @@ module.exports = {
       const errorMessage =
         error?.response?.data?.error_message ||
         "Failed to generate link token " + error.toString();
-      logger.error(errorMessage + " error in creating link token");
+      console.error(errorMessage + " error in creating link token");
       return sendResponse(res, httpCodes.INTERNAL_SERVER_ERROR, {
         message: errorMessage,
       });
@@ -281,7 +280,7 @@ module.exports = {
       const isProcessed = await redis.get(redisKey);
 
       if (isProcessed) {
-        logger.warn(`Duplicate webhook ignored : ${link_session_id}`);
+        console.warn(`Duplicate webhook ignored : ${link_session_id}`);
         return;
       }
 
@@ -394,7 +393,7 @@ module.exports = {
           accessTokens: [],
         });
       }
-      logger.error("webhook exchange failed " + errorMessage);
+      console.error("webhook exchange failed " + errorMessage);
       if (webhookType !== "INVALID_WEBHOOK") {
         // sendErrorNotification(
         //   req.query.uid,
@@ -457,7 +456,7 @@ module.exports = {
         error?.response?.data?.error_message ||
         "Failed to get transactions " + error.toString();
 
-      logger.error("Error fetching transactions: " + errorMessage);
+      console.error("Error fetching transactions: " + errorMessage);
       return sendResponse(res, httpCodes.BAD_REQUEST, {
         message: errorMessage,
       });

@@ -4,7 +4,6 @@ const {
   httpCodes,
   decryptAES,
 } = require("../../helpers/utility");
-const logger = require("../../middleware/logger/logger");
 const {
   PLAID_SETTINGS_KEYS,
   plaidClient,

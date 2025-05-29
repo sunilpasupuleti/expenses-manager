@@ -1,4 +1,3 @@
-const logger = require("../middleware/logger/logger");
 const OneSignal = require("onesignal-node");
 const db = require("firebase-admin/database");
 
@@ -12,7 +11,7 @@ module.exports = {
   async sendDailyReminderNotification(data) {
     try {
       let display = data.displayName || data.email || data.phoneNumber;
-      logger.info("sending daily reminder notification to  - " + display);
+      console.info("sending daily reminder notification to  - " + display);
       let title = "Reminder 🔔";
       let body = `Have you recorded your transactions..🤔? If not 😕 do it now.`;
       let notificationData = {
@@ -57,13 +56,13 @@ module.exports = {
         ],
         data: notificationData,
       });
-      logger.info(JSON.stringify(res.body));
+      console.info(JSON.stringify(res.body));
     } catch (err) {
       if (err instanceof OneSignal.HTTPError) {
-        logger.error(err.body);
+        console.error(err.body);
       } else {
         console.error(" Error in enabling daily reminder ");
-        logger.error(JSON.stringify(err));
+        console.error(JSON.stringify(err));
       }
     }
   },
@@ -74,7 +73,7 @@ module.exports = {
       let platform = data.platform;
       let buttons = [];
 
-      logger.info("sending daily backup notification to  - " + display);
+      console.info("sending daily backup notification to  - " + display);
 
       let title = "Backup Progressing 🔄";
       let body = `Please hold on, we're currently backing up your data.`;
@@ -136,7 +135,7 @@ module.exports = {
           ],
           data: notificationData,
         });
-        logger.info(JSON.stringify(res.body) + " Sent manual notification");
+        console.info(JSON.stringify(res.body) + " Sent manual notification");
       };
 
       if (platform === "ios") {
@@ -171,7 +170,7 @@ module.exports = {
           ],
           data: notificationData,
         });
-        logger.info(JSON.stringify(res.body));
+        console.info(JSON.stringify(res.body));
 
         setTimeout(async () => {
           try {
@@ -192,10 +191,10 @@ module.exports = {
       }
     } catch (err) {
       if (err instanceof OneSignal.HTTPError) {
-        logger.error(err.body);
+        console.error(err.body);
       } else {
-        logger.error("Error in enabling Daily Backup");
-        logger.error(JSON.stringify(err));
+        console.error("Error in enabling Daily Backup");
+        console.error(JSON.stringify(err));
       }
     }
   },
@@ -232,12 +231,12 @@ module.exports = {
           },
         ],
       });
-      logger.info(JSON.stringify(res.body));
+      console.info(JSON.stringify(res.body));
     } catch (err) {
       if (err instanceof OneSignal.HTTPError) {
-        logger.error(err.body);
+        console.error(err.body);
       } else {
-        logger.error(JSON.stringify(err));
+        console.error(JSON.stringify(err));
       }
     }
   },
@@ -296,13 +295,13 @@ module.exports = {
         ],
         data: notificationData,
       });
-      logger.info(JSON.stringify(res.body));
+      console.info(JSON.stringify(res.body));
     } catch (err) {
       if (err instanceof OneSignal.HTTPError) {
-        logger.error(err.body);
+        console.error(err.body);
       } else {
-        logger.error("Error in enabling Daily Backup");
-        logger.error(JSON.stringify(err));
+        console.error("Error in enabling Daily Backup");
+        console.error(JSON.stringify(err));
       }
     }
   },

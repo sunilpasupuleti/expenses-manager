@@ -1,7 +1,6 @@
 const httpstatus = require("http-status-codes");
 const crypto = require("crypto-js");
 const mongoose = require("mongoose");
-const logger = require("../middleware/logger/logger");
 const ObjectId = mongoose.Types.ObjectId;
 const jwt = require("jsonwebtoken");
 const moment = require("moment");
@@ -56,7 +55,7 @@ function sendResponse(response, code = httpstatus.StatusCodes, data = {}) {
   //check if it exists in code;
   let exists = Object.keys(httpstatus.StatusCodes).filter((c) => c == code);
   if (!exists || exists.length === 0) {
-    logger.info("No response code found");
+    console.info("No response code found");
     return;
   }
   return response.status(code).json(data);
