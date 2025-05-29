@@ -19,6 +19,7 @@ import {
   DB_PATH,
   DB_BACKUP_PATH,
   PRIVACY_POLICY_URL,
+  PLAID_BACKEND_URL,
 } from '../../config';
 import initializeOneSignal from '../components/notifcications/one-signal';
 import initializePushNotification from '../components/notifcications/push-notification';
@@ -131,6 +132,7 @@ export const loadAppStatus = createAsyncThunk(
         MINDEE_API_KEY: MINDEE_API_KEY,
         MINDEE_API_URL: MINDEE_API_URL,
         FIREBASE_STORAGE_BUCKET: FIREBASE_STORAGE_BUCKET,
+        PLAID_BACKEND_URL: PLAID_BACKEND_URL,
         FIREBASE_STORAGE_URL: FIREBASE_STORAGE_URL,
         FIREBASE_DATABASE_URL: FIREBASE_DATABASE_URL,
         DB_PATH: DB_PATH,

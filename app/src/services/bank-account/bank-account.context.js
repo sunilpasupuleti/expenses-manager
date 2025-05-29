@@ -18,7 +18,10 @@ export const BankAccountContext = createContext({
 
 // BankAccountContext Provider
 export const BankAccountContextProvider = ({children}) => {
-  const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
+  const PLAID_BACKEND_URL = remoteConfig()
+    .getValue('PLAID_BACKEND_URL')
+    .asString();
+
   const dispatch = useDispatch();
   const {sendRequest} = useHttp();
 
@@ -68,7 +71,7 @@ export const BankAccountContextProvider = ({children}) => {
       sendRequest(
         {
           type: 'POST',
-          url: BACKEND_URL + '/bank-account/link-token/',
+          url: PLAID_BACKEND_URL + '/bank-account/link-token/',
           data: data,
           headers: {
             authorization: 'Bearer ' + jwtToken,
@@ -99,10 +102,12 @@ export const BankAccountContextProvider = ({children}) => {
     try {
       showLoader('linkBank', true, 'Fetching Bank Accounts');
       let jwtToken = await auth().currentUser.getIdToken();
+      console.log(PLAID_BACKEND_URL + '/bank-account/accounts/', jwtToken);
+
       sendRequest(
         {
           type: 'GET',
-          url: BACKEND_URL + '/bank-account/accounts/',
+          url: PLAID_BACKEND_URL + '/bank-account/accounts/',
           headers: {
             authorization: 'Bearer ' + jwtToken,
           },
@@ -137,7 +142,7 @@ export const BankAccountContextProvider = ({children}) => {
         {
           type: 'POST',
           data: data,
-          url: BACKEND_URL + '/bank-account/balance/',
+          url: PLAID_BACKEND_URL + '/bank-account/balance/',
           headers: {
             authorization: 'Bearer ' + jwtToken,
           },
@@ -175,7 +180,7 @@ export const BankAccountContextProvider = ({children}) => {
         {
           type: 'POST',
           data: data,
-          url: BACKEND_URL + '/bank-account/transactions/',
+          url: PLAID_BACKEND_URL + '/bank-account/transactions/',
           headers: {
             authorization: 'Bearer ' + jwtToken,
           },
@@ -212,7 +217,7 @@ export const BankAccountContextProvider = ({children}) => {
         {
           type: 'POST',
           data: data,
-          url: BACKEND_URL + '/bank-account/unlink/',
+          url: PLAID_BACKEND_URL + '/bank-account/unlink/',
           headers: {
             authorization: 'Bearer ' + jwtToken,
           },

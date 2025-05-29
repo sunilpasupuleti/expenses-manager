@@ -12,10 +12,6 @@ const {
   PLAID_SETTINGS_KEYS,
 } = require("../../config/plaidConfig");
 const {
-  sendNotification,
-  sendErrorNotification,
-} = require("../../helpers/notificationHelpers");
-const {
   notifyInactiveBankUser,
 } = require("../../helpers/scheduled-jobs/checkInactivePlaidUsers");
 const { getRedis } = require("../../config/redisConfig");
