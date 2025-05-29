@@ -4,7 +4,8 @@ const {
   encryptAES,
   decryptAES,
 } = require("../../helpers/utility");
-const { database } = require("firebase-admin");
+const { firebaseAdmin } = require("../../config/firebase");
+const database = firebaseAdmin.database;
 const moment = require("moment");
 const _ = require("lodash");
 const {

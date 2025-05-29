@@ -1,10 +1,10 @@
-const firebaseAdmin = require("firebase-admin");
 const { cryptoDecrypt, sendResponse, httpCodes } = require("./utility");
 const jwt = require("jsonwebtoken");
 const jwkToPem = require("jwk-to-pem");
 const { SHA256 } = require("crypto-js");
 const { plaidClient } = require("../config/plaidConfig");
 const { getRedis } = require("../config/redisConfig");
+const { firebaseAdmin } = require("../config/firebase");
 
 module.exports = {
   VerifyToken: async (req, res, next) => {

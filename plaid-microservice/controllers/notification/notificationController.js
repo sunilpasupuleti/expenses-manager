@@ -1,6 +1,7 @@
 const httpstatus = require("http-status-codes");
 const schedule = require("node-schedule");
-const db = require("firebase-admin/database");
+const { firebaseAdmin } = require("../../config/firebase");
+const db = firebaseAdmin.database;
 
 const {
   sendDailyReminderNotification,
@@ -25,7 +26,7 @@ module.exports = {
       if (!uid || !dailyReminderTime || !fcmToken || !timeZone) {
         throw "UID , TIME , FCM TOKEN , TIME ZONE fields are required";
       }
-      const dbRef = await db.getDatabase().ref(`/users/${uid}`);
+      const dbRef = await db().ref(`/users/${uid}`);
       let snapshot = await dbRef.once("value");
       const userData = snapshot.val();
       if (!userData) {
@@ -100,7 +101,7 @@ module.exports = {
       if (!uid || !fcmToken || !timeZone) {
         throw "UID , timeZone, FCM Token required ";
       }
-      const dbRef = await db.getDatabase().ref(`/users/${uid}`);
+      const dbRef = await db().ref(`/users/${uid}`);
       let snapshot = await dbRef.once("value");
       const userData = snapshot.val();
       if (!userData) {
@@ -212,7 +213,7 @@ module.exports = {
       );
       let jobFoundDailyBackup = jobs[jobKeyDailyBackupFound];
 
-      const dbRef = await db.getDatabase().ref(`/users/${uid}`);
+      const dbRef = await db().ref(`/users/${uid}`);
       let snapshot = await dbRef.once("value");
       const userData = snapshot.val();
       if (!userData) {

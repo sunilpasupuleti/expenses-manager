@@ -1,5 +1,6 @@
 const schedule = require("node-schedule");
-const { database } = require("firebase-admin");
+const { firebaseAdmin } = require("../../config/firebase");
+const database = firebaseAdmin.database;
 const moment = require("moment");
 const path = require("path");
 const fs = require("fs");

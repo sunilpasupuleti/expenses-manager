@@ -1,4 +1,5 @@
-const { database } = require("firebase-admin");
+const { firebaseAdmin } = require("../../config/firebase");
+const database = firebaseAdmin.database;
 const {
   sendResponse,
   httpCodes,

@@ -8,7 +8,6 @@ const path = require("path");
 const schedule = require("node-schedule");
 const socketIo = require("socket.io");
 const cookieParser = require("cookie-parser");
-const { database, auth } = require("firebase-admin");
 const _ = require("lodash");
 const { getRedis } = require("./config/redisConfig");
 
@@ -96,23 +95,7 @@ global.io = io;
 require("./sockets/socket")(io);
 
 server.listen(process.env.PORT || 8080, async () => {
-  console.info(`server started on port number ${process.env.PORT} }`);
-
-  /**
-   * Firebase config
-   */
-  const { initializeApp, cert } = require("firebase-admin/app");
-  const serviceAccountBase64 = process.env.FIREBASE_SERVICE_ACCOUNT_BASE64;
-  const serviceAccountJSON = JSON.parse(
-    Buffer.from(serviceAccountBase64, "base64").toString("utf-8")
-  );
-
-  initializeApp({
-    credential: cert(serviceAccountJSON),
-    databaseURL: process.env.FIREBASE_DATABASE_URL,
-    storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-  });
-
+  console.warn(`server started on port number ${process.env.PORT} }`);
   /**
    * REDIS
    */

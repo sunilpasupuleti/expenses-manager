@@ -1,6 +1,6 @@
 const OneSignal = require("onesignal-node");
-const db = require("firebase-admin/database");
-
+const { firebaseAdmin } = require("../config/firebase");
+const db = firebaseAdmin.database;
 const { getFirebaseAccessUrl } = require("./utility");
 const client = new OneSignal.Client(
   process.env.ONE_SIGNAL_APP_ID,
@@ -174,9 +174,7 @@ module.exports = {
 
         setTimeout(async () => {
           try {
-            const dbRef = db
-              .getDatabase()
-              .ref(`users/${data.uid}/lastDailyBackup`);
+            const dbRef = db().ref(`users/${data.uid}/lastDailyBackup`);
             const snapshot = await dbRef.once("value");
             let lastBackup = snapshot.val();
             lastBackup = new Date().toISOString().split("T")[0];

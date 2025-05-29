@@ -4,7 +4,8 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const jwt = require("jsonwebtoken");
 const moment = require("moment");
-const storage = require("firebase-admin/storage");
+const { firebaseAdmin } = require("../config/firebase");
+const storage = firebaseAdmin.storage;
 const FIREBASE_STORAGE_URL = process.env.FIREBASE_STORAGE_URL;
 
 module.exports = {
@@ -101,7 +102,7 @@ async function firebaseRemoveFiles(paths) {
   return Promise.all(
     paths.map(async (path) => {
       try {
-        const bucket = storage.getStorage().bucket();
+        const bucket = storage().bucket();
         let file = bucket.file(path);
 
         let fileExists = await file.exists();
