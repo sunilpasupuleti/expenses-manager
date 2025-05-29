@@ -6,6 +6,11 @@
       "use": "@vercel/node"
     }
   ],
+  "build": {
+    "env": {
+      "VERCEL_BUILD_CACHE": "false"
+    }
+  },
   "routes": [
     {
       "src": "/(.*)",

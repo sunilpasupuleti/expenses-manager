@@ -67,7 +67,7 @@ const useHttp = () => {
                 'Check your Internet Connection or Error occured in calling the API';
             }
             console.log(err);
-            console.log(message ? message : err, ' - error in http call');
+            console.log(message ? message : err, ' - error in http call', url);
             setError(message);
             callbacks.errorCallback &&
               callbacks.errorCallback(message, err?.response?.data);
