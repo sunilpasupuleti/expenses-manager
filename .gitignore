@@ -42,7 +42,7 @@ release.keystore
 
 # But allow encrypted .env.enc files
 !*.env.enc
-
+!*.env.*.enc
 # node.js
 #
 .firebase/
@@ -86,6 +86,8 @@ backend/config/AuthKey_78MHH3V4YC.p8
 backend/config/expensesmanager.json
 backend/config/.env.development
 backend/config/.env.production
+backend/config/private-key.asc
+
 web/.env.development
 web/.env.production
 playstore-deploy-key.json

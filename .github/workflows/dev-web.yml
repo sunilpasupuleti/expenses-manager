@@ -49,4 +49,5 @@ jobs:
 
       - name: Upload graphics folder to VPS
         run: |
-          sshpass -p "${{ secrets.PASS_WORD }}" scp -r graphics ${{ secrets.HOST_NAME }}:/var/www/dev.expensesmanager.app/
+          sshpass -p "${{ secrets.PASS_WORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.HOST_NAME }} "mkdir -p '/var/www/dev.expensesmanager.app/graphics'"
+          sshpass -p "${{ secrets.PASS_WORD }}" scp -r "graphics" "${{ secrets.HOST_NAME }}:'/var/www/dev.expensesmanager.app/'"

@@ -21,9 +21,6 @@ const {
 } = require("../../helpers/scheduled-jobs/checkInactivePlaidUsers");
 const { getRedis } = require("../../config/redisConfig");
 const { PlaidEnvironments } = require("plaid");
-const {
-  notifyUserStatusChange,
-} = require("../admin/accountDeletion/accountDeletionNotifier");
 const { UNLINK_ACCOUNT, LINK_ACCOUNT, TRANSACTIONS, ACCOUNT_BALANCE } =
   PLAID_SETTINGS_KEYS;
 const APP_PACKAGE_NAME = process.env.APP_PACKAGE_NAME;
@@ -125,27 +122,6 @@ function logPlaidUsage(uid, apiName, extraFields = {}, accessToken = null) {
     }
   });
 }
-
-async function testHook() {
-  try {
-    const uid = "3IObo21kJtQ4i1BjsHT6UL033Hw2";
-    const usrToken =
-      "U2FsdGVkX196ZwQxZWShLuiCdHFwIsPmFKMH58RBEhu7VWsUcFDWKcdyeeYPRrW554eLTU+XjV0CBVYdctuO1wBZIHAhQWj9b1fOWSgSCjc=";
-    const decToken = decryptAES(usrToken, uid);
-    console.log(decToken);
-
-    await plaidClient.userRemove({
-      user_token: decToken,
-    });
-    // const response = await plaidClient.sandboxItemResetLogin({
-    //   access_token: "access-sandbox-2b5869bd-80ee-4617-b135-fbc77b8d84c7",
-    // });
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-// testHook();
 
 module.exports = {
   /**
