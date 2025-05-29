@@ -6,6 +6,15 @@ import {name as appName} from './app.json';
 import store from './src/store';
 import {headlessTask} from './headlessTask';
 
+import * as Sentry from '@sentry/react-native';
+import {SENTRY_DSN} from './config';
+
+// 🔐 Initialize Sentry
+Sentry.init({
+  dsn: SENTRY_DSN,
+  sendDefaultPii: true,
+});
+
 const Redux = () => {
   return (
     <Provider store={store}>
@@ -14,5 +23,6 @@ const Redux = () => {
   );
 };
 
-AppRegistry.registerComponent(appName, () => Redux);
+const SentryWrappedRedux = Sentry.wrap(Redux);
+AppRegistry.registerComponent(appName, () => SentryWrappedRedux);
 AppRegistry.registerHeadlessTask('AlarmTask', () => headlessTask);

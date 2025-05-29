@@ -10,6 +10,7 @@ const socketIo = require("socket.io");
 const cookieParser = require("cookie-parser");
 const _ = require("lodash");
 const { getRedis } = require("./config/redisConfig");
+const Sentry = require("@sentry/node");
 
 app.use(
   cors({
@@ -101,4 +102,9 @@ server.listen(process.env.PORT || 8080, async () => {
    */
   const redis = await getRedis();
   global.redis = redis;
+
+  Sentry.init({
+    dsn: process.env.SENTRY_DSN,
+    tracesSampleRate: 1.0,
+  });
 });

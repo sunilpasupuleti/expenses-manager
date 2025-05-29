@@ -39,6 +39,7 @@ import RNFetchBlob from 'rn-fetch-blob';
 import Share from 'react-native-share';
 import defaultCategories from '../../components/utility/defaultCategories.json';
 import {SocketContext} from '../socket/socket.context';
+import * as Sentry from '@sentry/react-native';
 
 GoogleSignin.configure({
   webClientId: remoteConfig().getValue('WEB_CLIENT_ID').asString(),
@@ -624,7 +625,11 @@ export const AuthenticationContextProvider = ({children}) => {
         if (transformedData.email) {
           oneSignalTags.email = transformedData.email;
         }
-
+        Sentry.setUser({
+          id: uid,
+          email: transformedData.email || 'No Email',
+          username: transformedData.displayName || 'No Display Name',
+        });
         await OneSignal.login(uid);
 
         await OneSignal.User.addTags(oneSignalTags);
