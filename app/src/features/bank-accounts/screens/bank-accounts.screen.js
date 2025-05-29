@@ -365,7 +365,7 @@ export const BankAccountsScreen = ({navigation, route}) => {
             )}
           </>
         ) : (
-          <FlexColumn>
+          <FlexColumn style={{marginBottom: 250}}>
             <Image
               source={require('../../../../assets/no_accounts.png')}
               style={{
