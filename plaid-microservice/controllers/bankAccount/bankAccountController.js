@@ -12,11 +12,14 @@ const {
   plaidClient,
   PLAID_SETTINGS_KEYS,
 } = require("../../config/plaidConfig");
-const {
-  notifyInactiveBankUser,
-} = require("../../helpers/scheduled-jobs/checkInactivePlaidUsers");
+
 const { getRedis } = require("../../config/redisConfig");
 const { PlaidEnvironments } = require("plaid");
+const {
+  notifyInactiveBankUser,
+  notifyTransactionRefreshReady,
+} = require("../../helpers/plaidNotificationHelper");
+
 const { UNLINK_ACCOUNT, LINK_ACCOUNT, TRANSACTIONS, ACCOUNT_BALANCE } =
   PLAID_SETTINGS_KEYS;
 const APP_PACKAGE_NAME = process.env.APP_PACKAGE_NAME;
@@ -231,6 +234,7 @@ module.exports = {
       const user = req.user;
       const uid = req.query.uid;
       const userRef = database().ref(`/users/${uid}/plaid`);
+      console.log(webhook_code, webhook_type);
 
       if (
         webhook_type === "ITEM" &&
@@ -261,6 +265,49 @@ module.exports = {
           message: "Done Notifycing User about unlinked account",
         });
         // }
+      } else if (
+        webhook_type === "TRANSACTIONS" &&
+        webhook_code === "DEFAULT_UPDATE"
+      ) {
+        const { item_id } = req.body;
+        const snapshot = await database()
+          .ref(`/users/${uid}/plaid/accessTokens`)
+          .once("value");
+
+        const accessTokens = snapshot.val() || [];
+        let matchedToken = null;
+
+        for (const tokenObj of accessTokens) {
+          try {
+            const token = decryptAES(tokenObj.token, uid);
+            const { data } = await plaidClient.itemGet({ access_token: token });
+            if (data.item.item_id === item_id) {
+              matchedToken = token;
+              break;
+            }
+          } catch (err) {
+            console.warn("🔍 Failed to match item_id:", err?.message || err);
+          }
+        }
+        let institutionName = "your bank";
+        if (matchedToken) {
+          try {
+            const { data } = await plaidClient.accountsGet({
+              access_token: matchedToken,
+            });
+            institutionName = data.item.institution_name || institutionName;
+          } catch (err) {
+            console.warn(
+              "⚠️ Failed to get institution name:",
+              err?.message || err
+            );
+          }
+        }
+
+        notifyTransactionRefreshReady(uid, institutionName);
+        return sendResponse(res, httpCodes.OK, {
+          message: "User has been notified about refreshed transactions",
+        });
       } else if (
         webhook_type !== "LINK" ||
         webhook_code !== "SESSION_FINISHED"
@@ -417,7 +464,20 @@ module.exports = {
         endDate,
         offset = 0,
         count = 50,
+        refresh,
       } = req.body;
+
+      if (refresh) {
+        await plaidClient.transactionsRefresh({
+          access_token: accessToken,
+        });
+        return sendResponse(res, httpCodes.OK, {
+          transactions: [],
+          groupedTransactions: [],
+          message:
+            "🔁 Refresh request sent successfully. You'll be notified once the latest transactions are available.",
+        });
+      }
 
       const response = await plaidClient.transactionsGet({
         access_token: accessToken,

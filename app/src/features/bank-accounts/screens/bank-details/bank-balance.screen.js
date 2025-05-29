@@ -35,6 +35,7 @@ export const BankBalanceScreen = ({navigation, route}) => {
   const theme = useTheme();
   const routeIsFocused = useIsFocused();
   const {account, institution} = route.params;
+
   const insets = useSafeAreaInsets();
 
   const dispatch = useDispatch();

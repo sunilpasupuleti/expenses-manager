@@ -56,6 +56,16 @@ const apiSettings = [
     label: "Max Linked Institutions",
     type: "number",
   },
+  {
+    key: "refresh_transactions_per_day",
+    label: "Max Refresh Transactions calls / per day",
+    type: "number",
+  },
+  {
+    key: "account_balance_per_hour",
+    label: "Max Account Balance calls / per hour",
+    type: "number",
+  },
 ];
 
 const apiSummary = [
@@ -114,8 +124,13 @@ const Plaid = ({ title }) => {
   };
 
   const updatePlaidSettings = async () => {
+    let settingsData = {
+      ...settings,
+    };
+    delete settingsData.oauth_redirect_url;
+    delete settingsData.webhook_url;
     const data = {
-      settings: settings,
+      settings: settingsData,
     };
     onUpdatePlaidSettings(
       data,

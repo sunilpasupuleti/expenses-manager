@@ -9,6 +9,8 @@ const {
   PLAID_SETTINGS_KEYS,
   plaidClient,
 } = require("../../config/plaidConfig");
+const { getRedis } = require("../../config/redisConfig");
+const moment = require("moment");
 
 const {
   TRANSACTIONS,
@@ -17,6 +19,8 @@ const {
   ACCOUNT_BALANCE,
   UNLINK_ACCOUNT,
   MAX_LINKED_INSTITUTIONS,
+  REFRESH_TRANSACTIONS_PER_DAY,
+  ACCOUNT_BALANCE_PER_HOUR,
   ENABLED,
 } = PLAID_SETTINGS_KEYS;
 
@@ -72,6 +76,63 @@ module.exports = {
             if (uniqueInstitutions.size >= maxAllowed) {
               throw `You can only link ${maxAllowed} bank institutions! If you need additional access please contact support team`;
             }
+          }
+        }
+
+        if (
+          actionKey === TRANSACTIONS &&
+          settings[REFRESH_TRANSACTIONS_PER_DAY]
+        ) {
+          const uid = req.user.uid;
+          const refreshLimit = settings[REFRESH_TRANSACTIONS_PER_DAY];
+          if (req.body?.refresh && uid) {
+            const redis = await getRedis();
+            const redisKey = `plaid:refresh_usage:${uid}:${moment().format(
+              "YYYY-MM-DD"
+            )}`;
+            const currentCount = parseInt((await redis.get(redisKey)) || 0);
+            if (currentCount >= refreshLimit) {
+              throw `⚠️ You've reached the daily limit of ${refreshLimit} transaction refreshes. Please try again tomorrow.`;
+            }
+            await redis.set(redisKey, currentCount + 1, {
+              EX: 24 * 60 * 60, //Expires in 24 hours
+            });
+          }
+        }
+
+        if (
+          actionKey === ACCOUNT_BALANCE &&
+          settings[ACCOUNT_BALANCE_PER_HOUR]
+        ) {
+          const uid = req.user.uid;
+          const balanceLimit = settings[ACCOUNT_BALANCE_PER_HOUR];
+
+          if (uid) {
+            const redis = await getRedis();
+
+            // Hourly limit key
+            const hourlyKey = `plaid:balance_check:${uid}:${moment().format(
+              "YYYY-MM-DD-HH"
+            )}`;
+            const hourlyCount = parseInt((await redis.get(hourlyKey)) || 0);
+
+            if (hourlyCount >= balanceLimit) {
+              throw `⚠️ You can only check account balance ${balanceLimit} times per hour. Please wait and try again later.`;
+            }
+
+            // Short burst limits (anti-spam)
+            const minuteKey = `plaid:balance_burst:${uid}:${moment().format(
+              "YYYY-MM-DD-HH-mm"
+            )}`;
+            const minuteLimit = 1;
+            const minuteCount = parseInt((await redis.get(minuteKey)) || 0);
+
+            if (minuteCount >= minuteLimit) {
+              throw `⏱️ Too many balance checks in 1 minute. Please wait a moment.`;
+            }
+            // Increment usage counters
+            await redis.set(hourlyKey, hourlyCount + 1, { EX: 60 * 60 }); // 1 hour
+            await redis.set(minuteKey, minuteCount + 1, { EX: 60 }); // 1 min
           }
         }
 

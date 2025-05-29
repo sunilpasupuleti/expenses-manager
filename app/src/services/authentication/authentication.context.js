@@ -67,7 +67,8 @@ let authStateTriggered = false;
 
 export const AuthenticationContextProvider = ({children}) => {
   const [userData, setUserData] = useState(null);
-  const {initializeWebSocket} = useContext(SocketContext);
+  const {initializeWebSocket, initializePlaidWebSocket} =
+    useContext(SocketContext);
   const [userAdditionalDetails, setUserAdditionalDetails] = useState(null);
   const [userDetailsFirebase, setUserDetailsFirebase] = useState(null);
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
@@ -630,6 +631,7 @@ export const AuthenticationContextProvider = ({children}) => {
 
         // Initialize web socket
         initializeWebSocket(uid);
+        initializePlaidWebSocket(uid);
 
         // console.log(transformedData, 'transformed');
         await createOrReplaceData('Users', transformedData, 'uid');

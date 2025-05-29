@@ -21,6 +21,8 @@ const PLAID_SETTINGS_KEYS = {
   TRANSACTIONS: "transactions",
   ACCOUNTS: "accounts",
   MAX_LINKED_INSTITUTIONS: "max_linked_institutions",
+  REFRESH_TRANSACTIONS_PER_DAY: "refresh_transactions_per_day",
+  ACCOUNT_BALANCE_PER_HOUR: "account_balance_per_hour",
 };
 
 module.exports = {

@@ -29,14 +29,13 @@ export const Row = styled.View`
 `;
 
 export const TransactionTitle = styled(BaseText)`
-  font-size: 16px;
   font-weight: bold;
   color: ${props => props.theme.colors.text.primary};
 `;
 
 export const TransactionSubText = styled(BaseText)`
   margin-top: 3px;
-  font-size: 13px;
+  font-size: 12px;
   color: #888;
 `;
 

@@ -24,6 +24,7 @@ import {
   ActivityIndicator,
   Button,
   Divider,
+  IconButton,
   List,
   Modal,
   Portal,
@@ -47,6 +48,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import _ from 'lodash';
 import Fuse from 'fuse.js';
+import {GetCurrencySymbol} from '../../../../components/symbol.currency';
 
 export const BankTransactionsScreen = ({navigation, route}) => {
   const theme = useTheme();
@@ -161,11 +163,8 @@ export const BankTransactionsScreen = ({navigation, route}) => {
   };
 
   const renderTransaction = ({item}) => {
-    const isCreditCard = account.type === 'credit';
-
-    const isExpense = isCreditCard
-      ? item.amount > 0 // payment = expense
-      : item.amount < 0;
+    // plaid handles reverse
+    const isExpense = item.amount > 0 ? true : false; //money moving out treated as positive in plaid
     const amountColor = isExpense ? 'tomato' : theme.colors.text.success;
     const isPending = item.pending;
 
@@ -187,7 +186,7 @@ export const BankTransactionsScreen = ({navigation, route}) => {
                 <TransactionTitle
                   numberOfLines={5}
                   ellipsizeMode="tail"
-                  style={{maxWidth: 180, fontSize: 15}}>
+                  style={{maxWidth: 180, fontSize: 14}}>
                   {item.merchant_name || item.name}
                 </TransactionTitle>
 
@@ -196,6 +195,10 @@ export const BankTransactionsScreen = ({navigation, route}) => {
                 </TransactionSubText>
                 <TransactionSubText>
                   {item.personal_finance_category?.primary || 'Category'}
+                </TransactionSubText>
+
+                <TransactionSubText>
+                  Transaction Channel - {item.payment_channel}
                 </TransactionSubText>
               </View>
             </Row>
@@ -211,7 +214,9 @@ export const BankTransactionsScreen = ({navigation, route}) => {
                 </FlexRow>
               )}
               <TransactionAmount style={{color: amountColor}}>
-                {item.iso_currency_code} {Math.abs(item.amount).toFixed(2)}
+                {isExpense ? '-' : '+'}{' '}
+                {GetCurrencySymbol(item.iso_currency_code)}{' '}
+                {Math.abs(item.amount).toFixed(2)}
               </TransactionAmount>
             </View>
           </Row>
@@ -236,8 +241,14 @@ export const BankTransactionsScreen = ({navigation, route}) => {
     }
   };
 
-  const onGetTransactions = (reset = true) => {
+  const onHardRefreshTransactions = () => {
+    onGetTransactions(true, true);
+  };
+
+  const onGetTransactions = (reset = true, refresh = false) => {
     const startDate = moment(fromDate).format('YYYY-MM-DD');
+    console.log(reset, refresh);
+
     const endDate = moment(toDate).format('YYYY-MM-DD');
 
     const data = {
@@ -247,6 +258,7 @@ export const BankTransactionsScreen = ({navigation, route}) => {
       endDate: endDate,
       offset: reset ? 0 : offset,
       count: LIMIT,
+      refresh: refresh,
     };
 
     getTransactions(
@@ -289,9 +301,33 @@ export const BankTransactionsScreen = ({navigation, route}) => {
     <SafeArea child={true}>
       <MainWrapper>
         <>
-          <Button mode="outlined">
-            {account.name} - {account.mask}
-          </Button>
+          <FlexRow
+            style={{alignItems: 'center', justifyContent: 'space-between'}}>
+            <Button mode="outlined" style={{width: '85%', marginRight: 10}}>
+              {account.name} - {account.mask}
+            </Button>
+            <IconButton
+              icon="reload"
+              mode="contained"
+              containerColor={theme.colors.brand.primary}
+              iconColor="#fff"
+              size={20}
+              onPress={onHardRefreshTransactions}
+            />
+          </FlexRow>
+
+          <Text
+            fontsize="12px"
+            variantType="caption"
+            color={'#888'}
+            style={{
+              marginTop: 6,
+              textAlign: 'center',
+            }}>
+            If you think the data isn't up to date, tap to fetch real-time
+            transactions. Limited to 3 times/day.
+          </Text>
+
           <Spacer size="large">
             <FlexRow justifyContent="space-between">
               <SearchContainer>
@@ -467,7 +503,10 @@ export const BankTransactionsScreen = ({navigation, route}) => {
             </Spacer>
           </>
         ) : (
-          <FlexColumn>
+          <FlexColumn
+            style={{
+              marginBottom: 200,
+            }}>
             <Image
               source={require('../../../../../assets/no_accounts.png')}
               style={{

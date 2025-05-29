@@ -38,7 +38,7 @@ export const BankAccountsScreen = ({navigation, route}) => {
   const {userData} = useContext(AuthenticationContext);
   const {fetchLinkToken, getLinkedBankAccounts} =
     useContext(BankAccountContext);
-  const {socket} = useContext(SocketContext);
+  const {plaidSocket} = useContext(SocketContext);
   const [showRefresh, setShowRefresh] = useState(false);
   const dispatch = useDispatch();
   const timeoutRef = useRef(null);
@@ -86,11 +86,14 @@ export const BankAccountsScreen = ({navigation, route}) => {
   }, []);
 
   useEffect(() => {
-    console.log('Current Socket:', socket ? 'initialized' : 'no');
+    console.log(
+      'Current Socket:',
+      plaidSocket ? 'plaid socket initialized' : 'no',
+    );
 
-    if (!socket) return;
+    if (!plaidSocket) return;
 
-    const unsubscribe = socket.on(
+    const unsubscribe = plaidSocket.on(
       `plaid_linked_${userData?.uid}`,
       async data => {
         if (data.success) {
@@ -110,9 +113,9 @@ export const BankAccountsScreen = ({navigation, route}) => {
     );
 
     return () => {
-      socket.off(`plaid_linked_${userData?.uid}`, unsubscribe);
+      plaidSocket.off(`plaid_linked_${userData?.uid}`, unsubscribe);
     };
-  }, [socket]);
+  }, [plaidSocket]);
 
   usePlaidEmitter(event => {
     if (event?.eventName === 'EXIT') {

@@ -40,11 +40,16 @@ module.exports = {
       const validKeys = Object.values(PLAID_SETTINGS_KEYS);
 
       const unknownKeys = _.difference(_.keys(settings), validKeys);
+
       if (!_.isEmpty(unknownKeys)) {
         throw `Invalid setting keys: ${unknownKeys.join(", ")}`;
       }
       const invalid = _.pickBy(settings, (value, key) => {
         if (key === PLAID_SETTINGS_KEYS.MAX_LINKED_INSTITUTIONS) {
+          return !_.isInteger(value) || value <= 0;
+        } else if (key === PLAID_SETTINGS_KEYS.REFRESH_TRANSACTIONS_PER_DAY) {
+          return !_.isInteger(value) || value <= 0;
+        } else if (key === PLAID_SETTINGS_KEYS.ACCOUNT_BALANCE_PER_HOUR) {
           return !_.isInteger(value) || value <= 0;
         } else {
           return !_.isBoolean(value);
