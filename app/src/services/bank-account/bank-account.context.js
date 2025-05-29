@@ -102,7 +102,6 @@ export const BankAccountContextProvider = ({children}) => {
     try {
       showLoader('linkBank', true, 'Fetching Bank Accounts');
       let jwtToken = await auth().currentUser.getIdToken();
-      console.log(PLAID_BACKEND_URL + '/bank-account/accounts/', jwtToken);
 
       sendRequest(
         {
