@@ -149,11 +149,17 @@ async function notifyInactiveBankUser(
  */
 async function notifyTransactionRefreshReady(
   uid,
-  institutionName = "your bank"
+  institutionName = "your bank",
+  submittedNotification = false
 ) {
   try {
-    const title = "✅ Transactions Updated";
-    const message = `We’ve successfully synced your latest transactions from ${institutionName}. Head over to your bank details to view the updated data.`;
+    const title = submittedNotification
+      ? "📤 Transaction Refresh Submitted"
+      : "✅ Transactions Updated";
+
+    const message = submittedNotification
+      ? `We’ve submitted a refresh request for your transactions from ${institutionName}. You’ll be notified once they’re updated.`
+      : `We’ve successfully synced your latest transactions from ${institutionName}. Head over to your bank details to view the updated data.`;
 
     const notificationData = {
       uid,
@@ -168,7 +174,11 @@ async function notifyTransactionRefreshReady(
     };
 
     await sendNotification(notificationData);
-    console.info(`📲 Transactions ready notification sent to ${uid}`);
+    console.info(
+      `📲 ${
+        submittedNotification ? "Refresh submitted" : "Transactions ready"
+      } notification sent to ${uid}`
+    );
   } catch (err) {
     console.error("❌ Failed to send transactions ready notification", err);
   }

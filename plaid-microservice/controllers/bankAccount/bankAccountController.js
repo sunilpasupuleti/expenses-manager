@@ -19,6 +19,7 @@ const {
   notifyInactiveBankUser,
   notifyTransactionRefreshReady,
 } = require("../../helpers/plaidNotificationHelper");
+const { sendErrorNotification } = require("../../helpers/notificationHelpers");
 
 const { UNLINK_ACCOUNT, LINK_ACCOUNT, TRANSACTIONS, ACCOUNT_BALANCE } =
   PLAID_SETTINGS_KEYS;
@@ -466,17 +467,32 @@ module.exports = {
         count = 50,
         refresh,
       } = req.body;
-
       if (refresh) {
-        await plaidClient.transactionsRefresh({
+        let institutionName = "your bank";
+        const { data } = await plaidClient.accountsGet({
           access_token: accessToken,
         });
-        return sendResponse(res, httpCodes.OK, {
+        institutionName = data.item.institution_name || institutionName;
+        plaidClient
+          .transactionsRefresh({
+            access_token: accessToken,
+          })
+          .then(() => {})
+          .catch((error) => {
+            const errorMessage =
+              error?.response?.data?.error_message ||
+              "Failed to get transactions " + error.toString();
+            sendErrorNotification(uid, "⛔ Unexpected Issue", errorMessage);
+          });
+        notifyTransactionRefreshReady(uid, institutionName, true);
+        sendResponse(res, httpCodes.OK, {
           transactions: [],
           groupedTransactions: [],
+          refreshedTransactions: true,
           message:
             "🔁 Refresh request sent successfully. You'll be notified once the latest transactions are available.",
         });
+        return;
       }
 
       const response = await plaidClient.transactionsGet({

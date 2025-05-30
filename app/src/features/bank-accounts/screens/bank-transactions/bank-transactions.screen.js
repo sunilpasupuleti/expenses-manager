@@ -264,6 +264,9 @@ export const BankTransactionsScreen = ({navigation, route}) => {
     getTransactions(
       data,
       res => {
+        if (res.refreshedTransactions) {
+          return navigation.goBack();
+        }
         if (res.transactions) {
           const newTxns = reset
             ? res.transactions

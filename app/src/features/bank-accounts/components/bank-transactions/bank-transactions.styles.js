@@ -19,7 +19,7 @@ export const SearchInput = styled.TextInput`
   border-color: ${props => props.theme.colors.brand.primary};
   padding-vertical: 6px;
   font-size: 16px;
-  color: #000;
+  color: ${props => props.theme.colors.text.primary};
 `;
 
 export const Row = styled.View`
