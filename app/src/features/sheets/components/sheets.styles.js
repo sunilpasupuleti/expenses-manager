@@ -55,4 +55,5 @@ export const SheetsList = styled.FlatList.attrs({
 export const NoSheets = styled(SafeArea)`
   align-items: center;
   justify-content: center;
+  padding: 24px;
 `;

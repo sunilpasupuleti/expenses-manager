@@ -43,27 +43,33 @@ import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {DashboardAddButton} from './sheet-details.styles';
 import {SheetDetailsContext} from '../../../../services/sheetDetails/sheetDetails.context';
 import {
+  calculatePrincipalPaid,
   compoundingOptions,
-  getUpcomingEmiDates,
+  generateAmortizationSchedule,
+  getEmiDates,
   repaymentFrequencyOptions,
 } from '../../../../components/utility/helper';
 import {SheetDetailsLoanSummary} from './sheet-details-loan-summary.component';
 import {TabsSwitcher} from '../../../../components/tabs-switcher/tabs-switcher.component';
 import {SheetDetailsEmiList} from './sheet-details-emilist.component';
+import {SheetDetailsAmortizationList} from './sheet-details-amortizationlist.component';
 
 export const SheetDetailsDashboard = ({navigation, route}) => {
   const theme = useTheme();
   const routeIsFocused = useIsFocused();
   const {currentSheet} = useContext(SheetsContext);
-  const {onCheckUpcomingSheetDetails, getSheetDetailsDashboard} =
-    useContext(SheetDetailsContext);
+  const {
+    onCheckUpcomingSheetDetails,
+    getSheetDetailsDashboard,
+    getSheetDetails,
+  } = useContext(SheetDetailsContext);
   const [sheetDetails, setSheetDetails] = useState({
     transactions: [],
     totalCount: 0,
   });
 
   const [activeType, setActiveType] = useState('expense');
-  const [loanTab, setLoanTab] = useState('transactions');
+  const [loanTab, setLoanTab] = useState('emi_schedule');
   const {reRender} = route.params || {};
   const [emiDates, setEmiDates] = useState([]);
   const [allEmiDates, setAllEmiDates] = useState([]);
@@ -72,37 +78,67 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
   const [displayProgress, setDisplayProgress] = useState(0);
 
   useEffect(() => {
-    if (currentSheet?.isLoanAccount) {
-      const repaid = currentSheet.totalRepayable - currentSheet.totalBalance;
+    (async () => {
+      if (currentSheet?.isLoanAccount) {
+        const repaid = currentSheet.totalRepayable - currentSheet.totalBalance;
 
-      const repaidPercent =
-        currentSheet.totalRepayable > 0
-          ? (repaid / currentSheet.totalRepayable) * 100
-          : 0;
+        const repaidPercent =
+          currentSheet.totalRepayable > 0
+            ? (repaid / currentSheet.totalRepayable) * 100
+            : 0;
 
-      const {upcomingEmis, allEmis} = getUpcomingEmiDates(
-        currentSheet.loanStartDate,
-        currentSheet.repaymentFrequency,
-        currentSheet.loanYears,
-        currentSheet.loanMonths,
-        currentSheet.totalPayments || 100,
-      );
-      setEmiDates(upcomingEmis);
-      setAllEmiDates(allEmis);
-      onSetActiveType('expense');
-      setDisplayAmount(
-        `${GetCurrencySymbol(currentSheet.currency)} ${GetCurrencyLocalString(
-          repaid,
-        )}`,
-      );
-      let repaidProgress = repaidPercent.toFixed(2);
-      repaidProgress = repaidProgress / 100;
-      setDisplayPercent(`(${repaidPercent.toFixed(2)}%)`);
+        if (!currentSheet.useReducingBalance) {
+          const {upcomingEmis, allEmis} = getEmiDates(
+            currentSheet.loanStartDate,
+            currentSheet.repaymentFrequency,
+            currentSheet.loanYears,
+            currentSheet.loanMonths,
+            currentSheet.totalPayments || 100,
+          );
+          setEmiDates(upcomingEmis);
+          setAllEmiDates(allEmis);
+        } else {
+          let data = await getSheetDetails(currentSheet);
+          const mergedTransactions = _.flatMap(
+            data.transactions,
+            'transactions',
+          );
 
-      setDisplayProgress(repaidProgress);
-    } else {
-      setDisplayAmount('');
-      setDisplayPercent('');
+          const schedule = generateAmortizationSchedule({
+            interestRate: currentSheet.interestRate,
+            loanAmount: currentSheet.loanAmount,
+            repaymentFrequency: currentSheet.repaymentFrequency,
+            startDate: currentSheet.loanStartDate,
+            totalPayments: currentSheet.totalPayments,
+            transactions: mergedTransactions,
+            expectedEmiAmount: currentSheet.emi,
+            tolerance: 10,
+          });
+
+          setAllEmiDates(schedule);
+        }
+
+        onSetActiveType('expense');
+        setDisplayAmount(
+          `${GetCurrencySymbol(currentSheet.currency)} ${GetCurrencyLocalString(
+            repaid,
+          )}`,
+        );
+        let repaidProgress = repaidPercent.toFixed(2);
+        repaidProgress = repaidProgress / 100;
+        setDisplayPercent(`(${repaidPercent.toFixed(2)}%)`);
+
+        setDisplayProgress(repaidProgress);
+      } else {
+        setDisplayAmount('');
+        setDisplayPercent('');
+      }
+    })();
+  }, [currentSheet]);
+
+  useEffect(() => {
+    if (currentSheet) {
+      // onTest();
     }
   }, [currentSheet]);
 
@@ -185,6 +221,25 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
       setSheetDetails(data);
     }
   };
+
+  // const onTest = async () => {
+  //   let data = await getSheetDetails(currentSheet);
+  //   const mergedTransactions = _.flatMap(data.transactions, 'transactions');
+
+  //   const schedule = generateAmortizationSchedule({
+  //     interestRate: currentSheet.interestRate,
+  //     loanAmount: currentSheet.loanAmount,
+  //     repaymentFrequency: currentSheet.repaymentFrequency,
+  //     startDate: currentSheet.loanStartDate,
+  //     totalPayments: currentSheet.totalPayments,
+  //   });
+  //   const result = calculatePrincipalPaid(
+  //     schedule,
+  //     mergedTransactions,
+  //     currentSheet.loanAmount,
+  //     currentSheet.totalRepayable,
+  //   );
+  // };
 
   return (
     <SafeArea child={true}>
@@ -400,13 +455,21 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
               {loanTab === 'emi_schedule' && (
                 <View style={{marginTop: 20}}>
                   {allEmiDates.length > 0 ? (
-                    <SheetDetailsEmiList
-                      allEmiDates={allEmiDates}
-                      emi={currentSheet.emi}
-                      totalRepayable={currentSheet.totalRepayable}
-                      currency={currentSheet.currency}
-                      totalPayments={currentSheet.totalPayments}
-                    />
+                    currentSheet.useReducingBalance ? (
+                      <SheetDetailsAmortizationList
+                        amortizationData={allEmiDates}
+                        currentSheet={currentSheet}
+                        currency={currentSheet.currency}
+                      />
+                    ) : (
+                      <SheetDetailsEmiList
+                        allEmiDates={allEmiDates}
+                        emi={currentSheet.emi}
+                        totalRepayable={currentSheet.totalRepayable}
+                        currency={currentSheet.currency}
+                        totalPayments={currentSheet.totalPayments}
+                      />
+                    )
                   ) : (
                     <Text style={{textAlign: 'center'}}>
                       No EMI schedule found.
@@ -426,6 +489,7 @@ export const SheetDetailsDashboard = ({navigation, route}) => {
                       textAlign: 'center',
                       letterSpacing: 1,
                       lineHeight: 30,
+                      marginBottom: 100,
                     }}>
                     There are no {_.capitalize(activeType)}s to display. Create
                     one from Transactions tab or Below.

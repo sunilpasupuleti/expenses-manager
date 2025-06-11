@@ -79,7 +79,7 @@ export const SyncContextProvider = ({children}) => {
 
   useEffect(() => {
     if (userData && db) {
-      onInitialRestoreCheck();
+      // onInitialRestoreCheck();
     }
   }, [userData, db]);
 

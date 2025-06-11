@@ -1,42 +1,36 @@
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable react/no-unstable-nested-components */
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useState} from 'react';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
 import {useTheme} from 'styled-components/native';
 import moment from 'moment';
 import _ from 'lodash';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import {Spacer} from '../../../../components/spacer/spacer.component';
-import {FlatList, Pressable, SectionList, View} from 'react-native';
+import {Pressable, SectionList, View} from 'react-native';
 
-import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {SheetDetailsContext} from '../../../../services/sheetDetails/sheetDetails.context';
 import {useIsFocused} from '@react-navigation/native';
 import {Text} from '../../../../components/typography/text.component';
-import {searchKeywordRegex} from '../../../../components/utility/helper';
-import {Input, MainWrapper} from '../../../../components/styles';
+import {FlexRow, Input} from '../../../../components/styles';
 import {
   SheetDetailHeader,
   SheetDetailHeaderLabel,
+  SheetDetailsTotalBalance,
+  SheetDetailsUnderline,
 } from '../../components/sheet-details/sheet-details.styles';
 import {
   GetCurrencyLocalString,
   GetCurrencySymbol,
 } from '../../../../components/symbol.currency';
 import {SheetDetailsInfo} from '../../components/sheet-details/sheet-details-info.component';
+import {ObservedUpcomingSheetDetails} from './upcoming-sheet-details.observerd';
 
 export const UpcomingSheetDetails = ({navigation, route}) => {
-  const {currentSheet} = useContext(SheetsContext);
-  const {getSheetDetails, onCheckUpcomingSheetDetails} =
-    useContext(SheetDetailsContext);
-  const routeIsFocused = useIsFocused();
-  const [searchKeyword, setSearchKeyword] = useState(null);
-
-  const [sheetDetails, setSheetDetails] = useState({
-    totalUpcomingCount: 0,
-    upcomingTransactions: [],
-  });
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [sheet, setSheet] = useState(null);
   const theme = useTheme();
+  const routeIsFocused = useIsFocused();
 
   useEffect(() => {
     navigation.setOptions({
@@ -57,57 +51,120 @@ export const UpcomingSheetDetails = ({navigation, route}) => {
   }, [navigation]);
 
   useEffect(() => {
+    if (!routeIsFocused) {
+      setSearchKeyword('');
+    }
+  }, [routeIsFocused]);
+
+  useEffect(() => {
+    if (route.params?.sheet) {
+      setSheet(route.params.sheet);
+    }
+  }, [route.params]);
+
+  if (!sheet) return;
+
+  return (
+    <ObservedUpcomingSheetDetails
+      navigation={navigation}
+      route={route}
+      sheet={sheet}
+      accountId={sheet.id}
+      searchKeyword={searchKeyword}
+      setSearchKeyword={setSearchKeyword}
+    />
+  );
+};
+
+export const BaseUpcomingSheetDetails = ({
+  navigation,
+  route,
+  upcomingTransactions = [],
+  searchKeyword,
+  setSearchKeyword,
+  sheet,
+}) => {
+  const {onCheckUpcomingSheetDetails} = useContext(SheetDetailsContext);
+  const routeIsFocused = useIsFocused();
+  const [amountWidth, setAmountWidth] = useState(0);
+  const [totalBalance, setTotalBalance] = useState(0);
+
+  const theme = useTheme();
+
+  useEffect(() => {
     if (routeIsFocused) {
       checkUpcomingDetails();
     }
   }, [routeIsFocused]);
 
-  const onGetSheetDetails = async (sheet, keyword) => {
-    let data = await getSheetDetails(sheet, keyword, null, true);
-    if (data) {
-      setSheetDetails(data);
-    }
-  };
-
   const checkUpcomingDetails = () => {
-    onCheckUpcomingSheetDetails(currentSheet, () => {
-      onGetSheetDetails(currentSheet);
+    onCheckUpcomingSheetDetails(sheet, () => {});
+  };
+
+  const groupedTransactions = useMemo(() => {
+    let finalIncome = 0;
+    let finalExpense = 0;
+    let finalBalance = 0;
+
+    const grouped = _.groupBy(upcomingTransactions, t => {
+      return moment(t.date).format('YYYY-MM-DD');
     });
-  };
 
-  useEffect(() => {
-    if (searchKeyword !== null && searchKeywordRegex.test(searchKeyword)) {
-      onSearch();
-    } else if (searchKeyword === '') {
-      onGetSheetDetails(currentSheet, null);
-    }
-  }, [searchKeyword]);
-
-  const onSearch = async () => {
-    onGetSheetDetails(currentSheet, _.toLower(searchKeyword));
-  };
+    const finalEntries = Object.entries(grouped).map(([date, txns]) => {
+      const totalIncome = _.sumBy(txns, t =>
+        t.type === 'income' ? t.amount : 0,
+      );
+      const totalExpense = _.sumBy(txns, t =>
+        t.type === 'expense' ? t.amount : 0,
+      );
+      finalIncome += totalIncome;
+      finalExpense += totalExpense;
+      return {
+        title: date,
+        transactions: txns,
+        totalBalance: totalIncome - totalExpense,
+      };
+    });
+    finalBalance = finalIncome - finalExpense;
+    setTotalBalance(finalBalance);
+    return finalEntries;
+  }, [upcomingTransactions]);
 
   return (
     <SafeArea child={true}>
-      {sheetDetails.totalUpcomingCount > 0 && (
-        <>
-          <Spacer size={'large'} />
+      <FlexRow justifyContent="center">
+        <View
+          onLayout={e => setAmountWidth(e.nativeEvent.layout.width)}
+          style={{
+            alignItems: 'center',
+          }}>
+          <SheetDetailsTotalBalance fontsize={'30px'} fontfamily="bodySemiBold">
+            {GetCurrencySymbol(sheet.currency)}{' '}
+            {GetCurrencyLocalString(totalBalance)}
+          </SheetDetailsTotalBalance>
+        </View>
+      </FlexRow>
 
-          <Input
-            value={searchKeyword}
-            style={{elevation: 2, margin: 10, marginBottom: 0}}
-            placeholder="Search by Category / Notes / Amount"
-            onChangeText={k => setSearchKeyword(k)}
-            clearButtonMode="while-editing"
-          />
+      <SheetDetailsUnderline width={amountWidth} />
+
+      <Spacer size={'large'} />
+      <Input
+        value={searchKeyword}
+        style={{elevation: 2, margin: 10, marginBottom: 0}}
+        placeholder="Search by Category / Notes / Amount"
+        onChangeText={k => setSearchKeyword(k)}
+        clearButtonMode="while-editing"
+      />
+      {upcomingTransactions.length > 0 && (
+        <>
           <Spacer size={'xlarge'} />
 
           <SectionList
-            sections={sheetDetails.upcomingTransactions.map(
-              ({date, transactions, totalIncome, totalExpense}) => ({
-                title: date,
+            sections={groupedTransactions.map(
+              ({transactions, title, totalBalance}) => ({
+                title: title,
                 data: transactions,
-                totalBalance: totalIncome - totalExpense,
+                totalBalance: totalBalance,
               }),
             )}
             keyExtractor={(item, index) =>
@@ -126,7 +183,7 @@ export const UpcomingSheetDetails = ({navigation, route}) => {
                   })}
                 </SheetDetailHeaderLabel>
                 <SheetDetailHeaderLabel>
-                  {GetCurrencySymbol(currentSheet.currency)}{' '}
+                  {GetCurrencySymbol(sheet.currency)}{' '}
                   {GetCurrencyLocalString(section.totalBalance)}
                 </SheetDetailHeaderLabel>
               </SheetDetailHeader>
@@ -134,9 +191,8 @@ export const UpcomingSheetDetails = ({navigation, route}) => {
             renderItem={({item, index, section}) => (
               <SheetDetailsInfo
                 transaction={item}
-                sheet={currentSheet}
+                sheet={sheet}
                 navigation={navigation}
-                onGetSheetDetails={onGetSheetDetails}
                 index={index}
               />
             )}
@@ -147,7 +203,7 @@ export const UpcomingSheetDetails = ({navigation, route}) => {
         </>
       )}
 
-      {sheetDetails.totalUpcomingCount === 0 && (
+      {upcomingTransactions.length === 0 && (
         <View
           style={{
             flex: 1,

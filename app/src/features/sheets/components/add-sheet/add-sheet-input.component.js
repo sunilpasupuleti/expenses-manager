@@ -7,6 +7,7 @@ export const AddSheetInput = ({
   placeholder,
   label,
   onBlur,
+  disabled = false,
   keyboardType = 'default',
   maxLength = 50,
   style = {},
@@ -24,6 +25,7 @@ export const AddSheetInput = ({
       label={label}
       style={style}
       mode="outlined"
+      disabled={disabled}
       onBlur={onBlur}
       value={value}
       onChangeText={handleChange}

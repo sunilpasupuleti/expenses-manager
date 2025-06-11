@@ -15,9 +15,25 @@
 
 default_platform(:android)
 
+lane :show_version do
+  version = get_version_name(app_project_dir: '**/app')
+  UI.message("Default: #{version}")
+  version_code = get_version_code(app_project_dir: '**/app')
+  UI.message("Default Code: #{version_code}")
+end
+
+
+lane :bumpup do
+  increment_version_name(app_project_dir: '**/app', bump_type: 'patch')
+  increment_version_code(app_project_dir: '**/app')
+end
+
 platform :android do
   desc "Deploy to internal testing track"
   lane :internal do
+
+    show_version
+    bumpup
     gradle(
       task:"bundle",
       build_type: "Release"
@@ -25,6 +41,7 @@ platform :android do
     upload_to_play_store(
       track: 'internal',
       aab: 'app/build/outputs/bundle/release/app-release.aab',
+      skip_upload_apk: true,  
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true
@@ -33,6 +50,8 @@ platform :android do
 
   desc "Deploy to production"
   lane :production do
+    show_version
+    bumpup
     gradle(
       task: "bundle",
       build_type: "Release"
@@ -40,6 +59,7 @@ platform :android do
     upload_to_play_store(
       track: 'production',
       aab: 'app/build/outputs/bundle/release/app-release.aab',
+      skip_upload_apk: true,  
       skip_upload_metadata: true,
       skip_upload_images: true,
       skip_upload_screenshots: true

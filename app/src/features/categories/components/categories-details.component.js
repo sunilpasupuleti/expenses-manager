@@ -14,16 +14,13 @@ export const CategoriesDetails = ({
   navigation,
   deleteMode,
   activeType,
-  categories,
-  onGetCategories,
+  categories = [],
 }) => {
   const theme = useTheme();
   const {onDeleteCategory} = useContext(CategoriesContext);
 
-  const deleteCategory = category => {
-    onDeleteCategory(category, () => {
-      onGetCategories(activeType);
-    });
+  const deleteCategory = async category => {
+    onDeleteCategory(category);
   };
   return (
     <ScrollView showsVerticalScrollIndicator={false}>

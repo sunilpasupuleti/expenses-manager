@@ -6,7 +6,7 @@ def node_require(script)
       {paths: [process.argv[1]]},
     )", __dir__]).strip
 end
-
+pod 'simdjson', path: '../node_modules/@nozbe/simdjson', modular_headers: true
 node_require('react-native/scripts/react_native_pods.rb')
 node_require('react-native-permissions/scripts/setup.rb')
 

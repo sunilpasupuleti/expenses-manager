@@ -22,17 +22,14 @@ import {getTimeZone} from 'react-native-localize';
 import _ from 'lodash';
 import {SheetsContext} from '../sheets/sheets.context';
 import {
-  categorySelectClause,
   excelSheetAccountColWidth,
-  getDataFromRows,
   getExcelSheetAccountRows,
   getExcelSheetAccountSummary,
   getPdfAccountTableHtml,
-  transactionSelectClause,
 } from '../../components/utility/helper';
 import database from '@react-native-firebase/database';
-import {SQLiteContext} from '../sqlite/sqlite.context';
 import {SheetDetailsContext} from '../sheetDetails/sheetDetails.context';
+import {WatermelonDBContext} from '../watermelondb/watermelondb.context';
 
 const {AlarmManagerModule} = NativeModules;
 
@@ -50,22 +47,9 @@ export const SettingsContext = createContext({
 });
 
 export const SettingsContextProvider = ({children}) => {
-  const {
-    userData,
-    userAdditionalDetails,
-    onGetUserDetails,
-    onSetUserAdditionalDetails,
-  } = useContext(AuthenticationContext);
+  const {userData} = useContext(AuthenticationContext);
   const {getMessages} = useContext(SheetsContext);
-  const {
-    updateData,
-    db,
-    onBackUpDatabase,
-    onRestoreDatabase,
-    deleteAllTablesData,
-    getData,
-    createOrReplaceData,
-  } = useContext(SQLiteContext);
+  const {db, deleteAllRecords, createRecord} = useContext(WatermelonDBContext);
   const {sendRequest} = useHttp();
   const {onGetSheetsAndTransactions} = useContext(SheetDetailsContext);
 
@@ -80,31 +64,15 @@ export const SettingsContextProvider = ({children}) => {
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
 
   useEffect(() => {
-    if (db && userAdditionalDetails) {
-      if (!userAdditionalDetails.baseCurrency) {
+    if (db && userData) {
+      if (!userData.baseCurrency) {
         setBaseCurrency({
           dialog: true,
           currency: null,
         });
       }
     }
-  }, [db, userAdditionalDetails]);
-
-  // useEffect(() => {
-  //   if (!userAdditionalDetails || !userData) return;
-  //   const {uid} = userData;
-  //   const {dailyBackupEnabled} = userAdditionalDetails;
-  //   const data = JSON.stringify({uid});
-  //   console.log(data, dailyBackupEnabled);
-
-  //   if (dailyBackupEnabled) {
-  //     console.log('Scheduling daily backup');
-  //     AlarmManagerModule.scheduleDailyBackupAlarm('dailyBackup', data, uid);
-  //   } else {
-  //     console.log('Cancelling daily backup');
-  //     AlarmManagerModule.cancelDailyBackupAlarm('dailyBackup', uid);
-  //   }
-  // }, [userAdditionalDetails?.dailyBackupEnabled, userData?.uid]);
+  }, [db, userData]);
 
   // helpers
   const showLoader = (loaderType, backdrop = true) => {
@@ -131,6 +99,22 @@ export const SettingsContextProvider = ({children}) => {
     );
   };
 
+  const onUpdateUserData = async data => {
+    try {
+      await db.write(async () => {
+        await userData.update(record => {
+          Object.keys(data).forEach(key => {
+            if (key in record && typeof record[key] !== 'function') {
+              record[key] = data[key];
+            }
+          });
+        });
+      });
+    } catch (error) {
+      showNotification('error', error.toString());
+    }
+  };
+
   const onUpdateDailyReminder = async (
     dailyReminder,
     callback = () => null,
@@ -148,7 +132,7 @@ export const SettingsContextProvider = ({children}) => {
         .catch(err => {});
       let timeZone = await getTimeZone();
       let transformedData = {
-        dailyReminderEnabled: dailyReminder.enable ? 1 : 0,
+        dailyReminderEnabled: dailyReminder.enable ? true : false,
         dailyReminderTime: dailyReminder.time,
         timeZone: timeZone,
         fcmToken: fcmToken,
@@ -169,13 +153,9 @@ export const SettingsContextProvider = ({children}) => {
           },
         },
         {
-          successCallback: res => {
+          successCallback: async res => {
             callback();
-            onSetUserAdditionalDetails(p => ({
-              ...p,
-              dailyReminderEnabled: transformedData.dailyReminderEnabled,
-              dailyReminderTime: transformedData.dailyReminderTime,
-            }));
+            await onUpdateUserData(transformedData);
             hideLoader();
             showNotification('success', res.message);
           },
@@ -208,7 +188,7 @@ export const SettingsContextProvider = ({children}) => {
         .catch(err => {});
       let timeZone = await getTimeZone();
       let transformedData = {
-        dailyBackupEnabled: dailyBackupEnabled ? 1 : 0,
+        dailyBackupEnabled: dailyBackupEnabled ? true : false,
         timeZone: timeZone,
         fcmToken: fcmToken,
       };
@@ -222,12 +202,9 @@ export const SettingsContextProvider = ({children}) => {
           },
         },
         {
-          successCallback: res => {
+          successCallback: async res => {
             callback();
-            onSetUserAdditionalDetails(p => ({
-              ...p,
-              dailyBackupEnabled: dailyBackupEnabled,
-            }));
+            await onUpdateUserData(transformedData);
             hideLoader();
             showNotification('success', res.message);
           },
@@ -252,11 +229,10 @@ export const SettingsContextProvider = ({children}) => {
 
       let uid = await auth().currentUser.uid;
       let transformedData = {
-        autoFetchTransactions: enabled ? 1 : 0,
+        autoFetchTransactions: enabled ? true : false,
       };
-      let results = await updateData('Users', transformedData, `WHERE uid=?`, [
-        uid,
-      ]);
+
+      await onUpdateUserData(transformedData);
 
       await database().ref(`/users/${uid}`).update(transformedData);
       if (enabled && Platform.OS === 'android') {
@@ -264,8 +240,6 @@ export const SettingsContextProvider = ({children}) => {
           getMessages();
         }, 1000 * 5);
       }
-
-      onGetUserDetails();
       showNotification(
         'success',
         'Auto Fetch Transactions updated successfully',
@@ -288,11 +262,8 @@ export const SettingsContextProvider = ({children}) => {
       let transformedData = {
         baseCurrency: currency,
       };
-      let results = await updateData('Users', transformedData, `WHERE uid=?`, [
-        uid,
-      ]);
       await database().ref(`/users/${uid}`).update(transformedData);
-      onGetUserDetails();
+      await onUpdateUserData(transformedData);
       callback();
       showNotification('success', 'Base Currency updated successfully');
     } catch (err) {
@@ -304,38 +275,36 @@ export const SettingsContextProvider = ({children}) => {
   const onExportData = async () => {
     try {
       showLoader();
-      let accountsQuery = `SELECT * FROM Accounts WHERE uid='${userData.uid}'`;
-      let categoriesQuery = `SELECT * FROM Categories WHERE uid='${userData.uid}'`;
-      let transactionsQuery = `SELECT * FROM Transactions`;
-      const [accountsResult, categoriesResult, transactionsResult] =
-        await Promise.all([
-          getData(accountsQuery),
-          getData(categoriesQuery),
-          getData(transactionsQuery),
-        ]);
-
-      let [accounts, categories, transactions] = await Promise.all([
-        getDataFromRows(accountsResult.rows),
-        getDataFromRows(categoriesResult.rows),
-        getDataFromRows(transactionsResult.rows),
-      ]);
+      const accounts = await userData.accounts.fetch();
+      const categories = await userData.categories.fetch();
       if (accounts.length === 0) {
         throw 'No data to export';
       }
 
-      accounts = accounts.map(a => {
-        delete a.uid;
-        return {...a};
-      });
-      categories = categories.map(c => {
-        delete c.uid;
-        return {...c};
+      const accountsWithTransactions = await Promise.all(
+        accounts.map(async account => {
+          const transactions = await account.transactions.fetch();
+          const sanitizedAccount = {...account._raw};
+          delete sanitizedAccount.userId;
+          const sanitizedTransactions = transactions.map(({_raw}) => {
+            const {accountId, ...rest} = _raw;
+            return rest;
+          });
+          return {
+            ...sanitizedAccount,
+            transactions: sanitizedTransactions,
+          };
+        }),
+      );
+
+      const sanitizedCategories = categories.map(({_raw}) => {
+        const {userId, ...rest} = _raw;
+        return rest;
       });
 
-      let data = {
-        accounts: accounts,
-        categories: categories,
-        transactions: transactions,
+      const data = {
+        accounts: accountsWithTransactions,
+        categories: sanitizedCategories,
       };
 
       const toSaveData = JSON.stringify(data);
@@ -405,23 +374,45 @@ export const SettingsContextProvider = ({children}) => {
           }
           let file = await RNFetchBlob.fs.readFile(fileuri);
           let data = JSON.parse(file);
-          let {accounts, categories, transactions} = data;
+          let {accounts, categories} = data;
+
+          if (!accounts?.length || !categories?.length) {
+            throw 'Empty or corrupted file';
+          }
+
           const uid = userData.uid;
 
           if (accounts?.length > 0 && categories?.length > 0) {
-            await onBackUpDatabase();
-            await deleteAllTablesData();
-            for (let category of categories) {
-              category.uid = uid;
-              await createOrReplaceData('Categories', category);
-            }
-            for (let account of accounts) {
-              account.uid = uid;
-              await createOrReplaceData('Accounts', account);
-            }
-            for (let transaction of transactions) {
-              await createOrReplaceData('Transactions', transaction);
-            }
+            await deleteAllRecords(false);
+            const enrichedCategories = categories.map(c => ({
+              ...c,
+              userId: userData.id,
+            }));
+
+            await createRecord('categories', enrichedCategories);
+            // Insert accounts and linked transactions
+            await db.write(async () => {
+              for (const a of accounts) {
+                const {transactions = [], ...accountData} = a;
+
+                const createdAccount = await db.get('accounts').create(acc => {
+                  Object.keys(accountData).forEach(key => {
+                    if (key !== 'id') acc[key] = accountData[key];
+                  });
+                  acc.userId = userData.id;
+                });
+
+                // Insert linked transactions
+                for (const t of transactions) {
+                  await db.get('transactions').create(txn => {
+                    Object.keys(t).forEach(key => {
+                      if (key !== 'id') txn[key] = t[key];
+                    });
+                    txn.accountId = createdAccount.id;
+                  });
+                }
+              }
+            });
             showNotification('success', 'Data Imported Successfully');
             hideLoader();
             resolve(true);
@@ -432,7 +423,6 @@ export const SettingsContextProvider = ({children}) => {
           hideLoader();
           reject(e);
           showNotification('error', e.message || e.toString());
-          await onRestoreDatabase();
         }
       });
     };
@@ -458,7 +448,7 @@ export const SettingsContextProvider = ({children}) => {
 
   const onExportAllDataToPdf = async () => {
     try {
-      let accounts = await onGetSheetsAndTransactions();
+      let accounts = await userData.accounts.fetch();
       if (accounts.length === 0) {
         throw 'There are no transactions to export';
       }
@@ -470,8 +460,10 @@ export const SettingsContextProvider = ({children}) => {
           : RNFetchBlob.fs.dirs.DownloadDir + '/' + folderName;
       await RNFetchBlob.fs.mkdir(fPath);
 
-      for await (const data of accounts) {
-        const {account, transactions} = data;
+      for (const account of accounts) {
+        const {transactions} = await account.transactions.fetch();
+        if (!transactions.length) continue;
+
         let {name} = account;
         let html = getPdfAccountTableHtml(theme, account, transactions);
         let options = {
@@ -533,18 +525,23 @@ export const SettingsContextProvider = ({children}) => {
       showLoader('excel');
       let wb = XLSX.utils.book_new();
 
-      accounts.forEach((data, index) => {
-        const {account, transactions} = data;
-        let {name} = account;
-        let rows = getExcelSheetAccountRows(account, transactions);
-        let ws = XLSX.utils.json_to_sheet(rows);
+      for (const account of accounts) {
+        const transactions = await account.transactions.fetch(); // ✅ linked transactions
+        if (!transactions.length) continue;
+
+        const {name} = account;
+        const rows = getExcelSheetAccountRows(account, transactions); // custom formatter
+        const ws = XLSX.utils.json_to_sheet(rows);
+
         ws['!cols'] = excelSheetAccountColWidth;
+
         XLSX.utils.sheet_add_aoa(ws, getExcelSheetAccountSummary(account), {
           origin: -1,
         });
 
         XLSX.utils.book_append_sheet(wb, ws, name.toUpperCase());
-      });
+      }
+
       let opt = {
         type: 'binary',
         bookType: 'xlsx',

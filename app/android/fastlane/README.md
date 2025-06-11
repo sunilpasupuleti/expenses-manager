@@ -13,6 +13,25 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 # Available Actions
 
+### show_version
+
+```sh
+[bundle exec] fastlane show_version
+```
+
+
+
+### bumpup
+
+```sh
+[bundle exec] fastlane bumpup
+```
+
+
+
+----
+
+
 ## Android
 
 ### android internal
@@ -22,6 +41,14 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 ```
 
 Deploy to internal testing track
+
+### android production
+
+```sh
+[bundle exec] fastlane android production
+```
+
+Deploy to production
 
 ----
 

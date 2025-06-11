@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-shadow */
-import React, {useContext, useEffect, useState, useRef} from 'react';
+import React, {useContext, useEffect, useState, useRef, useMemo} from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -29,12 +29,7 @@ import {
 } from 'react-native-popup-menu';
 import {useDispatch, useSelector} from 'react-redux';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {
-  FlexRow,
-  Input,
-  MainWrapper,
-  NotFoundContainer,
-} from '../../../../components/styles';
+import {FlexRow, Input, NotFoundContainer} from '../../../../components/styles';
 
 import {Text} from '../../../../components/typography/text.component';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
@@ -51,260 +46,82 @@ import {
 } from '../../components/sheet-details/sheet-details.styles';
 
 import {Spacer} from '../../../../components/spacer/spacer.component';
-import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {
   GetCurrencyLocalString,
   GetCurrencySymbol,
 } from '../../../../components/symbol.currency';
-import {useIsFocused} from '@react-navigation/native';
 import Lottie from 'lottie-react-native';
 import noTransactions from '../../../../../assets/lottie/no_transactions.json';
 import {SheetDetailsContext} from '../../../../services/sheetDetails/sheetDetails.context';
-import {searchKeywordRegex} from '../../../../components/utility/helper';
-import {fetchExchangeRates} from '../../../../store/service-slice';
 import {Divider} from 'react-native-paper';
 import {SheetDetailsInfo} from '../../components/sheet-details/sheet-details-info.component';
 
-export const SheetDetailsScreen = ({navigation, route}) => {
-  // for filtering purpose
-  // original sheet without change
-
+export const SheetDetailsScreen = ({
+  navigation,
+  route,
+  sheet,
+  filterParams,
+  searchKeyword,
+  setSearchKeyword,
+  transactions = [],
+  upcomingTransactions = [],
+}) => {
   const [refreshing, setRefreshing] = useState(false);
-
-  const routeIsFocused = useIsFocused();
 
   const [totalBalance, setTotalBalance] = useState(0);
 
-  const [filterParams, setFilterParams] = useState({
-    status: false,
-    fromDate: null,
-    toDate: null,
-  });
-
   const theme = useTheme();
-  const [searchKeyword, setSearchKeyword] = useState(null);
-  const {getSheetDetails} = useContext(SheetDetailsContext);
-  const [sheetDetails, setSheetDetails] = useState({
-    totalCount: 0,
-    totalUpcomingCount: 0,
-    transactions: [],
-    upcomingTransactions: [],
-  });
-  const {reRender} = route.params || {};
   const [amountWidth, setAmountWidth] = useState(0);
-  const {currentSheet} = useContext(SheetsContext);
   const {onSmartScanReceipt} = useContext(SheetDetailsContext);
   const {onCheckUpcomingSheetDetails} = useContext(SheetDetailsContext);
-  let menuRef = useRef();
   let cameraRef = useRef();
-  const dispatch = useDispatch();
   const menuOptionStyles = {
     optionWrapper: {padding: 15, paddingTop: 10},
     OptionTouchableComponent: TouchableOpacity,
   };
 
-  useEffect(() => {
-    if (routeIsFocused) {
-      setNavigationOptions();
-      let filterBy = null;
-      if (route.params?.filter) {
-        filterBy = route.params.filter;
-        setFilterParams(filterBy);
-      }
-      checkUpcomingDetails(filterBy);
-      onGetSheetDetails(currentSheet, null, filterBy);
-    } else {
-      setSearchKeyword(null);
-    }
-  }, [routeIsFocused]);
+  const appTheme = useSelector(state => state.service.theme);
+  const themeType = useColorScheme();
 
-  useEffect(() => {
-    if (reRender) {
-      navigation.setParams({reRender: false});
-      onGetSheetDetails(currentSheet, null, filterParams);
-    } else {
-      setSearchKeyword(null);
-    }
-  }, [reRender]);
+  let darkMode =
+    appTheme === 'automatic'
+      ? themeType === 'light'
+        ? false
+        : true
+      : appTheme === 'light'
+      ? false
+      : true;
 
-  const setNavigationOptions = () => {
-    navigation.setOptions({
-      headerTitle:
-        currentSheet?.name?.length > 25
-          ? currentSheet.name.substring(0, 25) + '...'
-          : currentSheet.name,
-      headerLeft: () => (
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FlexRow>
-            <Ionicons
-              name="chevron-back-outline"
-              size={25}
-              color={theme.colors.brand.primary}></Ionicons>
-            <Text color={theme.colors.brand.primary}>Back</Text>
-          </FlexRow>
-        </TouchableOpacity>
-      ),
-      headerRight: () => (
-        <Menu
-          style={{marginRight: 20}}
-          onBackdropPress={() => menuRef.current.close()}
-          ref={element => (menuRef.current = element)}>
-          <MenuTrigger
-            customStyles={{
-              triggerTouchable: {
-                underlayColor: '#eee',
-                onPress: () => {
-                  menuRef.current.open();
-                },
-              },
-              TriggerTouchableComponent: TouchableOpacity,
-            }}>
-            <MaterialCommunityIcons
-              name="dots-horizontal-circle-outline"
-              size={25}
-              color={theme.colors.brand.primary}
-            />
-          </MenuTrigger>
-          <MenuOptions
-            optionsContainerStyle={{
-              marginRight: 10,
-              marginTop: 35,
-              borderRadius: 10,
-              minWidth: 250,
-            }}>
-            <MenuOption
-              customStyles={menuOptionStyles}
-              onSelect={() => {
-                navigation.navigate('SheetStats');
-                menuRef.current.close();
-              }}>
-              <FlexRow justifyContent="space-between">
-                <Text color="#2f2f2f" fontfamily="heading">
-                  Analytics
-                </Text>
-                <Ionicons
-                  style={{paddingBottom: 8}}
-                  name="pie-chart-outline"
-                  size={20}
-                  color={'#000'}
-                />
-              </FlexRow>
-            </MenuOption>
-            <MenuOption
-              customStyles={menuOptionStyles}
-              onSelect={() => {
-                menuRef.current.close();
-                navigation.navigate('SheetTrends', {currentSheet});
-              }}>
-              <FlexRow justifyContent="space-between">
-                <Text color="#2f2f2f" fontfamily="heading">
-                  Trends
-                </Text>
-                <Ionicons
-                  style={{paddingBottom: 8}}
-                  name="trending-up-outline"
-                  size={20}
-                  color={'#000'}
-                />
-              </FlexRow>
-            </MenuOption>
-            <MenuOption
-              customStyles={menuOptionStyles}
-              onSelect={() => {
-                navigation.navigate('CurrencyRates', {
-                  display: true,
-                  selectedCurrency: currentSheet.currency,
-                });
-                dispatch(
-                  fetchExchangeRates({
-                    showAlert: false,
-                    BASE_CURRENCY: currentSheet.currency,
-                    dispatch: dispatch,
-                  }),
-                );
-                menuRef.current.close();
-              }}>
-              <FlexRow justifyContent="space-between">
-                <Text color="#2f2f2f" fontfamily="heading">
-                  Curreny Rates
-                </Text>
-                <FontAwesome
-                  style={{paddingBottom: 8}}
-                  name="money"
-                  size={20}
-                  color={'#000'}
-                />
-              </FlexRow>
-            </MenuOption>
-
-            <MenuOption
-              customStyles={menuOptionStyles}
-              onSelect={() => {
-                menuRef.current.close();
-                navigation.navigate('SheetExport', {
-                  sheet: currentSheet,
-                });
-                // onClickExportData();
-              }}>
-              <FlexRow justifyContent="space-between">
-                <Text color="#2f2f2f" fontfamily="heading">
-                  Export Account
-                </Text>
-                <FontAwesome5
-                  style={{paddingBottom: 8}}
-                  name="file-export"
-                  size={18}
-                  color={theme.colors.brand.primary}
-                />
-              </FlexRow>
-            </MenuOption>
-          </MenuOptions>
-          <Spacer size={'medium'} />
-        </Menu>
-      ),
+  const groupedTransactions = useMemo(() => {
+    let finalIncome = 0;
+    let finalExpense = 0;
+    let finalBalance = 0;
+    const grouped = _.groupBy(transactions, t => {
+      totalBalance;
+      return moment(t.date).format('YYYY-MM-DD');
     });
-  };
 
-  const checkUpcomingDetails = filterBy => {
-    onCheckUpcomingSheetDetails(currentSheet, transactionExists => {
-      if (transactionExists) {
-        onGetSheetDetails(currentSheet, null, filterBy);
-      }
+    const finalEntries = Object.entries(grouped).map(([date, txns]) => {
+      const totalIncome = _.sumBy(txns, t =>
+        t.type === 'income' ? t.amount : 0,
+      );
+      const totalExpense = _.sumBy(txns, t =>
+        t.type === 'expense' ? t.amount : 0,
+      );
+      finalIncome += totalIncome;
+      finalExpense += totalExpense;
+      return {
+        title: date,
+        transactions: txns,
+        totalBalance: totalIncome - totalExpense,
+      };
     });
-  };
 
-  const onGetSheetDetails = async (
-    sheet,
-    searchKeyword = null,
-    filterBy = null,
-  ) => {
-    let data = await getSheetDetails(sheet, searchKeyword, filterBy, false);
-    if (data) {
-      typeof data?.totalBalance === 'number'
-        ? setTotalBalance(data.totalBalance)
-        : setTotalBalance(sheet.totalBalance);
-      setSheetDetails(data);
-    }
-  };
+    finalBalance = finalIncome - finalExpense;
+    setTotalBalance(finalBalance);
 
-  const debouncedSearch = useRef(
-    _.debounce(text => {
-      onGetSheetDetails(currentSheet, text, filterParams);
-    }, 300),
-  ).current;
-
-  useEffect(() => {
-    if (searchKeyword !== null && searchKeywordRegex.test(searchKeyword)) {
-      // onSearch();
-      debouncedSearch(_.toLower(searchKeyword));
-    } else if (searchKeyword === '') {
-      onGetSheetDetails(currentSheet, null, filterParams);
-    }
-  }, [searchKeyword]);
-
-  const onSearch = async () => {
-    onGetSheetDetails(currentSheet, _.toLower(searchKeyword), filterParams);
-  };
+    return finalEntries;
+  }, [transactions]);
 
   const onClickScanButton = async mode => {
     let options = {
@@ -355,104 +172,107 @@ export const SheetDetailsScreen = ({navigation, route}) => {
 
   const onRefresh = () => {
     setRefreshing(true);
-    onCheckUpcomingSheetDetails(currentSheet, transactionExists => {
+
+    onCheckUpcomingSheetDetails(sheet, transactionExists => {
       setRefreshing(false);
       if (transactionExists) {
-        onGetSheetDetails(currentSheet, null);
       }
     });
   };
 
   return (
     <SafeArea child={true}>
-      {currentSheet && (
-        <>
-          <FlexRow justifyContent="center">
-            <View
-              onLayout={e => setAmountWidth(e.nativeEvent.layout.width)}
-              style={{
-                alignItems: 'center',
+      <>
+        <FlexRow justifyContent="center">
+          <View
+            onLayout={e => setAmountWidth(e.nativeEvent.layout.width)}
+            style={{
+              alignItems: 'center',
+            }}>
+            <SheetDetailsTotalBalance
+              fontsize={'30px'}
+              fontfamily="bodySemiBold">
+              {GetCurrencySymbol(sheet.currency)}{' '}
+              {GetCurrencyLocalString(totalBalance)}
+            </SheetDetailsTotalBalance>
+          </View>
+
+          <FilterIconContainer>
+            <MaterialCommunityIcons
+              onPress={() =>
+                navigation.navigate('SheetDetailsFilter', {
+                  filter: filterParams ? filterParams : null,
+                })
+              }
+              name={
+                filterParams && filterParams.status
+                  ? 'filter-remove-outline'
+                  : 'filter-outline'
+              }
+              size={30}
+              color={theme.colors.brand.primary}
+            />
+          </FilterIconContainer>
+        </FlexRow>
+
+        <SheetDetailsUnderline width={amountWidth} />
+
+        <Input
+          value={searchKeyword}
+          style={{elevation: 2, margin: 10, marginBottom: 0}}
+          placeholder="Search by Category / Notes / Amount"
+          onChangeText={k => setSearchKeyword(k)}
+          clearButtonMode="while-editing"
+        />
+        {upcomingTransactions.length > 0 && (
+          <Spacer size={'large'}>
+            <Pressable
+              onPress={() => {
+                navigation.navigate('UpcomingSheetDetails', {
+                  sheet: sheet,
+                });
               }}>
-              <SheetDetailsTotalBalance
-                fontsize={'30px'}
-                fontfamily="bodySemiBold">
-                {GetCurrencySymbol(currentSheet.currency)}{' '}
-                {GetCurrencyLocalString(totalBalance)}
-              </SheetDetailsTotalBalance>
-            </View>
+              <FlexRow
+                justifyContent="space-between"
+                style={{paddingLeft: 16, paddingRight: 16}}>
+                <Text fontsize="20px" color={theme.colors.brand.primary}>
+                  Upcoming ({upcomingTransactions.length})
+                </Text>
+                <MaterialCommunityIcons
+                  name="chevron-right"
+                  size={30}
+                  color={theme.colors.text.primary}
+                />
+              </FlexRow>
+            </Pressable>
+          </Spacer>
+        )}
 
-            <FilterIconContainer>
-              <MaterialCommunityIcons
-                onPress={() =>
-                  navigation.navigate('SheetDetailsFilter', {
-                    filter: filterParams ? filterParams : null,
-                  })
-                }
-                name={
-                  filterParams && filterParams.status
-                    ? 'filter-remove-outline'
-                    : 'filter-outline'
-                }
-                size={30}
-                color={theme.colors.brand.primary}
-              />
-            </FilterIconContainer>
-          </FlexRow>
+        <Spacer size={'large'} />
 
-          <SheetDetailsUnderline width={amountWidth} />
-
-          <Input
-            value={searchKeyword}
-            style={{elevation: 2, margin: 10, marginBottom: 0}}
-            placeholder="Search by Category / Notes / Amount"
-            onChangeText={k => setSearchKeyword(k)}
-            clearButtonMode="while-editing"
-          />
-          {sheetDetails.totalUpcomingCount > 0 && (
-            <Spacer size={'large'}>
-              <Pressable
-                onPress={() => {
-                  navigation.navigate('UpcomingSheetDetails', {
-                    sheetDetails: sheetDetails,
-                  });
-                }}>
-                <FlexRow
-                  justifyContent="space-between"
-                  style={{paddingLeft: 16, paddingRight: 16}}>
-                  <Text fontsize="20px" color={theme.colors.brand.primary}>
-                    Upcoming ({sheetDetails.totalUpcomingCount})
-                  </Text>
-                  <MaterialCommunityIcons
-                    name="chevron-right"
-                    size={30}
-                    color={theme.colors.text.primary}
-                  />
-                </FlexRow>
-              </Pressable>
-            </Spacer>
+        <SectionList
+          refreshControl={
+            <RefreshControl
+              title="Checking upcoming transactions"
+              onRefresh={onRefresh}
+              tintColor={darkMode ? '#fff' : '#000'} // spinner color
+              titleColor={darkMode ? '#fff' : '#000'} // title text color
+              colors={[darkMode ? '#fff' : '#000']} // Android spinner color
+              refreshing={refreshing}
+            />
+          }
+          sections={groupedTransactions.map(
+            ({title, transactions, totalBalance}) => ({
+              title: title,
+              data: transactions,
+              totalBalance: totalBalance,
+            }),
           )}
-
-          <Spacer size={'large'} />
-
-          <SectionList
-            refreshControl={
-              <RefreshControl
-                title="Checking upcoming transactions"
-                onRefresh={onRefresh}
-                refreshing={refreshing}
-              />
-            }
-            sections={sheetDetails.transactions.map(
-              ({date, transactions, totalIncome, totalExpense}) => ({
-                title: date,
-                data: transactions,
-                totalBalance: totalIncome - totalExpense,
-              }),
-            )}
-            keyExtractor={(item, index) =>
-              item?.id ? item.id.toString() : `index-${index}`
-            }
-            renderSectionHeader={({section}) => (
+          keyExtractor={(item, index) =>
+            item?.id ? item.id.toString() : `index-${index}`
+          }
+          renderSectionHeader={({section}) => {
+            return (
               <SheetDetailHeader>
                 <SheetDetailHeaderLabel>
                   {moment(section.title).calendar(null, {
@@ -465,132 +285,131 @@ export const SheetDetailsScreen = ({navigation, route}) => {
                   })}
                 </SheetDetailHeaderLabel>
                 <SheetDetailHeaderLabel>
-                  {GetCurrencySymbol(currentSheet.currency)}{' '}
+                  {GetCurrencySymbol(sheet.currency)}{' '}
                   {GetCurrencyLocalString(section.totalBalance)}
                 </SheetDetailHeaderLabel>
               </SheetDetailHeader>
-            )}
-            maxToRenderPerBatch={20}
-            ItemSeparatorComponent={Divider}
-            renderItem={({item, index, section}) => (
-              <SheetDetailsInfo
-                transaction={item}
-                sheet={currentSheet}
-                navigation={navigation}
-                onGetSheetDetails={onGetSheetDetails}
-                index={index}
-              />
-            )}
-            contentContainerStyle={{paddingBottom: 150}}
-            stickySectionHeadersEnabled
-          />
-
-          {sheetDetails.totalCount === 0 && (
-            <NotFoundContainer>
-              <Lottie
-                style={{
-                  width: '100%',
-                  height: 300,
-                  marginBottom: 350,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-                source={noTransactions}
-                autoPlay
-                loop
-              />
-            </NotFoundContainer>
+            );
+          }}
+          maxToRenderPerBatch={20}
+          ItemSeparatorComponent={Divider}
+          renderItem={({item, index, section}) => (
+            <SheetDetailsInfo
+              transaction={item}
+              sheet={sheet}
+              navigation={navigation}
+              index={index}
+            />
           )}
+          contentContainerStyle={{paddingBottom: 150}}
+          stickySectionHeadersEnabled
+        />
 
-          <BottomIconsContainer>
-            {/*  for camera option */}
-            <Menu
-              onBackdropPress={() => cameraRef.current.close()}
-              ref={element => (cameraRef.current = element)}>
-              <MenuTrigger
-                customStyles={{
-                  triggerTouchable: {
-                    underlayColor: '#eee',
-                    // onPress: () => {
-                    //   console.log('pressed');
-                    //   menuRef.current.open();
-                    // },
-                  },
-                  TriggerTouchableComponent: TouchableOpacity,
-                }}>
-                <CameraButton onPress={() => cameraRef.current.open()}>
-                  <FlexRow>
-                    <CameraIcon
-                      name="scan"
-                      size={20}
-                      color="#fff"
-                      // color={theme.colors.brand.primary}
-                    />
-                    <Spacer position={'left'}>
-                      <Text fontsize="12px" color={'#fff'}>
-                        Smart Scan Receipt
-                      </Text>
-                    </Spacer>
-                  </FlexRow>
-                </CameraButton>
-              </MenuTrigger>
+        {transactions.length === 0 && (
+          <NotFoundContainer>
+            <Lottie
+              style={{
+                width: '100%',
+                height: 300,
+                marginBottom: 350,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+              source={noTransactions}
+              autoPlay
+              loop
+            />
+          </NotFoundContainer>
+        )}
 
-              <MenuOptions
-                optionsContainerStyle={{
-                  marginLeft: 35,
-                  marginTop: -80,
-                  borderRadius: 10,
-                  minWidth: 250,
-                }}>
-                <MenuOption
-                  customStyles={menuOptionStyles}
-                  onSelect={() => {
-                    cameraRef.current.close();
-                    onClickScanButton('camera');
-                  }}>
-                  <FlexRow justifyContent="space-between">
-                    <Text color="#2f2f2f" fontfamily="heading">
-                      Take a Photo
-                    </Text>
-                    <Ionicons name="camera-outline" size={20} color="#000" />
-                  </FlexRow>
-                </MenuOption>
-                <MenuOption
-                  customStyles={menuOptionStyles}
-                  onSelect={() => {
-                    cameraRef.current.close();
-                    onClickScanButton('gallery');
-                  }}>
-                  <FlexRow justifyContent="space-between">
-                    <Text color="#2f2f2f" fontfamily="heading">
-                      Choose a Photo
-                    </Text>
-                    <FontAwesome name="photo" size={20} color="#000" />
-                  </FlexRow>
-                </MenuOption>
-              </MenuOptions>
-              <Spacer size={'medium'} />
-            </Menu>
-            <SheetDetailsAddIcon>
-              <TouchableNativeFeedback
-                onPress={() => {
-                  navigation.navigate('AddSheetDetail', {
-                    sheet: currentSheet,
-                  });
-                }}>
+        <BottomIconsContainer>
+          {/*  for camera option */}
+          <Menu
+            onBackdropPress={() => cameraRef.current.close()}
+            ref={element => (cameraRef.current = element)}>
+            <MenuTrigger
+              customStyles={{
+                triggerTouchable: {
+                  underlayColor: '#eee',
+                  // onPress: () => {
+                  //   console.log('pressed');
+                  //   menuRef.current.open();
+                  // },
+                },
+                TriggerTouchableComponent: TouchableOpacity,
+              }}>
+              <CameraButton onPress={() => cameraRef.current.open()}>
                 <FlexRow>
-                  <AntDesign name="plus" size={20} color={'#fff'} />
+                  <CameraIcon
+                    name="scan"
+                    size={20}
+                    color="#fff"
+                    // color={theme.colors.brand.primary}
+                  />
                   <Spacer position={'left'}>
                     <Text fontsize="12px" color={'#fff'}>
-                      Add new
+                      Smart Scan Receipt
                     </Text>
                   </Spacer>
                 </FlexRow>
-              </TouchableNativeFeedback>
-            </SheetDetailsAddIcon>
-          </BottomIconsContainer>
-        </>
-      )}
+              </CameraButton>
+            </MenuTrigger>
+
+            <MenuOptions
+              optionsContainerStyle={{
+                marginLeft: 35,
+                marginTop: -80,
+                borderRadius: 10,
+                minWidth: 250,
+              }}>
+              <MenuOption
+                customStyles={menuOptionStyles}
+                onSelect={() => {
+                  cameraRef.current.close();
+                  onClickScanButton('camera');
+                }}>
+                <FlexRow justifyContent="space-between">
+                  <Text color="#2f2f2f" fontfamily="heading">
+                    Take a Photo
+                  </Text>
+                  <Ionicons name="camera-outline" size={20} color="#000" />
+                </FlexRow>
+              </MenuOption>
+              <MenuOption
+                customStyles={menuOptionStyles}
+                onSelect={() => {
+                  cameraRef.current.close();
+                  onClickScanButton('gallery');
+                }}>
+                <FlexRow justifyContent="space-between">
+                  <Text color="#2f2f2f" fontfamily="heading">
+                    Choose a Photo
+                  </Text>
+                  <FontAwesome name="photo" size={20} color="#000" />
+                </FlexRow>
+              </MenuOption>
+            </MenuOptions>
+            <Spacer size={'medium'} />
+          </Menu>
+          <SheetDetailsAddIcon>
+            <TouchableNativeFeedback
+              onPress={() => {
+                navigation.navigate('AddSheetDetail', {
+                  sheet: sheet,
+                });
+              }}>
+              <FlexRow>
+                <AntDesign name="plus" size={20} color={'#fff'} />
+                <Spacer position={'left'}>
+                  <Text fontsize="12px" color={'#fff'}>
+                    Add new
+                  </Text>
+                </Spacer>
+              </FlexRow>
+            </TouchableNativeFeedback>
+          </SheetDetailsAddIcon>
+        </BottomIconsContainer>
+      </>
     </SafeArea>
   );
 };

@@ -234,7 +234,7 @@ export const SQLiteContextProvider = ({children}) => {
 
   const migrateDb = async database => {
     try {
-      const MIGRATION_KEY = 'add_loan_fields_to_accountsv5';
+      const MIGRATION_KEY = 'add_loan_fields_to_accountsv11';
       await database.executeSql(`
         CREATE TABLE IF NOT EXISTS Migrations (
           key TEXT PRIMARY KEY,
@@ -256,16 +256,31 @@ export const SQLiteContextProvider = ({children}) => {
           {name: 'isLoanAccount', type: 'INTEGER DEFAULT 0'},
           {name: 'loanAmount', type: 'REAL DEFAULT 0'},
           {name: 'interestRate', type: 'REAL DEFAULT 0'},
+          {name: 'interestRateMode', type: 'TEXT'},
+
+          {name: 'useReducingBalance', type: 'REAL DEFAULT 0'},
+          {name: 'useEndDate', type: 'REAL DEFAULT 0'},
+          {name: 'totalPaid', type: 'REAL DEFAULT 0'},
+
           {name: 'repaymentFrequency', type: 'TEXT'},
-          {name: 'compoundInterest', type: 'INTEGER DEFAULT 0'},
-          {name: 'compoundingFrequency', type: 'TEXT'},
           {name: 'loanStartDate', type: 'TEXT'},
+          {name: 'loanEndDate', type: 'TEXT'},
           {name: 'loanYears', type: 'INTEGER DEFAULT 0'},
           {name: 'loanMonths', type: 'INTEGER DEFAULT 0'},
           {name: 'emi', type: 'REAL DEFAULT 0'},
           {name: 'totalRepayable', type: 'REAL DEFAULT 0'},
           {name: 'totalInterest', type: 'REAL DEFAULT 0'},
           {name: 'totalPayments', type: 'REAL DEFAULT 0'},
+        ],
+        Transactions: [
+          {
+            name: 'isEmiPayment',
+            type: 'INTEGER DEFAULT 0',
+          },
+          {
+            name: 'emiDate',
+            type: 'TEXT',
+          },
         ],
         Categories: [{name: 'isLoanRelated', type: 'INTEGER DEFAULT 0'}],
       };

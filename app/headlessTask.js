@@ -28,6 +28,7 @@ const openDatabase = async () => {
 };
 
 const onSetUpcomingSheetDetailFromEvent = async data => {
+  return;
   try {
     if (!data) {
       throw 'No data';

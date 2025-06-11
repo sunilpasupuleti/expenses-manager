@@ -5,6 +5,35 @@ import styled from 'styled-components/native';
 import {Text} from '../components/typography/text.component';
 import {colors} from '../infrastructure/theme/colors';
 import {SafeArea} from './utility/safe-area.component';
+import {SelectList} from 'react-native-dropdown-select-list';
+
+export const SelectListInput = styled(SelectList).attrs(({theme}) => ({
+  boxStyles: {
+    borderRadius: 8,
+    borderColor: '#ccc',
+    backgroundColor: theme.colors.bg.input,
+    paddingVertical: 12,
+    paddingHorizontal: 14,
+    marginTop: 5,
+    shadowColor: 'transparent',
+  },
+  inputStyles: {
+    color: theme.colors.text.primary,
+    fontSize: 16,
+    paddingLeft: 0,
+  },
+  dropdownStyles: {
+    backgroundColor: theme.colors.bg.input,
+    borderColor: '#ccc',
+    borderRadius: 6,
+    marginTop: 4,
+  },
+  dropdownTextStyles: {
+    fontSize: 15,
+    color: theme.colors.text.primary,
+  },
+}))``;
+
 export const MainWrapper = styled.View`
   flex: 1;
   background-color: ${props => props.theme.colors.bg.primary};

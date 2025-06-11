@@ -42,6 +42,7 @@ import {
   FlexRow,
   Input,
   MainWrapper,
+  SelectListInput,
   ToggleSwitch,
 } from '../../../../components/styles';
 import {Text} from '../../../../components/typography/text.component';
@@ -61,7 +62,9 @@ import {loaderActions} from '../../../../store/loader-slice';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
 import {
   formatDate,
+  getEmiDates,
   getFirebaseAccessUrl,
+  getLinkedDbRecord,
 } from '../../../../components/utility/helper';
 import {SheetDetailsContext} from '../../../../services/sheetDetails/sheetDetails.context';
 import {CategoriesContext} from '../../../../services/categories/categories.context';
@@ -93,17 +96,17 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     date: Platform.OS === 'ios' ? true : false,
     time: Platform.OS === 'ios' ? true : false,
   });
+  const [sheet, setSheet] = useState(null);
 
-  // contexts
-  const {currentSheet} = useContext(SheetsContext);
   const {onSaveCategory} = useContext(CategoriesContext);
   const {userData} = useContext(AuthenticationContext);
 
   // inputs states
   const [amount, setAmount] = useState(0);
   const [notes, setNotes] = useState(null);
+  const [sheetDetailModel, setSheetDetailModel] = useState(null);
+
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [repeat, setRepeat] = useState({value: 'weekly', name: 'Weekly'});
   const [editMode, setEditMode] = useState(false);
   const [smartScanMode, setSmartScanMode] = useState(false);
   const [selectedImage, setSelectedImage] = useState({
@@ -111,8 +114,6 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   });
   const {isConnected} = useNetInfo();
   const [imageChanged, setImageChanged] = useState(false);
-
-  // let imageChanged = false
   const [open, setOpen] = useState(false);
 
   const [newCategoryIdentified, setNewCategoryIdentified] = useState({
@@ -131,6 +132,11 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       : appTheme === 'light'
       ? false
       : true;
+  const [isLoanAccount, setIsLoanAccount] = useState(false);
+  const [isEmiPayment, setIsEmiPayment] = useState(false);
+  const [isPrepayment, setIsPrepayment] = useState(false);
+  const [selectedEmiDate, setSelectedEmiDate] = useState(null);
+  const [emiDates, setEmiDates] = useState([]);
 
   function setCategories(fromRoute = null) {
     if (fromRoute) {
@@ -139,10 +145,28 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   }
 
   useEffect(() => {
-    if (currentSheet?.isLoanAccount) {
+    if (!sheet) return;
+
+    if (sheet?.isLoanAccount) {
+      setIsLoanAccount(true);
+      if (sheet.isEmiPayment) {
+        setIsEmiPayment(sheet.isEmiPayment);
+      } else {
+        setIsEmiPayment(true);
+      }
       setActiveType('expense');
+      if (sheet.useReducingBalance) {
+        const {allEmis} = getEmiDates(
+          sheet.loanStartDate,
+          sheet.repaymentFrequency,
+          sheet.loanYears,
+          sheet.loanMonths,
+          sheet.totalPayments,
+        );
+        setEmiDates(allEmis);
+      }
     }
-  }, [currentSheet]);
+  }, [sheet]);
 
   useEffect(() => {
     if (!amount) {
@@ -184,81 +208,97 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   }, []);
 
   useEffect(() => {
-    if (route.params.activeType) {
-      setActiveType(route.params.activeType);
-    }
-    if (route.params.selectedCategory) {
-      setCategories(route.params.selectedCategory);
-    }
-    if (route.params.repeat) {
-      setRepeat(route.params.repeat);
-    }
-    if (route.params && route.params.smartScan) {
-      let sd = route.params.sheetDetail;
-      if (sd) {
-        const {
-          amount,
-          notes,
-          image,
-          type,
-          date,
-          category,
-          newCategoryIdentified,
-        } = sd;
-        setSmartScanMode(true);
-        setAmount(amount);
-        setNotes(notes);
-        setSelectedImage(image);
-        setActiveType(currentSheet.isLoanAccount ? 'expense' : type);
-        setDate(date ? new Date(date) : new Date());
+    const onSetData = async () => {
+      if (route.params.sheet) {
+        setSheet(route.params.sheet);
+      }
+      if (route.params.activeType) {
+        setActiveType(route.params.activeType);
+      }
+      if (route.params.selectedCategory) {
+        setCategories(route.params.selectedCategory);
+      }
 
-        if (newCategoryIdentified) {
-          setNewCategoryIdentified({
-            showDialog: true,
-            category: {name: category},
+      if (route.params && route.params.smartScan) {
+        let sd = route.params.sheetDetail;
+        if (sd) {
+          const {
+            amount,
+            notes,
+            image,
+            type,
+            date,
+            category,
+            newCategoryIdentified,
+          } = sd;
+          setSmartScanMode(true);
+          setAmount(amount);
+          setNotes(notes);
+          setSelectedImage(image);
+          setActiveType(sheet.isLoanAccount ? 'expense' : type);
+          setDate(date ? new Date(date) : new Date());
+
+          if (newCategoryIdentified) {
+            setNewCategoryIdentified({
+              showDialog: true,
+              category: {name: category},
+            });
+          } else {
+            setSelectedCategory(category);
+          }
+        }
+      }
+      if (route.params.edit) {
+        setEditMode(true);
+        let {sheetDetail: sd, sheetDetailModel: sdModel} = route.params;
+
+        setSheetDetailModel(sdModel || sd);
+
+        if (sd) {
+          setSheetDetail(sd);
+          setAmount(sd.amount);
+          setNotes(sd.notes);
+
+          setActiveType(sd.type);
+
+          const formattedDate = moment(sd.date).format('YYYY-MM-DD').toString();
+          const localDate = new Date(`${formattedDate}T00:00:00`);
+
+          setDate(localDate);
+
+          let imageUrl = null;
+          if (sd.imageUrl) {
+            imageUrl = getFirebaseAccessUrl(sd.imageUrl);
+          }
+          setSelectedImage({
+            type: sd.imageType,
+            extension: sd.imageExtension,
+            url: imageUrl,
+            originalUrl: sd.imageUrl,
           });
-        } else {
-          setSelectedCategory(category);
+
+          setIsEmiPayment(sd.isEmiPayment ? true : false);
+
+          setSelectedEmiDate(sd.isEmiPayment && sd.emiDate ? sd.emiDate : null);
+          setShowTime(sd.showTime ? true : false);
+          if (sd.showTime && sd.time) {
+            setTime(new Date(sd.time));
+          }
+
+          const cgry = sd.category?.name
+            ? sd.category
+            : await getLinkedDbRecord(sd, 'category');
+
+          setSelectedCategory(cgry);
+
+          navigation.setOptions({
+            headerTitle: 'Edit ' + _.capitalize(_.trim(sd.type)),
+          });
         }
       }
-    }
-    if (route.params.edit) {
-      setEditMode(true);
-      let {sheetDetail: sd} = route.params;
+    };
 
-      if (sd) {
-        setSheetDetail(sd);
-        setAmount(sd.amount);
-        setNotes(sd.notes);
-        setActiveType(sd.type);
-
-        const formattedDate = moment(sd.date).format('YYYY-MM-DD').toString();
-        const localDate = new Date(`${formattedDate}T00:00:00`);
-
-        setDate(localDate);
-
-        let imageUrl = null;
-        if (sd.imageUrl) {
-          imageUrl = getFirebaseAccessUrl(sd.imageUrl);
-        }
-        setSelectedImage({
-          type: sd.imageType,
-          extension: sd.imageExtension,
-          url: imageUrl,
-          originalUrl: sd.imageUrl,
-        });
-        setShowTime(sd.showTime ? true : false);
-        if (sd.showTime && sd.time) {
-          setTime(new Date(sd.time));
-        }
-
-        setSelectedCategory(sd.category);
-
-        navigation.setOptions({
-          headerTitle: 'Edit ' + _.capitalize(_.trim(sd.type)),
-        });
-      }
-    }
+    onSetData();
   }, [route.params]);
 
   const onCancel = () => {
@@ -274,7 +314,29 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     );
   };
 
-  const onSave = () => {
+  const checkLoanAccountErrors = () => {
+    let hadErrors = false;
+    if (isEmiPayment) {
+      if (!selectedEmiDate) {
+        showNotification('error', `Please Select EMI Date`);
+        hadErrors = true;
+      }
+      const expectedEMI = sheet.emi;
+      const tolerance = 5;
+      if (Math.abs(amount - expectedEMI) > tolerance) {
+        showNotification(
+          'error',
+          `Amount should Match EMI : ${GetCurrencySymbol(
+            sheet.currency,
+          )}${expectedEMI}`,
+        );
+        hadErrors = true;
+      }
+    }
+    return hadErrors;
+  };
+
+  const onSave = async () => {
     if (!selectedCategory) {
       dispatch(
         notificationActions.showToast({
@@ -284,15 +346,21 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       );
       return;
     }
+
+    if (checkLoanAccountErrors()) return;
+
     let sd = {
       amount: parseFloat(amount),
       notes: notes ? notes.trim() : notes,
       type: activeType,
       categoryId: selectedCategory.id,
-      showTime: showTime ? 1 : 0,
+      showTime: !!showTime,
       image: selectedImage,
-      accountId: currentSheet.id,
+      accountId: sheet.id,
+      isEmiPayment: !!isEmiPayment,
+      emiDate: isEmiPayment ? selectedEmiDate : null,
     };
+
     if (showTime) {
       sd.time = formatDate(time);
       let minutes = moment(sd.time).minutes();
@@ -309,7 +377,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       dte.setSeconds(0);
       sd.date = formatDate(dte);
     }
-    onSaveSheetDetail(currentSheet, sd, () => {
+
+    onSaveSheetDetail(sheet, sd, () => {
       navigation.goBack();
     });
   };
@@ -322,6 +391,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
         notes: notes ? notes.trim() : notes,
         date: date.toString(),
         time: time.toString(),
+        isEmiPayment,
+        emiDate: isEmiPayment ? selectedEmiDate : null,
         showTime,
         selectedCategory,
       };
@@ -331,15 +402,19 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
 
   const onEdit = () => {
     let selImage = _.cloneDeep(selectedImage);
+    if (checkLoanAccountErrors()) return;
+
     let sd = {
       id: sheetDetail.id,
       amount: parseFloat(amount),
       notes: notes ? notes.trim() : notes,
       type: activeType,
       categoryId: selectedCategory.id,
-      showTime: showTime ? 1 : 0,
+      showTime: !!showTime,
       image: selImage,
       imageChanged: imageChanged,
+      isEmiPayment: !!isEmiPayment,
+      emiDate: isEmiPayment ? selectedEmiDate : null,
     };
 
     if (selectedImage.originalUrl && !selImage.url) {
@@ -368,13 +443,14 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       dte.setSeconds(0);
       sd.date = formatDate(dte);
     }
-    onEditSheetDetail(currentSheet, sd, () => {
+
+    onEditSheetDetail(sheet, sheetDetailModel, sd, () => {
       navigation.goBack();
     });
   };
 
   const onSetActiveType = type => {
-    if (currentSheet?.isLoanAccount && type === 'income') {
+    if (sheet?.isLoanAccount && type === 'income') {
       return; // prevent switching to income
     }
 
@@ -393,7 +469,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       color: categoryColor,
       uid: userData.uid,
       type: 'expense',
-      isLoanRelated: currentSheet.isLoanAccount ? 1 : 0,
+      isLoanRelated: sheet.isLoanAccount ? 1 : 0,
     };
     onSaveCategory(category, insertedCat => {
       setSelectedCategory(insertedCat);
@@ -508,10 +584,11 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     setOpen(false);
   };
 
+  if (!sheet) return null;
   return (
     <SafeArea child={true}>
       <MainWrapper>
-        {!editMode && !smartScanMode && !currentSheet.isLoanAccount && (
+        {!editMode && !smartScanMode && !isLoanAccount && (
           <TabsSwitcher
             tabs={[
               {key: 'expense', label: 'Expense'},
@@ -530,7 +607,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
               <View onLayout={e => setAmountWidth(e.nativeEvent.layout.width)}>
                 <AddAmountInputText fontsize={'30px'}>
                   {activeType === 'expense' && '-'}
-                  {GetCurrencySymbol(currentSheet?.currency)}{' '}
+                  {GetCurrencySymbol(sheet?.currency)}{' '}
                   {GetCurrencyLocalString(amount)}
                 </AddAmountInputText>
                 <AddAmountInputTextBlinkingCursor />
@@ -572,6 +649,74 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
             maxLength={80}
           />
           <Spacer size={'large'}></Spacer>
+
+          {isLoanAccount && (
+            <Card
+              style={{
+                backgroundColor: theme.colors.bg.card,
+                margin: 0.5,
+                marginBottom: 20,
+              }}>
+              <Card.Content>
+                <FlexRow justifyContent="space-between">
+                  <Text fontfamily="heading">Is this an EMI Payment?</Text>
+                  <ToggleSwitch
+                    value={isEmiPayment}
+                    onValueChange={value => {
+                      setIsEmiPayment(value);
+                      if (value) {
+                        setIsPrepayment(false); // mutually exclusive
+                      } else {
+                        setIsPrepayment(true);
+                      }
+                    }}
+                  />
+                </FlexRow>
+                {isEmiPayment && (
+                  <>
+                    <Spacer size="medium" />
+                    <Text variantType="caption">
+                      Uncheck the button if you want to make a pre-payment
+                    </Text>
+                  </>
+                )}
+                {!isEmiPayment && (
+                  <>
+                    <Spacer size="medium" />
+                    <Text variantType="caption">
+                      (This will be treated as a prepayment)
+                    </Text>
+                  </>
+                )}
+                <Spacer size="large" />
+                {isEmiPayment && emiDates.length > 0 && (
+                  <>
+                    <Spacer size="medium" />
+                    <Text>Select EMI Date</Text>
+                    <Spacer size="medium" />
+                    <SelectListInput
+                      setSelected={d => {
+                        setSelectedEmiDate(d);
+                        setDate(new Date(`${d}T00:00:00`));
+                      }}
+                      defaultOption={{
+                        key: selectedEmiDate,
+                        value:
+                          moment(selectedEmiDate).format('DD MMM YYYY - dddd'),
+                      }}
+                      data={emiDates.map(date => ({
+                        key: date,
+                        value: moment(date).format('DD MMM YYYY - dddd'),
+                      }))}
+                      save="key"
+                      placeholder="Choose EMI Date"
+                    />
+                  </>
+                )}
+              </Card.Content>
+            </Card>
+          )}
+
           <Card
             style={{
               backgroundColor: theme.colors.bg.card,
@@ -583,9 +728,10 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
               navigation.navigate('SelectCategory', {
                 type: activeType,
                 selectedCategory,
-                isLoanAccount: currentSheet.isLoanAccount ? true : false,
+                isLoanAccount: isLoanAccount,
                 editMode,
                 editModeParams: paramsObject,
+                sheetDetailModel: sheetDetailModel,
               });
             }}>
             <Card.Title
@@ -637,161 +783,26 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
               backgroundColor: theme.colors.bg.card,
               margin: 1,
             }}>
-            {/* Repeat */}
-            {/* <Card.Content>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('SelectRepeat', {
-                    repeat: repeat,
-                  });
-                }}>
-                <FlexRow justifyContent="space-between">
-                  <FlexRow gap="5px">
-                    <Ionicons
-                      name="repeat"
-                      size={25}
-                      color={theme.colors.brand.primary}
-                    />
-                    <Text fontfamily="heading">Repeat</Text>
-                  </FlexRow>
-                  <FlexRow>
-                    <Text color={'#aaa'}>{repeat.name}</Text>
-                    <MaterialCommunityIcon
-                      name="chevron-right"
-                      size={25}
-                      color="#aaa"
-                    />
-                  </FlexRow>
-                </FlexRow>
-              </TouchableOpacity>
-            </Card.Content> */}
+            <Spacer size="large" />
 
-            {/* date picker */}
-            <Spacer size="medium" />
-            <Divider />
-            <Spacer size={'large'} />
-            <Card.Content>
-              <View>
-                <FlexRow justifyContent="space-between">
-                  <FlexRow gap="5px">
-                    <Ionicons
-                      name="calendar-outline"
-                      size={25}
-                      color={theme.colors.brand.primary}>
-                      <Spacer position={'left'} />
-                    </Ionicons>
-                    <Text fontfamily="heading">Date</Text>
-                  </FlexRow>
-
-                  {Platform.OS === 'android' && (
-                    <>
-                      <TouchableOpacity
-                        style={{
-                          backgroundColor: theme.colors.brand.secondary,
-                          padding: 15,
-                          paddingTop: 10,
-                          paddingBottom: 10,
-                          borderRadius: 10,
-                        }}
-                        onPress={() =>
-                          setShowPicker(prevState => ({
-                            ...prevState,
-                            date: true,
-                          }))
-                        }>
-                        <Text fontfamily="bodySemiBold" fontsize="14px">
-                          {moment(date).format('DD MMM YYYY')}
-                        </Text>
-                      </TouchableOpacity>
-                      {showPicker.date && (
-                        <DateTimePicker
-                          mode="date"
-                          value={date}
-                          timeZoneName="America/Toronto"
-                          themeVariant={darkMode ? 'dark' : 'light'}
-                          onChange={(e, d) => {
-                            if (e.type === 'dismissed') {
-                              setShowPicker(prev => ({
-                                ...prev,
-                                date: false,
-                              }));
-                            }
-                            if (d) {
-                              if (Platform.OS === 'android') {
-                                setShowPicker(prevState => {
-                                  return {
-                                    ...prevState,
-                                    date: false,
-                                  };
-                                });
-                              }
-                              setDate(d);
-                              time.setMonth(d.getMonth());
-                              time.setDate(d.getDate());
-                            }
-                          }}
-                        />
-                      )}
-                    </>
-                  )}
-
-                  {Platform.OS === 'ios' && (
-                    <DateTimePicker
-                      mode="date"
-                      value={date}
-                      themeVariant={darkMode ? 'dark' : 'light'}
-                      dateFormat="dayofweek day month"
-                      // maximumDate={new Date()}
-                      onChange={(e, d) => {
-                        if (e.type === 'dismissed') {
-                          setShowPicker(prev => ({
-                            ...prev,
-                            date: false,
-                          }));
-                        }
-                        if (d) {
-                          setDate(d);
-                          time.setMonth(d.getMonth());
-                          time.setDate(d.getDate());
-                        }
-                      }}
-                    />
-                  )}
-                </FlexRow>
-              </View>
-            </Card.Content>
-            {/* time */}
-            <Spacer />
-            <Divider />
-            <Spacer size={'large'} />
-            <Card.Content>
-              <FlexRow justifyContent="space-between" gap="5px">
-                <Text>Show Time</Text>
-                <ToggleSwitch
-                  value={showTime}
-                  onValueChange={() => setShowTime(!showTime)}
-                />
-              </FlexRow>
-            </Card.Content>
-            {/* showing time */}
-            <Spacer />
-            <Divider />
-            <Spacer size={'large'} />
-
-            {showTime && (
+            {(!isLoanAccount ||
+              (isLoanAccount && !isEmiPayment) ||
+              (isLoanAccount && isPrepayment)) && (
               <>
-                {/* time picker */}
+                {/* date picker */}
+                <Divider />
+                <Spacer size={'large'} />
                 <Card.Content>
                   <View>
                     <FlexRow justifyContent="space-between">
-                      <FlexRow>
+                      <FlexRow gap="5px">
                         <Ionicons
-                          name="time-outline"
+                          name="calendar-outline"
                           size={25}
                           color={theme.colors.brand.primary}>
                           <Spacer position={'left'} />
                         </Ionicons>
-                        <Text fontfamily="heading">Time</Text>
+                        <Text fontfamily="heading">Date</Text>
                       </FlexRow>
 
                       {Platform.OS === 'android' && (
@@ -807,14 +818,155 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                             onPress={() =>
                               setShowPicker(prevState => ({
                                 ...prevState,
-                                time: true,
+                                date: true,
                               }))
                             }>
                             <Text fontfamily="bodySemiBold" fontsize="14px">
-                              {moment(time).format('hh:mm A')}
+                              {moment(date).format('DD MMM YYYY')}
                             </Text>
                           </TouchableOpacity>
-                          {showPicker.time && (
+                          {showPicker.date && (
+                            <DateTimePicker
+                              mode="date"
+                              value={date}
+                              timeZoneName="America/Toronto"
+                              themeVariant={darkMode ? 'dark' : 'light'}
+                              onChange={(e, d) => {
+                                if (e.type === 'dismissed') {
+                                  setShowPicker(prev => ({
+                                    ...prev,
+                                    date: false,
+                                  }));
+                                }
+                                if (d) {
+                                  if (Platform.OS === 'android') {
+                                    setShowPicker(prevState => {
+                                      return {
+                                        ...prevState,
+                                        date: false,
+                                      };
+                                    });
+                                  }
+                                  setDate(d);
+                                  time.setMonth(d.getMonth());
+                                  time.setDate(d.getDate());
+                                }
+                              }}
+                            />
+                          )}
+                        </>
+                      )}
+
+                      {Platform.OS === 'ios' && (
+                        <DateTimePicker
+                          mode="date"
+                          value={date}
+                          themeVariant={darkMode ? 'dark' : 'light'}
+                          dateFormat="dayofweek day month"
+                          // maximumDate={new Date()}
+                          onChange={(e, d) => {
+                            if (e.type === 'dismissed') {
+                              setShowPicker(prev => ({
+                                ...prev,
+                                date: false,
+                              }));
+                            }
+                            if (d) {
+                              setDate(d);
+                              time.setMonth(d.getMonth());
+                              time.setDate(d.getDate());
+                            }
+                          }}
+                        />
+                      )}
+                    </FlexRow>
+                  </View>
+                </Card.Content>
+                {/* time */}
+                <Spacer />
+                <Divider />
+                <Spacer size={'large'} />
+                <Card.Content>
+                  <FlexRow justifyContent="space-between" gap="5px">
+                    <Text>Show Time</Text>
+                    <ToggleSwitch
+                      value={showTime}
+                      onValueChange={() => setShowTime(!showTime)}
+                    />
+                  </FlexRow>
+                </Card.Content>
+                {/* showing time */}
+                <Spacer />
+                <Divider />
+                <Spacer size={'large'} />
+
+                {showTime && (
+                  <>
+                    {/* time picker */}
+                    <Card.Content>
+                      <View>
+                        <FlexRow justifyContent="space-between">
+                          <FlexRow>
+                            <Ionicons
+                              name="time-outline"
+                              size={25}
+                              color={theme.colors.brand.primary}>
+                              <Spacer position={'left'} />
+                            </Ionicons>
+                            <Text fontfamily="heading">Time</Text>
+                          </FlexRow>
+
+                          {Platform.OS === 'android' && (
+                            <>
+                              <TouchableOpacity
+                                style={{
+                                  backgroundColor: theme.colors.brand.secondary,
+                                  padding: 15,
+                                  paddingTop: 10,
+                                  paddingBottom: 10,
+                                  borderRadius: 10,
+                                }}
+                                onPress={() =>
+                                  setShowPicker(prevState => ({
+                                    ...prevState,
+                                    time: true,
+                                  }))
+                                }>
+                                <Text fontfamily="bodySemiBold" fontsize="14px">
+                                  {moment(time).format('hh:mm A')}
+                                </Text>
+                              </TouchableOpacity>
+                              {showPicker.time && (
+                                <DateTimePicker
+                                  mode="time"
+                                  value={time}
+                                  themeVariant={darkMode ? 'dark' : 'light'}
+                                  // maximumDate={new Date()}
+                                  onChange={(e, t) => {
+                                    if (e.type === 'dismissed') {
+                                      setShowPicker(prev => ({
+                                        ...prev,
+                                        time: false,
+                                      }));
+                                    }
+                                    if (t) {
+                                      if (Platform.OS === 'android') {
+                                        setShowPicker(prevState => {
+                                          return {
+                                            ...prevState,
+                                            time: false,
+                                          };
+                                        });
+                                      }
+                                      setTime(t);
+                                    }
+                                  }}
+                                />
+                              )}
+                            </>
+                          )}
+
+                          {Platform.OS === 'ios' && (
                             <DateTimePicker
                               mode="time"
                               value={time}
@@ -841,43 +993,15 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                               }}
                             />
                           )}
-                        </>
-                      )}
+                        </FlexRow>
+                      </View>
+                    </Card.Content>
 
-                      {Platform.OS === 'ios' && (
-                        <DateTimePicker
-                          mode="time"
-                          value={time}
-                          themeVariant={darkMode ? 'dark' : 'light'}
-                          // maximumDate={new Date()}
-                          onChange={(e, t) => {
-                            if (e.type === 'dismissed') {
-                              setShowPicker(prev => ({
-                                ...prev,
-                                time: false,
-                              }));
-                            }
-                            if (t) {
-                              if (Platform.OS === 'android') {
-                                setShowPicker(prevState => {
-                                  return {
-                                    ...prevState,
-                                    time: false,
-                                  };
-                                });
-                              }
-                              setTime(t);
-                            }
-                          }}
-                        />
-                      )}
-                    </FlexRow>
-                  </View>
-                </Card.Content>
-
-                <Spacer />
-                <Divider />
-                <Spacer size={'large'} />
+                    <Spacer />
+                    <Divider />
+                    <Spacer size={'large'} />
+                  </>
+                )}
               </>
             )}
             {/* image */}
@@ -937,6 +1061,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
               Haptics.trigger('impactMedium', {
                 ignoreAndroidSystemSettings: true,
               });
+
               editMode ? onEdit() : onSave();
             }}
             mode="contained"

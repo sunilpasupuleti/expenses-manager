@@ -40,6 +40,8 @@ export const transformSheetDetails = rows => {
           imageUrl: transaction.imageUrl,
           imageType: transaction.imageType,
           imageExtension: transaction.imageExtension,
+          isEmiPayment: transaction.isEmiPayment,
+          emiDate: transaction.emiDate,
           category: {
             id: transaction.categoryId,
             name: transaction.categoryName,

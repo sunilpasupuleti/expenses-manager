@@ -1,12 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unstable-nested-components */
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, {useCallback, useContext, useEffect, useState} from 'react';
 import {TouchableOpacity, useWindowDimensions} from 'react-native';
 import {useTheme} from 'styled-components/native';
 import {SheetsInfo} from '../components/sheet-info/sheet-info.component';
@@ -15,6 +9,7 @@ import {
   IconsContainer,
   LastSyncedContainer,
   NewSheet,
+  NoSheets,
   TopContainer,
   UpperIcon,
 } from '../components/sheets.styles';
@@ -42,6 +37,7 @@ import Animated, {
 import {Image, View} from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import Carousel, {Pagination} from 'react-native-reanimated-carousel';
+import SheetCardSkeleton from '../components/sheet-card-skeleton.component';
 
 const CarouselInfoCards = ({cardsData = [], theme}) => {
   const {width} = useWindowDimensions();
@@ -134,22 +130,16 @@ const CarouselInfoCards = ({cardsData = [], theme}) => {
   );
 };
 
-export const SheetsScreen = ({navigation, route}) => {
-  const theme = useTheme();
-  const {getSheets, onGetAndSetCurrentSheet} = useContext(SheetsContext);
-  const {userAdditionalDetails, userData} = useContext(AuthenticationContext);
-  const [searchKeyword, setSearchKeyword] = useState(null);
-  const [showSearch, setShowSearch] = useState(false);
-  const [forceShowRecap, setForceShowRecap] = useState(false);
-  const [carouselCards, setCarouselCards] = useState([]);
-  const [sheets, setSheets] = useState({
-    regular: [],
-    pinned: [],
-    archived: [],
-    loan: [],
-    totalCount: 0,
-  });
-
+export const SheetsScreen = ({
+  navigation,
+  route,
+  regularSheets,
+  pinnedSheets,
+  archivedSheets,
+  searchKeyword,
+  setSearchKeyword,
+  loanSheets,
+}) => {
   let carouselCardsData = [
     {
       title: 'Track Your Savings!',
@@ -161,42 +151,12 @@ export const SheetsScreen = ({navigation, route}) => {
     },
   ];
 
-  const routeIsFocused = useIsFocused();
-  const {reRender} = route.params || {};
-
-  useEffect(() => {
-    if (routeIsFocused && userData) {
-      onGetSheets();
-    } else {
-      setSearchKeyword(null);
-    }
-  }, [routeIsFocused, userData]);
-
-  useEffect(() => {
-    if (reRender) {
-      navigation.setParams({reRender: false});
-      onGetSheets();
-    } else {
-      setSearchKeyword(null);
-    }
-  }, [reRender]);
-
-  const debouncedSearch = useCallback(
-    _.debounce(keyword => {
-      if (userData?.uid) {
-        onGetSheets(_.toLower(keyword));
-      }
-    }, 300),
-    [userData],
-  );
-
-  useEffect(() => {
-    if (searchKeyword !== null && searchKeywordRegex.test(searchKeyword)) {
-      debouncedSearch(searchKeyword);
-    } else if (searchKeyword === '') {
-      onGetSheets();
-    }
-  }, [searchKeyword, debouncedSearch]);
+  const theme = useTheme();
+  const {onGetAndSetCurrentSheet} = useContext(SheetsContext);
+  const {userAdditionalDetails, userData} = useContext(AuthenticationContext);
+  const [showSearch, setShowSearch] = useState(false);
+  const [forceShowRecap, setForceShowRecap] = useState(false);
+  const [carouselCards, setCarouselCards] = useState(carouselCardsData);
 
   const onClickSheet = async sheetId => {
     await onGetAndSetCurrentSheet(sheetId);
@@ -205,40 +165,45 @@ export const SheetsScreen = ({navigation, route}) => {
     });
   };
 
-  const onGetSheets = async (keyword = null) => {
-    let data = await getSheets(keyword);
-    if (data) {
-      setSheets(data);
+  const isLoading =
+    regularSheets === undefined ||
+    pinnedSheets === undefined ||
+    loanSheets === undefined ||
+    archivedSheets === undefined;
 
-      const isLoanAccountExists = data?.loan?.length > 0 ? true : false;
+  const hasNoSheets =
+    !isLoading &&
+    regularSheets.length === 0 &&
+    pinnedSheets.length === 0 &&
+    loanSheets.length === 0 &&
+    archivedSheets.length === 0;
 
-      if (isLoanAccountExists) {
-        const upcomingDues = getNextEmiAcrossAccounts(data.loan);
-        // console.log(upcomingDues, '---');
+  useEffect(() => {
+    if (loanSheets && loanSheets.length > 0) {
+      const upcomingDues = getNextEmiAcrossAccounts(loanSheets);
 
-        let cards = _.cloneDeep(carouselCardsData);
+      let cards = _.cloneDeep(carouselCardsData);
 
-        upcomingDues.forEach(due => {
-          cards.push({
-            title: `${due.name} - Upcoming EMI`,
-            subtitle: `Scheduled for ${moment(due.date).format(
-              'dddd (MMM DD, YYYY)',
-            )}`,
-            cta: 'View Loan Details →',
-            gradient: ['#f77062', '#fe5196', '#ff758c'],
-            image: require('../../../../assets/emi-due.png'),
-            onPress: () => {
-              onClickSheet(due.sheetId);
-            },
-          });
+      upcomingDues.forEach(due => {
+        cards.push({
+          title: `${due.name} - Upcoming EMI`,
+          subtitle: `Scheduled for ${moment(due.date).format(
+            'dddd (MMM DD, YYYY)',
+          )}`,
+          cta: 'View Loan Details →',
+          gradient: ['#f77062', '#fe5196', '#ff758c'],
+          image: require('../../../../assets/emi-due.png'),
+          onPress: () => {
+            onClickSheet(due.sheetId);
+          },
         });
+      });
 
-        setCarouselCards(cards);
-      } else {
-        setCarouselCards(carouselCardsData);
-      }
+      setCarouselCards(cards);
+    } else {
+      setCarouselCards(carouselCardsData);
     }
-  };
+  }, [loanSheets]);
 
   return (
     <SafeArea>
@@ -249,7 +214,7 @@ export const SheetsScreen = ({navigation, route}) => {
           lastSynced={userAdditionalDetails?.lastSynced ? true : false}>
           <View />
           <IconsContainer>
-            {sheets.totalCount > 0 && (
+            {!isLoading && (
               <>
                 <TouchableOpacity onPress={() => setShowSearch(prev => !prev)}>
                   <MaterialIcons
@@ -324,7 +289,7 @@ export const SheetsScreen = ({navigation, route}) => {
         <Text fontfamily="bodyBold" fontsize="30px">
           Accounts
         </Text>
-        {userAdditionalDetails?.lastSynced && (
+        {userData?.lastSynced && (
           <LastSyncedContainer>
             <Text color={'green'} fontfamily="bodyBold" fontsize="12px">
               Last Synced :{' '}
@@ -334,15 +299,34 @@ export const SheetsScreen = ({navigation, route}) => {
         )}
         <Spacer size="medium" />
 
-        <SheetsInfo
-          navigation={navigation}
-          totalCount={sheets.totalCount}
-          regularSheets={sheets.regular}
-          pinnedSheets={sheets.pinned}
-          archivedSheets={sheets.archived}
-          loanSheets={sheets.loan}
-          onGetSheets={onGetSheets}
-        />
+        {isLoading ? (
+          <>
+            {[...Array(3)].map((_, i) => (
+              <SheetCardSkeleton key={i} colorMode="dark" />
+            ))}
+          </>
+        ) : hasNoSheets ? (
+          <NoSheets>
+            <Text style={{textAlign: 'center'}}>
+              There are no accounts yet. Create a new account by clicking on
+              plus icon.
+            </Text>
+          </NoSheets>
+        ) : (
+          <SheetsInfo
+            navigation={navigation}
+            totalCount={
+              regularSheets.length +
+              pinnedSheets.length +
+              archivedSheets.length +
+              loanSheets.length
+            }
+            regularSheets={regularSheets}
+            pinnedSheets={pinnedSheets}
+            archivedSheets={archivedSheets}
+            loanSheets={loanSheets}
+          />
+        )}
 
         <NewSheet onPress={() => navigation.navigate('AddSheet')}>
           <AddSheetIcon name="add-outline" size={25} color="#fff" />

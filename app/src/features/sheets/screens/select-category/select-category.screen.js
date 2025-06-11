@@ -26,48 +26,14 @@ import {CategoriesContext} from '../../../../services/categories/categories.cont
 import {searchKeywordRegex} from '../../../../components/utility/helper';
 import {useIsFocused} from '@react-navigation/native';
 import {View} from 'react-native';
+import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
+import {ObservedSelectCategoryScreen} from './select-category.observed';
 
 export const SelectCategoryScreen = ({navigation, route}) => {
-  const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+  const {userData} = useContext(AuthenticationContext);
   const [searchKeyword, setSearchKeyword] = useState('');
-  const {getCategories, onSearchCategories} = useContext(CategoriesContext);
   const theme = useTheme();
   const routeIsFocused = useIsFocused();
-  useEffect(() => {
-    if (route.params.type) {
-      onGetCategories(route.params.type);
-    }
-    if (route.params.selectedCategory) {
-      setSelectedCategory(route.params.selectedCategory);
-      if (route.params.addedNewCategoryAndSelected) {
-        // navigation.navigate('AddSheetDetail', {
-        //   selectedCategory: route.params.selectedCategory,
-        // });
-      }
-    }
-  }, [route.params]);
-
-  const onGetCategories = async type => {
-    if (type) {
-      let data = await getCategories(type, route.params?.isLoanAccount);
-      setCategories(data);
-    }
-  };
-
-  useEffect(() => {
-    if (searchKeyword !== null && searchKeywordRegex.test(searchKeyword)) {
-      onSearch(route.params.type);
-    } else if (searchKeyword === '') {
-      onGetCategories(route.params.type);
-    }
-  }, [searchKeyword]);
-
-  const onSearch = async type => {
-    let result = await onSearchCategories(_.toLower(searchKeyword), type);
-    setCategories(result);
-  };
-
   useEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
@@ -83,6 +49,45 @@ export const SelectCategoryScreen = ({navigation, route}) => {
       ),
     });
   }, []);
+
+  useEffect(() => {
+    if (!routeIsFocused) {
+      setSearchKeyword('');
+    }
+  }, [routeIsFocused]);
+
+  return (
+    <ObservedSelectCategoryScreen
+      navigation={navigation}
+      route={route}
+      userId={userData.id}
+      type={route.params?.type}
+      searchKeyword={searchKeyword}
+      setSearchKeyword={setSearchKeyword}
+      isLoanRelated={route.params?.isLoanAccount || false}
+    />
+  );
+};
+
+export const BaseSelectCategoryScreen = ({
+  navigation,
+  route,
+  categories = [],
+  searchKeyword,
+  setSearchKeyword,
+}) => {
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const theme = useTheme();
+  useEffect(() => {
+    if (route.params.selectedCategory) {
+      setSelectedCategory(route.params.selectedCategory);
+      if (route.params.addedNewCategoryAndSelected) {
+        // navigation.navigate('AddSheetDetail', {
+        //   selectedCategory: route.params.selectedCategory,
+        // });
+      }
+    }
+  }, [route.params]);
 
   return (
     <SafeArea child={true}>
@@ -111,9 +116,12 @@ export const SelectCategoryScreen = ({navigation, route}) => {
                     if (route.params.editMode) {
                       // send back category
                       route.params.editModeParams.category = c;
+                      route.params.editModeParams.type = c.type;
+
                       navigation.navigate('AddSheetDetail', {
                         edit: true,
                         sheetDetail: route.params.editModeParams,
+                        sheetDetailModel: route.params?.sheetDetailModel,
                       });
                     } else {
                       navigation.navigate('AddSheetDetail', {

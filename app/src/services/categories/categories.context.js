@@ -5,26 +5,24 @@ import {loaderActions} from '../../store/loader-slice';
 import {notificationActions} from '../../store/notification-slice';
 import {AuthenticationContext} from '../authentication/authentication.context';
 import _ from 'lodash';
-import {
-  firebaseRemoveFiles,
-  getDataFromRows,
-} from '../../components/utility/helper';
-import {SQLiteContext} from '../sqlite/sqlite.context';
+import {firebaseRemoveFiles} from '../../components/utility/helper';
 import {Alert, Keyboard} from 'react-native';
+import {WatermelonDBContext} from '../watermelondb/watermelondb.context';
+import {Q} from '@nozbe/watermelondb';
 
 export const CategoriesContext = createContext({
-  getCategories: callback => null,
+  getCategories: (categoryType, isLoanRelated) => null,
   onSaveCategory: (category, callback = () => null) => null,
-  onEditCategory: (category, callback = () => null) => null,
+  onEditCategory: (categoryModel, editedCategroy, callback = () => null) =>
+    null,
   onDeleteCategory: (category, callback) => null,
   onSearchCategories: callback => null,
 });
 
 export const CategoriesContextProvider = ({children}) => {
   const {userData} = useContext(AuthenticationContext);
-
-  const {createOrReplaceData, updateData, getData, deleteData} =
-    useContext(SQLiteContext);
+  const {getChildRecords, db, createRecord, updateRecord, deleteRecord} =
+    useContext(WatermelonDBContext);
 
   const dispatch = useDispatch();
 
@@ -56,13 +54,21 @@ export const CategoriesContextProvider = ({children}) => {
 
   const getCategories = async (categoryType, isLoanRelated = false) => {
     try {
-      let uid = userData.uid;
-      let orderQuery = 'ORDER BY name';
-      let loanFilter = isLoanRelated ? 'AND isLoanRelated = 1' : '';
-      let query = `SELECT * FROM Categories WHERE uid='${uid}' AND type='${categoryType}' ${loanFilter} ${orderQuery}`;
-      let result = await getData(query);
-      let resultData = await getDataFromRows(result.rows);
-      const data = resultData;
+      const filters = [Q.where('type', categoryType)];
+      if (isLoanRelated) {
+        filters.push(Q.where('isLoanRelated', true));
+      }
+      const data = await getChildRecords(
+        'users',
+        'id',
+        userData.id,
+        'categories',
+        {
+          filters: filters,
+          sortBy: {column: 'name', order: 'asc'},
+          mapRaw: true,
+        },
+      );
 
       return data;
     } catch (e) {
@@ -72,46 +78,64 @@ export const CategoriesContextProvider = ({children}) => {
 
   const onSaveCategory = async (category, callback = () => null) => {
     try {
-      let result = await getData(
-        `SELECT * FROM Categories WHERE LOWER(name) = '${_.toLower(
-          category.name,
-        )}' AND type='${category.type}'`,
+      const allCategories = await getChildRecords(
+        'users',
+        'id',
+        userData.id,
+        'categories',
+        {
+          filters: [
+            Q.where('type', category.type),
+            Q.where('name', category.name),
+          ],
+        },
       );
-      if (result?.rows?.length > 0) {
+      if (allCategories.length > 0) {
         throw 'Category already exists!';
       }
-      let insertedRes = await createOrReplaceData('Categories', category);
-      let insertedData = await getDataFromRows(insertedRes.rows);
+      const insertedRecord = await createRecord('categories', category);
 
-      let insertedDoc = {
-        ...insertedData[0],
-      };
-      callback(insertedDoc);
+      callback(insertedRecord._raw);
     } catch (err) {
       Keyboard.dismiss();
       showNotification('error', err.message || err.toString());
     }
   };
 
-  const onEditCategory = async (category, callback = () => null) => {
+  const onEditCategory = async (
+    categoryModel,
+    category,
+    callback = () => null,
+  ) => {
     try {
-      console.log(_.toLower(category.name), category.id);
-
-      let result = await getData(
-        `SELECT * FROM Categories WHERE uid = '${userData.uid}' AND id <> ${
-          category.id
-        } AND LOWER(name) = '${_.toLower(category.name)}' AND type = '${
-          category.type
-        }'`,
+      const allCategories = await getChildRecords(
+        'users',
+        'id',
+        userData.id,
+        'categories',
+        {
+          filters: [
+            Q.where('type', category.type),
+            Q.where('name', category.name),
+            Q.where('id', Q.notEq(categoryModel.id)),
+          ],
+        },
       );
-      if (result?.rows?.length > 0) {
-        throw 'Category with the same name already exists in the same type!';
+
+      if (allCategories.length > 0) {
+        throw `Category with the same name already exists in ${category.type}!`;
       }
 
-      await updateData('Categories', category, 'WHERE uid=? AND id=?', [
-        userData.uid,
-        category.id,
-      ]);
+      await db.write(async () => {
+        await categoryModel.update(record => {
+          record.name = category.name;
+          record.color = category.color;
+          record.icon = category.icon;
+          record.type = category.type;
+          record.isLoanRelated = category.isLoanRelated;
+        });
+      });
+
       callback();
     } catch (err) {
       Keyboard.dismiss();
@@ -121,21 +145,28 @@ export const CategoriesContextProvider = ({children}) => {
 
   const onDeleteCategory = async (category, callback = () => null) => {
     try {
-      const deleteCategory = async () => {
-        await deleteData('Categories', 'WHERE uid = ? AND id=?', [
-          userData.uid,
-          category.id,
-        ]);
-        callback();
-      };
-      let transactions = await getData(
-        `SELECT * FROM Transactions WHERE categoryId = ${category.id}`,
-      );
-      if (transactions?.rows?.length > 0) {
-        let transactionsData = await getDataFromRows(transactions.rows);
-        let imageUrls = transactionsData
+      const relatedTransactions = await category.transactions.fetch();
+
+      const deleteCategoryAndTransactions = async () => {
+        await db.write(async () => {
+          if (relatedTransactions.length > 0) {
+            for (const tx of relatedTransactions) {
+              await tx.markAsDeleted();
+              await tx.destroyPermanently();
+            }
+          }
+
+          await category.markAsDeleted();
+          await category.destroyPermanently();
+        });
+        let imageUrls = relatedTransactions
           .filter(t => t.imageUrl !== null)
           .map(t => t.imageUrl);
+        if (imageUrls.length > 0) {
+          await firebaseRemoveFiles(imageUrls);
+        }
+      };
+      if (relatedTransactions?.length > 0) {
         Alert.alert(
           'Remove Category ?',
           `Are you sure you want to remove ${category.name}? This action will delete all transactions associated with this category`,
@@ -147,10 +178,7 @@ export const CategoriesContextProvider = ({children}) => {
             {
               text: 'Yes',
               onPress: async () => {
-                await deleteCategory();
-                if (imageUrls.length > 0) {
-                  await firebaseRemoveFiles(imageUrls);
-                }
+                await deleteCategoryAndTransactions();
               },
               style: 'default',
             },
@@ -158,7 +186,7 @@ export const CategoriesContextProvider = ({children}) => {
           {cancelable: false},
         );
       } else {
-        await deleteCategory();
+        await deleteCategoryAndTransactions();
       }
     } catch (err) {
       showNotification('error', err.message || err.toString());
@@ -166,12 +194,20 @@ export const CategoriesContextProvider = ({children}) => {
   };
 
   const onSearchCategories = async (keyword, categoryType) => {
+    return;
     try {
-      let uid = userData.uid;
-      let orderQuery = 'ORDER BY name';
-      let query = `SELECT * FROM Categories WHERE uid = '${uid}' AND LOWER(name) LIKE '%${keyword}%' AND type='${categoryType}' ${orderQuery}`;
-      let results = await getData(query);
-      let data = await getDataFromRows(results.rows);
+      let userId = userData.id;
+      const filters = [
+        Q.where('type', categoryType),
+        Q.where('name', Q.like(`%${keyword.toLowerCase()}%`)),
+      ];
+
+      const data = await getChildRecords('users', 'id', userId, 'categories', {
+        filters,
+        sortBy: {column: 'name', order: 'asc'},
+        mapRaw: true,
+      });
+
       return data;
     } catch (err) {
       showNotification('error', err.message || err.toString());

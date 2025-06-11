@@ -16,20 +16,14 @@ BEGIN
     totalExpense = (
         SELECT COALESCE(SUM(amount), 0) FROM Transactions WHERE type = 'expense' AND accountId = NEW.accountId AND upcoming = 0
     ),
+    totalPaid = (
+      SELECT COALESCE(SUM(amount), 0)
+      FROM Transactions
+      WHERE type = 'expense' AND accountId = NEW.accountId AND upcoming = 0
+    ),
     totalBalance = CASE
-      WHEN isLoanAccount = 1 THEN totalRepayable - (
-        SELECT COALESCE(SUM(amount), 0)
-        FROM Transactions
-        WHERE type = 'expense' AND accountId = NEW.accountId AND upcoming = 0
-      )
-      ELSE (
-        (SELECT COALESCE(SUM(amount), 0)
-         FROM Transactions
-         WHERE type = 'income' AND accountId = NEW.accountId AND upcoming = 0) -
-        (SELECT COALESCE(SUM(amount), 0)
-         FROM Transactions
-         WHERE type = 'expense' AND accountId = NEW.accountId AND upcoming = 0)
-      )
+      WHEN isLoanAccount = 1 THEN totalRepayable - totalPaid
+      ELSE totalIncome - totalExpense
     END
     WHERE id = NEW.accountId;
 END;
@@ -46,20 +40,14 @@ BEGIN
     totalExpense = (
         SELECT COALESCE(SUM(amount), 0) FROM Transactions WHERE type = 'expense' AND accountId = NEW.accountId AND upcoming = 0
     ),
+    totalPaid = (
+      SELECT COALESCE(SUM(amount), 0)
+      FROM Transactions
+      WHERE type = 'expense' AND accountId = NEW.accountId AND upcoming = 0
+    ),
     totalBalance = CASE
-      WHEN isLoanAccount = 1 THEN totalRepayable - (
-        SELECT COALESCE(SUM(amount), 0)
-        FROM Transactions
-        WHERE type = 'expense' AND accountId = NEW.accountId AND upcoming = 0
-      )
-      ELSE (
-        (SELECT COALESCE(SUM(amount), 0)
-         FROM Transactions
-         WHERE type = 'income' AND accountId = NEW.accountId AND upcoming = 0) -
-        (SELECT COALESCE(SUM(amount), 0)
-         FROM Transactions
-         WHERE type = 'expense' AND accountId = NEW.accountId AND upcoming = 0)
-      )
+      WHEN isLoanAccount = 1 THEN totalRepayable - totalPaid
+      ELSE totalIncome - totalExpense
     END
     WHERE id = NEW.accountId;
 END;
@@ -76,20 +64,14 @@ BEGIN
     totalExpense = (
         SELECT COALESCE(SUM(amount), 0) FROM Transactions WHERE type = 'expense' AND accountId = OLD.accountId AND upcoming = 0
     ),
+    totalPaid = (
+      SELECT COALESCE(SUM(amount), 0)
+      FROM Transactions
+      WHERE type = 'expense' AND accountId = OLD.accountId AND upcoming = 0
+    ),
     totalBalance = CASE
-      WHEN isLoanAccount = 1 THEN totalRepayable - (
-        SELECT COALESCE(SUM(amount), 0)
-        FROM Transactions
-        WHERE type = 'expense' AND accountId = OLD.accountId AND upcoming = 0
-      )
-      ELSE (
-        (SELECT COALESCE(SUM(amount), 0)
-         FROM Transactions
-         WHERE type = 'income' AND accountId = OLD.accountId AND upcoming = 0) -
-        (SELECT COALESCE(SUM(amount), 0)
-         FROM Transactions
-         WHERE type = 'expense' AND accountId = OLD.accountId AND upcoming = 0)
-      )
+      WHEN isLoanAccount = 1 THEN totalRepayable - totalPaid
+      ELSE totalIncome - totalExpense
     END
     WHERE id = OLD.accountId;
 
@@ -102,11 +84,7 @@ AFTER UPDATE ON Accounts
 WHEN NEW.isLoanAccount = 1
 BEGIN
   UPDATE Accounts
-  SET totalBalance = NEW.totalRepayable - (
-    SELECT COALESCE(SUM(amount), 0)
-    FROM Transactions
-    WHERE accountId = NEW.id AND type = 'expense' AND upcoming = 0
-  )
+  SET totalBalance = NEW.totalRepayable - NEW.totalPaid
   WHERE id = NEW.id;
 END;
 `;

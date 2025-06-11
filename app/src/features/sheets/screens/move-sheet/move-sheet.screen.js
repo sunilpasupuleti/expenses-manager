@@ -17,12 +17,12 @@ import {SheetsList} from '../../components/sheets.styles';
 import {SheetDetailsContext} from '../../../../services/sheetDetails/sheetDetails.context';
 export const MoveSheetScreen = ({navigation, route}) => {
   const [sheetDetail, setSheetDetail] = useState(null);
-  const {getAllSheets, currentSheet} = useContext(SheetsContext);
+  const [sheet, setSheet] = useState(null);
+  const [sheets, setSheets] = useState([]);
+
   const {onMoveSheetDetail} = useContext(SheetDetailsContext);
-  const [data, setData] = useState({
-    totalCount: 0,
-    sheets: [],
-  });
+  const {getAllSheets} = useContext(SheetsContext);
+
   const [moveToSheet, setMoveToSheet] = useState(null);
 
   const theme = useTheme();
@@ -54,38 +54,43 @@ export const MoveSheetScreen = ({navigation, route}) => {
   }, [navigation, moveToSheet, sheetDetail]);
 
   useEffect(() => {
-    if (route.params && currentSheet && route.params.sheetDetail) {
+    if (route.params && route.params.sheet && route.params.sheetDetail) {
       setSheetDetail(route.params.sheetDetail);
-      onGetSheets();
+      setSheet(route.params.sheet);
     }
   }, [route.params]);
 
-  const onGetSheets = async () => {
-    let result = await getAllSheets(null, currentSheet.id);
-    if (result) {
-      setData(result);
+  useEffect(() => {
+    if (sheet) {
+      onGetAllSheets();
     }
+  }, [sheet]);
+
+  const onGetAllSheets = async () => {
+    const sheetsData = await getAllSheets('', sheet.id);
+    setSheets(sheetsData);
   };
 
   const onMove = () => {
-    onMoveSheetDetail(moveToSheet, sheetDetail, () => {
+    onMoveSheetDetail(sheet, moveToSheet, sheetDetail, () => {
       navigation.goBack();
     });
   };
 
+  if (!sheet || !sheetDetail) return;
   return (
     <SafeArea child={true}>
-      <MainWrapper>
-        <Card
-          theme={{roundness: 5}}
-          style={{
-            backgroundColor: theme.colors.bg.card,
-            margin: 1,
-          }}>
-          {currentSheet && sheetDetail && (
+      {sheets?.length > 0 && (
+        <MainWrapper>
+          <Card
+            theme={{roundness: 5}}
+            style={{
+              backgroundColor: theme.colors.bg.card,
+              margin: 1,
+            }}>
             <FadeInView>
               <SheetsList
-                data={data.sheets}
+                data={sheets}
                 renderItem={({item, index}) => {
                   return (
                     <TouchableHighlightWithColor
@@ -106,11 +111,10 @@ export const MoveSheetScreen = ({navigation, route}) => {
                 keyExtractor={item => item.id}
               />
             </FadeInView>
-          )}
-        </Card>
-      </MainWrapper>
-
-      {data.totalCount === 0 && (
+          </Card>
+        </MainWrapper>
+      )}
+      {sheets?.length === 0 && (
         <Text
           style={{
             flex: 1,

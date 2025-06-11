@@ -1,4 +1,4 @@
-import React, {useRef, useContext} from 'react';
+import React, {useRef, useContext, useState} from 'react';
 import {TouchableOpacity, Alert, View} from 'react-native';
 import moment from 'moment';
 import {
@@ -27,26 +27,31 @@ import {
 import {Text} from '../../../../components/typography/text.component';
 import {Spacer} from '../../../../components/spacer/spacer.component';
 import _ from 'lodash';
+import {getLinkedDbRecord} from '../../../../components/utility/helper';
 
 const menuOptionStyles = {
   optionWrapper: {padding: 15, paddingTop: 10},
   OptionTouchableComponent: TouchableOpacity,
 };
 
-export const SheetDetailsInfo = ({
-  transaction,
-  sheet,
-  navigation,
-  onGetSheetDetails,
-  index,
-}) => {
+export const SheetDetailsInfo = ({transaction, sheet, navigation, index}) => {
   const {onDeleteSheetDetail, onDuplicateSheetDetail, onChangeSheetDetailType} =
     useContext(SheetDetailsContext);
   const menuRef = useRef(null);
 
-  const {category = {}, type, amount, notes, showTime, time} = transaction;
-  const {icon, color, name: categoryName} = category;
+  const [category, setCategory] = useState({});
 
+  const {type, amount, notes, showTime, time} = transaction;
+
+  const getCategory = async () => {
+    const cgry = await getLinkedDbRecord(transaction, 'category');
+    if (cgry) {
+      setCategory(cgry);
+    }
+  };
+  if (category) {
+    getCategory();
+  }
   const handleDelete = () => {
     Alert.alert(
       'Confirm?',
@@ -55,17 +60,14 @@ export const SheetDetailsInfo = ({
         {text: 'Cancel'},
         {
           text: 'Delete',
-          onPress: () =>
-            onDeleteSheetDetail(sheet, transaction, () =>
-              onGetSheetDetails(sheet, null),
-            ),
+          onPress: () => onDeleteSheetDetail(sheet, transaction, () => {}),
         },
       ],
     );
   };
 
   return (
-    <Animated.View entering={FadeInUp} exiting={FadeOutUp}>
+    <Animated.View entering={FadeInUp}>
       <Menu
         onBackdropPress={() => menuRef.current?.close()}
         ref={ref => (menuRef.current = ref)}>
@@ -77,6 +79,7 @@ export const SheetDetailsInfo = ({
                 menuRef.current?.close();
                 navigation.navigate('AddSheetDetail', {
                   sheetDetail: transaction,
+                  sheet: sheet,
                   edit: true,
                 });
               },
@@ -86,13 +89,17 @@ export const SheetDetailsInfo = ({
           }}>
           <SheetDetailInfoContainer>
             <SheetDetailInfo>
-              <SheetDetailCategoryColor color={color}>
-                {icon && (
-                  <MaterialCommunityIcon name={icon} size={16} color="#fff" />
+              <SheetDetailCategoryColor color={category?.color}>
+                {category?.icon && (
+                  <MaterialCommunityIcon
+                    name={category.icon}
+                    size={16}
+                    color="#fff"
+                  />
                 )}
               </SheetDetailCategoryColor>
               <View>
-                <SheetDetailCategory>{categoryName}</SheetDetailCategory>
+                <SheetDetailCategory>{category?.name}</SheetDetailCategory>
                 {showTime || notes ? (
                   <SheetDetailNotes>
                     {_.truncate(notes, {length: 25, omission: '...'})}
@@ -116,47 +123,51 @@ export const SheetDetailsInfo = ({
             borderRadius: 10,
             minWidth: 250,
           }}>
-          <MenuOption
-            customStyles={menuOptionStyles}
-            onSelect={() =>
-              onChangeSheetDetailType(sheet, transaction, () =>
-                onGetSheetDetails(sheet, null),
-              )
-            }>
-            <FlexRow justifyContent="space-between">
-              <Text fontfamily="heading">
-                Change type to {type === 'expense' ? 'income' : 'expense'}
-              </Text>
-              <Ionicons name="camera-reverse-outline" size={20} />
-            </FlexRow>
-          </MenuOption>
+          {!sheet.useReducingBalance && (
+            <>
+              <MenuOption
+                customStyles={menuOptionStyles}
+                onSelect={() =>
+                  onChangeSheetDetailType(sheet, transaction, () => {})
+                }>
+                <FlexRow justifyContent="space-between">
+                  <Text fontfamily="heading" color={'#000'}>
+                    Change type to {type === 'expense' ? 'income' : 'expense'}
+                  </Text>
+                  <Ionicons name="camera-reverse-outline" size={20} />
+                </FlexRow>
+              </MenuOption>
 
-          <MenuOption
-            customStyles={menuOptionStyles}
-            onSelect={() =>
-              navigation.navigate('MoveSheet', {
-                sheetDetail: transaction,
-                sheet,
-              })
-            }>
-            <FlexRow justifyContent="space-between">
-              <Text fontfamily="heading">Move {type}</Text>
-              <Ionicons name="folder-outline" size={20} />
-            </FlexRow>
-          </MenuOption>
+              <MenuOption
+                customStyles={menuOptionStyles}
+                onSelect={() =>
+                  navigation.navigate('MoveSheet', {
+                    sheetDetail: transaction,
+                    sheet,
+                  })
+                }>
+                <FlexRow justifyContent="space-between">
+                  <Text fontfamily="heading" color={'#000'}>
+                    Move {type}
+                  </Text>
+                  <Ionicons name="folder-outline" size={20} />
+                </FlexRow>
+              </MenuOption>
 
-          <MenuOption
-            customStyles={menuOptionStyles}
-            onSelect={() =>
-              onDuplicateSheetDetail(sheet, transaction, () =>
-                onGetSheetDetails(sheet, null),
-              )
-            }>
-            <FlexRow justifyContent="space-between">
-              <Text fontfamily="heading">Duplicate {type}</Text>
-              <Ionicons name="duplicate-outline" size={20} />
-            </FlexRow>
-          </MenuOption>
+              <MenuOption
+                customStyles={menuOptionStyles}
+                onSelect={() =>
+                  onDuplicateSheetDetail(sheet, transaction, () => {})
+                }>
+                <FlexRow justifyContent="space-between">
+                  <Text fontfamily="heading" color={'#000'}>
+                    Duplicate {type}
+                  </Text>
+                  <Ionicons name="duplicate-outline" size={20} />
+                </FlexRow>
+              </MenuOption>
+            </>
+          )}
 
           <MenuOption customStyles={menuOptionStyles} onSelect={handleDelete}>
             <FlexRow justifyContent="space-between">

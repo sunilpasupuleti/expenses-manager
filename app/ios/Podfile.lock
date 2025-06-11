@@ -2215,10 +2215,14 @@ PODS:
     - React-Core
     - SSZipArchive (~> 2.5.5)
   - Sentry/HybridSDK (8.50.2)
+  - simdjson (3.9.4)
   - SocketRocket (0.7.0)
   - SSZipArchive (2.5.5)
   - TouchID (4.4.1):
     - React
+  - WatermelonDB (0.28.0):
+    - React
+    - simdjson
   - Yoga (0.0.0)
 
 DEPENDENCIES:
@@ -2336,7 +2340,9 @@ DEPENDENCIES:
   - RNShare (from `../node_modules/react-native-share`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - RNZipArchive (from `../node_modules/react-native-zip-archive`)
+  - "simdjson (from `../node_modules/@nozbe/simdjson`)"
   - TouchID (from `../node_modules/react-native-touch-id`)
+  - "WatermelonDB (from `../node_modules/@nozbe/watermelondb`)"
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
@@ -2597,8 +2603,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-svg"
   RNZipArchive:
     :path: "../node_modules/react-native-zip-archive"
+  simdjson:
+    :path: "../node_modules/@nozbe/simdjson"
   TouchID:
     :path: "../node_modules/react-native-touch-id"
+  WatermelonDB:
+    :path: "../node_modules/@nozbe/watermelondb"
   Yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -2743,11 +2753,13 @@ SPEC CHECKSUMS:
   RNSVG: e3ad69848b6357587545e0a49628b1148acf082c
   RNZipArchive: f4a5af907d1581e995c879e34799be35c6bc3e21
   Sentry: d95f5f3b32d01324b3e27d3c52747005302cc026
+  simdjson: 7bb9e33d87737cec966e7b427773c67baa4458fe
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
   SSZipArchive: c69881e8ac5521f0e622291387add5f60f30f3c4
   TouchID: 6d9af299007675845fe9e23bd2701f4354613366
+  WatermelonDB: 75e467adbaf2cb2809780fb3eda7ce4964e11778
   Yoga: b05994d1933f507b0a28ceaa4fdb968dc18da178
 
-PODFILE CHECKSUM: a8ecb57db06aa2f7f560d595265e83753a578122
+PODFILE CHECKSUM: ce6a45c13ab854082ec8f1da271cb0c0ce4fafb2
 
 COCOAPODS: 1.16.2

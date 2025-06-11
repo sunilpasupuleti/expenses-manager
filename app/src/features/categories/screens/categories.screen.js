@@ -12,38 +12,25 @@ import {
 } from '../../../components/styles';
 import {Text} from '../../../components/typography/text.component';
 import {SafeArea} from '../../../components/utility/safe-area.component';
-import {CategoriesDetails} from '../components/categories-details.component';
 import {AddNewCategoryIcon, NewCategory} from '../components/categories.styles';
-
-import _ from 'lodash';
-import {CategoriesContext} from '../../../services/categories/categories.context';
-import {searchKeywordRegex} from '../../../components/utility/helper';
 import {useIsFocused} from '@react-navigation/native';
 import {TabsSwitcher} from '../../../components/tabs-switcher/tabs-switcher.component';
+import {AuthenticationContext} from '../../../services/authentication/authentication.context';
+import {ObservedCategoriesDetails} from '../components/categories-details.observed';
 
 export const CategoriesScreen = ({navigation}) => {
   const theme = useTheme();
-  const [categories, setCategories] = useState([]);
   const [deleteMode, setDeleteMode] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState(null);
   const [activeType, setActiveType] = useState('expense');
   const routeIsFocused = useIsFocused();
-  const {getCategories, onSearchCategories} = useContext(CategoriesContext);
+  const {userData} = useContext(AuthenticationContext);
 
   useEffect(() => {
-    if (routeIsFocused) {
-      onGetCategories(activeType);
-    } else {
+    if (!routeIsFocused) {
       setSearchKeyword(null);
     }
   }, [routeIsFocused]);
-
-  const onGetCategories = async type => {
-    if (type) {
-      let data = await getCategories(type);
-      setCategories(data);
-    }
-  };
 
   useEffect(() => {
     navigation.setOptions({
@@ -79,26 +66,9 @@ export const CategoriesScreen = ({navigation}) => {
     });
   }, [deleteMode]);
 
-  useEffect(() => {
-    if (searchKeyword === '') {
-      onGetCategories();
-    } else if (
-      searchKeyword !== null &&
-      searchKeywordRegex.test(searchKeyword)
-    ) {
-      onSearch();
-    }
-  }, [searchKeyword]);
-
-  const onSearch = async () => {
-    let result = await onSearchCategories(_.toLower(searchKeyword), activeType);
-    setCategories(result);
-  };
-
   const onSetActiveType = type => {
     setSearchKeyword(null);
     setActiveType(type);
-    onGetCategories(type);
   };
 
   return (
@@ -121,12 +91,13 @@ export const CategoriesScreen = ({navigation}) => {
           activeKey={activeType}
         />
 
-        <CategoriesDetails
+        <ObservedCategoriesDetails
           navigation={navigation}
+          userId={userData.id}
           activeType={activeType}
           deleteMode={deleteMode}
-          categories={categories}
-          onGetCategories={onGetCategories}
+          searchKeyword={searchKeyword || ''}
+          isLoanRelated={false}
         />
 
         <NewCategory

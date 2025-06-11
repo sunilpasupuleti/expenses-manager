@@ -39,6 +39,7 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {colors} from './src/infrastructure/theme/colors';
 import {SQLiteContextProvider} from './src/services/sqlite/sqlite.context';
 import {SocketContextProvider} from './src/services/socket/socket.context';
+import {WatermelonDBContextProvider} from './src/services/watermelondb/watermelondb.context';
 
 moment.suppressDeprecationWarnings = true;
 if (Platform.OS === 'android') {
@@ -46,11 +47,9 @@ if (Platform.OS === 'android') {
   require('intl/locale-data/jsonp/en-IN');
 }
 LogBox.ignoreAllLogs(true);
-
 if (__DEV__) {
   console.warn = () => {};
 }
-
 const App = () => {
   // LogBox.ignoreLogs([
   //   'Setting a timer',
@@ -182,11 +181,13 @@ const App = () => {
               }>
               {appStatus && appStatus.hideSplashScreen && (
                 <SQLiteContextProvider>
-                  <SocketContextProvider>
-                    <AuthenticationContextProvider>
-                      <Navigation />
-                    </AuthenticationContextProvider>
-                  </SocketContextProvider>
+                  <WatermelonDBContextProvider>
+                    <SocketContextProvider>
+                      <AuthenticationContextProvider>
+                        <Navigation />
+                      </AuthenticationContextProvider>
+                    </SocketContextProvider>
+                  </WatermelonDBContextProvider>
                 </SQLiteContextProvider>
               )}
             </PaperProvider>

@@ -1,7 +1,7 @@
 import {Button, Card} from 'react-native-paper';
 import {ButtonText, FlexRow, MainWrapper} from '../../../../components/styles';
 import {Text} from '../../../../components/typography/text.component';
-import {Platform, View} from 'react-native';
+import {Platform, useColorScheme, View} from 'react-native';
 import {TouchableOpacity} from 'react-native';
 import {useContext, useEffect, useState} from 'react';
 import {Spacer} from '../../../../components/spacer/spacer.component';
@@ -11,6 +11,7 @@ import {useTheme} from 'styled-components/native';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
 import {formatDate} from '../../../../components/utility/helper';
+import {useSelector} from 'react-redux';
 
 const subtractMonths = numOfMonths => {
   let date = new Date();
@@ -20,6 +21,17 @@ const subtractMonths = numOfMonths => {
 
 export const SheetDetailsFilter = ({navigation, route}) => {
   const theme = useTheme();
+  const appTheme = useSelector(state => state.service.theme);
+  const themeType = useColorScheme();
+
+  let darkMode =
+    appTheme === 'automatic'
+      ? themeType === 'light'
+        ? false
+        : true
+      : appTheme === 'light'
+      ? false
+      : true;
 
   // for custom date range
   const [customFilter, setCustomFilter] = useState({
@@ -178,6 +190,7 @@ export const SheetDetailsFilter = ({navigation, route}) => {
               {Platform.OS === 'ios' && (
                 <DateTimePicker
                   mode="date"
+                  themeVariant={darkMode ? 'dark' : 'light'}
                   value={customFilter.fromDate.value}
                   maximumDate={new Date()}
                   onChange={(e, d) => {
@@ -288,6 +301,7 @@ export const SheetDetailsFilter = ({navigation, route}) => {
               {Platform.OS === 'ios' && (
                 <DateTimePicker
                   mode="date"
+                  themeVariant={darkMode ? 'dark' : 'light'}
                   value={customFilter.toDate.value}
                   maximumDate={new Date()}
                   onChange={(e, d) => {

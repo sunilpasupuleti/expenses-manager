@@ -1,6 +1,5 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable curly */
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import {SwipeableView} from './sheet-info-card.styles';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -9,41 +8,35 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import React, {useContext, useEffect, useState} from 'react';
-import {Avatar, Card} from 'react-native-paper';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import {Alert, Platform, ScrollView, View} from 'react-native';
+import {Alert, SectionList, TouchableOpacity} from 'react-native';
 import {useActionSheet} from '@expo/react-native-action-sheet';
 import Haptics from 'react-native-haptic-feedback';
 import {useTheme} from 'styled-components/native';
-import {FadeInView} from '../../../../components/animations/fade.animation';
 import {Spacer} from '../../../../components/spacer/spacer.component';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {SheetInfoCard} from './sheet-info-card.component';
 import {Text} from '../../../../components/typography/text.component';
-import {NoSheets} from '../sheets.styles';
 import _ from 'lodash';
 import {
   FlexRow,
   TouchableHighlightWithColor,
 } from '../../../../components/styles';
-import Animated, {FadeInRight, FadeOutLeft} from 'react-native-reanimated';
+import Animated, {FadeInRight} from 'react-native-reanimated';
+
 export const SheetsInfo = ({
   navigation,
   pinnedSheets,
   archivedSheets,
   regularSheets,
   loanSheets,
-  onGetSheets,
-  totalCount,
 }) => {
-  const {onDeleteSheet, onArchiveSheet, onPinSheet, setCurrentSheet} =
-    useContext(SheetsContext);
+  const {onDeleteSheet, onArchiveSheet, onPinSheet} = useContext(SheetsContext);
   const theme = useTheme();
   const [showArchived, setShowArchived] = useState(false);
   const [showPinned, setShowPinned] = useState(true);
   const [showAccounts, setShowAccounts] = useState(true);
   const [showLoanAccounts, setShowLoanAccounts] = useState(true);
-
   const {showActionSheetWithOptions} = useActionSheet();
 
   let swipeableRefs = new Map();
@@ -94,12 +87,14 @@ export const SheetsInfo = ({
         icons: icons,
       },
       buttonIndex => {
+        const isLoanAccount = sheet.isLoanAccount;
+
         if (buttonIndex === 0) {
           // cancel button
         } else if (buttonIndex === 1) {
           onPressEditButton(sheet);
         } else if (buttonIndex === 2) {
-          onPressPinButton(sheet);
+          isLoanAccount ? onPressDeleteButton(sheet) : onPressPinButton(sheet);
         } else if (buttonIndex === 3) {
           onPressArchiveButton(sheet);
         } else if (buttonIndex === 4) {
@@ -127,7 +122,7 @@ export const SheetsInfo = ({
         {
           text: 'Delete',
           onPress: () => {
-            onDeleteSheet(sheet, onGetSheets);
+            onDeleteSheet(sheet, sheet._raw);
           },
         },
       ],
@@ -142,11 +137,13 @@ export const SheetsInfo = ({
   };
 
   const onPressArchiveButton = sheet => {
-    onArchiveSheet(sheet, onGetSheets);
+    onArchiveSheet(sheet, sheet._raw);
   };
 
   const onPressPinButton = sheet => {
-    onPinSheet(sheet, onGetSheets);
+    console.log(sheet);
+
+    onPinSheet(sheet, sheet._raw);
   };
 
   const rightSwipeActions = (progress, dragX, sheet) => {
@@ -194,356 +191,104 @@ export const SheetsInfo = ({
   };
 
   const onClickSheet = sheet => {
-    setCurrentSheet(sheet);
     navigation.navigate('SheetDetailsHome', {
       screen: 'Transactions',
+      sheet: sheet,
     });
   };
 
   return (
-    <>
-      {totalCount > 0 ? (
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{}}>
-          <View style={{marginBottom: 120}}>
-            <Spacer size="large" />
-
-            {/* for pinned */}
-            {pinnedSheets.length > 0 && (
-              <Spacer size={'medium'}>
-                <FlexRow justifyContent="space-between">
-                  <Text fontfamily="bodyMedium">
-                    Pinned ({pinnedSheets.length})
-                  </Text>
-                  <Ionicons
-                    onPress={() => {
-                      Haptics.trigger('impactMedium', {
-                        ignoreAndroidSystemSettings: true,
-                      });
-                      setShowPinned(!showPinned);
-                    }}
-                    color={theme.colors.brand.primary}
-                    name={
-                      showPinned ? 'chevron-up-outline' : 'chevron-down-outline'
-                    }
-                    size={25}
-                  />
-                </FlexRow>
-                {showPinned && (
-                  <Spacer size={'medium'}>
-                    <Card
-                      theme={{
-                        roundness: 5,
-                      }}
-                      style={{
-                        backgroundColor: theme.colors.bg.card,
-                        margin: 1,
-                      }}>
-                      {pinnedSheets.map((item, index) => {
-                        if (item)
-                          return (
-                            <Animated.View
-                              key={item.id || index}
-                              entering={FadeInRight.delay(
-                                index * 70,
-                              ).springify()}
-                              exiting={FadeOutLeft.duration(300)}>
-                              <Swipeable
-                                key={item.id}
-                                renderRightActions={({progress, dragX}) =>
-                                  rightSwipeActions(progress, dragX, item)
-                                }
-                                renderLeftActions={({progress, dragX}) =>
-                                  leftSwipeActions(progress, dragX, item)
-                                }
-                                friction={2}
-                                ref={ref => {
-                                  if (ref && !swipeableRefs.get(item.id)) {
-                                    swipeableRefs.set(item.id, ref);
-                                  }
-                                }}
-                                onSwipeableWillOpen={() => {
-                                  [...swipeableRefs.entries()].forEach(
-                                    ([key, ref]) => {
-                                      if (key !== item.id && ref) ref.close();
-                                    },
-                                  );
-                                }}>
-                                <TouchableHighlightWithColor
-                                  style={{
-                                    backgroundColor: theme.colors.bg.card,
-                                  }}
-                                  onLongPress={() => onLongPressActions(item)}
-                                  padding={'0px'}
-                                  onPress={() => onClickSheet(item)}>
-                                  <SheetInfoCard
-                                    sheet={item}
-                                    currentLength={pinnedSheets.length}
-                                    index={index}
-                                  />
-                                </TouchableHighlightWithColor>
-                              </Swipeable>
-                            </Animated.View>
-                          );
-                      })}
-                    </Card>
-                  </Spacer>
-                )}
-              </Spacer>
-            )}
-
-            {/* normal sheets */}
-            {regularSheets.length > 0 ? (
-              <Spacer size={pinnedSheets.length > 0 ? 'xlarge' : 'small'}>
-                <Spacer position={'bottom'} size="medium">
-                  <FlexRow justifyContent="space-between">
-                    <Text fontfamily="bodyMedium">
-                      Accounts ({regularSheets?.length})
-                    </Text>
-                    <Ionicons
-                      onPress={() => {
-                        Haptics.trigger('impactMedium', {
-                          ignoreAndroidSystemSettings: true,
-                        });
-                        setShowAccounts(!showAccounts);
-                      }}
-                      color={theme.colors.brand.primary}
-                      name={
-                        showAccounts
-                          ? 'chevron-up-outline'
-                          : 'chevron-down-outline'
-                      }
-                      size={25}
-                    />
-                  </FlexRow>
-                </Spacer>
-                {showAccounts && (
-                  <Card
-                    theme={{roundness: 5}}
-                    style={{
-                      backgroundColor: theme.colors.bg.card,
-                      margin: 1,
-                    }}>
-                    {regularSheets.map((item, index) => {
-                      return (
-                        <Animated.View
-                          key={item.id || index}
-                          entering={FadeInRight.delay(index * 70).springify()}
-                          exiting={FadeOutLeft.duration(300)}>
-                          <Swipeable
-                            key={item.id}
-                            renderRightActions={({progress, dragX}) =>
-                              rightSwipeActions(progress, dragX, item)
-                            }
-                            renderLeftActions={({progress, dragX}) =>
-                              leftSwipeActions(progress, dragX, item)
-                            }
-                            friction={2}
-                            ref={ref => {
-                              if (ref && !swipeableRefs.get(item.id)) {
-                                swipeableRefs.set(item.id, ref);
-                              }
-                            }}
-                            onSwipeableWillOpen={() => {
-                              [...swipeableRefs.entries()].forEach(
-                                ([key, ref]) => {
-                                  if (key !== item.id && ref) ref.close();
-                                },
-                              );
-                            }}>
-                            <TouchableHighlightWithColor
-                              style={{
-                                backgroundColor: theme.colors.bg.card,
-                              }}
-                              onLongPress={() => onLongPressActions(item)}
-                              padding={'0px'}
-                              onPress={() => onClickSheet(item)}>
-                              <SheetInfoCard
-                                sheet={item}
-                                index={index}
-                                currentLength={regularSheets.length}
-                              />
-                            </TouchableHighlightWithColor>
-                          </Swipeable>
-                        </Animated.View>
-                      );
-                    })}
-                  </Card>
-                )}
-              </Spacer>
-            ) : null}
-
-            {/* Loan sheets */}
-            {loanSheets.length > 0 ? (
-              <Spacer size={pinnedSheets.length > 0 ? 'xlarge' : 'small'}>
-                <Spacer position={'bottom'} size="medium">
-                  <FlexRow justifyContent="space-between">
-                    <Text fontfamily="bodyMedium">
-                      Loan Accounts ({loanSheets?.length})
-                    </Text>
-                    <Ionicons
-                      onPress={() => {
-                        Haptics.trigger('impactMedium', {
-                          ignoreAndroidSystemSettings: true,
-                        });
-                        setShowLoanAccounts(!showLoanAccounts);
-                      }}
-                      color={theme.colors.brand.primary}
-                      name={
-                        showLoanAccounts
-                          ? 'chevron-up-outline'
-                          : 'chevron-down-outline'
-                      }
-                      size={25}
-                    />
-                  </FlexRow>
-                </Spacer>
-                {showLoanAccounts && (
-                  <Card
-                    theme={{roundness: 5}}
-                    style={{
-                      backgroundColor: theme.colors.bg.card,
-                      margin: 1,
-                    }}>
-                    {loanSheets.map((item, index) => {
-                      return (
-                        <Animated.View
-                          key={item.id || index}
-                          entering={FadeInRight.delay(index * 70).springify()}
-                          exiting={FadeOutLeft.duration(300)}>
-                          <Swipeable
-                            key={item.id}
-                            renderRightActions={({progress, dragX}) =>
-                              rightSwipeActions(progress, dragX, item)
-                            }
-                            renderLeftActions={({progress, dragX}) =>
-                              leftSwipeActions(progress, dragX, item)
-                            }
-                            friction={2}
-                            ref={ref => {
-                              if (ref && !swipeableRefs.get(item.id)) {
-                                swipeableRefs.set(item.id, ref);
-                              }
-                            }}
-                            onSwipeableWillOpen={() => {
-                              [...swipeableRefs.entries()].forEach(
-                                ([key, ref]) => {
-                                  if (key !== item.id && ref) ref.close();
-                                },
-                              );
-                            }}>
-                            <TouchableHighlightWithColor
-                              style={{
-                                backgroundColor: theme.colors.bg.card,
-                              }}
-                              onLongPress={() => onLongPressActions(item)}
-                              padding={'0px'}
-                              onPress={() => onClickSheet(item)}>
-                              <SheetInfoCard
-                                sheet={item}
-                                index={index}
-                                currentLength={regularSheets.length}
-                              />
-                            </TouchableHighlightWithColor>
-                          </Swipeable>
-                        </Animated.View>
-                      );
-                    })}
-                  </Card>
-                )}
-              </Spacer>
-            ) : null}
-
-            {/* for archived */}
-            {archivedSheets.length > 0 && (
-              <Spacer size={'xlarge'}>
-                <FlexRow justifyContent="space-between">
-                  <Text fontfamily="bodyMedium">
-                    Archived ({archivedSheets.length})
-                  </Text>
-                  <Ionicons
-                    onPress={() => {
-                      Haptics.trigger('impactMedium', {
-                        ignoreAndroidSystemSettings: true,
-                      });
-                      setShowArchived(!showArchived);
-                    }}
-                    color={theme.colors.brand.primary}
-                    name={
-                      showArchived
-                        ? 'chevron-up-outline'
-                        : 'chevron-down-outline'
-                    }
-                    size={25}
-                  />
-                </FlexRow>
-                <Spacer size={'medium'} />
-                {showArchived && (
-                  <Card
-                    theme={{roundness: 5}}
-                    style={{
-                      backgroundColor: theme.colors.bg.card,
-                      margin: 1,
-                    }}>
-                    {archivedSheets.map((item, index) => {
-                      return (
-                        <Animated.View
-                          key={item.id || index}
-                          entering={FadeInRight.delay(index * 70).springify()}
-                          exiting={FadeOutLeft.duration(300)}>
-                          <Swipeable
-                            key={item.id}
-                            renderRightActions={({progress, dragX}) =>
-                              rightSwipeActions(progress, dragX, item)
-                            }
-                            renderLeftActions={({progress, dragX}) =>
-                              leftSwipeActions(progress, dragX, item)
-                            }
-                            friction={2}
-                            ref={ref => {
-                              if (ref && !swipeableRefs.get(item.id)) {
-                                swipeableRefs.set(item.id, ref);
-                              }
-                            }}
-                            onSwipeableWillOpen={() => {
-                              [...swipeableRefs.entries()].forEach(
-                                ([key, ref]) => {
-                                  if (key !== item.id && ref) ref.close();
-                                },
-                              );
-                            }}>
-                            <TouchableHighlightWithColor
-                              style={{
-                                backgroundColor: theme.colors.bg.card,
-                              }}
-                              onLongPress={() => onLongPressActions(item)}
-                              padding={'0px'}
-                              onPress={() => onClickSheet(item)}>
-                              <SheetInfoCard
-                                sheet={item}
-                                currentLength={archivedSheets.length}
-                                index={index}
-                              />
-                            </TouchableHighlightWithColor>
-                          </Swipeable>
-                        </Animated.View>
-                      );
-                    })}
-                  </Card>
-                )}
-              </Spacer>
-            )}
-          </View>
-        </ScrollView>
-      ) : (
-        <NoSheets>
-          <Text style={{textAlign: 'center'}}>
-            There are no accounts yet. Create a new account by clicking on plus
-            icon.
-          </Text>
-        </NoSheets>
+    <SectionList
+      stickySectionHeadersEnabled={false}
+      sections={[
+        {
+          title: `Pinned (${pinnedSheets.length})`,
+          data: showPinned ? pinnedSheets : [],
+          key: 'pinned',
+          visible: pinnedSheets.length > 0,
+          toggle: () => setShowPinned(!showPinned),
+        },
+        {
+          title: `Accounts (${regularSheets.length})`,
+          data: showAccounts ? regularSheets : [],
+          key: 'regular',
+          visible: regularSheets.length > 0,
+          toggle: () => setShowAccounts(!showAccounts),
+        },
+        {
+          title: `Loan Accounts (${loanSheets.length})`,
+          data: showLoanAccounts ? loanSheets : [],
+          key: 'loan',
+          visible: loanSheets.length > 0,
+          toggle: () => setShowLoanAccounts(!showLoanAccounts),
+        },
+        {
+          title: `Archived (${archivedSheets.length})`,
+          data: showArchived ? archivedSheets : [],
+          key: 'archived',
+          visible: archivedSheets.length > 0,
+          toggle: () => setShowArchived(!showArchived),
+        },
+      ].filter(section => section.visible)}
+      keyExtractor={(item, index) => item.id || index.toString()}
+      renderSectionHeader={({section}) => (
+        <Spacer size="large">
+          <FlexRow justifyContent="space-between" style={{marginBottom: 10}}>
+            <Text fontfamily="bodyMedium">{section.title}</Text>
+            <Ionicons
+              onPress={section.toggle}
+              name={
+                {
+                  pinned: showPinned,
+                  regular: showAccounts,
+                  loan: showLoanAccounts,
+                  archived: showArchived,
+                }[section.key]
+                  ? 'chevron-up-outline'
+                  : 'chevron-down-outline'
+              }
+              size={25}
+              color={theme.colors.brand.primary}
+            />
+          </FlexRow>
+        </Spacer>
       )}
-    </>
+      renderItem={({item, index, section}) => (
+        <Animated.View
+          key={item.id || index}
+          entering={FadeInRight.delay(index * 70).springify()}>
+          <Swipeable
+            renderRightActions={({progress, dragX}) =>
+              rightSwipeActions(progress, dragX, item)
+            }
+            renderLeftActions={({progress, dragX}) =>
+              leftSwipeActions(progress, dragX, item)
+            }
+            friction={2}
+            ref={ref => {
+              if (ref && !swipeableRefs.get(item.id)) {
+                swipeableRefs.set(item.id, ref);
+              }
+            }}
+            onSwipeableWillOpen={() => {
+              [...swipeableRefs.entries()].forEach(([key, ref]) => {
+                if (key !== item.id && ref) ref.close();
+              });
+            }}>
+            <TouchableHighlightWithColor
+              style={{backgroundColor: theme.colors.bg.card}}
+              onLongPress={() => onLongPressActions(item)}
+              padding={'0px'}
+              onPress={() => onClickSheet(item)}>
+              <SheetInfoCard
+                sheet={item}
+                index={index}
+                currentLength={section.data.length}
+              />
+            </TouchableHighlightWithColor>
+          </Swipeable>
+        </Animated.View>
+      )}
+    />
   );
 };

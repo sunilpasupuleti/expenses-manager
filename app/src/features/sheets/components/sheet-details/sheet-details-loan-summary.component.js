@@ -8,6 +8,7 @@ import {
   GetCurrencyLocalString,
   GetCurrencySymbol,
 } from '../../../../components/symbol.currency';
+import _ from 'lodash';
 
 export const SheetDetailsLoanSummary = ({
   currentSheet,
@@ -15,13 +16,23 @@ export const SheetDetailsLoanSummary = ({
   getRepaymentLabel,
   emiDates,
 }) => {
-  const {loanStartDate, loanYears, loanMonths} = currentSheet;
+  const {
+    loanStartDate,
+    loanYears,
+    loanMonths,
+    loanEndDate,
+    useEndDate,
+    useReducingBalance,
+    interestRateMode,
+  } = currentSheet;
 
   const start = moment(loanStartDate).format('MMM D, YYYY');
-  const end = moment(loanStartDate)
-    .add(loanYears, 'years')
-    .add(loanMonths, 'months')
-    .format('MMM D, YYYY');
+  const end = useEndDate
+    ? moment(loanEndDate).format('MMM D, YYYY')
+    : moment(loanStartDate)
+        .add(loanYears, 'years')
+        .add(loanMonths, 'months')
+        .format('MMM D, YYYY');
 
   const durationString = `${loanYears}y ${loanMonths}m`;
   const nextEmiString = `Next EMI on ${moment(emiDates[0]).format(
@@ -34,6 +45,11 @@ export const SheetDetailsLoanSummary = ({
       <LoanRow
         label1="Loan Amount"
         value1={currentSheet.loanAmount}
+        subLabel1={
+          useReducingBalance
+            ? 'Reducing Balance Method\n(Interest on remaining principal)'
+            : 'Standard EMI Method\n(Fixed equal payments)'
+        }
         label2="Remaining Balance"
         value2={currentSheet.totalBalance}
         currency={currentSheet.currency}
@@ -42,11 +58,9 @@ export const SheetDetailsLoanSummary = ({
       {/* Row 2 */}
       <LoanRow
         label1="Interest Rate"
-        value1={`${currentSheet.interestRate}% ${
-          currentSheet.compoundInterest ? '(Compd)' : ''
-        }`}
+        value1={`${currentSheet.interestRate}%`}
         subLabel1={`${getCompoundingLabel(
-          currentSheet.compoundingFrequency,
+          _.upperFirst(interestRateMode),
         )} basis`}
         label2="Loan Tenure"
         value2={

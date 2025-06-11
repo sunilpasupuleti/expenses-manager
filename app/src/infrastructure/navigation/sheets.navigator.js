@@ -13,12 +13,14 @@ import {AddSheetScreen} from '../../features/sheets/screens/add-sheet/add-sheet.
 import {MoveSheetScreen} from '../../features/sheets/screens/move-sheet/move-sheet.screen';
 import {SelectCategoryScreen} from '../../features/sheets/screens/select-category/select-category.screen';
 import {SheetsScreen} from '../../features/sheets/screens/sheets.screen';
-import {SheetDetailsHome} from '../../features/sheets/screens/sheet-details/sheet-details-home.screen';
+
 import {useSelector} from 'react-redux';
 import {SheetExport} from '../../features/sheets/components/sheet-export/sheet-export.component';
 import {SheetDetailsFilter} from '../../features/sheets/components/sheet-details/sheet-details-filter.component';
 import {UpcomingSheetDetails} from '../../features/sheets/screens/sheet-details/upcoming-sheet-details.screen';
-import {SelectRepeatScreen} from '../../features/sheets/screens/select-repeat/select-repeat.screen';
+
+import SheetsHomeScreen from '../../features/sheets/screens/sheets-home.screen';
+import {SheetDetailsHomeNavigatorScreen} from '../../features/sheets/screens/sheet-details/sheet-details-home-navigator.screen';
 
 const SheetStack = createStackNavigator();
 
@@ -40,7 +42,7 @@ export const SheetsNavigator = () => {
       screenOptions={{
         headerShown: false,
       }}>
-      <SheetStack.Screen name=" " component={SheetsScreen} />
+      <SheetStack.Screen name=" " component={SheetsHomeScreen} />
       <SheetStack.Screen
         options={{
           headerShown: true,
@@ -60,7 +62,7 @@ export const SheetsNavigator = () => {
           cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         }}
         name="SheetDetailsHome"
-        component={SheetDetailsHome}
+        component={SheetDetailsHomeNavigatorScreen}
       />
 
       <SheetStack.Screen
@@ -142,18 +144,6 @@ export const SheetsNavigator = () => {
         }}
         name="SelectCategory"
         component={SelectCategoryScreen}
-      />
-
-      <SheetStack.Screen
-        options={{
-          headerShown: true,
-          ...TransitionPresets.ModalPresentationIOS,
-          gestureResponseDistance: Dimensions.get('window').height - 200,
-          headerTitle: 'Repeat',
-          ...headerStyles,
-        }}
-        name="SelectRepeat"
-        component={SelectRepeatScreen}
       />
 
       <SheetStack.Screen

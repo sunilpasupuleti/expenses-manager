@@ -33,7 +33,7 @@ import {
   getExcelSheetAccountRows,
   getExcelSheetAccountSummary,
   getPdfAccountTableHtml,
-  getUpcomingEmiDates,
+  getEmiDates,
   sendLocalNotification,
 } from '../../components/utility/helper';
 import {SQLiteContext} from '../sqlite/sqlite.context';
@@ -41,18 +41,20 @@ import {transformSheetExcelExportData} from '../../components/utility/dataProces
 import {CategoriesContext} from '../categories/categories.context';
 import PushNotification from 'react-native-push-notification';
 import {GetCurrencySymbol} from '../../components/symbol.currency';
+import {WatermelonDBContext} from '../watermelondb/watermelondb.context';
+import {Model, Q} from '@nozbe/watermelondb';
 
 export const SheetsContext = createContext({
   getSheets: searchKeyword => {},
   onGetAndSetCurrentSheet: sheetId => {},
-  getAllSheets: searchKeyword => {},
+  getAllSheets: (searchKeyword, excludedId) => {},
   onSaveSheet: (sheet, callback = () => null) => null,
-  onEditSheet: (sheet, callback = () => {}) => null,
-  onDeleteSheet: (sheet, callback) => null,
+  onEditSheet: (sheetModel, sheet, callback = () => {}) => null,
+  onDeleteSheet: (sheetModel, sheet, callback) => null,
   onExportSheetDataToExcel: (config, data, callback) => null,
   onExportSheetDataToPdf: (config, sheet, callback) => null,
-  onArchiveSheet: (sheet, callback) => null,
-  onPinSheet: (sheet, callback) => null,
+  onArchiveSheet: (sheetModel, sheet, callback) => null,
+  onPinSheet: (sheetModel, sheet, callback) => null,
   calculateBalance: sheet => null,
   getMessages: () => null,
   currentSheet: null,
@@ -66,7 +68,7 @@ const smsListenerEmitter =
 const scheduleLoanEmiNotifications = account => {
   if (!account.isLoanAccount || !account.loanStartDate) return;
 
-  const {upcomingEmis} = getUpcomingEmiDates(
+  const {upcomingEmis} = getEmiDates(
     account.loanStartDate,
     account.repaymentFrequency,
     account.loanYears,
@@ -123,8 +125,10 @@ export const SheetsContextProvider = ({children}) => {
   const {getCategories} = useContext(CategoriesContext);
   const [autoFetchTransactionsOpened, setAutoFetchTransactionsOpened] =
     useState(false);
-  const {createOrReplaceData, updateData, getData, deleteData, db} =
+  const {createOrReplaceData, updateData, getData, deleteData} =
     useContext(SQLiteContext);
+  const {createRecord, getChildRecords, db, findRecordById} =
+    useContext(WatermelonDBContext);
 
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -495,45 +499,47 @@ export const SheetsContextProvider = ({children}) => {
 
   const getAllSheets = async (searchKeyword = null, excludedId = null) => {
     try {
-      let uid = userData.uid;
-      let query = `SELECT * FROM Accounts WHERE uid='${uid}'`;
-      let totalCountQuery = `SELECT COUNT(*) AS totalCount FROM Accounts WHERE uid='${uid}'`;
+      const sheetsCollection = await db.get('accounts');
 
-      if (searchKeyword) {
-        query += `AND LOWER(name) LIKE '%${searchKeyword}%'`;
+      const conditions = [Q.where('userId', userData.id)];
+
+      if (searchKeyword?.trim()) {
+        const keyword = searchKeyword.toLowerCase();
+        conditions.push(
+          Q.where('name', Q.like(`%${Q.sanitizeLikeString(keyword)}%`)),
+        );
       }
-      if (excludedId !== null) {
-        query += `AND id != ${excludedId}`;
-        totalCountQuery += `AND id != ${excludedId}`;
+
+      if (excludedId) {
+        conditions.push(Q.where('id', Q.notEq(excludedId)));
       }
-      let orderQuery = 'ORDER BY datetime(updatedAt) DESC';
-      let finalQuery = `${query} ${orderQuery}`;
-      let result = await getData(finalQuery);
-      let resultData = await getDataFromRows(result.rows);
 
-      let totalCountResult = await getData(totalCountQuery);
-      let totalCountData = await getDataFromRows(totalCountResult.rows);
-
-      const data = {
-        sheets: resultData,
-        totalCount: totalCountData[0].totalCount || 0,
-      };
-      return data;
+      const results = await sheetsCollection.query(...conditions).fetch();
+      return results;
     } catch (e) {
       console.log('error retrieving accounts data - ', e);
+      showNotification('error', e.toString());
       hideLoader();
     }
   };
 
   const onSaveSheet = async (sheet, callback = () => null) => {
     try {
-      let result = await getData(
-        `SELECT * FROM Accounts WHERE LOWER(name) = '${_.toLower(sheet.name)}'`,
+      const existingAccounts = await getChildRecords(
+        'users',
+        'id',
+        userData.id,
+        'accounts',
+        {
+          filters: [Q.where('name', sheet.name)],
+        },
       );
-      if (result?.rows?.length > 0) {
+
+      if (existingAccounts.length > 0) {
         throw 'Account name already exists!';
       }
-      await createOrReplaceData('Accounts', sheet);
+      const newRecord = await createRecord('accounts', sheet);
+
       scheduleLoanEmiNotifications(sheet);
       callback();
     } catch (err) {
@@ -542,21 +548,33 @@ export const SheetsContextProvider = ({children}) => {
     }
   };
 
-  const onEditSheet = async (sheet, callback = () => null) => {
+  const onEditSheet = async (sheetModel, sheet, callback = () => null) => {
     try {
-      let result = await getData(
-        `SELECT * FROM Accounts WHERE uid = '${userData.uid}' AND id <> ${
-          sheet.id
-        } AND LOWER(name) = '${_.toLower(sheet.name)}'`,
+      const allSheets = await getChildRecords(
+        'users',
+        'id',
+        userData.id,
+        'accounts',
+        {
+          filters: [
+            Q.where('name', sheet.name),
+            Q.where('id', Q.notEq(sheetModel.id)),
+          ],
+        },
       );
-      if (result?.rows?.length > 0) {
+
+      if (allSheets.length > 0) {
         throw 'Account name already exists!';
       }
 
-      await updateData('Accounts', sheet, 'WHERE uid=? AND id=?', [
-        userData.uid,
-        sheet.id,
-      ]);
+      await db.write(async () => {
+        await sheetModel.update(record => {
+          Object.keys(sheet).forEach(key => {
+            record[key] = sheet[key];
+          });
+        });
+      });
+
       callback();
       await cancelLoanEmiNotifications(sheet.id);
       scheduleLoanEmiNotifications(sheet);
@@ -565,13 +583,13 @@ export const SheetsContextProvider = ({children}) => {
     }
   };
 
-  const onDeleteSheet = async (sheet, callback = () => null) => {
+  const onDeleteSheet = async (sheetModel, sheet, callback = () => null) => {
     try {
       showLoader();
-      await deleteData('Accounts', 'WHERE uid = ? AND id=?', [
-        userData.uid,
-        sheet.id,
-      ]);
+      await db.write(async () => {
+        await sheetModel.markAsDeleted();
+        await sheetModel.destroyPermanently();
+      });
       firebaseRemoveFolder(`users/${userData.uid}/${sheet.id}`);
       hideLoader();
       callback();
@@ -582,32 +600,29 @@ export const SheetsContextProvider = ({children}) => {
     }
   };
 
-  const onArchiveSheet = async (sheet, callback = () => null) => {
+  const onArchiveSheet = async (sheetModel, sheet, callback = () => null) => {
     try {
-      let data = {
-        archived: sheet.archived ? 0 : 1,
-        pinned: 0,
-      };
-      await updateData('Accounts', data, 'WHERE uid=? AND id=?', [
-        userData.uid,
-        sheet.id,
-      ]);
+      await db.write(async () => {
+        await sheetModel.update(rec => {
+          rec.archived = !rec.archived;
+        });
+      });
+
       callback();
     } catch (err) {
       showNotification('error', err.message || err.toString());
     }
   };
 
-  const onPinSheet = async (sheet, callback = () => null) => {
+  const onPinSheet = async (sheetModel, sheet, callback = () => null) => {
     try {
-      let data = {
-        pinned: sheet.pinned ? 0 : 1,
-        archived: 0,
-      };
-      let result = await updateData('Accounts', data, 'WHERE uid=? AND id=?', [
-        userData.uid,
-        sheet.id,
-      ]);
+      await db.write(async () => {
+        await sheetModel.update(record => {
+          record.pinned = !record.pinned;
+          record.archived = false;
+        });
+      });
+
       callback();
     } catch (err) {
       showNotification('error', err.message || err.toString());

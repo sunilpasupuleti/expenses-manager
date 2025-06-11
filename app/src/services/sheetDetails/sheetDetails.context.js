@@ -28,6 +28,9 @@ import {
   transformSheetDetailsTrends,
 } from '../../components/utility/dataProcessHelper';
 import {navigationRef} from '../../infrastructure/navigation/rootnavigation';
+import {WatermelonDBContext} from '../watermelondb/watermelondb.context';
+import {Q} from '@nozbe/watermelondb';
+import {ExternalStorageDirectoryPath} from 'react-native-fs';
 
 const {AlarmManagerModule} = NativeModules;
 const alarmEmitter =
@@ -42,8 +45,14 @@ export const SheetDetailsContext = createContext({
 
   onSaveSheetDetail: (sheetDetail, callback = () => null) => null,
   onDuplicateSheetDetail: (sheet, sheetDetail, callback = () => null) => null,
-  onMoveSheetDetail: (sheet, sheetDetail, callback = () => null) => null,
-  onEditSheetDetail: (sheet, sheetDetail, callback = () => null) => null,
+  onMoveSheetDetail: (oldSheet, sheet, sheetDetail, callback = () => null) =>
+    null,
+  onEditSheetDetail: (
+    sheet,
+    sheetDetailModel,
+    sheetDetail,
+    callback = () => null,
+  ) => null,
   onChangeSheetDetailType: (sheet, sheetDetail, callback = () => null) => null,
   onDeleteSheetDetail: (sheet, sheetDetail, callback) => null,
   onCheckUpcomingSheetDetails: (sheet, callback) => null,
@@ -59,10 +68,11 @@ export const SheetDetailsContextProvider = ({children}) => {
     updateData,
     getData,
     deleteData,
-    db,
+
     initializeDB,
     executeQuery,
   } = useContext(SQLiteContext);
+  const {db, createRecord, getChildRecords} = useContext(WatermelonDBContext);
   const {isConnected} = useNetInfo();
 
   const MINDEE_API_KEY = remoteConfig().getValue('MINDEE_API_KEY').asString();
@@ -562,14 +572,11 @@ export const SheetDetailsContextProvider = ({children}) => {
   };
 
   const changeUpdatedAt = async sheet => {
-    updateData(
-      'Accounts',
-      {
-        updatedAt: getCurrentDate(),
-      },
-      'WHERE uid=? AND id=?',
-      [userData.uid, sheet.id],
-    );
+    await db.write(async () => {
+      await sheet.update(record => {
+        record._raw.updated_at = Date.now();
+      });
+    });
   };
 
   const onSaveSheetDetail = async (
@@ -580,14 +587,14 @@ export const SheetDetailsContextProvider = ({children}) => {
     try {
       const saveSheetDetail = async () => {
         delete sheetDetail.image;
-        let result = await createOrReplaceData('Transactions', sheetDetail);
-        changeUpdatedAt(sheet);
+        const newRecord = await createRecord('transactions', sheetDetail);
+
         if (sheetDetail.upcoming) {
           const timeInMillis = new Date(sheetDetail.date).getTime();
-          const uniqueCode = Number(`${sheet.id}${result.insertId}`);
+          const uniqueCode = Number(`${sheet.id}${newRecord.id}`);
 
           let data = {
-            sheetDetailId: result.insertId,
+            sheetDetailId: newRecord.id,
             sheetId: sheet.id,
           };
 
@@ -598,17 +605,15 @@ export const SheetDetailsContextProvider = ({children}) => {
             uniqueCode,
           );
         }
+        changeUpdatedAt(sheet);
 
-        await onGetAndSetCurrentSheet(sheet.id);
         hideLoader();
         callback();
       };
       let {date, image} = sheetDetail;
 
       let upcoming = moment(date).isAfter(moment());
-      if (upcoming) {
-        sheetDetail.upcoming = 1;
-      }
+      sheetDetail.upcoming = upcoming ? true : false;
 
       if (image && image.url) {
         if (!isConnected) {
@@ -638,6 +643,7 @@ export const SheetDetailsContextProvider = ({children}) => {
 
   const onEditSheetDetail = async (
     sheet,
+    sheetDetailModel,
     sheetDetail,
     callback = () => null,
   ) => {
@@ -646,14 +652,13 @@ export const SheetDetailsContextProvider = ({children}) => {
         delete sheetDetail.imageChanged;
         delete sheetDetail.imageDeleted;
         delete sheetDetail.image;
-        let result = await updateData(
-          'Transactions',
-          sheetDetail,
-          `WHERE id=?`,
-          [sheetDetail.id],
-        );
-
-        changeUpdatedAt(sheet);
+        await db.write(async () => {
+          await sheetDetailModel.update(record => {
+            Object.keys(sheetDetail).forEach(key => {
+              record[key] = sheetDetail[key];
+            });
+          });
+        });
 
         if (sheetDetail.upcoming) {
           const timeInMillis = new Date(sheetDetail.date).getTime();
@@ -670,8 +675,7 @@ export const SheetDetailsContextProvider = ({children}) => {
             uniqueCode,
           );
         }
-
-        await onGetAndSetCurrentSheet(sheet.id);
+        changeUpdatedAt(sheet);
         hideLoader();
         callback();
       };
@@ -680,11 +684,7 @@ export const SheetDetailsContextProvider = ({children}) => {
 
       let upcoming = moment(date).isAfter(moment());
 
-      if (upcoming) {
-        sheetDetail.upcoming = 1;
-      } else {
-        sheetDetail.upcoming = 0;
-      }
+      sheetDetail.upcoming = upcoming ? true : false;
 
       // image chagned delete previous image
       if (imageChanged && image?.url) {
@@ -733,30 +733,28 @@ export const SheetDetailsContextProvider = ({children}) => {
     callback = () => null,
   ) => {
     try {
-      if (sheetDetail.type === 'income') {
-        sheetDetail.type = 'expense';
-      } else {
-        sheetDetail.type = 'income';
+      const newType = sheetDetail.type === 'income' ? 'expense' : 'income';
+
+      const categories = await db.get('categories');
+      const defaultCategories = await categories
+        .query(
+          Q.where('userId', userData.id),
+          Q.where('type', newType),
+          Q.where('isDefault', true),
+        )
+        .fetch();
+      const defaultCategoryId = defaultCategories[0]?.id;
+      if (!defaultCategoryId) {
+        throw `Default ${newType} category not found.`;
       }
-      // assign default category
-      let query = `SELECT id from Categories WHERE uid='${userData.uid}' AND type = '${sheetDetail.type}' AND isDefault = 1`;
-      let queryResult = await getData(query);
-      let queryData = await getDataFromRows(queryResult.rows);
-      let defaultCategoryId = queryData[0]?.id;
-      let result = await updateData(
-        'Transactions',
-        {
-          type: sheetDetail.type,
-          categoryId: defaultCategoryId,
-        },
-        `WHERE id=?`,
-        [sheetDetail.id],
-      );
+      await db.write(async () => {
+        await sheetDetail.update(record => {
+          record.type = newType;
+          record.categoryId = defaultCategoryId;
+        });
+      });
 
       changeUpdatedAt(sheet);
-
-      await onGetAndSetCurrentSheet(sheet.id);
-
       hideLoader();
       callback();
     } catch (err) {
@@ -771,13 +769,19 @@ export const SheetDetailsContextProvider = ({children}) => {
     callback = () => null,
   ) => {
     try {
-      const duplicateSheetDetail = async () => {
-        delete sheetDetail.category;
-        delete sheetDetail.id;
-        let result = await createOrReplaceData('Transactions', sheetDetail);
-        await onGetAndSetCurrentSheet(sheet.id);
-        changeUpdatedAt(sheet);
+      const duplicateSheetDetail = async imageUrl => {
+        const finalData = {
+          ...sheetDetail._raw,
+          imageUrl: imageUrl || null,
+        };
+        delete finalData._changed;
+        delete finalData._status;
+        delete finalData.id;
+        delete finalData.created_at;
+        delete finalData.updated_at;
 
+        const newRecord = await createRecord('transactions', finalData);
+        changeUpdatedAt(sheet);
         hideLoader();
         callback();
       };
@@ -794,10 +798,9 @@ export const SheetDetailsContextProvider = ({children}) => {
           imageUrl,
           uploadPath,
         );
-        sheetDetail.imageUrl = downloadURL;
-        await duplicateSheetDetail();
+        await duplicateSheetDetail(downloadURL);
       } else {
-        await duplicateSheetDetail();
+        await duplicateSheetDetail(null);
       }
     } catch (err) {
       hideLoader();
@@ -806,23 +809,32 @@ export const SheetDetailsContextProvider = ({children}) => {
   };
 
   const onMoveSheetDetail = async (
+    oldSheet,
     sheet,
     sheetDetail,
     callback = () => null,
   ) => {
     try {
-      let currentSheetId = sheetDetail.accountId;
-      let currentSheetDetailId = sheetDetail.id;
       let newSheetId = sheet.id;
-      const moveSheetDetail = async () => {
-        delete sheetDetail.category;
-        delete sheetDetail.id;
-        sheetDetail.accountId = newSheetId;
-        // delete transaction from current account
-        await deleteData('Transactions', 'WHERE id=?', [currentSheetDetailId]);
+      const moveSheetDetail = async (imageUrl = null) => {
+        await db.write(async () => {
+          await sheetDetail.markAsDeleted();
+          await sheetDetail.destroyPermanently();
+        });
+        const finalData = {
+          ...sheetDetail._raw,
+          imageUrl: imageUrl || null,
+          accountId: newSheetId,
+        };
+        delete finalData._changed;
+        delete finalData._status;
+        delete finalData.id;
+        delete finalData.created_at;
+        delete finalData.updated_at;
+
         // create new transaction
-        await createOrReplaceData('Transactions', sheetDetail);
-        await onGetAndSetCurrentSheet(currentSheetId);
+        await createRecord('transactions', finalData);
+        changeUpdatedAt(oldSheet);
         changeUpdatedAt(sheet);
 
         hideLoader();
@@ -841,8 +853,7 @@ export const SheetDetailsContextProvider = ({children}) => {
           imageUrl,
           uploadPath,
         );
-        sheetDetail.imageUrl = downloadURL;
-        await moveSheetDetail();
+        await moveSheetDetail(downloadURL);
       } else {
         await moveSheetDetail();
       }
@@ -859,10 +870,11 @@ export const SheetDetailsContextProvider = ({children}) => {
   ) => {
     try {
       const deleteSheetDetail = async () => {
-        await deleteData('Transactions', 'WHERE id=?', [sheetDetail.id]);
-        await onGetAndSetCurrentSheet(sheet.id);
+        await db.write(async () => {
+          await sheetDetail.markAsDeleted();
+          await sheetDetail.destroyPermanently();
+        });
         changeUpdatedAt(sheet);
-
         callback();
       };
 
@@ -876,6 +888,7 @@ export const SheetDetailsContextProvider = ({children}) => {
   };
 
   const onSetUpcomingSheetDetailFromEvent = async data => {
+    return;
     try {
       if (!data) {
         throw 'No data';
@@ -949,56 +962,61 @@ export const SheetDetailsContextProvider = ({children}) => {
     callback = () => null,
   ) => {
     try {
-      let query = `SELECT * FROM Transactions
-      WHERE upcoming = 1
-      AND CASE
-            WHEN showTime = 1 THEN datetime(time) < datetime('now', 'localtime')
-            ELSE date(date) < date('now', 'localtime')
-      END`;
-      if (sheet) {
-        query += ` AND accountId=${sheet.id}`;
-      }
-      let result = await getData(query);
-      let data = await getDataFromRows(result.rows);
-      // if there are upcoming transactions
-      if (data.length > 0) {
-        let updateQuery = `
-        UPDATE Transactions
-        SET upcoming = 0
-        WHERE CASE
-                WHEN showTime = 1 THEN datetime(time) < datetime('now', 'localtime')
-                ELSE date(date) < date('now', 'localtime')
-        END
-        AND upcoming = 1
-        `;
-        if (sheet) {
-          query += ` AND accountId=${sheet.id}`;
-        }
+      const now = moment();
+      const query = sheet
+        ? Q.and(Q.where('upcoming', true), Q.where('accountId', sheet.id))
+        : Q.where('upcoming', true);
 
-        await executeQuery(updateQuery);
-        data.forEach(async transaction => {
-          let {accountId} = transaction;
-          let accountResult = await getData(
-            `SELECT * FROM Accounts WHERE id=${accountId}`,
-          );
-          let accountData = await getDataFromRows(accountResult.rows)?.[0];
+      const allUpcoming = await db.get('transactions').query(query).fetch();
+
+      const toUpdate = allUpcoming.filter(t => {
+        if (t.showTime) {
+          return moment(t.time).isBefore(now);
+        } else {
+          return moment(t.date).isBefore(now, 'day');
+        }
+      });
+
+      if (toUpdate.length > 0) {
+        await db.write(async () => {
+          for (const transaction of toUpdate) {
+            await transaction.update(t => {
+              t.upcoming = false;
+            });
+          }
+        });
+
+        // Send local notifications (if needed)
+        for (const transaction of toUpdate) {
+          const account = await transaction.account.fetch();
           const notificationInfo = {
-            title: `New Transaction ${
-              transaction.notes ? `:${transaction.notes}` : ''
+            title: `New Transaction${
+              transaction.notes ? `: ${transaction.notes}` : ''
             }`,
-            message: `Added to - ${accountData.name} `,
+            message: `Added to - ${account.name}`,
             image: transaction.imageUrl,
           };
-          sendLocalNotification(notificationInfo, transaction);
-        });
+
+          sendLocalNotification(
+            {...notificationInfo},
+            {
+              id: transaction.id,
+              notes: transaction.notes,
+              imageUrl: transaction.imageUrl,
+              accountId: transaction.accountId,
+            },
+          );
+        }
+
+        // Callback only if the updated ones include this sheet
         if (sheet) {
-          let exists = data.find(d => d.accountId === sheet.id);
-          exists ? callback(true) : callback();
+          const exists = toUpdate.find(d => d.accountId === sheet.id);
+          exists ? callback(true) : callback(false);
         } else {
-          callback();
+          callback(true);
         }
       } else {
-        callback();
+        callback(false);
       }
     } catch (err) {
       showNotification('error', err.message || err.toString());

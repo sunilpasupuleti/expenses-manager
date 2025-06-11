@@ -23,7 +23,7 @@ export const colors = {
   bg: {
     primary: '#ffffff',
     secondary: '#f1f1f1',
-    card: '#ffffff',
+    card: '#f7f7f7',
     listSubCard: '#f6f6f7',
     sectionListCard: '#f7f7f7',
     sectionListCardLabel: '#444',

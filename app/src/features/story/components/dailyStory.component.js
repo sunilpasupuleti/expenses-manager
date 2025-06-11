@@ -24,6 +24,8 @@ import {Text} from '../../../components/typography/text.component';
 import {GetCurrencySymbol} from '../../../components/symbol.currency';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
+import {WatermelonDBContext} from '../../../services/watermelondb/watermelondb.context';
+import {Q} from '@nozbe/watermelondb';
 
 const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
 
@@ -49,6 +51,7 @@ const formatCurrency = (amount, symbol = '₹') => {
 // AsyncStorage.removeItem(STORAGE_KEY);
 export const DailyStoryCard = ({forceShowRecap, setForceShowRecap}) => {
   const {executeQuery} = useContext(SQLiteContext);
+  const {db, getChildRecords} = useContext(WatermelonDBContext);
   const {getSheets} = useContext(SheetsContext);
   const {userData} = useContext(AuthenticationContext);
   const [storyList, setStoryList] = useState([]);
@@ -61,12 +64,23 @@ export const DailyStoryCard = ({forceShowRecap, setForceShowRecap}) => {
   useEffect(() => {
     const loadRecap = async () => {
       try {
-        if (!userData?.uid) return;
+        if (!userData?.id) return;
 
         const today = moment().format('YYYY-MM-DD');
         const storedDate = await getStoredRecapDate();
-        const sheets = await getSheets();
-        const accounts = [...sheets.pinned, ...sheets.regular];
+
+        const accounts = await getChildRecords(
+          'users',
+          'id',
+          userData.id,
+          'accounts',
+          {
+            filters: [
+              Q.where('archived', false),
+              Q.where('isLoanAccount', false),
+            ],
+          },
+        );
 
         if (accounts.length === 0 && !forceShowRecap) {
           setShowRecap(false); // New user - no accounts - don't show
@@ -126,49 +140,39 @@ export const DailyStoryCard = ({forceShowRecap, setForceShowRecap}) => {
       const cards = [];
 
       for (const acc of accounts) {
-        let totalIncome = 0,
-          totalExpense = 0,
-          biggestTxn = {amount: 0, categoryName: ''};
+        let totalIncome = 0;
+        let totalExpense = 0;
+        let totalTransactions = 0;
+        let biggestTxn = {amount: 0, categoryName: ''};
 
-        const incomeRes = await executeQuery(
-          `SELECT SUM(amount) as sumIncome FROM Transactions WHERE accountId = ? AND type = 'income' AND date LIKE ? || '%'`,
-          [acc.id, yesterday],
-        );
-        totalIncome = incomeRes.rows.item(0)?.sumIncome || 0;
+        // Fetch transactions for this account from yesterday
+        const txns = await acc.collections
+          .get('transactions')
+          .query(
+            Q.where('accountId', acc.id),
+            Q.where('date', Q.like(`${yesterday}%`)),
+          )
+          .fetch();
 
-        const expenseRes = await executeQuery(
-          `SELECT SUM(amount) as sumExpense FROM Transactions WHERE accountId = ? AND type = 'expense' AND date LIKE ? || '%'`,
-          [acc.id, yesterday],
-        );
-        totalExpense = expenseRes.rows.item(0)?.sumExpense || 0;
+        const incomeTxns = txns.filter(t => t.type === 'income');
+        const expenseTxns = txns.filter(t => t.type === 'expense');
+        totalIncome = incomeTxns.reduce((sum, t) => sum + t.amount, 0);
+        totalExpense = expenseTxns.reduce((sum, t) => sum + t.amount, 0);
+        totalTransactions = txns.length;
 
-        // Fetch Total Number of Transactions
-        const txnCountRes = await executeQuery(
-          `SELECT COUNT(*) as txnCount 
- FROM Transactions 
- WHERE accountId = ? AND date LIKE ? || '%'`,
-          [acc.id, yesterday],
-        );
-        const totalTransactions = txnCountRes.rows.item(0)?.txnCount || 0;
-
-        const bigTxnRes = await executeQuery(
-          `SELECT T.amount, C.name as categoryName
-           FROM Transactions T
-           LEFT JOIN Categories C ON T.categoryId = C.id
-           WHERE T.accountId = ? AND T.type = 'expense' AND T.date LIKE ? || '%'
-           ORDER BY T.amount DESC LIMIT 1`,
-          [acc.id, yesterday],
-        );
-        if (bigTxnRes.rows.length > 0) {
-          biggestTxn = bigTxnRes.rows.item(0);
+        if (expenseTxns.length > 0) {
+          const topExpense = expenseTxns.sort((a, b) => b.amount - a.amount)[0];
+          const category = await topExpense.category.fetch();
+          biggestTxn = {
+            amount: topExpense.amount,
+            categoryName: category?.name || '',
+          };
         }
 
         const savings = totalIncome - totalExpense;
         const savingRate = totalIncome > 0 ? (savings / totalIncome) * 100 : 0;
 
-        if (totalIncome === 0 && totalExpense === 0) {
-          continue;
-        }
+        if (totalIncome === 0 && totalExpense === 0) continue;
 
         // Humanized dynamic analysis
         let verdict = '';
@@ -181,6 +185,7 @@ export const DailyStoryCard = ({forceShowRecap, setForceShowRecap}) => {
         } else {
           verdict = '✅ Balanced day. Stability is power!';
         }
+
         const symbol = GetCurrencySymbol(acc.currency) || '₹';
         const formattedIncome = formatCurrency(totalIncome, symbol);
         const formattedExpense = formatCurrency(totalExpense, symbol);
@@ -197,9 +202,9 @@ export const DailyStoryCard = ({forceShowRecap, setForceShowRecap}) => {
           savingRate: savingRate.toFixed(1),
           totalTransactions,
           savings,
-          formattedBigTxn, // ADD THIS
-          biggestTxnCategory: biggestTxn.categoryName || 'something memorable', // ADD THIS
-          biggestTxnAmount: biggestTxn.amount, // ADD THIS
+          formattedBigTxn,
+          biggestTxnCategory: biggestTxn.categoryName || 'something memorable',
+          biggestTxnAmount: biggestTxn.amount,
           verdict,
         });
       }

@@ -265,6 +265,13 @@ export const BankTransactionsScreen = ({navigation, route}) => {
       data,
       res => {
         if (res.refreshedTransactions) {
+          dispatch(
+            notificationActions.showToast({
+              status: 'success',
+              message: res.message,
+            }),
+          );
+
           return navigation.goBack();
         }
         if (res.transactions) {

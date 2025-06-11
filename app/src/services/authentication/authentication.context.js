@@ -29,17 +29,13 @@ import DeviceInfo from 'react-native-device-info';
 import database from '@react-native-firebase/database';
 import {
   cancelLocalNotification,
-  formatDate,
   getCurrentDate,
   getDataFromRows,
 } from '../../components/utility/helper';
-import {SQLiteContext} from '../sqlite/sqlite.context';
-import _ from 'lodash';
-import RNFetchBlob from 'rn-fetch-blob';
-import Share from 'react-native-share';
 import defaultCategories from '../../components/utility/defaultCategories.json';
 import {SocketContext} from '../socket/socket.context';
 import * as Sentry from '@sentry/react-native';
+import {WatermelonDBContext} from '../watermelondb/watermelondb.context';
 
 GoogleSignin.configure({
   webClientId: remoteConfig().getValue('WEB_CLIENT_ID').asString(),
@@ -68,6 +64,8 @@ let authStateTriggered = false;
 
 export const AuthenticationContextProvider = ({children}) => {
   const [userData, setUserData] = useState(null);
+  const {createRecord, deleteAllRecords, db, findRecordById} =
+    useContext(WatermelonDBContext);
   const {initializeWebSocket, initializePlaidWebSocket} =
     useContext(SocketContext);
   const [userAdditionalDetails, setUserAdditionalDetails] = useState(null);
@@ -75,8 +73,7 @@ export const AuthenticationContextProvider = ({children}) => {
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
   const dispatch = useDispatch();
   const {sendRequest} = useHttp();
-  const {createOrReplaceData, getData, deleteAllTablesData, db, executeQuery} =
-    useContext(SQLiteContext);
+
   const appUpdateNeeded = useSelector(state => state.service.appUpdateNeeded);
 
   useEffect(() => {
@@ -148,11 +145,7 @@ export const AuthenticationContextProvider = ({children}) => {
         if (!isConnected && !userData) {
           const uid = await AsyncStorage.getItem('@expenses-manager-uid');
           if (uid) {
-            const data = await getData(
-              `SELECT * FROM Users WHERE uid='${uid}'`,
-            );
-            const result = await getDataFromRows(data.rows);
-            const uData = result[0];
+            const uData = await findRecordById('users', 'uid', uid);
             if (!userData && uData) {
               setUserData(uData);
               setUserAdditionalDetails(uData);
@@ -219,9 +212,9 @@ export const AuthenticationContextProvider = ({children}) => {
   };
 
   const checkNotificationPermission = async () => {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-    );
+    // const granted = await PermissionsAndroid.request(
+    //   PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+    // );
   };
 
   const checkSmsReadPermission = async () => {
@@ -298,7 +291,7 @@ export const AuthenticationContextProvider = ({children}) => {
         let dateAfter3Days = moment(firstInstallDate).add(3, 'days');
         let isAfter3Days = moment().isAfter(dateAfter3Days);
         if (isAfter3Days) {
-          requestAppReview();
+          // requestAppReview();
         }
       })
       .catch(err => {
@@ -559,7 +552,7 @@ export const AuthenticationContextProvider = ({children}) => {
           uid: null,
           fcmToken: token,
           phoneNumber: null,
-          active: 1,
+          active: true,
           timeZone: timeZone,
           lastLogin: getCurrentDate(),
           platform: Platform.OS,
@@ -601,9 +594,15 @@ export const AuthenticationContextProvider = ({children}) => {
           transformedData.phoneNumber = phoneNumber;
           transformedData.providerId = providerId;
           transformedData.baseCurrency = baseCurrency;
-          transformedData.dailyReminderEnabled = dailyReminderEnabled;
-          transformedData.autoFetchTransactions = autoFetchTransactions;
-          transformedData.dailyBackupEnabled = dailyBackupEnabled;
+          transformedData.dailyReminderEnabled = dailyReminderEnabled
+            ? true
+            : false;
+          transformedData.autoFetchTransactions = autoFetchTransactions
+            ? true
+            : false;
+          transformedData.dailyBackupEnabled = dailyBackupEnabled
+            ? true
+            : false;
           transformedData.dailyReminderTime = dailyReminderTime;
           transformedData.lastSynced = lastSynced || '';
         } else {
@@ -639,31 +638,51 @@ export const AuthenticationContextProvider = ({children}) => {
         initializePlaidWebSocket(uid);
 
         // console.log(transformedData, 'transformed');
-        await createOrReplaceData('Users', transformedData, 'uid');
+        const existingUser = await findRecordById(
+          'users',
+          'uid',
+          transformedData.uid,
+        ).catch(() => null);
 
+        let user = existingUser;
+        if (user) {
+          await db.write(async () => {
+            await user.update(record => {
+              Object.keys(transformedData).forEach(key => {
+                if (key in record && typeof record[key] !== 'function') {
+                  record[key] = transformedData[key];
+                }
+              });
+            });
+          });
+        } else {
+          user = await createRecord('users', transformedData);
+        }
         // create default categories if not exists
-        let query = `SELECT * FROM Categories WHERE uid='${uid}'`;
-        let result = await getData(query);
-        if (result.rows.length === 0) {
-          let values = defaultCategories
-            .map(category => {
-              const {name, type, color, icon, isDefault} = category;
-              return `('${name}', '${type}', '${color}','${icon}', ${
-                isDefault ? 1 : 0
-              },'${uid}') `;
-            })
-            .join(',');
+        const existingCategories = await user.categories.fetch();
 
-          let insertQuery = `INSERT INTO Categories (name, type, color, icon, isDefault, uid) VALUES ${values}`;
-          await executeQuery(insertQuery);
+        if (!existingCategories?.length) {
+          let formattedCategories = defaultCategories.map(category => {
+            const {name, type, color, icon, isDefault} = category;
+            return {
+              name,
+              type,
+              color,
+              icon,
+              isDefault,
+              userId: user.id,
+            };
+          });
+
+          await createRecord('categories', formattedCategories);
         }
 
         await database()
           .ref('/users/' + transformedData.uid)
           .update(transformedData);
 
-        setUserData(transformedData);
-        setUserAdditionalDetails(transformedData);
+        setUserData(user);
+        setUserAdditionalDetails(user);
         resolve(true);
         hideLoader();
         await AsyncStorage.setItem(
@@ -693,7 +712,8 @@ export const AuthenticationContextProvider = ({children}) => {
   const onLogout = async (forceLogout = false, accountDeleted = false) => {
     const signOut = async () => {
       if (!forceLogout || (forceLogout && accountDeleted)) {
-        await deleteAllTablesData(true);
+        await deleteAllRecords(true);
+
         await deleteUserPinCode('@expenses-manager-app-lock');
         await resetPinCodeInternalStates();
         await AsyncStorage.removeItem('@expenses-manager-removed-transactions');
@@ -753,9 +773,9 @@ export const AuthenticationContextProvider = ({children}) => {
     errorCallback = () => {},
   ) => {
     let uid = await auth().currentUser.uid;
-    let results = await getData(`SELECT * FROM Users  WHERE uid='${uid}'`);
+    const userRecord = await findRecordById('users', 'uid', uid);
+    let data = userRecord || null;
 
-    let data = results?.rows?.item(0);
     if (data) {
       setUserData(data);
       setUserAdditionalDetails(data);

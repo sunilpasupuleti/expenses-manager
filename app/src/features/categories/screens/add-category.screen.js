@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useContext, useEffect, useMemo, useRef, useState} from 'react';
 import {ScrollView, TouchableOpacity} from 'react-native';
 import {Button, Card, Modal, Portal, Switch} from 'react-native-paper';
 import {useTheme} from 'styled-components/native';
@@ -21,7 +21,6 @@ import {ColorPicker, fromHsv} from 'react-native-color-picker';
 import Iconicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Slider from '@react-native-community/slider';
-import MaterialCommunityIcons from '../../../components/utility/materialCommunityIcons.json';
 import {Text} from '../../../components/typography/text.component';
 import {useDispatch} from 'react-redux';
 import {loaderActions} from '../../../store/loader-slice';
@@ -52,16 +51,6 @@ const colors = [
   '#ce948e',
 ];
 
-const fuse = new Fuse(MaterialCommunityIcons, {
-  keys: ['name', 'aliases', 'tags'],
-  threshold: 0.4,
-  ignoreLocation: true,
-  includeScore: true,
-  useExtendedSearch: false,
-  isCaseSensitive: false,
-  findAllMatches: true,
-});
-
 export const AddCategoryScreen = ({navigation, route}) => {
   const theme = useTheme();
   const [disabled, setDisabled] = useState(true);
@@ -76,9 +65,10 @@ export const AddCategoryScreen = ({navigation, route}) => {
   const {onSaveCategory, onEditCategory} = useContext(CategoriesContext);
   const {userData} = useContext(AuthenticationContext);
 
-  const [icons, setIcons] = useState(MaterialCommunityIcons.slice(0, 40));
+  const [icons, setIcons] = useState([]);
   const [icon, setIcon] = useState(null);
   const [search, setSearch] = useState('');
+  const [MaterialCommunityIcons, setMaterialCommunityIcons] = useState([]);
 
   // if focused from sheet details screen
   const [fromSheetDetailScreen, setFromSheetDetailScreen] = useState(false);
@@ -88,7 +78,7 @@ export const AddCategoryScreen = ({navigation, route}) => {
   ] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
   const [editMode, setEditMode] = useState(false);
-  const dispatch = useDispatch();
+  const fuseRef = useRef(null);
 
   let scrollViewRef = useRef(null);
 
@@ -102,7 +92,7 @@ export const AddCategoryScreen = ({navigation, route}) => {
         setCategoryId(category.id);
         setCategoryName(category.name);
         setCategoryColor(category.color);
-        setIsLoanRelated(category.isLoanRelated === 1 ? true : false);
+        setIsLoanRelated(category.isLoanRelated ? true : false);
         setIcon(category.icon ? category.icon : null);
         setCategoryType(route.params.type);
       }
@@ -118,6 +108,26 @@ export const AddCategoryScreen = ({navigation, route}) => {
       }
     }
   }, [route.params]);
+
+  useEffect(() => {
+    const loadIcons = async () => {
+      const icons = await import(
+        '../../../components/utility/materialCommunityIcons.json'
+      );
+      fuseRef.current = new Fuse(icons.default, {
+        keys: ['name', 'aliases', 'tags'],
+        threshold: 0.4,
+        ignoreLocation: true,
+        includeScore: true,
+        useExtendedSearch: false,
+        isCaseSensitive: false,
+        findAllMatches: true,
+      });
+      setMaterialCommunityIcons(icons.default);
+      setIcons(icons.default.slice(0, 40));
+    };
+    loadIcons();
+  }, []);
 
   useEffect(() => {
     navigation.setOptions({
@@ -152,29 +162,53 @@ export const AddCategoryScreen = ({navigation, route}) => {
   useEffect(() => {
     if (categoryName === '' || !categoryName) {
       setDisabled(true);
-    } else {
-      setDisabled(false);
+      return;
     }
-    if (categoryName) {
-      const results = fuse.search(categoryName.trim());
-      const matchedIcons = results.map(result => result.item);
+    setDisabled(false);
+    const results = fuseRef.current?.search(categoryName.trim()) || [];
+    const matchedIcons = results.map(result => result.item);
 
-      setIcons(matchedIcons.slice(0, 40));
-    }
+    setIcons(matchedIcons.slice(0, 40));
   }, [categoryName]);
 
-  const onSearchDebounced = useRef(
-    debounce(keyword => {
-      if (keyword.trim() === '') {
+  const onSearchDebounced = useRef();
+
+  useEffect(() => {
+    onSearchDebounced.current = debounce(keyword => {
+      if (!keyword.trim()) {
         setIcons(MaterialCommunityIcons.slice(0, 40));
         return;
       }
 
-      const results = fuse.search(keyword.trim());
-      const matchedIcons = results.map(result => result.item);
-      setIcons(matchedIcons.slice(0, 40));
-    }, 300),
-  ).current;
+      const results = fuseRef.current?.search(keyword.trim()) || [];
+      setIcons(results.map(r => r.item).slice(0, 40));
+    }, 300);
+
+    return () => {
+      onSearchDebounced.current?.cancel();
+    };
+  }, [MaterialCommunityIcons]);
+
+  const isValidIcon = name => MaterialCommunityIcon.hasIcon(name);
+
+  const renderedIcons = useMemo(() => {
+    return icons
+      .filter(item => isValidIcon(item.name))
+      .slice(0, 40)
+      .map(item => (
+        <TouchableOpacity
+          key={item.id || item.name}
+          onPress={() => setIcon(item.name)}>
+          <IconView color={categoryColor}>
+            <MaterialCommunityIcon
+              name={item.name}
+              size={18}
+              color={categoryColor}
+            />
+          </IconView>
+        </TouchableOpacity>
+      ));
+  }, [icons, categoryColor]);
 
   const onSave = () => {
     categoryName.trim();
@@ -182,7 +216,7 @@ export const AddCategoryScreen = ({navigation, route}) => {
       name: _.capitalize(_.trim(categoryName)),
       color: categoryColor,
       icon: icon,
-      uid: userData.uid,
+      userId: userData.id,
       type: categoryType,
       isLoanRelated: isLoanRelated,
     };
@@ -190,6 +224,7 @@ export const AddCategoryScreen = ({navigation, route}) => {
       if (fromSheetDetailScreen) {
         navigation.navigate('SelectCategory', {
           type: route.params.type,
+          isLoanAccount: route.params.isLoanAccount,
           addedNewCategoryAndSelected: true,
         });
         return;
@@ -207,7 +242,7 @@ export const AddCategoryScreen = ({navigation, route}) => {
       type: categoryType,
       isLoanRelated: isLoanRelated,
     };
-    onEditCategory(editedCategory, () => {
+    onEditCategory(route.params.category, editedCategory, () => {
       navigation.goBack();
     });
   };
@@ -269,19 +304,21 @@ export const AddCategoryScreen = ({navigation, route}) => {
         keyboardShouldPersistTaps="never">
         <MainWrapper>
           <Spacer size="xlarge">
-            {!editMode && !fromSheetDetailScreenLoanAccount && (
-              <>
-                <TabsSwitcher
-                  tabs={[
-                    {key: 'expense', label: 'Expense'},
-                    {key: 'income', label: 'Income'},
-                  ]}
-                  setActiveKey={onSetCategoryType}
-                  activeKey={categoryType}
-                />
-                <Spacer size={'large'} />
-              </>
-            )}
+            {!editMode &&
+              !fromSheetDetailScreenLoanAccount &&
+              !fromSheetDetailScreen && (
+                <>
+                  <TabsSwitcher
+                    tabs={[
+                      {key: 'expense', label: 'Expense'},
+                      {key: 'income', label: 'Income'},
+                    ]}
+                    setActiveKey={onSetCategoryType}
+                    activeKey={categoryType}
+                  />
+                  <Spacer size={'large'} />
+                </>
+              )}
           </Spacer>
 
           <Input
@@ -369,7 +406,7 @@ export const AddCategoryScreen = ({navigation, route}) => {
             placeholder="Search for more Icons"
             onChangeText={k => {
               setSearch(k);
-              onSearchDebounced(k);
+              onSearchDebounced.current?.(k);
             }}
             clearButtonMode="while-editing"
           />
@@ -402,23 +439,7 @@ export const AddCategoryScreen = ({navigation, route}) => {
                   </IconView>
                 </TouchableOpacity>
               )}
-
-              {icons.map((item, index) => {
-                return (
-                  <TouchableOpacity
-                    key={item.id || item.name}
-                    onPress={() => setIcon(item.name)}>
-                    <IconView color={categoryColor}>
-                      <MaterialCommunityIcon
-                        name={item.name}
-                        size={18}
-                        // color="#fff"
-                        color={categoryColor}
-                      />
-                    </IconView>
-                  </TouchableOpacity>
-                );
-              })}
+              {renderedIcons}
             </FlexRow>
           </Card>
         </MainWrapper>
