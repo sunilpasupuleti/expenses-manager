@@ -11,7 +11,7 @@ export default class Transaction extends Model {
   static table = 'transactions';
 
   static associations = {
-    account: {type: 'belongs_to', key: 'accountId'},
+    accounts: {type: 'belongs_to', key: 'accountId'},
     categories: {type: 'belongs_to', key: 'categoryId'},
   };
 

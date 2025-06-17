@@ -199,6 +199,7 @@ export const SheetsInfo = ({
 
   return (
     <SectionList
+      showsVerticalScrollIndicator={false}
       stickySectionHeadersEnabled={false}
       sections={[
         {

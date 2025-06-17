@@ -1,10 +1,10 @@
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable react/no-unstable-nested-components */
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import React, {useContext, useEffect, useState} from 'react';
-import {FlatList, SectionList, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useMemo, useState} from 'react';
+import {SectionList, TouchableOpacity, View} from 'react-native';
 import {useTheme} from 'styled-components/native';
-import {FlexRow, Input, MainWrapper} from '../../../../components/styles';
+import {FlexRow, Input} from '../../../../components/styles';
 import {Text} from '../../../../components/typography/text.component';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
 
@@ -22,60 +22,19 @@ import {
   GetCurrencySymbol,
 } from '../../../../components/symbol.currency';
 
-import {SheetsContext} from '../../../../services/sheets/sheets.context';
-import {searchKeywordRegex} from '../../../../components/utility/helper';
-import {SheetDetailsContext} from '../../../../services/sheetDetails/sheetDetails.context';
-import {useIsFocused} from '@react-navigation/native';
 import {SheetDetailsInfo} from '../sheet-details/sheet-details-info.component';
-
+import {ObservedSheetStatsDetails} from './sheet-stats-details.observed';
+import {useIsFocused} from '@react-navigation/native';
 export const SheetStatsDetailsScreen = ({navigation, route}) => {
-  const {currentSheet} = useContext(SheetsContext);
-  const [sheetDetails, setSheetDetails] = useState({
-    totalCount: 0,
-    totalBalance: 0,
-    transactions: [],
-  });
-  const routeIsFocused = useIsFocused();
-  const {getSheetDetails} = useContext(SheetDetailsContext);
-  const [searchKeyword, setSearchKeyword] = useState(null);
-  const [category, setCategory] = useState(null);
-  const [analyticsScreenReportKey, setAnalyticsScreenReportKey] =
-    useState(null);
-  const [amountWidth, setAmountWidth] = useState(0);
-
+  const [sheet, setSheet] = useState(null);
+  const [category, setCategory] = useState('');
+  const [reportKey, setReportKey] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState('');
   const theme = useTheme();
-
-  useEffect(() => {
-    if (route.params?.category) {
-      setCategory(route.params?.category);
-    }
-    if (route.params?.analyticsScreen) {
-      setAnalyticsScreenReportKey(route.params?.reportKey || null);
-    }
-  }, [route.params]);
-
-  useEffect(() => {
-    if (category && routeIsFocused && !analyticsScreenReportKey) {
-      onSetNavigationOptions();
-      onGetSheetDetails(currentSheet, null);
-    }
-    if (category && routeIsFocused && analyticsScreenReportKey) {
-      onSetNavigationOptions();
-      onGetSheetDetails(currentSheet, null, analyticsScreenReportKey);
-    }
-  }, [category, routeIsFocused, analyticsScreenReportKey]);
-
-  useEffect(() => {
-    if (searchKeyword !== null && searchKeywordRegex.test(searchKeyword)) {
-      onSearch();
-    } else if (searchKeyword === '') {
-      onGetSheetDetails(currentSheet, null, analyticsScreenReportKey);
-    }
-  }, [searchKeyword]);
-
-  const onSetNavigationOptions = () => {
+  const routeIsFocused = useIsFocused();
+  const onSetNavigationOptions = cat => {
     navigation.setOptions({
-      headerTitle: category.name,
+      headerTitle: cat.name,
       headerLeft: () => (
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <FlexRow>
@@ -90,27 +49,84 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
     });
   };
 
-  const onGetSheetDetails = async (sheet, keyword, analyticsScreenRepKey) => {
-    let data = await getSheetDetails(
-      sheet,
-      keyword,
-      null,
-      false,
-      category.id,
-      analyticsScreenRepKey,
-    );
-    if (data) {
-      setSheetDetails(data);
+  useEffect(() => {
+    if (!routeIsFocused) {
+      setSearchKeyword('');
     }
-  };
+  }, [routeIsFocused]);
 
-  const onSearch = async () => {
-    onGetSheetDetails(
-      currentSheet,
-      _.toLower(searchKeyword),
-      analyticsScreenReportKey,
-    );
-  };
+  useEffect(() => {
+    if (route.params?.sheet && route?.params?.category) {
+      const {sheet: sh, category: cat, reportKey: repKey} = route.params;
+
+      setSheet(sh);
+      setCategory(cat);
+      setReportKey(repKey);
+      onSetNavigationOptions(cat);
+    }
+  }, [route.params]);
+
+  useEffect(() => {
+    if (route?.params?.reportKey) {
+      setReportKey(route?.params?.reportKey);
+    }
+  }, [route.params]);
+
+  if (!sheet || !category) return null;
+
+  return (
+    <ObservedSheetStatsDetails
+      navigation={navigation}
+      route={route}
+      accountId={sheet.id}
+      sheet={sheet}
+      category={category}
+      searchKeyword={searchKeyword}
+      setSearchKeyword={setSearchKeyword}
+      reportKey={reportKey}
+    />
+  );
+};
+
+export const BaseSheetStatsDetailsScreen = ({
+  navigation,
+  sheet,
+  setSearchKeyword,
+  searchKeyword,
+  transactions = [],
+}) => {
+  const [amountWidth, setAmountWidth] = useState(0);
+  const [totalBalance, setTotalBalance] = useState(0);
+
+  const groupedTransactions = useMemo(() => {
+    let finalIncome = 0;
+    let finalExpense = 0;
+    let finalBalance = 0;
+    const grouped = _.groupBy(transactions, t => {
+      return moment(t.date).format('YYYY-MM-DD');
+    });
+
+    const finalEntries = Object.entries(grouped).map(([date, txns]) => {
+      const totalIncome = _.sumBy(txns, t =>
+        t.type === 'income' ? t.amount : 0,
+      );
+      const totalExpense = _.sumBy(txns, t =>
+        t.type === 'expense' ? t.amount : 0,
+      );
+      finalIncome += totalIncome;
+      finalExpense += totalExpense;
+      return {
+        title: date,
+        transactions: txns,
+        totalBalance: totalIncome - totalExpense,
+      };
+    });
+
+    finalBalance = finalIncome - finalExpense;
+    setTotalBalance(finalBalance);
+
+    return finalEntries;
+  }, [transactions]);
 
   return (
     <SafeArea child={true}>
@@ -122,8 +138,8 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
             <SheetDetailsTotalBalance
               fontsize={'30px'}
               fontfamily="bodySemiBold">
-              {GetCurrencySymbol(currentSheet.currency)}{' '}
-              {GetCurrencyLocalString(sheetDetails.totalBalance)}
+              {GetCurrencySymbol(sheet.currency)}{' '}
+              {GetCurrencyLocalString(totalBalance)}
             </SheetDetailsTotalBalance>
           </View>
           <SheetDetailsUnderline width={amountWidth} />
@@ -139,13 +155,13 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
         />
 
         <Spacer size={'large'} />
-        {sheetDetails.totalCount > 0 ? (
+        {transactions.length > 0 ? (
           <SectionList
-            sections={sheetDetails.transactions.map(
-              ({date, transactions, totalIncome, totalExpense}) => ({
-                title: date,
-                data: transactions,
-                totalBalance: totalIncome - totalExpense,
+            sections={groupedTransactions.map(
+              ({transactions: txns, title, totalBalance: totalBal}) => ({
+                title: title,
+                data: txns,
+                totalBalance: totalBal,
               }),
             )}
             keyExtractor={(item, index) =>
@@ -164,7 +180,7 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
                   })}
                 </SheetDetailHeaderLabel>
                 <SheetDetailHeaderLabel>
-                  {GetCurrencySymbol(currentSheet.currency)}{' '}
+                  {GetCurrencySymbol(sheet.currency)}{' '}
                   {GetCurrencyLocalString(section.totalBalance)}
                 </SheetDetailHeaderLabel>
               </SheetDetailHeader>
@@ -172,9 +188,8 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
             renderItem={({item, index}) => (
               <SheetDetailsInfo
                 transaction={item}
-                sheet={currentSheet}
+                sheet={sheet}
                 navigation={navigation}
-                onGetSheetDetails={onGetSheetDetails}
                 index={index}
               />
             )}

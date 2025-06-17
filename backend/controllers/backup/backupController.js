@@ -780,7 +780,7 @@ module.exports = {
       const file = bucket.file(uploadPath);
       await file.save(fileBuffer, {
         metadata: {
-          contentType: "application/octet-stream",
+          contentType: "application/json",
         },
       });
 

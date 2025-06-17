@@ -61,17 +61,14 @@ import {getFirebaseAccessUrl} from '../../../components/utility/helper';
 import {SettingsContext} from '../../../services/settings/settings.context';
 import {SheetDetailsContext} from '../../../services/sheetDetails/sheetDetails.context';
 import _ from 'lodash';
-import {SQLiteContext} from '../../../services/sqlite/sqlite.context';
 
 import {useIsFocused} from '@react-navigation/native';
+import {WatermelonDBContext} from '../../../services/watermelondb/watermelondb.context';
 
 export const SettingsScreen = ({navigation}) => {
-  const {onLogout, userData, userAdditionalDetails} = useContext(
-    AuthenticationContext,
-  );
-
+  const {onLogout, userData} = useContext(AuthenticationContext);
   const {onGetSheetsAndTransactions} = useContext(SheetDetailsContext);
-  const {deleteAllTablesData} = useContext(SQLiteContext);
+  const {deleteAllRecords} = useContext(WatermelonDBContext);
   const ACCOUNT_DELETION_URL = remoteConfig()
     .getValue('ACCOUNT_DELETION_URL')
     .asString();
@@ -151,19 +148,17 @@ export const SettingsScreen = ({navigation}) => {
   }, [userData]);
 
   useEffect(() => {
-    if (userAdditionalDetails) {
-      let dailyBackup = userAdditionalDetails.dailyBackupEnabled ? true : false;
+    if (userData) {
+      let dailyBackup = !!userData.dailyBackupEnabled;
 
       setIsDailyBackUpEnabled(dailyBackup);
-      let autoFetch = userAdditionalDetails.autoFetchTransactions
-        ? true
-        : false;
+      let autoFetch = !!userData.autoFetchTransactions;
 
       setIsAutoFetchTransactionsEnabled(autoFetch);
       let date = new Date();
 
-      if (userAdditionalDetails.dailyReminderEnabled) {
-        let time = userAdditionalDetails.dailyReminderTime;
+      if (userData.dailyReminderEnabled) {
+        let time = userData.dailyReminderTime;
         let splited = time.split(':');
         let hr = splited[0];
         let min = splited[1];
@@ -172,12 +167,12 @@ export const SettingsScreen = ({navigation}) => {
       }
 
       let dailyReminder = {
-        enabled: userAdditionalDetails.dailyReminderEnabled ? true : false,
+        enabled: userData.dailyReminderEnabled ? true : false,
         time: date,
       };
       setIsDailyReminderEnabled(dailyReminder);
     }
-  }, [userAdditionalDetails]);
+  }, [userData]);
 
   const showNotification = (status = 'error', message) => {
     dispatch(
@@ -260,7 +255,7 @@ export const SettingsScreen = ({navigation}) => {
   const onClickChangeBaseCurrency = () => {
     setBaseCurrency({
       dialog: true,
-      currency: userAdditionalDetails.baseCurrency,
+      currency: userData.baseCurrency,
     });
   };
 
@@ -343,7 +338,6 @@ export const SettingsScreen = ({navigation}) => {
     };
     try {
       let transactions = await onGetSheetsAndTransactions();
-
       const transactionExists = transactions && transactions.length > 0;
       proceedLogout(transactionExists);
     } catch (e) {
@@ -354,7 +348,7 @@ export const SettingsScreen = ({navigation}) => {
   const onPressClearData = async () => {
     const onClear = async () => {
       try {
-        await deleteAllTablesData(false, false);
+        await deleteAllRecords(false, false);
         showNotification(
           'success',
           'All accounts and transactions have been cleared.',
@@ -618,7 +612,7 @@ export const SettingsScreen = ({navigation}) => {
                           mode="contained"
                           textColor={'#fff'}
                           onPress={() => {
-                            if (userAdditionalDetails?.dailyReminderEnabled) {
+                            if (userData?.dailyReminderEnabled) {
                               onUpdateDailyReminder({
                                 time: isDailyReminderEnabled.time,
                                 enable: true,
@@ -631,7 +625,7 @@ export const SettingsScreen = ({navigation}) => {
                               });
                             }
                           }}>
-                          {userAdditionalDetails?.dailyReminderEnabled
+                          {userData?.dailyReminderEnabled
                             ? 'Update Reminder'
                             : 'Set Reminder'}
                         </Button>
@@ -668,10 +662,14 @@ export const SettingsScreen = ({navigation}) => {
                       value={isDailyBackUpEnabled}
                       onValueChange={() => {
                         if (isDailyBackUpEnabled) {
-                          onUpdateDailyBackup(false, () => {});
+                          onUpdateDailyBackup(false, () => {
+                            setIsDailyBackUpEnabled(false);
+                          });
                         }
                         if (!isDailyBackUpEnabled) {
-                          onUpdateDailyBackup(true, () => {});
+                          onUpdateDailyBackup(true, () => {
+                            setIsDailyBackUpEnabled(true);
+                          });
                         }
                       }}
                     />
@@ -729,12 +727,9 @@ export const SettingsScreen = ({navigation}) => {
                     <SettingTitle
                       style={{fontWeight: 'bold'}}
                       color={theme.colors.brand.primary}>
-                      {userAdditionalDetails &&
-                      userAdditionalDetails.baseCurrency
-                        ? `${
-                            userAdditionalDetails.baseCurrency
-                          } (${GetCurrencySymbol(
-                            userAdditionalDetails.baseCurrency,
+                      {userData && userData.baseCurrency
+                        ? `${userData.baseCurrency} (${GetCurrencySymbol(
+                            userData.baseCurrency,
                           )})`
                         : '-'}
                     </SettingTitle>

@@ -14,6 +14,7 @@ import {Model, Q} from '@nozbe/watermelondb';
 import {collectionNames} from './watermelondb_tables';
 import {DatabaseProvider} from '@nozbe/watermelondb/react';
 import {Text} from '../../components/typography/text.component';
+import {DB_NAME} from '../../../config';
 
 type DBContextType = {
   db: Database | null;
@@ -111,7 +112,7 @@ export const WatermelonDBContextProvider = ({
         const adapter = new SQLiteAdapter({
           schema: schema,
           migrations: migrations,
-          dbName: 'expmgrwzd',
+          dbName: DB_NAME,
           jsi: true,
 
           onSetUpError: (error: Error) => {

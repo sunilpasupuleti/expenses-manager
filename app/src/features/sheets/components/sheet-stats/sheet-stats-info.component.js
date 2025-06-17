@@ -1,33 +1,32 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React from 'react';
 import {FlatList, TouchableOpacity} from 'react-native';
 import _ from 'lodash';
 import {StatsInfoCard} from './sheet-stats-info-card.components';
 
-import {SheetsContext} from '../../../../services/sheets/sheets.context';
-import {ScrollView} from 'react-native';
 export const StatsInfo = ({
   sheetDetails,
   activeType,
   navigation,
   finalAmount,
   reportKey,
+  sheet,
 }) => {
-  const {currentSheet} = useContext(SheetsContext);
-
   return (
     <>
       <StatsInfoCard
         category={{name: 'Total', color: 'transparent', total: true}}
         percentage={100}
         activeType={activeType}
-        currency={currentSheet.currency}
+        currency={sheet.currency}
         totalBalance={finalAmount}
       />
 
       <FlatList
         scrollEnabled={false}
         data={sheetDetails}
-        keyExtractor={(item, i) => i}
+        keyExtractor={(item, i) =>
+          item?.category?.id?.toString() || i.toString()
+        }
         renderItem={({item, index}) => {
           let {category, totalPercentage, totalAmount} = item;
           return (
@@ -37,6 +36,7 @@ export const StatsInfo = ({
                   category,
                   reportKey: reportKey,
                   analyticsScreen: true,
+                  sheet: sheet,
                 });
               }}>
               <StatsInfoCard
@@ -44,7 +44,7 @@ export const StatsInfo = ({
                 percentage={totalPercentage}
                 activeType={activeType}
                 totalBalance={totalAmount}
-                currency={currentSheet.currency}
+                currency={sheet.currency}
               />
             </TouchableOpacity>
           );

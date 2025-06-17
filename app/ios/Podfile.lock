@@ -1432,6 +1432,8 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
+  - react-native-aes (3.2.1):
+    - React-Core
   - react-native-blur (4.4.1):
     - DoubleConversion
     - glog
@@ -2266,6 +2268,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - React-microtasksnativemodule (from `../node_modules/react-native/ReactCommon/react/nativemodule/microtasks`)
+  - react-native-aes (from `../node_modules/react-native-aes-crypto`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - "react-native-cameraroll (from `../node_modules/@react-native-camera-roll/camera-roll`)"
   - react-native-cloud-store (from `../node_modules/react-native-cloud-store`)
@@ -2455,6 +2458,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   React-microtasksnativemodule:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/microtasks"
+  react-native-aes:
+    :path: "../node_modules/react-native-aes-crypto"
   react-native-blur:
     :path: "../node_modules/@react-native-community/blur"
   react-native-cameraroll:
@@ -2677,6 +2682,7 @@ SPEC CHECKSUMS:
   React-logger: 80d87daf2f98bf95ab668b79062c1e0c3f0c2f8a
   React-Mapbuffer: b2642edd9be75d51ead8cda109c986665eae09cf
   React-microtasksnativemodule: 94f7e35c4984282f04f946fb1be1d008aff4bdf0
+  react-native-aes: e38d08f68d27e85d14590b7ef0b404ceebf5f891
   react-native-blur: aeda95624971b20d19c6c0fb291c411056e6d270
   react-native-cameraroll: dbf94ee89abc868ab600c7945666c82c9beefe2b
   react-native-cloud-store: bf8067ba89fa64215670edde7307112f573a7315

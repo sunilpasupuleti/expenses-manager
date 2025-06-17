@@ -25,11 +25,12 @@ import {
   excelSheetAccountColWidth,
   getExcelSheetAccountRows,
   getExcelSheetAccountSummary,
+  getLinkedDbRecord,
   getPdfAccountTableHtml,
 } from '../../components/utility/helper';
 import database from '@react-native-firebase/database';
-import {SheetDetailsContext} from '../sheetDetails/sheetDetails.context';
 import {WatermelonDBContext} from '../watermelondb/watermelondb.context';
+import {Q} from '@nozbe/watermelondb';
 
 const {AlarmManagerModule} = NativeModules;
 
@@ -49,9 +50,8 @@ export const SettingsContext = createContext({
 export const SettingsContextProvider = ({children}) => {
   const {userData} = useContext(AuthenticationContext);
   const {getMessages} = useContext(SheetsContext);
-  const {db, deleteAllRecords, createRecord} = useContext(WatermelonDBContext);
+  const {db, deleteAllRecords} = useContext(WatermelonDBContext);
   const {sendRequest} = useHttp();
-  const {onGetSheetsAndTransactions} = useContext(SheetDetailsContext);
 
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -123,13 +123,9 @@ export const SettingsContextProvider = ({children}) => {
       showLoader();
       let currentUser = await auth().currentUser;
       let jwtToken = await currentUser.getIdToken();
-      let fcmToken = null;
-      await messaging()
-        .getToken()
-        .then(t => {
-          fcmToken = t;
-        })
-        .catch(err => {});
+      await messaging().registerDeviceForRemoteMessages();
+
+      let fcmToken = await messaging().getToken();
       let timeZone = await getTimeZone();
       let transformedData = {
         dailyReminderEnabled: dailyReminder.enable ? true : false,
@@ -166,8 +162,10 @@ export const SettingsContextProvider = ({children}) => {
         },
       );
     } catch (err) {
+      console.log(err);
+
       hideLoader();
-      showNotification('error', err);
+      showNotification('error', err.toString());
     }
   };
 
@@ -179,16 +177,10 @@ export const SettingsContextProvider = ({children}) => {
       showLoader();
       let currentUser = await auth().currentUser;
       let jwtToken = await currentUser.getIdToken();
-      let fcmToken = null;
-      await messaging()
-        .getToken()
-        .then(t => {
-          fcmToken = t;
-        })
-        .catch(err => {});
+      let fcmToken = await messaging().getToken();
       let timeZone = await getTimeZone();
       let transformedData = {
-        dailyBackupEnabled: dailyBackupEnabled ? true : false,
+        dailyBackupEnabled: !!dailyBackupEnabled,
         timeZone: timeZone,
         fcmToken: fcmToken,
       };
@@ -275,19 +267,31 @@ export const SettingsContextProvider = ({children}) => {
   const onExportData = async () => {
     try {
       showLoader();
-      const accounts = await userData.accounts.fetch();
-      const categories = await userData.categories.fetch();
+      const accountsCollection = await db.get('accounts');
+      const accounts = await accountsCollection
+        .query(Q.where('userId', userData.id))
+        .fetch();
+
+      const categoriesCollection = await db.get('categories');
+      const categories = await categoriesCollection
+        .query(Q.where('userId', userData.id))
+        .fetch();
+
       if (accounts.length === 0) {
         throw 'No data to export';
       }
 
       const accountsWithTransactions = await Promise.all(
         accounts.map(async account => {
-          const transactions = await account.transactions.fetch();
+          const transactions = await getLinkedDbRecord(account, 'transactions');
           const sanitizedAccount = {...account._raw};
           delete sanitizedAccount.userId;
+          delete sanitizedAccount._status;
+          delete sanitizedAccount._changed;
           const sanitizedTransactions = transactions.map(({_raw}) => {
             const {accountId, ...rest} = _raw;
+            delete rest._status;
+            delete rest._changed;
             return rest;
           });
           return {
@@ -299,6 +303,8 @@ export const SettingsContextProvider = ({children}) => {
 
       const sanitizedCategories = categories.map(({_raw}) => {
         const {userId, ...rest} = _raw;
+        delete rest._status;
+        delete rest._changed;
         return rest;
       });
 
@@ -380,18 +386,27 @@ export const SettingsContextProvider = ({children}) => {
             throw 'Empty or corrupted file';
           }
 
-          const uid = userData.uid;
-
           if (accounts?.length > 0 && categories?.length > 0) {
             await deleteAllRecords(false);
-            const enrichedCategories = categories.map(c => ({
-              ...c,
-              userId: userData.id,
-            }));
+            const enrichedCategories = categories.map(c => {
+              return {
+                ...c,
+                userId: userData.id,
+              };
+            });
 
-            await createRecord('categories', enrichedCategories);
-            // Insert accounts and linked transactions
+            const categoryIdMap = {};
+            // Insert accounts and linked transactions and categories
             await db.write(async () => {
+              for (let c of enrichedCategories) {
+                const newRecord = await db.get('categories').create(cat => {
+                  Object.keys(c).forEach(key => {
+                    if (key !== 'id') cat[key] = c[key];
+                  });
+                  cat.userId = userData.id;
+                });
+                categoryIdMap[c.id] = newRecord.id;
+              }
               for (const a of accounts) {
                 const {transactions = [], ...accountData} = a;
 
@@ -409,6 +424,9 @@ export const SettingsContextProvider = ({children}) => {
                       if (key !== 'id') txn[key] = t[key];
                     });
                     txn.accountId = createdAccount.id;
+                    if (t.categoryId && categoryIdMap[t.categoryId]) {
+                      txn.categoryId = categoryIdMap[t.categoryId];
+                    }
                   });
                 }
               }
@@ -448,7 +466,15 @@ export const SettingsContextProvider = ({children}) => {
 
   const onExportAllDataToPdf = async () => {
     try {
-      let accounts = await userData.accounts.fetch();
+      const accountsCollection = await db.get('accounts');
+      const accounts = await accountsCollection
+        .query(
+          Q.where('userId', userData.id),
+          Q.where('isLoanAccount', false),
+          Q.sortBy('updated_at', Q.desc),
+        )
+        .fetch();
+
       if (accounts.length === 0) {
         throw 'There are no transactions to export';
       }
@@ -461,8 +487,28 @@ export const SettingsContextProvider = ({children}) => {
       await RNFetchBlob.fs.mkdir(fPath);
 
       for (const account of accounts) {
-        const {transactions} = await account.transactions.fetch();
+        let transactions =
+          (await getLinkedDbRecord(account, 'transactions')) || [];
         if (!transactions.length) continue;
+
+        transactions = await Promise.all(
+          transactions
+            .sort((a, b) => new Date(a.date) - new Date(b.date))
+            .map(async t => {
+              const category = await getLinkedDbRecord(t, 'category');
+              return {
+                id: t.id,
+                amount: t.amount,
+                date: t.date,
+                showTime: t.showTime,
+                time: t.time,
+                imageUrl: t.imageUrl,
+                notes: t.notes,
+                type: t.type,
+                category: category,
+              };
+            }),
+        );
 
         let {name} = account;
         let html = getPdfAccountTableHtml(theme, account, transactions);
@@ -518,16 +564,43 @@ export const SettingsContextProvider = ({children}) => {
 
   const onExportAllSheetsToExcel = async config => {
     try {
-      let accounts = await onGetSheetsAndTransactions();
+      showLoader('excel');
+
+      const accountsCollection = await db.get('accounts');
+      const accounts = await accountsCollection
+        .query(
+          Q.where('userId', userData.id),
+          Q.where('isLoanAccount', false),
+          Q.sortBy('updated_at', Q.desc),
+        )
+        .fetch();
+
       if (accounts.length === 0) {
         throw 'There are no transactions to export';
       }
-      showLoader('excel');
       let wb = XLSX.utils.book_new();
 
       for (const account of accounts) {
-        const transactions = await account.transactions.fetch(); // ✅ linked transactions
+        let transactions = await getLinkedDbRecord(account, 'transactions');
         if (!transactions.length) continue;
+        transactions = await Promise.all(
+          transactions
+            .sort((a, b) => new Date(a.date) - new Date(b.date))
+            .map(async t => {
+              const category = await getLinkedDbRecord(t, 'category');
+              return {
+                id: t.id,
+                amount: t.amount,
+                date: t.date,
+                showTime: t.showTime,
+                time: t.time,
+                imageUrl: t.imageUrl,
+                notes: t.notes,
+                type: t.type,
+                category: category,
+              };
+            }),
+        );
 
         const {name} = account;
         const rows = getExcelSheetAccountRows(account, transactions); // custom formatter

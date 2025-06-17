@@ -44,6 +44,7 @@ export const SheetDetailsFilter = ({navigation, route}) => {
       value: new Date(),
       showPicker: false,
     },
+    type: 'all',
   });
   // end of custom filter
 
@@ -51,6 +52,8 @@ export const SheetDetailsFilter = ({navigation, route}) => {
     if (route.params && route.params.filter) {
       let fromDate = route.params.filter.fromDate;
       let toDate = route.params.filter.toDate;
+      let type = route.params.filter.type;
+
       if (fromDate) {
         setCustomFilter(p => ({
           ...p,
@@ -68,6 +71,12 @@ export const SheetDetailsFilter = ({navigation, route}) => {
             value: new Date(toDate),
           },
         }));
+        if (type) {
+          setCustomFilter(p => ({
+            ...p,
+            type: type,
+          }));
+        }
       }
     }
     navigation.setOptions({
@@ -84,6 +93,8 @@ export const SheetDetailsFilter = ({navigation, route}) => {
   const onCustomFilter = () => {
     let fromDate = customFilter.fromDate.value;
     let toDate = customFilter.toDate.value;
+    let type = customFilter.type;
+
     fromDate = moment(fromDate).startOf('day').format('YYYY-MM-DD HH:mm:ss');
     toDate = moment(toDate).endOf('day').format('YYYY-MM-DD HH:mm:ss');
 
@@ -93,6 +104,7 @@ export const SheetDetailsFilter = ({navigation, route}) => {
         status: true,
         fromDate: fromDate,
         toDate: toDate,
+        type: type,
       },
     });
   };
@@ -104,6 +116,7 @@ export const SheetDetailsFilter = ({navigation, route}) => {
         status: false,
         fromDate: null,
         toDate: null,
+        type: 'all',
       },
     });
   };
@@ -339,6 +352,55 @@ export const SheetDetailsFilter = ({navigation, route}) => {
                   }}
                 />
               )}
+            </FlexRow>
+
+            <Spacer size={'large'} />
+            <FlexRow justifyContent="space-between">
+              <Text>Transaction Type: </Text>
+              <View style={{flexDirection: 'row', gap: 10}}>
+                <TouchableOpacity
+                  onPress={() =>
+                    setCustomFilter(prev => ({...prev, type: 'all'}))
+                  }>
+                  <Text
+                    fontfamily="bodySemiBold"
+                    color={
+                      customFilter.type === 'all'
+                        ? theme.colors.brand.primary
+                        : theme.colors.text.secondary
+                    }>
+                    All
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    setCustomFilter(prev => ({...prev, type: 'income'}))
+                  }>
+                  <Text
+                    fontfamily="bodySemiBold"
+                    color={
+                      customFilter.type === 'income'
+                        ? theme.colors.brand.primary
+                        : theme.colors.text.secondary
+                    }>
+                    Income
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() =>
+                    setCustomFilter(prev => ({...prev, type: 'expense'}))
+                  }>
+                  <Text
+                    fontfamily="bodySemiBold"
+                    color={
+                      customFilter.type === 'expense'
+                        ? theme.colors.brand.primary
+                        : theme.colors.text.secondary
+                    }>
+                    Expense
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </FlexRow>
           </Card.Content>
           <Card.Actions style={{marginTop: 40}}>

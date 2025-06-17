@@ -40,6 +40,7 @@ export default class Account extends Model {
   @field('totalPaid') totalPaid;
   @field('totalRepayable') totalRepayable;
   @field('totalInterest') totalInterest;
+  @field('totalInterestPaid') totalInterestPaid;
   @field('totalPayments') totalPayments;
 
   @readonly @date('created_at') createdAt;

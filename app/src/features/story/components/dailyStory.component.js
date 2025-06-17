@@ -50,9 +50,7 @@ const formatCurrency = (amount, symbol = '₹') => {
 };
 // AsyncStorage.removeItem(STORAGE_KEY);
 export const DailyStoryCard = ({forceShowRecap, setForceShowRecap}) => {
-  const {executeQuery} = useContext(SQLiteContext);
   const {db, getChildRecords} = useContext(WatermelonDBContext);
-  const {getSheets} = useContext(SheetsContext);
   const {userData} = useContext(AuthenticationContext);
   const [storyList, setStoryList] = useState([]);
   const [loading, setLoading] = useState(true);

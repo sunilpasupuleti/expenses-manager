@@ -17,6 +17,9 @@ import {FlexRow} from '../../../../components/styles';
 
 export const SheetDetailsAmortizationList = ({
   amortizationData = [],
+  totalInterest,
+  totalPrincipal,
+  payOff,
   currency,
   currentSheet,
   icon = 'calendar-month',
@@ -232,6 +235,48 @@ export const SheetDetailsAmortizationList = ({
           <Text fontfamily="heading" fontsize="15px">
             Principal + Interest shown for each payment
           </Text>
+
+          <Spacer size="large" />
+
+          {/* Summary Block */}
+          <View
+            style={{
+              alignItems: 'center',
+              backgroundColor: theme.colors.bg.card,
+              borderRadius: 12,
+              padding: 12,
+              width: '100%',
+            }}>
+            <Text fontfamily="heading" fontsize="14px">
+              Payoff in <Text fontfamily="headingBold">{payOff}</Text>
+            </Text>
+            {currentSheet.useReducingBalance && (
+              <Spacer size="small">
+                <Text fontfamily="heading" fontsize="14px">
+                  Total Principal : &nbsp;
+                  <Text fontfamily="headingBold">
+                    {GetCurrencySymbol(currentSheet.currency)}
+                    {GetCurrencyLocalString(totalPrincipal)}
+                  </Text>
+                </Text>
+                <Spacer size="small" />
+                <Text fontfamily="heading" fontsize="14px">
+                  Total Interest : &nbsp;
+                  <Text fontfamily="headingBold">
+                    {GetCurrencySymbol(currentSheet.currency)}
+                    {GetCurrencyLocalString(totalInterest)}
+                  </Text>
+                </Text>
+                <Text fontfamily="heading" fontsize="14px">
+                  Total Payments : &nbsp;
+                  <Text fontfamily="headingBold">
+                    {GetCurrencySymbol(currentSheet.currency)}
+                    {GetCurrencyLocalString(totalInterest + totalPrincipal)}
+                  </Text>
+                </Text>
+              </Spacer>
+            )}
+          </View>
         </View>
       }
       contentContainerStyle={{paddingBottom: 100}}

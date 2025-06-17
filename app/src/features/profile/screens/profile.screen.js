@@ -50,7 +50,6 @@ const errors = {
 
 export const ProfileScreen = ({navigation, route}) => {
   const theme = useTheme();
-  const dispatch = useDispatch();
   const {userData} = useContext(AuthenticationContext);
   const {
     onUpdateProfile,

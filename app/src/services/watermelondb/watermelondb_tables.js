@@ -59,6 +59,7 @@ export const accountsTable = tableSchema({
     {name: 'emi', type: 'number', isOptional: true},
     {name: 'totalRepayable', type: 'number', isOptional: true},
     {name: 'totalInterest', type: 'number', isOptional: true},
+    {name: 'totalInterestPaid', type: 'number', isOptional: true},
     {name: 'totalPayments', type: 'number', isOptional: true},
 
     {name: 'created_at', type: 'number'},
@@ -95,7 +96,7 @@ export const categoriesTable = tableSchema({
     {name: 'name', type: 'string'},
     {name: 'color', type: 'string'},
     {name: 'type', type: 'string'},
-    {name: 'icon', type: 'string'},
+    {name: 'icon', type: 'string', isOptional: true},
     {name: 'isDefault', type: 'boolean'},
     {name: 'userId', type: 'string'},
     {name: 'isLoanRelated', type: 'boolean'},

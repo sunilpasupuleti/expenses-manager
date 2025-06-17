@@ -37,6 +37,7 @@ const SheetDetailsHome = ({navigation, route, sheet}) => {
     status: false,
     fromDate: null,
     toDate: null,
+    type: 'all',
   });
   const dispatch = useDispatch();
   let menuRef = useRef();
@@ -46,7 +47,6 @@ const SheetDetailsHome = ({navigation, route, sheet}) => {
     if (!routeIsFocused) {
       setSearchKeyword('');
     } else {
-      setNavigationOptions();
       let filterBy = null;
       if (route.params?.filter) {
         filterBy = route.params.filter;
@@ -173,27 +173,29 @@ const SheetDetailsHome = ({navigation, route, sheet}) => {
               </FlexRow>
             </MenuOption>
 
-            <MenuOption
-              customStyles={menuOptionStyles}
-              onSelect={() => {
-                menuRef.current.close();
-                navigation.navigate('SheetExport', {
-                  sheet: sheet,
-                });
-                // onClickExportData();
-              }}>
-              <FlexRow justifyContent="space-between">
-                <Text color="#2f2f2f" fontfamily="heading">
-                  Export Account
-                </Text>
-                <FontAwesome5
-                  style={{paddingBottom: 8}}
-                  name="file-export"
-                  size={18}
-                  color={theme.colors.brand.primary}
-                />
-              </FlexRow>
-            </MenuOption>
+            {!sheet.isLoanAccount && (
+              <MenuOption
+                customStyles={menuOptionStyles}
+                onSelect={() => {
+                  menuRef.current.close();
+                  navigation.navigate('SheetExport', {
+                    sheet: sheet,
+                  });
+                  // onClickExportData();
+                }}>
+                <FlexRow justifyContent="space-between">
+                  <Text color="#2f2f2f" fontfamily="heading">
+                    Export Account
+                  </Text>
+                  <FontAwesome5
+                    style={{paddingBottom: 8}}
+                    name="file-export"
+                    size={18}
+                    color={theme.colors.brand.primary}
+                  />
+                </FlexRow>
+              </MenuOption>
+            )}
           </MenuOptions>
           <Spacer size={'medium'} />
         </Menu>

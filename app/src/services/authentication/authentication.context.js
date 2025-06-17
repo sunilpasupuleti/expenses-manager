@@ -30,7 +30,6 @@ import database from '@react-native-firebase/database';
 import {
   cancelLocalNotification,
   getCurrentDate,
-  getDataFromRows,
 } from '../../components/utility/helper';
 import defaultCategories from '../../components/utility/defaultCategories.json';
 import {SocketContext} from '../socket/socket.context';
@@ -127,6 +126,7 @@ export const AuthenticationContextProvider = ({children}) => {
           } else if (user && !authStateTriggered) {
             // auth flag is used to prevent calling auth change state multiple times
             authStateTriggered = true;
+
             await onSignInSuccess();
           }
         } catch (err) {
@@ -212,9 +212,9 @@ export const AuthenticationContextProvider = ({children}) => {
   };
 
   const checkNotificationPermission = async () => {
-    // const granted = await PermissionsAndroid.request(
-    //   PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
-    // );
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+    );
   };
 
   const checkSmsReadPermission = async () => {
@@ -291,7 +291,7 @@ export const AuthenticationContextProvider = ({children}) => {
         let dateAfter3Days = moment(firstInstallDate).add(3, 'days');
         let isAfter3Days = moment().isAfter(dateAfter3Days);
         if (isAfter3Days) {
-          // requestAppReview();
+          requestAppReview();
         }
       })
       .catch(err => {
@@ -732,9 +732,13 @@ export const AuthenticationContextProvider = ({children}) => {
     };
     OneSignal.logout();
     OneSignal.User.removeTags(['uid', 'email', 'dailyUpdateUid']);
+
     if (auth().currentUser) {
       let uid = await auth().currentUser.uid;
+      console.log('called logout', uid);
+
       let jwtToken = await auth().currentUser.getIdToken();
+      console.log('called logout', uid, jwtToken);
 
       auth()
         .signOut()

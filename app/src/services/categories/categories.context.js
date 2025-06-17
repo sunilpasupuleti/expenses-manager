@@ -16,7 +16,6 @@ export const CategoriesContext = createContext({
   onEditCategory: (categoryModel, editedCategroy, callback = () => null) =>
     null,
   onDeleteCategory: (category, callback) => null,
-  onSearchCategories: callback => null,
 });
 
 export const CategoriesContextProvider = ({children}) => {
@@ -55,9 +54,8 @@ export const CategoriesContextProvider = ({children}) => {
   const getCategories = async (categoryType, isLoanRelated = false) => {
     try {
       const filters = [Q.where('type', categoryType)];
-      if (isLoanRelated) {
-        filters.push(Q.where('isLoanRelated', true));
-      }
+      filters.push(Q.where('isLoanRelated', !!isLoanRelated));
+
       const data = await getChildRecords(
         'users',
         'id',
@@ -193,27 +191,6 @@ export const CategoriesContextProvider = ({children}) => {
     }
   };
 
-  const onSearchCategories = async (keyword, categoryType) => {
-    return;
-    try {
-      let userId = userData.id;
-      const filters = [
-        Q.where('type', categoryType),
-        Q.where('name', Q.like(`%${keyword.toLowerCase()}%`)),
-      ];
-
-      const data = await getChildRecords('users', 'id', userId, 'categories', {
-        filters,
-        sortBy: {column: 'name', order: 'asc'},
-        mapRaw: true,
-      });
-
-      return data;
-    } catch (err) {
-      showNotification('error', err.message || err.toString());
-    }
-  };
-
   return (
     <CategoriesContext.Provider
       value={{
@@ -221,7 +198,6 @@ export const CategoriesContextProvider = ({children}) => {
         onEditCategory,
         onDeleteCategory,
         getCategories,
-        onSearchCategories,
       }}>
       {children}
     </CategoriesContext.Provider>

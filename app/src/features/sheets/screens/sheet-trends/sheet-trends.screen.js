@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useTheme} from 'styled-components/native';
 import _ from 'lodash';
 import {Dimensions, ScrollView, TouchableOpacity} from 'react-native';
@@ -8,7 +8,7 @@ import {Dimensions, ScrollView, TouchableOpacity} from 'react-native';
 import {View} from 'react-native';
 import moment from 'moment';
 import {LineChart} from 'react-native-chart-kit';
-import Svg, {Line, Rect, Text as TextSVG} from 'react-native-svg';
+import Svg, {Line, Text as TextSVG} from 'react-native-svg';
 import {Text} from '../../../../components/typography/text.component';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
 import {Spacer} from '../../../../components/spacer/spacer.component';
@@ -21,10 +21,9 @@ import {
   StatsTitle,
   ToolTip,
 } from '../../components/sheet-stats/sheet-stats.styles';
-import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {useIsFocused} from '@react-navigation/native';
-import {SheetDetailsContext} from '../../../../services/sheetDetails/sheetDetails.context';
 import {TabsSwitcher} from '../../../../components/tabs-switcher/tabs-switcher.component';
+import {ObservedSheetTrends} from './sheet-trends.observerd';
 
 const getLast12MonthsDates = () => {
   const dates = [];
@@ -49,12 +48,67 @@ const last14DaysDates = getLast14DaysDates();
 
 // const last14DaysDates = getDatesInRange(last14DaysStart, last14DaysEnd);
 
-export const SheetTrendsScreen = ({navigation, route}) => {
+export const SheetTrendsScreen = ({navigation, route, sheet}) => {
+  const [sheetModel, setSheetModel] = useState(null);
+  const [activeType, setActiveType] = useState('expense');
+  const routeIsFocused = useIsFocused();
   const theme = useTheme();
-  const {currentSheet} = useContext(SheetsContext);
-  const {onCheckUpcomingSheetDetails, getSheetDetailsTrends} =
-    useContext(SheetDetailsContext);
-  const {reRender} = route.params || {};
+  useEffect(() => {
+    if (sheet) {
+      setSheetModel(sheet);
+    }
+  }, [sheet]);
+
+  const onSetNavigationOptions = () => {
+    navigation.setOptions({
+      headerTitle:
+        sheet?.name?.length > 25
+          ? sheet.name.substring(0, 25) + '...'
+          : sheet.name,
+      headerLeft: () => (
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <FlexRow>
+            <Ionicons
+              name="chevron-back-outline"
+              size={25}
+              color={theme.colors.brand.primary}></Ionicons>
+            <Text color={theme.colors.brand.primary}>Back</Text>
+          </FlexRow>
+        </TouchableOpacity>
+      ),
+      headerRight: () => null,
+    });
+  };
+
+  useEffect(() => {
+    if (routeIsFocused) {
+      onSetNavigationOptions();
+    }
+  }, [routeIsFocused]);
+
+  if (!sheetModel) return;
+  return (
+    <ObservedSheetTrends
+      navigation={navigation}
+      route={route}
+      activeType={activeType}
+      setActiveType={setActiveType}
+      accountId={sheetModel.id}
+      sheet={sheetModel}
+    />
+  );
+};
+
+export const BaseSheetTrendsScreen = ({
+  navigation,
+  route,
+  activeType,
+  setActiveType,
+  sheet,
+  last14DaysTransactions,
+  last12MonthsTransactions,
+}) => {
+  const theme = useTheme();
 
   const chartConfig = {
     backgroundGradientFromOpacity: 0,
@@ -70,15 +124,7 @@ export const SheetTrendsScreen = ({navigation, route}) => {
       strokeWidth: '1',
     },
   };
-  const routeIsFocused = useIsFocused();
-  const [sheetDetails, setSheetDetails] = useState({
-    last14DaysTotalCount: 0,
-    last12MonthsTotalCount: 0,
-    last12MonthsTransactions: [],
-    last14DaysTransactions: [],
-  });
-  const [groupedDetails, setGroupedDetails] = useState(null);
-  const [activeType, setActiveType] = useState('expense');
+
   const [chartData, setChartData] = useState({
     last14days: null,
     last12months: null,
@@ -98,28 +144,6 @@ export const SheetTrendsScreen = ({navigation, route}) => {
     },
   });
 
-  let menuRef = useRef();
-
-  const menuOptionStyles = {
-    optionWrapper: {padding: 15, paddingTop: 10},
-    OptionTouchableComponent: TouchableOpacity,
-  };
-
-  useEffect(() => {
-    if (routeIsFocused) {
-      onSetNavigationOptions();
-      onGetSheetDetailsTrends(currentSheet, activeType);
-      checkUpcomingDetails();
-    }
-  }, [routeIsFocused]);
-
-  useEffect(() => {
-    if (reRender) {
-      onGetSheetDetailsTrends(currentSheet, activeType);
-      navigation.setParams({reRender: false});
-    }
-  }, [reRender]);
-
   useEffect(() => {
     setTooltipPos(prevstate => ({
       last14days: {
@@ -134,55 +158,14 @@ export const SheetTrendsScreen = ({navigation, route}) => {
   }, [activeType]);
 
   useEffect(() => {
-    if (groupedDetails) {
+    if (activeType && last12MonthsTransactions && last14DaysTransactions) {
       onSetChartData();
     }
-  }, [groupedDetails]);
+  }, [activeType, last12MonthsTransactions, last14DaysTransactions]);
 
-  const checkUpcomingDetails = () => {
-    onCheckUpcomingSheetDetails(currentSheet, transactionExists => {
-      if (transactionExists) {
-        onGetSheetDetailsTrends(currentSheet, activeType);
-      }
-    });
-  };
-
-  const onSetNavigationOptions = () => {
-    navigation.setOptions({
-      headerTitle:
-        currentSheet?.name?.length > 25
-          ? currentSheet.name.substring(0, 25) + '...'
-          : currentSheet.name,
-      headerLeft: () => (
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FlexRow>
-            <Ionicons
-              name="chevron-back-outline"
-              size={25}
-              color={theme.colors.brand.primary}></Ionicons>
-            <Text color={theme.colors.brand.primary}>Back</Text>
-          </FlexRow>
-        </TouchableOpacity>
-      ),
-      headerRight: () => null,
-    });
-  };
-
-  const onGetSheetDetailsTrends = async (sheet, type) => {
-    const data = await getSheetDetailsTrends(sheet, type);
-    // console.log(data);
-    if (data) {
-      setSheetDetails(data);
-      onSetChartData(data);
-      // onSetChartData(data.transactions);
-    }
-  };
-
-  const onSetChartData = result => {
+  const onSetChartData = () => {
     const onFormatMonth = date => moment(date).format('YYYY-MM');
-    const onFormatDate = date => moment(date).format('DD');
-
-    let {last14DaysTransactions, last12MonthsTransactions} = result;
+    const onFormatDate = date => moment(date).format('YYYY-MM-DD');
 
     let data = {
       last14days: {
@@ -197,75 +180,62 @@ export const SheetTrendsScreen = ({navigation, route}) => {
       },
     };
 
-    last12MonthsDates.forEach(dt => {
-      let dataFound = last12MonthsTransactions.find(
-        t => onFormatMonth(t.date) === onFormatMonth(dt),
-      );
-      let label, amount;
-      if (dataFound) {
-        let {date, totalAmount} = dataFound;
-        label = onFormatMonth(date);
-        amount = totalAmount;
-      } else {
-        label = onFormatMonth(dt);
-        amount = 0;
-      }
-      data.last12months.labels.push(label);
-      data.last12months.datasets.push(amount);
-      data.last12months.keys.push(dt);
-    });
+    const grouped14Days = _.groupBy(last14DaysTransactions, t =>
+      onFormatDate(t.date),
+    );
+
+    const grouped12Months = _.groupBy(last12MonthsTransactions, t =>
+      onFormatMonth(t.date),
+    );
 
     last14DaysDates.forEach(dt => {
-      let dataFound = last14DaysTransactions.find(
-        t => onFormatDate(t.date) === onFormatDate(dt),
-      );
-      let label, amount;
-      if (dataFound) {
-        let {date, totalAmount} = dataFound;
-        label = onFormatDate(date);
-        amount = totalAmount;
-      } else {
-        label = onFormatDate(dt);
-        amount = 0;
-      }
-      data.last14days.labels.push(label);
-      data.last14days.datasets.push(amount);
+      const key = onFormatDate(dt);
+      const entries = grouped14Days[key] || [];
+      const totalAmount = _.sumBy(entries, 'amount');
+      data.last14days.labels.push(moment(dt).format('DD'));
+      data.last14days.datasets.push(totalAmount);
       data.last14days.keys.push(dt);
     });
 
-    let sortedlabels = [...data.last12months.labels].sort();
-    let datasets = [];
-    sortedlabels.forEach((l, index) => {
-      let notSortedIndex = data.last12months.labels.findIndex(k => k === l);
-      datasets[index] = data.last12months.datasets[notSortedIndex];
-    });
-    data.last12months.datasets = datasets;
-    data.last12months.labels = sortedlabels;
-    let last12monthsVal = moment(data.last12months.keys[0]).format(
-      'MMM, YYYY - ',
-    );
-    last12monthsVal +=
-      GetCurrencySymbol(currentSheet.currency) +
-      ' ' +
-      GetCurrencyLocalString(data.last12months.datasets[0]);
+    last12MonthsDates.forEach(dt => {
+      const key = onFormatMonth(dt);
+      const entries = grouped12Months[key] || [];
+      const totalAmount = _.sumBy(entries, 'amount');
 
-    let last12months = {
-      x: 20,
+      data.last12months.labels.push(moment(dt).format('MMM'));
+      data.last12months.datasets.push(totalAmount);
+      data.last12months.keys.push(dt);
+    });
+    // ✅ Focus tooltips on highest data point
+    const max14 = Math.max(...data.last14days.datasets);
+    const max14Index = data.last14days.datasets.findIndex(v => v === max14);
+    const max14Key = data.last14days.keys[max14Index];
+    const max14Value =
+      moment(max14Key).format('ddd, DD MMM, YYYY - ') +
+      GetCurrencySymbol(sheet.currency) +
+      ' ' +
+      GetCurrencyLocalString(max14);
+
+    const max12 = Math.max(...data.last12months.datasets);
+    const max12Index = data.last12months.datasets.findIndex(v => v === max12);
+    const max12Key = data.last12months.keys[max12Index];
+    const max12Value =
+      moment(max12Key).format('MMM, YYYY - ') +
+      GetCurrencySymbol(sheet.currency) +
+      ' ' +
+      GetCurrencyLocalString(max12);
+
+    const last12months = {
+      x: max12Index,
       y: 166,
-      value: last12monthsVal,
+      value: max12Value,
       visible: true,
     };
-    let last14daysVal = moment(data.last14days.keys[0]).format(
-      'ddd, DD MMM, YYYY - ',
-    );
-    last14daysVal +=
-      GetCurrencySymbol(currentSheet.currency) +
-      ' ' +
-      GetCurrencyLocalString(data.last14days.datasets[0]);
-    let last14days = {
-      x: 20,
+
+    const last14days = {
+      x: max14Index,
       y: 166,
-      value: last14daysVal,
+      value: max14Value,
       visible: true,
     };
 
@@ -278,9 +248,9 @@ export const SheetTrendsScreen = ({navigation, route}) => {
 
   const onSetActiveType = type => {
     setActiveType(type);
-    onGetSheetDetailsTrends(currentSheet, type);
   };
 
+  if (!last14DaysTransactions || !last12MonthsTransactions) return;
   return (
     <SafeArea child={true}>
       {chartData &&
@@ -291,7 +261,7 @@ export const SheetTrendsScreen = ({navigation, route}) => {
         chartData.last14days.datasets.length > 0 &&
         chartData.last12months.datasets.length > 0 && (
           <ScrollView showsVerticalScrollIndicator={false}>
-            {!currentSheet.isLoanAccount && (
+            {!sheet.isLoanAccount && (
               <>
                 <Spacer size={'large'} />
                 <View style={{marginLeft: 10, marginRight: 10}}>
@@ -327,81 +297,77 @@ export const SheetTrendsScreen = ({navigation, route}) => {
 
               <MainWrapper>
                 {chartData.last14days && (
-                  <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}>
-                    <LineChart
-                      withHorizontalLabels={false}
-                      withInnerLines={false}
-                      withOuterLines={false}
-                      style={{
-                        backgroundColor: theme.colors.bg.secondary,
-                        borderRadius: 15,
-                        paddingRight: 20,
-                      }}
-                      data={{
-                        labels: chartData.last14days.labels,
-                        datasets: [
-                          {
-                            data: chartData.last14days.datasets,
-                            color: (opacity = 1) => `rgba(87,86,213,0.7)`, // optional
-                            strokeWidth: 2, // optional
-                          },
-                        ],
-                      }}
-                      width={Dimensions.get('window').width}
-                      height={200}
-                      chartConfig={chartConfig}
-                      onDataPointClick={data => {
-                        let key = chartData.last14days.keys[data.index];
+                  <LineChart
+                    withHorizontalLabels={false}
+                    withInnerLines={false}
+                    withOuterLines={false}
+                    style={{
+                      backgroundColor: theme.colors.bg.secondary,
+                      borderRadius: 15,
+                      paddingRight: 20,
+                    }}
+                    data={{
+                      labels: chartData.last14days.labels,
+                      datasets: [
+                        {
+                          data: chartData.last14days.datasets,
+                          color: (opacity = 1) => `rgba(87,86,213,0.7)`, // optional
+                          strokeWidth: 2, // optional
+                        },
+                      ],
+                    }}
+                    width={Dimensions.get('window').width - 32}
+                    height={200}
+                    chartConfig={chartConfig}
+                    onDataPointClick={data => {
+                      let key = chartData.last14days.keys[data.index];
 
-                        let value = moment(key).format('ddd, DD MMM, YYYY - ');
-                        value +=
-                          GetCurrencySymbol(currentSheet.currency) +
-                          ' ' +
-                          GetCurrencyLocalString(data.value);
-                        let isSamePoint =
-                          tooltipPos.last14days.x === data.x &&
-                          tooltipPos.last14days.y === data.y;
+                      let value = moment(key).format('ddd, DD MMM, YYYY - ');
+                      value +=
+                        GetCurrencySymbol(sheet.currency) +
+                        ' ' +
+                        GetCurrencyLocalString(data.value);
+                      let isSamePoint =
+                        tooltipPos.last14days.x === data.x &&
+                        tooltipPos.last14days.y === data.y;
 
-                        isSamePoint
-                          ? setTooltipPos(previousState => {
-                              return {
-                                ...previousState,
-                                last14days: {
-                                  ...previousState.last14days,
-                                  visible: !previousState.last14days.visible,
-                                },
-                              };
-                            })
-                          : setTooltipPos(prevState => ({
-                              ...prevState,
+                      isSamePoint
+                        ? setTooltipPos(previousState => {
+                            return {
+                              ...previousState,
                               last14days: {
-                                x: data.x,
-                                y: data.y,
-                                value: value,
-                                visible: true,
+                                ...previousState.last14days,
+                                visible: !previousState.last14days.visible,
                               },
-                            }));
-                      }}
-                      decorator={() => {
-                        return tooltipPos.last14days.visible ? (
-                          <View>
-                            <Svg>
-                              <Line
-                                x1={tooltipPos.last14days.x}
-                                y1="0"
-                                x2={tooltipPos.last14days.x}
-                                y2="170"
-                                stroke={theme.colors.brand.primaryHex}
-                                strokeWidth="2"
-                              />
-                            </Svg>
-                          </View>
-                        ) : null;
-                      }}
-                    />
-                  </ScrollView>
+                            };
+                          })
+                        : setTooltipPos(prevState => ({
+                            ...prevState,
+                            last14days: {
+                              x: data.x,
+                              y: data.y,
+                              value: value,
+                              visible: true,
+                            },
+                          }));
+                    }}
+                    decorator={() => {
+                      return tooltipPos.last14days.visible ? (
+                        <View>
+                          <Svg>
+                            <Line
+                              x1={tooltipPos.last14days.x}
+                              y1="0"
+                              x2={tooltipPos.last14days.x}
+                              y2="170"
+                              stroke={theme.colors.brand.primaryHex}
+                              strokeWidth="2"
+                            />
+                          </Svg>
+                        </View>
+                      ) : null;
+                    }}
+                  />
                 )}
               </MainWrapper>
             </View>
@@ -425,83 +391,79 @@ export const SheetTrendsScreen = ({navigation, route}) => {
 
               <MainWrapper>
                 {chartData.last12months && (
-                  <ScrollView
-                    horizontal={true}
-                    showsHorizontalScrollIndicator={false}>
-                    <LineChart
-                      withHorizontalLabels={false}
-                      withInnerLines={false}
-                      withOuterLines={false}
-                      style={{
-                        backgroundColor: theme.colors.bg.secondary,
-                        borderRadius: 15,
-                        paddingRight: 20,
-                      }}
-                      data={{
-                        labels: chartData.last12months.labels,
-                        datasets: [
-                          {
-                            data: chartData.last12months.datasets,
-                            color: (opacity = 1) => `rgba(87,86,213,0.7)`, // optional
-                            strokeWidth: 2, // optional
-                          },
-                        ],
-                      }}
-                      formatXLabel={xValue => moment(xValue).format('MMM')}
-                      width={Dimensions.get('window').width}
-                      height={200}
-                      chartConfig={chartConfig}
-                      onDataPointClick={data => {
-                        let key = chartData.last12months.labels[data.index];
-                        key = moment(key).format('MMM, YYYY - ');
-                        let value = key;
-                        value +=
-                          GetCurrencySymbol(currentSheet.currency) +
-                          '  ' +
-                          GetCurrencyLocalString(data.value);
+                  <LineChart
+                    withHorizontalLabels={false}
+                    withInnerLines={false}
+                    withOuterLines={false}
+                    style={{
+                      backgroundColor: theme.colors.bg.secondary,
+                      borderRadius: 15,
+                      paddingRight: 20,
+                    }}
+                    data={{
+                      labels: chartData.last12months.labels,
+                      datasets: [
+                        {
+                          data: chartData.last12months.datasets,
+                          color: (opacity = 1) => `rgba(87,86,213,0.7)`, // optional
+                          strokeWidth: 2, // optional
+                        },
+                      ],
+                    }}
+                    // formatXLabel={xValue => moment(xValue).format('MMM')}
+                    width={Dimensions.get('window').width - 32}
+                    height={200}
+                    chartConfig={chartConfig}
+                    onDataPointClick={data => {
+                      let key = chartData.last12months.keys[data.index];
+                      key = moment(key).format('MMM, YYYY - ');
+                      let value = key;
+                      value +=
+                        GetCurrencySymbol(sheet.currency) +
+                        '  ' +
+                        GetCurrencyLocalString(data.value);
 
-                        let isSamePoint =
-                          tooltipPos.last12months.x === data.x &&
-                          tooltipPos.last12months.y === data.y;
+                      let isSamePoint =
+                        tooltipPos.last12months.x === data.x &&
+                        tooltipPos.last12months.y === data.y;
 
-                        isSamePoint
-                          ? setTooltipPos(previousState => {
-                              return {
-                                ...previousState,
-                                last12months: {
-                                  ...previousState.last12months,
-                                  visible: !previousState.last12months.visible,
-                                },
-                              };
-                            })
-                          : setTooltipPos(prevState => ({
-                              ...prevState,
+                      isSamePoint
+                        ? setTooltipPos(previousState => {
+                            return {
+                              ...previousState,
                               last12months: {
-                                x: data.x,
-                                y: data.y,
-                                value: value,
-                                visible: true,
+                                ...previousState.last12months,
+                                visible: !previousState.last12months.visible,
                               },
-                            }));
-                      }}
-                      decorator={() => {
-                        return tooltipPos.last12months.visible ? (
-                          <View>
-                            <Svg>
-                              <Line
-                                x1={tooltipPos.last12months.x}
-                                y1="0"
-                                x2={tooltipPos.last12months.x}
-                                y2="170"
-                                stroke={theme.colors.brand.primaryHex}
-                                strokeWidth="2"
-                              />
-                            </Svg>
-                          </View>
-                        ) : null;
-                      }}
-                    />
-                  </ScrollView>
+                            };
+                          })
+                        : setTooltipPos(prevState => ({
+                            ...prevState,
+                            last12months: {
+                              x: data.x,
+                              y: data.y,
+                              value: value,
+                              visible: true,
+                            },
+                          }));
+                    }}
+                    decorator={() => {
+                      return tooltipPos.last12months.visible ? (
+                        <View>
+                          <Svg>
+                            <Line
+                              x1={tooltipPos.last12months.x}
+                              y1="0"
+                              x2={tooltipPos.last12months.x}
+                              y2="170"
+                              stroke={theme.colors.brand.primaryHex}
+                              strokeWidth="2"
+                            />
+                          </Svg>
+                        </View>
+                      ) : null;
+                    }}
+                  />
                 )}
               </MainWrapper>
             </View>

@@ -152,16 +152,15 @@ export const SheetsScreen = ({
   ];
 
   const theme = useTheme();
-  const {onGetAndSetCurrentSheet} = useContext(SheetsContext);
   const {userAdditionalDetails, userData} = useContext(AuthenticationContext);
   const [showSearch, setShowSearch] = useState(false);
   const [forceShowRecap, setForceShowRecap] = useState(false);
   const [carouselCards, setCarouselCards] = useState(carouselCardsData);
 
-  const onClickSheet = async sheetId => {
-    await onGetAndSetCurrentSheet(sheetId);
+  const onClickSheet = async sheet => {
     navigation.navigate('SheetDetailsHome', {
       screen: 'Dashboard',
+      sheet: sheet,
     });
   };
 
@@ -194,7 +193,7 @@ export const SheetsScreen = ({
           gradient: ['#f77062', '#fe5196', '#ff758c'],
           image: require('../../../../assets/emi-due.png'),
           onPress: () => {
-            onClickSheet(due.sheetId);
+            onClickSheet(due.sheet);
           },
         });
       });
@@ -266,9 +265,7 @@ export const SheetsScreen = ({
           </IconsContainer>
         </TopContainer>
         {showSearch && (
-          <Animated.View
-            entering={FadeInDown.duration(300).springify()}
-            exiting={FadeOutUp.duration(200)}>
+          <Animated.View entering={FadeInDown.duration(300).springify()}>
             <Spacer size="medium">
               <Input
                 value={searchKeyword}

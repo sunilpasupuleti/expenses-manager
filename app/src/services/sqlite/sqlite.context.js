@@ -29,19 +29,10 @@ export const SQLiteContext = createContext({
   db: null,
   dbError: null,
   initializeDB: () => {},
-  onBackUpDatabase: () => {},
-  onRestoreDatabase: () => {},
-  deleteAllTablesData: (
-    includeUserTable = false,
-    includeCategoriesTable = true,
-  ) => {},
-  createOrReplaceData: (schema, data, key) => {},
+
   getData: query => {},
   executeQuery: query => {},
-  updateData: (schema, data, condition, conditionValues) => {},
-  closeDatabase: () => {},
   restoreDbFromBackup: backupFilePath => {},
-  deleteData: (schema, condition, conditionValues) => {},
 });
 
 export const SQLiteContextProvider = ({children}) => {
@@ -90,7 +81,6 @@ export const SQLiteContextProvider = ({children}) => {
         await migrateDb(database);
 
         // create tables
-        await createTriggers(database);
         setDb(database);
         resolve(database);
       } catch (error) {
@@ -112,119 +102,6 @@ export const SQLiteContextProvider = ({children}) => {
       for (const schema of tableSchemas) {
         await database.transaction(async tx => {
           let result = await tx.executeSql(schema);
-        });
-      }
-    } catch (err) {
-      setDbError(err);
-    }
-  };
-
-  const onBackUpDatabase = async () => {
-    return new Promise(async (resolve, reject) => {
-      await closeDatabase();
-      try {
-        const sourceDir =
-          Platform.OS === 'ios'
-            ? RNFS.DocumentDirectoryPath
-            : `${RNFS.DocumentDirectoryPath.replace('files', 'databases')}`;
-
-        const srcFile = `${sourceDir}/${DB_PATH}`;
-        const exists = await RNFS.exists(srcFile);
-
-        if (exists) {
-          const backupDir =
-            Platform.OS === 'ios'
-              ? RNFS.DocumentDirectoryPath
-              : RNFS.DocumentDirectoryPath;
-          const backupFile = `${backupDir}/${DB_BACKUP_PATH}`; // Change this to your desired backup file name
-          if (await RNFS.exists(backupFile)) {
-            await RNFS.unlink(backupFile);
-          }
-          await RNFS.copyFile(srcFile, backupFile);
-          await initializeDB(true);
-          resolve(backupFile);
-        } else {
-          throw ' No File to make backup';
-        }
-      } catch (e) {
-        await initializeDB(true);
-        reject(e);
-      }
-    });
-  };
-
-  const onRestoreDatabase = async () => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        await closeDatabase();
-        const sourceDir =
-          Platform.OS === 'ios'
-            ? RNFS.DocumentDirectoryPath
-            : RNFS.DocumentDirectoryPath;
-        const backupFile = `${sourceDir}/${DB_BACKUP_PATH}`;
-        const backupExists = await RNFS.exists(backupFile);
-
-        if (backupExists) {
-          const originalDir =
-            Platform.OS === 'ios'
-              ? RNFS.DocumentDirectoryPath
-              : RNFS.DocumentDirectoryPath;
-
-          const originalFile = `${originalDir}/${DB_PATH}`; // Adjust this to your database file name
-          if (await RNFS.exists(originalFile)) {
-            await RNFS.unlink(originalFile);
-          }
-          await RNFS.copyFile(backupFile, originalFile);
-          await initializeDB(true);
-          resolve(true);
-        } else {
-          throw 'No Backup Exists';
-        }
-      } catch (e) {
-        reject(e);
-      }
-    });
-  };
-
-  const deleteAllTablesData = async (
-    includeUserTable = false,
-    includeCategoriesTable = true,
-  ) => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        if (includeUserTable) {
-          await db.executeSql('DELETE FROM Users;');
-        }
-        if (includeCategoriesTable) {
-          await db.executeSql('DELETE FROM Categories;');
-        }
-        await db.executeSql('DELETE FROM Accounts;');
-        await db.executeSql('DELETE FROM Transactions;');
-        await db.executeSql('DELETE FROM Migrations;');
-        resolve(true);
-      } catch (e) {
-        reject(e);
-        setDbError(e);
-      }
-    });
-  };
-
-  const createTriggers = async database => {
-    try {
-      for (const name of triggerNames) {
-        await database.executeSql(`DROP TRIGGER IF EXISTS ${name}`);
-      }
-
-      // Execute table creation statements sequentially using a loop
-      const tableTriggers = [
-        AccountsInsertTrigger,
-        AccountsUpdateTrigger,
-        AccountsDeleteTrigger,
-        LoanAccountEditTrigger,
-      ];
-      for (const trigger of tableTriggers) {
-        await database.transaction(async tx => {
-          let result = await tx.executeSql(trigger);
         });
       }
     } catch (err) {
@@ -321,39 +198,11 @@ export const SQLiteContextProvider = ({children}) => {
     }
   };
 
-  const createOrReplaceData = async (schema, data, key) => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        let keys = Object.keys(data);
-        const placeholders = Array(keys.length).fill('?').join(',');
-        let query;
-        let queryValues;
-        if (key) {
-          const updateSet = keys.map(key => `${key}=?`).join(',');
-          query = `INSERT INTO ${schema} (${keys.join(
-            ',',
-          )}) VALUES (${placeholders}) ON CONFLICT(${key}) DO UPDATE SET ${updateSet}`;
-          queryValues = [...Object.values(data), ...Object.values(data)];
-        } else {
-          query = `INSERT INTO ${schema} (${keys.join(
-            ',',
-          )}) VALUES (${placeholders})`;
-          queryValues = [...Object.values(data)];
-        }
-
-        let results = await db.executeSql(query, queryValues);
-        resolve(results[0]);
-      } catch (e) {
-        setDbError(e);
-        reject(e);
-      }
-    });
-  };
-
   const getData = async query => {
     return new Promise(async (resolve, reject) => {
       try {
         let results = await db.executeSql(query, []);
+
         resolve(results[0]);
       } catch (e) {
         setDbError(e);
@@ -378,44 +227,6 @@ export const SQLiteContextProvider = ({children}) => {
         reject(e);
       }
     });
-  };
-
-  const updateData = async (schema, data, condition, conditionValues) => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        let keys = Object.keys(data);
-        const updateSet = keys.map(key => `${key}=?`).join(',');
-        let query = `UPDATE ${schema} SET ${updateSet} ${condition}`;
-        let results = await db.executeSql(query, [
-          ...Object.values(data),
-          ...conditionValues,
-        ]);
-        resolve(results[0]);
-      } catch (e) {
-        setDbError(e);
-        reject(e);
-      }
-    });
-  };
-
-  const deleteData = async (schema, condition, conditionValues) => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        let query = `DELETE FROM ${schema} ${condition}`;
-        let results = await db.executeSql(query, [...conditionValues]);
-        resolve(results[0]);
-      } catch (e) {
-        setDbError(e);
-        reject(e);
-      }
-    });
-  };
-
-  const closeDatabase = async () => {
-    if (db) {
-      await db.close();
-      setDb(null);
-    }
   };
 
   const enableForeignKeyCheck = async database => {
@@ -503,15 +314,8 @@ export const SQLiteContextProvider = ({children}) => {
         db,
         dbError,
         initializeDB,
-        createOrReplaceData,
-        updateData,
         getData,
-        closeDatabase,
         executeQuery,
-        deleteData,
-        deleteAllTablesData,
-        onRestoreDatabase,
-        onBackUpDatabase,
         restoreDbFromBackup,
       }}>
       {children}

@@ -53,6 +53,8 @@ const useHttp = () => {
             // }
           })
           .catch(async err => {
+            console.log(JSON.stringify(err.response.data));
+
             let message;
             if (
               err.response &&

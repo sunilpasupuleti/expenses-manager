@@ -31,6 +31,7 @@
   // added
 
   [FIRApp configure];
+  [application registerForRemoteNotifications];
 
     // added new line for react native splash screen to automatically show
   //  [RNSplashScreen show];
@@ -52,6 +53,10 @@
 #endif
 }
 
+- (void)application:(UIApplication *)application
+ didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
+ [FIRMessaging messaging].APNSToken = deviceToken;
+}
 
 // Added this inside `@implementation AppDelegate` above `@end`:
 - (BOOL)application:(UIApplication *)application

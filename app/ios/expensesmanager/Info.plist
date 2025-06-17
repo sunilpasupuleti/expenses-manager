@@ -2,8 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-  <key>AppGroupName</key>
-  <string>group.com.webwizard.expensesmanager</string>
+	<key>AppGroupName</key>
+	<string>group.com.webwizard.expensesmanager</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
@@ -67,7 +67,6 @@
 		<false/>
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
-		<!-- for localhost -->
 		<key>NSExceptionDomains</key>
 		<dict>
 			<key>localhost</key>
@@ -77,16 +76,14 @@
 			</dict>
 		</dict>
 	</dict>
-	<key>NSCameraUsageDescription</key>
-	<string>Allow $(PRODUCT_NAME) to use Camera</string>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Enabling Face ID allows you quick and secure access to your account.</string>
-	<!-- not rqeuired but due to security purpose required -->
 	<key>NSAppleMusicUsageDescription</key>
 	<string>Allow $(PRODUCT_NAME) to access your Music</string>
+	<key>NSCameraUsageDescription</key>
+	<string>Allow $(PRODUCT_NAME) to use Camera</string>
 	<key>NSContactsUsageDescription</key>
 	<string>Allow $(PRODUCT_NAME) to access your Contacts</string>
-	<!--  -->
+	<key>NSFaceIDUsageDescription</key>
+	<string>Enabling Face ID allows you quick and secure access to your account.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Allow $(PRODUCT_NAME) to access your location</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>

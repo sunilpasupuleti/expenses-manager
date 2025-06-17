@@ -26,29 +26,27 @@ import {smsTransactionsActions} from '../../store/smsTransactions-slice';
 import {getTransactionInfo} from 'transaction-sms-parser';
 import SmsAndroid from 'react-native-get-sms-android';
 import {
-  cancelLocalNotification,
   excelSheetAccountColWidth,
   firebaseRemoveFolder,
-  getDataFromRows,
   getExcelSheetAccountRows,
   getExcelSheetAccountSummary,
   getPdfAccountTableHtml,
   getEmiDates,
   sendLocalNotification,
+  getLinkedDbRecord,
+  calculateInterestFromAmortizationSchedule,
 } from '../../components/utility/helper';
-import {SQLiteContext} from '../sqlite/sqlite.context';
-import {transformSheetExcelExportData} from '../../components/utility/dataProcessHelper';
+
 import {CategoriesContext} from '../categories/categories.context';
 import PushNotification from 'react-native-push-notification';
 import {GetCurrencySymbol} from '../../components/symbol.currency';
 import {WatermelonDBContext} from '../watermelondb/watermelondb.context';
-import {Model, Q} from '@nozbe/watermelondb';
+import {Q} from '@nozbe/watermelondb';
 
 export const SheetsContext = createContext({
-  getSheets: searchKeyword => {},
-  onGetAndSetCurrentSheet: sheetId => {},
   getAllSheets: (searchKeyword, excludedId) => {},
   onSaveSheet: (sheet, callback = () => null) => null,
+  onUpdateSheet: sheet => null,
   onEditSheet: (sheetModel, sheet, callback = () => {}) => null,
   onDeleteSheet: (sheetModel, sheet, callback) => null,
   onExportSheetDataToExcel: (config, data, callback) => null,
@@ -57,7 +55,6 @@ export const SheetsContext = createContext({
   onPinSheet: (sheetModel, sheet, callback) => null,
   calculateBalance: sheet => null,
   getMessages: () => null,
-  currentSheet: null,
   setCurrentSheet: null,
 });
 
@@ -120,13 +117,10 @@ const cancelLoanEmiNotifications = accountId => {
 };
 
 export const SheetsContextProvider = ({children}) => {
-  const [currentSheet, setCurrentSheet] = useState();
-  const {userData, userAdditionalDetails} = useContext(AuthenticationContext);
+  const {userData} = useContext(AuthenticationContext);
   const {getCategories} = useContext(CategoriesContext);
   const [autoFetchTransactionsOpened, setAutoFetchTransactionsOpened] =
     useState(false);
-  const {createOrReplaceData, updateData, getData, deleteData} =
-    useContext(SQLiteContext);
   const {createRecord, getChildRecords, db, findRecordById} =
     useContext(WatermelonDBContext);
 
@@ -135,11 +129,11 @@ export const SheetsContextProvider = ({children}) => {
 
   useEffect(() => {
     let smsSubscription;
-    if (userAdditionalDetails) {
+    if (userData) {
       if (
         Platform.OS === 'android' &&
-        userAdditionalDetails.autoFetchTransactions &&
-        userAdditionalDetails.baseCurrency &&
+        userData.autoFetchTransactions &&
+        userData.baseCurrency &&
         !autoFetchTransactionsOpened
       ) {
         setTimeout(() => {
@@ -150,8 +144,8 @@ export const SheetsContextProvider = ({children}) => {
 
       if (
         Platform.OS === 'android' &&
-        userAdditionalDetails.autoFetchTransactions &&
-        userAdditionalDetails.baseCurrency
+        userData.autoFetchTransactions &&
+        userData.baseCurrency
       ) {
         smsSubscription = smsListenerEmitter.addListener(
           'onSmsReceived',
@@ -166,7 +160,7 @@ export const SheetsContextProvider = ({children}) => {
     return () => {
       smsSubscription && smsSubscription.remove();
     };
-  }, [userAdditionalDetails]);
+  }, [userData]);
 
   const getMessageFromListener = async message => {
     try {
@@ -190,6 +184,7 @@ export const SheetsContextProvider = ({children}) => {
         let removedTransactionsData = JSON.parse(
           await AsyncStorage.getItem('@expenses-manager-removed-transactions'),
         );
+
         if (removedTransactionsData && removedTransactionsData.date) {
           let todayDate = moment().format('DD-MM-YYYY').toString();
           let date = removedTransactionsData.date;
@@ -233,6 +228,7 @@ export const SheetsContextProvider = ({children}) => {
           };
           finalMessages.push(obj);
         }
+
         if (finalMessages && finalMessages.length > 0) {
           let messagesWithoutRemovedTransactions = [];
           // console.log(finalMessages, removedTransactions);
@@ -440,63 +436,6 @@ export const SheetsContextProvider = ({children}) => {
     };
   };
 
-  const getSheets = async (searchKeyword = null) => {
-    try {
-      let uid = userData.uid;
-      let query = `SELECT * FROM Accounts WHERE uid='${uid}'`;
-
-      if (searchKeyword) {
-        query += `AND LOWER(name) LIKE '%${searchKeyword}%'`;
-      }
-      let orderQuery = 'ORDER BY datetime(updatedAt) DESC';
-      let regularQuery = `${query} AND pinned=0 AND archived=0 AND isLoanAccount = 0 ${orderQuery}`;
-      let pinnedQuery = `${query} AND pinned=1 AND isLoanAccount = 0 ${orderQuery}`;
-      let archivedQuery = `${query} AND archived=1 AND isLoanAccount = 0 ${orderQuery}`;
-      let loanQuery = `${query} AND isLoanAccount=1 ${orderQuery}`;
-      let totalCountQuery = `SELECT COUNT(*) AS totalCount FROM Accounts WHERE uid='${uid}'`;
-      let regularResults = await getData(regularQuery);
-      let regularData = await getDataFromRows(regularResults.rows);
-      let pinnedResults = await getData(pinnedQuery);
-      let pinnedData = await getDataFromRows(pinnedResults.rows);
-      let archivedResults = await getData(archivedQuery);
-      let archivedData = await getDataFromRows(archivedResults.rows);
-      let loanResults = await getData(loanQuery);
-      let loanData = await getDataFromRows(loanResults.rows);
-      let totalCountResult = await getData(totalCountQuery);
-      let totalCountData = await getDataFromRows(totalCountResult.rows);
-
-      const data = {
-        regular: regularData,
-        pinned: pinnedData,
-        archived: archivedData,
-        loan: loanData,
-        totalCount: totalCountData[0].totalCount || 0,
-      };
-
-      return data;
-    } catch (e) {
-      console.log('error retrieving accounts data - ', e);
-      hideLoader();
-    }
-  };
-
-  const onGetAndSetCurrentSheet = async sheetId => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        let result = await getData(
-          `SELECT * FROM Accounts WHERE id = ${sheetId} LIMIT 1`,
-        );
-        let resultData = await getDataFromRows(result.rows);
-        if (resultData[0]) {
-          setCurrentSheet(resultData[0]);
-        }
-        resolve(true);
-      } catch (err) {
-        reject(err);
-      }
-    });
-  };
-
   const getAllSheets = async (searchKeyword = null, excludedId = null) => {
     try {
       const sheetsCollection = await db.get('accounts');
@@ -548,6 +487,84 @@ export const SheetsContextProvider = ({children}) => {
     }
   };
 
+  const onUpdateSheet = async sheet => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        if (sheet.isLoanAccount) {
+          const refetchedSheet = await findRecordById(
+            'accounts',
+            'id',
+            sheet.id,
+          );
+
+          let transactions = await getLinkedDbRecord(
+            refetchedSheet,
+            'transactions',
+          );
+          transactions = transactions.filter(t => !t.upcoming);
+          const result = calculateInterestFromAmortizationSchedule({
+            loanAmount: sheet.loanAmount,
+            interestRate: sheet.interestRate,
+            totalPayments: sheet.totalPayments,
+            repaymentFrequency: sheet.repaymentFrequency,
+            startDate: sheet.loanStartDate,
+            transactions: transactions,
+            totalRepayable: sheet.totalRepayable,
+            useReducingBalance: sheet.useReducingBalance,
+          });
+
+          const {
+            totalInterestPaid,
+            totalInterest,
+            remainingBalance,
+            totalPaid,
+            totalPrincipal,
+          } = result;
+          delete result.schedule;
+
+          await db.write(async () => {
+            await sheet.update(record => {
+              record.totalPaid = totalPaid;
+              record.totalInterest = totalInterest;
+              record.totalBalance = remainingBalance;
+              record.totalInterestPaid = totalInterestPaid;
+              record.totalRepayable = sheet.useReducingBalance
+                ? totalPrincipal + totalInterest
+                : sheet.totalRepayable;
+              record._raw.updated_at = Date.now();
+            });
+          });
+
+          resolve(true);
+          return;
+        }
+        // Fetch transactions before starting db.write
+        const allTransactions = await getLinkedDbRecord(sheet, 'transactions');
+        const transactions = allTransactions.filter(t => !t.upcoming);
+        let totalIncome = 0;
+        let totalExpense = 0;
+        transactions.forEach(t => {
+          if (t.type === 'income') totalIncome += t.amount;
+          else if (t.type === 'expense') totalExpense += t.amount;
+        });
+
+        await db.write(async () => {
+          await sheet.update(record => {
+            record.totalIncome = totalIncome;
+            record.totalExpense = totalExpense;
+            record.totalBalance = totalIncome - totalExpense;
+            record._raw.updated_at = Date.now();
+          });
+        });
+
+        resolve(true);
+      } catch (e) {
+        console.error('Error in updating accounts table:', e);
+        reject(e);
+      }
+    });
+  };
+
   const onEditSheet = async (sheetModel, sheet, callback = () => null) => {
     try {
       const allSheets = await getChildRecords(
@@ -574,7 +591,7 @@ export const SheetsContextProvider = ({children}) => {
           });
         });
       });
-
+      await onUpdateSheet(sheetModel);
       callback();
       await cancelLoanEmiNotifications(sheet.id);
       scheduleLoanEmiNotifications(sheet);
@@ -629,65 +646,90 @@ export const SheetsContextProvider = ({children}) => {
     }
   };
 
-  const onGetDataForExcelSheetExport = async config => {
+  const onGetDataForSheetExport = async config => {
     return new Promise(async (resolve, reject) => {
       const {id, from, to, categoryType, selectedCategories} = config;
-      let {uid} = userData;
-      let searchCond = `
-        WHERE a.uid = '${uid}' AND t.upcoming = 0 AND t.accountId = ${id}
-      `;
-
-      // Apply date filter if present
-      if (from && to) {
-        searchCond += ` AND DATE(t.date) BETWEEN '${from}' AND '${to}'`;
-      }
-
-      // Apply category type filter if present
-      if (categoryType) {
-        searchCond += ` AND c.type = '${categoryType}'`;
-      }
-
-      // Apply selected categories filter if present
-      if (selectedCategories && selectedCategories.length > 0) {
-        const categoryIds = selectedCategories.join(', ');
-        searchCond += ` AND t.categoryId IN (${categoryIds})`;
-      }
-
       try {
-        // Constructing the SQL query
-        let query = `
-          SELECT 
-            a.id AS accountId, 
-            a.name AS accountName, 
-            a.currency AS accountCurrency,
-            t.id AS transactionId, 
-            t.amount AS transactionAmount, 
-            t.date AS transactionDate, 
-            t.notes AS transactionNotes, 
-            t.type AS transactionType,
-            c.id AS categoryId, 
-            c.name AS categoryName, 
-            c.color AS categoryColor, 
-            c.icon AS categoryIcon,
-            SUM(CASE WHEN t.type = 'income' THEN t.amount ELSE 0 END) AS totalIncome,
-            SUM(CASE WHEN t.type = 'expense' THEN t.amount ELSE 0 END) AS totalExpense
-          FROM Transactions t
-          LEFT JOIN Accounts a ON t.accountId = a.id
-          LEFT JOIN Categories c ON t.categoryId = c.id
-          ${searchCond}
-          GROUP BY t.accountId, t.id
-          ORDER BY t.date ASC
-        `;
+        const transactionsCollection = await db.get('transactions');
+        let queryConditions = [
+          Q.where('accountId', id),
+          Q.where('upcoming', false),
+        ];
+        if (from && to) {
+          queryConditions.push(
+            Q.where('date', Q.gte(from)),
+            Q.where('date', Q.lte(to)),
+          );
+        }
 
-        // Fetch data using getData
-        let result = await getData(query);
-        let data = await getDataFromRows(result.rows);
+        if (categoryType) {
+          queryConditions.push(
+            Q.on('categories', Q.where('type', categoryType)),
+          );
+        }
 
-        // Process the rows using the reusable function
-        const finalResult = transformSheetExcelExportData(data);
+        if (selectedCategories?.length > 0) {
+          queryConditions.push(
+            Q.where('categoryId', Q.oneOf(selectedCategories)),
+          );
+        }
 
-        // Resolve with the first result
-        resolve(finalResult[0]);
+        const transactionRecords = await transactionsCollection
+          .query(
+            Q.experimentalJoinTables(['categories', 'accounts']),
+            ...queryConditions,
+            Q.sortBy('date', Q.asc),
+          )
+          .fetch();
+
+        // Convert WatermelonDB models to plain JS
+        const transactions = await Promise.all(
+          transactionRecords.map(async t => {
+            const category = await getLinkedDbRecord(t, 'category');
+            return {
+              id: t.id,
+              amount: t.amount,
+              date: t.date,
+              showTime: t.showTime,
+              time: t.time,
+              imageUrl: t.imageUrl,
+              notes: t.notes,
+              type: t.type,
+              category: category,
+            };
+          }),
+        );
+        const accountFetch = await getLinkedDbRecord(
+          transactionRecords[0],
+          'account',
+        );
+
+        const account = {
+          id: accountFetch?.id,
+          name: accountFetch?.name,
+          currency: accountFetch?.currency,
+        };
+
+        // Compute totals
+        const totalIncome = transactions
+          .filter(t => t.type === 'income')
+          .reduce((sum, t) => sum + t.amount, 0);
+
+        const totalExpense = transactions
+          .filter(t => t.type === 'expense')
+          .reduce((sum, t) => sum + t.amount, 0);
+
+        account.totalIncome = totalIncome;
+        account.totalExpense = totalExpense;
+        account.totalBalance = totalIncome - totalExpense;
+
+        const finalData = {
+          transactions: transactions,
+          account: account,
+          totalExpense: totalExpense,
+          totalIncome: totalIncome,
+        };
+        resolve(finalData);
       } catch (e) {
         reject(e);
       }
@@ -696,12 +738,13 @@ export const SheetsContextProvider = ({children}) => {
 
   const onExportSheetDataToExcel = async (config, callback = () => null) => {
     try {
-      let result = await onGetDataForExcelSheetExport(config);
+      let result = await onGetDataForSheetExport(config);
       if (!result) {
         throw 'There are no transactions to export';
       }
       const {transactions, account, totalExpense, totalIncome} = result;
       const {name} = account;
+
       account.totalIncome = totalIncome;
       account.totalExpense = totalExpense;
       account.totalBalance = totalIncome - totalExpense;
@@ -709,7 +752,9 @@ export const SheetsContextProvider = ({children}) => {
         throw 'There are no transactions to export';
       }
       showLoader('excel');
+
       let rows = getExcelSheetAccountRows(account, transactions);
+
       let wb = XLSX.utils.book_new();
       let ws = XLSX.utils.json_to_sheet(rows);
       ws['!cols'] = excelSheetAccountColWidth;
@@ -778,7 +823,7 @@ export const SheetsContextProvider = ({children}) => {
   const onExportSheetDataToPdf = async (config, callback = () => null) => {
     try {
       showLoader('pdf');
-      let result = await onGetDataForExcelSheetExport(config);
+      let result = await onGetDataForSheetExport(config);
       if (!result) {
         throw 'There are no transactions to export';
       }
@@ -841,20 +886,17 @@ export const SheetsContextProvider = ({children}) => {
   return (
     <SheetsContext.Provider
       value={{
-        currentSheet,
-        setCurrentSheet,
-        getSheets,
         getAllSheets,
         onSaveSheet,
         onDeleteSheet,
         onEditSheet,
+        onUpdateSheet,
         onArchiveSheet,
         onPinSheet,
         onExportSheetDataToExcel,
         calculateBalance,
         onExportSheetDataToPdf,
         getMessages,
-        onGetAndSetCurrentSheet,
       }}>
       {children}
     </SheetsContext.Provider>

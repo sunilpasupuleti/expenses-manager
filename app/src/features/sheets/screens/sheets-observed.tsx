@@ -31,7 +31,8 @@ const enhance = withObservables<EnhanceProps, {}>(
         Q.where('isLoanAccount', false),
         Q.where('archived', false),
         Q.sortBy('updated_at', Q.desc),
-      );
+      )
+      .observeWithColumns(['totalBalance', 'totalIncome', 'totalExpense']);
 
     const regularSheets = database
       .get('accounts')
@@ -41,7 +42,8 @@ const enhance = withObservables<EnhanceProps, {}>(
         Q.where('archived', false),
         Q.where('isLoanAccount', false),
         Q.sortBy('updated_at', Q.desc),
-      );
+      )
+      .observeWithColumns(['totalBalance', 'totalIncome', 'totalExpense']);
 
     const loanSheets = database
       .get('accounts')
@@ -50,7 +52,8 @@ const enhance = withObservables<EnhanceProps, {}>(
         Q.where('isLoanAccount', true),
         Q.where('archived', false),
         Q.sortBy('updated_at', Q.desc),
-      );
+      )
+      .observeWithColumns(['totalBalance', 'totalIncome', 'totalExpense']);
 
     const archivedSheets = database
       .get('accounts')
@@ -58,7 +61,8 @@ const enhance = withObservables<EnhanceProps, {}>(
         ...baseClause,
         Q.where('archived', true),
         Q.sortBy('updated_at', Q.desc),
-      );
+      )
+      .observeWithColumns(['totalBalance', 'totalIncome', 'totalExpense']);
 
     return {
       regularSheets,

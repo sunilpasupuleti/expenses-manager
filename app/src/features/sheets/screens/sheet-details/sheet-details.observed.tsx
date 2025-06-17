@@ -15,6 +15,7 @@ type EnhanceProps = {
     fromDate: string;
     toDate: string;
     categoryId: string;
+    type: string;
   };
   upcoming?: string;
 };
@@ -49,6 +50,10 @@ const enhance = withObservables<EnhanceProps, {}>(
       conditions.push(Q.where('categoryId', filterParams.categoryId));
     }
 
+    if (filterParams?.type && filterParams.type !== 'all') {
+      conditions.push(Q.where('type', filterParams.type));
+    }
+
     const transactions = database
       .get('transactions')
       .query(
@@ -57,7 +62,7 @@ const enhance = withObservables<EnhanceProps, {}>(
         Q.where('upcoming', false),
         Q.sortBy('date', Q.desc),
       )
-      .observeWithColumns(['type', 'category_id', 'date', 'time']);
+      .observeWithColumns(['type', 'category_id', 'date', 'time', 'upcoming']);
     const upcomingTransactions = database
       .get('transactions')
       .query(
@@ -66,7 +71,7 @@ const enhance = withObservables<EnhanceProps, {}>(
         Q.where('upcoming', true),
         Q.sortBy('date', Q.asc),
       )
-      .observeWithColumns(['type', 'category_id', 'date', 'time']);
+      .observeWithColumns(['type', 'category_id', 'date', 'time', 'upcoming']);
 
     return {transactions, upcomingTransactions};
   },

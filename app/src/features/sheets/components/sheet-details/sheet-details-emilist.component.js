@@ -25,8 +25,7 @@ export const SheetDetailsEmiList = ({
   const paidColor = '#32B896';
   const upcomingColor = color;
 
-  const upcoming = [];
-  const past = [];
+  const sortedList = [];
 
   allEmiDates.forEach((date, index) => {
     const momentDate = moment(date);
@@ -38,11 +37,8 @@ export const SheetDetailsEmiList = ({
       rawDate: momentDate,
       isPast: momentDate.isBefore(today),
     };
-
-    card.isPast ? past.push(card) : upcoming.push(card);
+    sortedList.push(card);
   });
-
-  const sortedList = [...upcoming, ...past];
 
   const renderItem = ({item}) => {
     const isPartial =

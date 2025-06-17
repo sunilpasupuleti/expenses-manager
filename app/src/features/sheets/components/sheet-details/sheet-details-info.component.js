@@ -100,6 +100,13 @@ export const SheetDetailsInfo = ({transaction, sheet, navigation, index}) => {
               </SheetDetailCategoryColor>
               <View>
                 <SheetDetailCategory>{category?.name}</SheetDetailCategory>
+
+                {sheet?.isLoanAccount && (
+                  <SheetDetailNotes style={{marginTop: 2}}>
+                    {transaction.isEmiPayment ? 'EMI Payment' : 'Pre Payment'}
+                  </SheetDetailNotes>
+                )}
+
                 {showTime || notes ? (
                   <SheetDetailNotes>
                     {_.truncate(notes, {length: 25, omission: '...'})}

@@ -20,11 +20,11 @@ import {
   DB_BACKUP_PATH,
   PRIVACY_POLICY_URL,
   PLAID_BACKEND_URL,
+  SENTRY_DSN,
+  DB_NAME,
 } from '../../config';
 import initializeOneSignal from '../components/notifcications/one-signal';
 import initializePushNotification from '../components/notifcications/push-notification';
-import {useContext} from 'react';
-import {SheetsContext} from '../services/sheets/sheets.context';
 
 export const fetchTheme = createAsyncThunk('service/fetchTheme', async () => {
   try {
@@ -139,6 +139,8 @@ export const loadAppStatus = createAsyncThunk(
         FIREBASE_DATABASE_URL: FIREBASE_DATABASE_URL,
         DB_PATH: DB_PATH,
         DB_BACKUP_PATH: DB_BACKUP_PATH,
+        SENTRY_DSN: SENTRY_DSN,
+        DB_NAME: DB_NAME,
         PRIVACY_POLICY_URL: PRIVACY_POLICY_URL,
       })
       .then(() => {

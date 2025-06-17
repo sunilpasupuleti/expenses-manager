@@ -3,11 +3,9 @@ import {useTheme} from 'styled-components/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {SheetDetailsDashboard} from '../../components/sheet-details/sheet-details-dashboard';
-import {SheetDetailsScreen} from './sheet-details.screen';
 import {useSelector} from 'react-redux';
 import {SheetStatsScreen} from '../sheet-stats/sheet-stats.screen';
 import {SheetTrendsScreen} from '../sheet-trends/sheet-trends.screen';
-import {ObservedSheetDetails} from './sheet-details.observed';
 import SheetDetailsHome from './sheet-details-home.screen';
 
 const Tab = createBottomTabNavigator();
@@ -18,7 +16,13 @@ export const SheetDetailsHomeNavigatorScreen = ({navigation, route}) => {
   const [sheet, setSheet] = useState(route.params.sheet);
 
   const SheetDetailsDashboardComponent = () => {
-    return <SheetDetailsDashboard route={route} navigation={navigation} />;
+    return (
+      <SheetDetailsDashboard
+        route={route}
+        navigation={navigation}
+        sheet={sheet}
+      />
+    );
   };
 
   const SheetDetailsComponent = () => {
@@ -28,11 +32,15 @@ export const SheetDetailsHomeNavigatorScreen = ({navigation, route}) => {
   };
 
   const SheetStatusComponent = () => {
-    return <SheetStatsScreen navigation={navigation} route={route} />;
+    return (
+      <SheetStatsScreen navigation={navigation} route={route} sheet={sheet} />
+    );
   };
 
   const SheetTrendsComponent = () => {
-    return <SheetTrendsScreen navigation={navigation} route={route} />;
+    return (
+      <SheetTrendsScreen navigation={navigation} route={route} sheet={sheet} />
+    );
   };
 
   if (!sheet) return null;

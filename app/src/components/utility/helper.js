@@ -45,19 +45,24 @@ export const getNextEmiAcrossAccounts = (loanSheets = [], days = 10) => {
         sheet.loanMonths,
         1,
       );
+
       return upcomingEmis.length
-        ? {date: upcomingEmis[0], name: sheet.name, sheetId: sheet.id}
+        ? {
+            date: upcomingEmis[0],
+            name: sheet.name,
+            sheetId: sheet.id,
+            sheet: sheet,
+          }
         : null;
     })
     .filter(Boolean)
-    .filter(emi =>
-      moment(emi.date, 'YYYY-MM-DD').isBetween(
-        today,
-        targetDate,
-        undefined,
-        '[]',
-      ),
-    )
+    .filter(emi => {
+      const emiDate = moment(emi.date, 'YYYY-MM-DD');
+      return (
+        emiDate.isSameOrAfter(today, 'day') &&
+        emiDate.isSameOrBefore(targetDate, 'day')
+      );
+    })
     .sort((a, b) => moment(a.date).diff(moment(b.date)));
 
   return emis.length > 0 ? emis : [];
@@ -89,7 +94,7 @@ export const getEmiDates = (
 
     allEmis.push(emiDate.format('YYYY-MM-DD'));
 
-    if (emiDate.isAfter(today) && upcomingEmis.length < count) {
+    if (emiDate.isSameOrAfter(today) && upcomingEmis.length < count) {
       upcomingEmis.push(emiDate.format('YYYY-MM-DD'));
     }
 
@@ -109,6 +114,7 @@ export const generateAmortizationSchedule = ({
   repaymentFrequency,
   startDate,
   transactions = [],
+  useReducingBalance,
 }) => {
   const schedule = [];
   const {unit, step} = getFrequencyInterval(repaymentFrequency);
@@ -135,199 +141,182 @@ export const generateAmortizationSchedule = ({
         (Math.pow(1 + r, totalPayments) - 1);
 
   let balance = P;
+  let lastEMIDate = start.clone();
+  let totalInterest = 0;
+  let totalPrincipal = 0;
+  let payoffDate = null;
 
   for (let i = 0; i < totalPayments && balance > 0.01; i++) {
     const scheduledDate = start.clone().add((i + 1) * step, unit);
     const scheduledDateStr = scheduledDate.format('YYYY-MM-DD');
-    let emiPaid = false;
+    // Step 1: Get prepayments made between lastEMIDate (exclusive) and scheduledDate (inclusive)
+    const prepaymentsThisPeriod = transactions.filter(
+      tx =>
+        !tx.isEmiPayment &&
+        moment(tx.date).isAfter(lastEMIDate, 'day') &&
+        moment(tx.date).isSameOrBefore(scheduledDate, 'day'),
+    );
 
-    for (let tx of transactions) {
-      if (
+    const totalPrepayment = prepaymentsThisPeriod.reduce((sum, tx) => {
+      return sum + (tx.amount || 0);
+    }, 0);
+
+    const emiPaid = transactions.some(
+      tx =>
         tx.isEmiPayment &&
         tx.emiDate === scheduledDateStr &&
-        moment(tx.date).format('YYYY-MM-DD') === scheduledDateStr
-      ) {
-        emiPaid = true;
-        break;
-      }
-    }
+        moment(tx.date).format('YYYY-MM-DD') === scheduledDateStr,
+    );
 
-    const interest = balance * r;
-    let principal = emi - interest;
+    let interest, principal;
+    if (useReducingBalance) {
+      interest = balance * r;
+      principal = emi - interest + totalPrepayment;
+    } else {
+      interest = loanAmount * r;
+      principal = emi - interest + totalPrepayment;
+    }
 
     if (principal > balance) {
       principal = balance;
     }
     const totalPayment = principal + interest;
+
+    totalInterest += interest;
+    totalPrincipal += principal;
+
     schedule.push({
       date: scheduledDate.format('YYYY-MM-DD'),
       principal: parseFloat(principal.toFixed(2)),
       interest: parseFloat(interest.toFixed(2)),
       totalPayment: parseFloat(totalPayment.toFixed(2)),
       emiPaid,
+      extraPayment: parseFloat(totalPrepayment.toFixed(2)),
     });
 
     balance -= principal;
+    lastEMIDate = scheduledDate.clone();
+    if (i === totalPayments - 1 && !useReducingBalance && !payoffDate) {
+      payoffDate = scheduledDate.clone();
+    }
+
     if (balance < 0.01) {
+      payoffDate = scheduledDate.clone();
       break;
     }
   }
 
-  return schedule;
+  // If loan paid off early, fill remaining schedule entries with 0s
+  if (payoffDate && schedule.length < totalPayments) {
+    for (let i = schedule.length; i < totalPayments; i++) {
+      const scheduledDate = start.clone().add((i + 1) * step, unit);
+      schedule.push({
+        date: scheduledDate.format('YYYY-MM-DD'),
+        principal: 0,
+        interest: 0,
+        totalPayment: 0,
+        emiPaid: false,
+        extraPayment: 0,
+      });
+    }
+  }
+
+  const loanPayoffDuration = (() => {
+    if (!payoffDate) return null;
+
+    const duration = moment.duration(payoffDate.diff(start));
+    const totalMonths = Math.floor(duration.asMonths());
+    const years = Math.floor(totalMonths / 12);
+    const months = totalMonths % 12;
+
+    const parts = [];
+    if (years > 0) parts.push(`${years} year${years > 1 ? 's' : ''}`);
+    if (months > 0) parts.push(`${months} month${months > 1 ? 's' : ''}`);
+
+    return parts.length > 0 ? parts.join(' ') : 'Less than a month';
+  })();
+
+  return {
+    schedule,
+    totalInterest: parseFloat(totalInterest.toFixed(2)),
+    totalPrincipal: parseFloat(totalPrincipal.toFixed(2)),
+    loanPayoffDuration, // e.g. "1 year 9 months"
+  };
 };
 
-/**
- * Calculate total principal paid and outstanding balance
- * @param {Array} schedule - Amortization schedule [{ date, principal, interest }]
- * @param {Array} transactions - User payments [{ date, amount }]
- * @param {number} loanAmount - Original loan amount
- * @returns {Object} { totalPrincipalPaid, outstandingPrincipal }
- */
-export function calculatePrincipalPaid(
-  schedule,
-  transactions,
+export const calculateInterestFromAmortizationSchedule = ({
   loanAmount,
+  interestRate,
+  totalPayments,
+  repaymentFrequency,
+  startDate,
+  transactions = [],
   totalRepayable,
-) {
-  const today = moment().format('YYYY-MM-DD');
-  // Step 1: Calculate total amount paid across all transactions
-  const totalAmountPaid = transactions.reduce(
-    (sum, txn) => sum + txn.amount,
-    0,
-  );
+  useReducingBalance,
+}) => {
+  const {totalInterest, totalPrincipal, schedule, loanPayoffDuration} =
+    generateAmortizationSchedule({
+      loanAmount,
+      interestRate,
+      totalPayments,
+      repaymentFrequency,
+      startDate,
+      transactions,
+      useReducingBalance,
+    });
 
-  let remainingAmount = totalAmountPaid;
-  let totalPrincipalPaid = 0;
-  let totalInterestPaid = 0;
-  let totalPrepayments = 0;
-  let scheduleIndex = 0;
+  let totalPaid = 0;
+  let emiInterestPaid = 0;
+  let emiPrincipalPaid = 0;
+  let totalEMIPaymentsOnly = 0;
 
-  console.log('=== LOAN CALCULATION START ===');
-  console.log('Loan Amount:', loanAmount);
-  console.log('Total Repayable:', totalRepayable);
-  console.log('Total Transactions Made:', transactions.length);
-  console.log('Total Amount Paid:', totalAmountPaid);
-  console.log('Now allocating through EMI schedule...');
-  console.log('=====================================\n');
+  // Use actual EMI payments from transactions (not from schedule)
+  const emiTransactions = transactions.filter(tx => tx.isEmiPayment);
+  const prepaymentTransactions = transactions.filter(tx => !tx.isEmiPayment);
 
-  // Step 2: Allocate the total amount through EMI schedule
-  while (remainingAmount > 0 && scheduleIndex < schedule.length) {
-    const emi = schedule[scheduleIndex];
-    const emiDate = emi.date;
-    const interestDue = emi.interest;
-    const principalDue = emi.principal;
-    const isFutureEmi = moment(emiDate).isAfter(today);
+  for (const tx of emiTransactions) {
+    const matchingSchedule = schedule.find(item => item.date === tx.emiDate);
 
-    console.log(`📋 Processing EMI ${scheduleIndex + 1}:`);
-    console.log(
-      `   EMI Date: ${emiDate} (${isFutureEmi ? 'FUTURE' : 'PAST/TODAY'})`,
-    );
-    console.log(`   Interest Due: ₹${interestDue}`);
-    console.log(`   Principal Due: ₹${principalDue}`);
-    console.log(`   Remaining Amount: ₹${remainingAmount}`);
-
-    // If EMI is in the future, treat any payment as prepayment
-    if (isFutureEmi) {
-      totalPrepayments = remainingAmount;
-      totalPrincipalPaid += remainingAmount;
-      console.log(
-        `💰 FUTURE EMI - Treating ₹${remainingAmount} as PREPAYMENT (directly reduces principal)`,
-      );
-      remainingAmount = 0;
-      break; // Stop processing further EMIs
+    if (matchingSchedule) {
+      emiInterestPaid += matchingSchedule.interest;
+      emiPrincipalPaid += matchingSchedule.principal;
+      totalEMIPaymentsOnly += matchingSchedule.totalPayment;
     }
 
-    if (remainingAmount >= interestDue) {
-      // Pay interest first
-      totalInterestPaid += interestDue;
-      remainingAmount -= interestDue;
-      console.log(`   ✅ Interest Paid: ₹${interestDue}`);
+    totalPaid += tx.amount || 0;
+  }
 
-      if (remainingAmount >= principalDue) {
-        // Pay full scheduled principal
-        totalPrincipalPaid += principalDue;
-        remainingAmount -= principalDue;
-        console.log(`   ✅ Principal Paid: ₹${principalDue}`);
-        console.log(`   🎉 EMI ${scheduleIndex + 1} COMPLETED!`);
-        scheduleIndex++; // Move to next EMI
-      } else if (remainingAmount > 0) {
-        // Pay partial principal
-        totalPrincipalPaid += remainingAmount;
-        console.log(`   ⚠️  Partial Principal Paid: ₹${remainingAmount}`);
-        remainingAmount = 0;
-        // Don't increment scheduleIndex - EMI partially paid
-      }
-    } else if (remainingAmount > 0) {
-      // Can only pay partial interest
-      totalInterestPaid += remainingAmount;
-      console.log(`   ⚠️  Partial Interest Paid: ₹${remainingAmount}`);
-      remainingAmount = 0;
-      // Don't increment scheduleIndex - EMI partially paid
+  if (useReducingBalance) {
+    for (const tx of prepaymentTransactions) {
+      const amt = tx.amount || 0;
+      emiPrincipalPaid += amt;
+      totalPaid += amt;
     }
-
-    console.log(
-      `   Remaining after EMI ${scheduleIndex + 1}: ₹${remainingAmount}`,
-    );
-    console.log('   ─────────────────────────────────────\n');
+  } else {
+    for (const tx of prepaymentTransactions) {
+      totalPaid += tx.amount || 0;
+    }
   }
 
-  // Step 3: Any remaining amount is prepayment (directly reduces principal)
-  if (remainingAmount > 0) {
-    totalPrepayments += remainingAmount;
-    totalPrincipalPaid += remainingAmount;
-    console.log(
-      `💰 ADDITIONAL PREPAYMENT: ₹${remainingAmount} (directly reduces principal)\n`,
-    );
+  let remainingBalance;
+
+  if (useReducingBalance) {
+    remainingBalance = totalPrincipal + totalInterest - totalEMIPaymentsOnly;
+  } else {
+    remainingBalance = Math.max(0, totalRepayable - totalPaid);
   }
-
-  // For reducing balance method: Remaining Balance = Total Repayable - Total Paid
-  const outstandingPrincipal = Math.max(0, loanAmount - totalPrincipalPaid);
-  const remainingBalance = Math.max(0, totalRepayable - totalPrincipalPaid);
-
-  const result = {
-    totalPrincipalPaid: Number(totalPrincipalPaid.toFixed(2)),
-    totalInterestPaid: Number(totalInterestPaid.toFixed(2)),
-    outstandingPrincipal: Number(outstandingPrincipal.toFixed(2)),
-    remainingBalance: Number(remainingBalance.toFixed(2)),
-    totalPrepayments: Number(totalPrepayments.toFixed(2)),
-    emisCompleted: scheduleIndex,
-    transactionsProcessed: transactions.length,
-    totalAmountProcessed: Number(totalAmountPaid.toFixed(2)),
+  remainingBalance = parseFloat(remainingBalance.toFixed(2));
+  return {
+    totalInterestPaid: parseFloat(emiInterestPaid.toFixed(2)),
+    totalPrincipalPaid: parseFloat(emiPrincipalPaid.toFixed(2)),
+    totalPaid: parseFloat(totalPaid.toFixed(2)),
+    remainingBalance,
+    totalInterest,
+    totalPrincipal,
+    schedule,
+    loanPayoffDuration,
   };
-
-  console.log('🏁 FINAL CALCULATION RESULT:');
-  console.log('═══════════════════════════════════════');
-  console.log(`💳 Total Amount Paid: ₹${result.totalAmountProcessed}`);
-  console.log(`📈 Interest Portion: ₹${result.totalInterestPaid}`);
-  console.log(`🏠 Principal Portion: ₹${result.totalPrincipalPaid}`);
-  console.log(`💰 Prepayments Made: ₹${result.totalPrepayments}`);
-  console.log(`✅ EMIs Completed: ${result.emisCompleted}`);
-  console.log(`💸 Outstanding Principal: ₹${result.outstandingPrincipal}`);
-  console.log(`Remaining Balance: ₹${result.remainingBalance}`);
-  console.log('═══════════════════════════════════════');
-
-  // Verification
-  const totalSplit = result.totalInterestPaid + result.totalPrincipalPaid;
-  console.log(`\n🔍 VERIFICATION:`);
-  console.log(`Interest + Principal = ₹${totalSplit.toFixed(2)}`);
-  console.log(`Should equal Total Paid: ₹${result.totalAmountProcessed}`);
-  console.log(
-    `✅ Match: ${
-      totalSplit.toFixed(2) === result.totalAmountProcessed.toFixed(2)
-        ? 'YES'
-        : 'NO'
-    }`,
-  );
-  const fixedEmi = schedule[0].principal + schedule[0].interest;
-  const newSchedule = generateAmortizationSchedule({
-    loanAmount: outstandingPrincipal,
-    interestRate: 7,
-    totalPayments: 500,
-    repaymentFrequency: 'monthly',
-    startDate: moment().format('YYYY-MM-DD'),
-  });
-  return result;
-}
+};
 
 export const compoundingOptions = [
   {key: 'annually', value: 'Annually (APY)'},
@@ -548,12 +537,13 @@ export const getExcelSheetAccountRows = (account, transactions) => {
   transactions.forEach((transaction, i) => {
     let {date, showTime, time, type, amount, imageUrl, notes, category} =
       transaction;
-    let dt = moment(date).format('MMM DD, YYYY ');
+    let dt = moment(date).format('MMM DD, YYYY');
     if (showTime) {
       let tm = moment(time).format('hh:mm A');
-      dt += tm;
+      dt += ` - ${tm}`;
     }
 
+    dt += ` - ${moment(date).format('dddd')}`;
     let amnt = `AMOUNT ( ${GetCurrencySymbol(currency)} )`;
     let detail = {
       'S.NO': i + 1,
@@ -603,8 +593,10 @@ export const getPdfAccountTableHtml = (theme, account, transactions) => {
     let dt = moment(date).format('MMM DD, YYYY ');
     if (showTime) {
       let tm = moment(time).format('hh:mm A');
-      dt += tm;
+      dt += ` - ${tm}`;
     }
+
+    dt += ` - ${moment(date).format('dddd')}`;
 
     if (imageUrl) {
       imageUrl = getFirebaseAccessUrl(imageUrl);
@@ -769,6 +761,16 @@ export const getPdfAccountStyles = theme => `
     `;
 
 export const searchKeywordRegex = /^[^\s].*$/;
+
+export const hashCode = str => {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const chr = str.charCodeAt(i);
+    hash = (hash << 5) - hash + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+};
 
 export const sendLocalNotification = (
   notification = {

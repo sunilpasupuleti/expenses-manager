@@ -4,7 +4,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {smsTransactionsActions} from '../../store/smsTransactions-slice';
 import {Text} from '../typography/text.component';
 import {GetCurrencyLocalString, GetCurrencySymbol} from '../symbol.currency';
-import {getCurrencies} from 'react-native-localize';
+import {getCurrencies, getTimeZone} from 'react-native-localize';
 import moment from 'moment';
 import {Spacer} from '../spacer/spacer.component';
 import {useTheme} from 'styled-components/native';
@@ -12,18 +12,19 @@ import {ButtonText, FlexRow} from '../styles';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Alert, ScrollView, View} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {SheetsContext} from '../../services/sheets/sheets.context';
 import _ from 'lodash';
 import {AuthenticationContext} from '../../services/authentication/authentication.context';
 import {SelectList} from 'react-native-dropdown-select-list';
 import {CategoriesContext} from '../../services/categories/categories.context';
-import {formatDate, formatDateTz, formatDateTzReadable} from './helper';
+import {formatDateTz} from './helper';
 import {SheetDetailsContext} from '../../services/sheetDetails/sheetDetails.context';
-import {
-  useNavigation,
-  useNavigationState,
-  useRoute,
-} from '@react-navigation/native';
+import {WatermelonDBContext} from '../../services/watermelondb/watermelondb.context';
+import {Q} from '@nozbe/watermelondb';
+
+const formatDateTzReadable = timestamp => {
+  const timezone = getTimeZone(); // e.g., 'America/Toronto'
+  return moment.utc(timestamp).tz(timezone).format('DD MMM YYYY, hh:mm:ss A');
+};
 
 export const SmsTransactions = () => {
   const theme = useTheme();
@@ -31,14 +32,13 @@ export const SmsTransactions = () => {
   const [loading, setLoading] = useState(false);
   const [sheets, setSheets] = useState([]);
   const [categories, setCategories] = useState([]);
-  const navigation = useNavigation();
+  const [sheetsLoading, setSheetsLoading] = useState(true);
   const {dialogVisible, transactions} = useSelector(
     state => state.smsTransactions,
   );
-
+  const {db} = useContext(WatermelonDBContext);
   const {userAdditionalDetails} = useContext(AuthenticationContext);
 
-  const {getSheets} = useContext(SheetsContext);
   const {onSaveSheetDetail} = useContext(SheetDetailsContext);
   const {userData} = useContext(AuthenticationContext);
 
@@ -59,22 +59,26 @@ export const SmsTransactions = () => {
 
   useEffect(() => {
     (async () => {
-      if (userData) {
-        const sheetsData = await onGetSheets();
-        setSheets(sheetsData);
+      if (userData && db && dialogVisible) {
+        await onGetSheets();
       }
     })();
-  }, [userData]);
+  }, [userData, db, dialogVisible]);
 
   const onGetSheets = async () => {
-    let sheetsData = await getSheets();
-    if (sheetsData) {
-      const {archived, pinned, regular} = sheetsData;
-      const structuredData = [...archived, ...pinned, ...regular].filter(
-        item => item,
-      );
-      return structuredData;
-    }
+    setSheetsLoading(true);
+    const sheetsCollection = await db.get('accounts');
+    const allSheets = await sheetsCollection
+      .query(Q.where('userId', userData.id), Q.where('isLoanAccount', false))
+      .fetch();
+
+    const pinned = allSheets.filter(sheet => sheet.pinned && !sheet.archived);
+    const archived = allSheets.filter(sheet => sheet.archived);
+    const regular = allSheets.filter(sheet => !sheet.pinned && !sheet.archived);
+    const data = [...pinned, ...archived, ...regular];
+
+    setSheets(data);
+    setSheetsLoading(false);
   };
 
   const onGetCategories = async catType => {
@@ -105,7 +109,8 @@ export const SmsTransactions = () => {
       };
       setLoading(true);
       onSaveSheetDetail(sheet, sheetDetail, () => {
-        navigation.setParams({reRender: true});
+        console.log('callback called');
+
         onRemoveTransaction();
         setLoading(false);
       });
@@ -165,6 +170,10 @@ export const SmsTransactions = () => {
       t => t.id !== transaction.id,
     );
     remainingTransactions.forEach((t, index) => (t.id = index));
+    if (remainingTransactions.length === 0) {
+      onHideDialog();
+    }
+
     dispatch(smsTransactionsActions.setTransactions(remainingTransactions));
   };
 
@@ -223,12 +232,13 @@ export const SmsTransactions = () => {
   useEffect(() => {
     (async () => {
       if (
-        transactions &&
-        transactions.length > 0 &&
-        sheets &&
-        sheets.length > 0
+        transactions?.length > 0 &&
+        sheets?.length > 0 &&
+        dialogVisible &&
+        !sheetsLoading
       ) {
         let trns = null;
+
         if (removedIndex) {
           trns = transactions[removedIndex];
         } else {
@@ -239,11 +249,9 @@ export const SmsTransactions = () => {
 
         setCategories(catData || []);
         setTransaction(trns);
-      } else {
-        onHideDialog();
       }
     })();
-  }, [transactions, sheets]);
+  }, [transactions, sheets, dialogVisible, sheetsLoading]);
 
   useEffect(() => {
     (async () => {
@@ -286,7 +294,7 @@ export const SmsTransactions = () => {
   }, [transaction]);
 
   useEffect(() => {
-    if (sheets && sheets.length > 0) {
+    if (!sheetsLoading && sheets && sheets.length > 0) {
       let values = [];
       sheets.forEach(item => {
         let obj = {
@@ -300,10 +308,11 @@ export const SmsTransactions = () => {
         key: values[0].key,
         value: values[0].value,
       });
-    } else {
+    } else if (!sheetsLoading && (!sheets || sheets.length === 0)) {
+      // Only hide if loading is done and still no sheets
       onHideDialog();
     }
-  }, [sheets]);
+  }, [sheets, sheetsLoading]);
 
   return transaction ? (
     <Portal>
@@ -417,13 +426,16 @@ export const SmsTransactions = () => {
                   <Spacer size="medium" />
                   <SelectList
                     setSelected={id => {
-                      let category = categories.find(c => c.id === id);
-                      setSelectedCategory({
-                        key: id,
-                        value: category?.name,
-                      });
+                      if (selectedCategory?.key !== id) {
+                        const category = categories.find(c => c.id === id);
+                        setSelectedCategory({
+                          key: id,
+                          value: category?.name || '',
+                        });
+                      }
                     }}
                     data={categoryItems}
+                    key={selectedCategory?.key || 'default'}
                     label="Categories"
                     placeholder="Select Category"
                     notFoundText="No Categories Found"

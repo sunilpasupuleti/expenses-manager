@@ -41,6 +41,7 @@ async function checkAndActivateUserNotifications() {
           sendDailyReminderNotification(userData);
         });
       }
+      console.log(userData.uid);
 
       // 💾 Daily Backup
       const backupJobId = `${userData.uid}-daily-backup`;

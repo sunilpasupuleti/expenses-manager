@@ -7,6 +7,6 @@ import {
 } from './watermelondb_tables';
 
 export default appSchema({
-  version: 1,
+  version: 2,
   tables: [usersTable, accountsTable, transactionsTable, categoriesTable],
 });

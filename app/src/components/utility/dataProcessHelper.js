@@ -178,46 +178,6 @@ export const transformSheetDetailsAnalytics = (rows, totalBalance) => {
   return _.orderBy(transformedData, ['totalPercentage'], ['desc']);
 };
 
-export const transformSheetExcelExportData = rows => {
-  const groupedData = _.groupBy(rows, 'accountId');
-
-  return _.map(groupedData, (transactions, accountId) => {
-    const firstTransaction = transactions[0]; // All transactions share the same account info
-
-    // Calculate total income and total expense from transactions
-    const totalIncome = _.sumBy(transactions, t =>
-      t.transactionType === 'income' ? t.transactionAmount : 0,
-    );
-    const totalExpense = _.sumBy(transactions, t =>
-      t.transactionType === 'expense' ? t.transactionAmount : 0,
-    );
-
-    return {
-      account: {
-        id: accountId,
-        name: firstTransaction.accountName,
-        currency: firstTransaction.accountCurrency,
-        totalIncome: totalIncome,
-        totalExpense: totalExpense,
-      },
-      transactions: transactions.map(t => ({
-        id: t.transactionId,
-        amount: t.transactionAmount,
-        date: t.transactionDate,
-        notes: t.transactionNotes,
-        type: t.transactionType,
-        category: {
-          id: t.categoryId,
-          name: t.categoryName,
-          color: t.categoryColor,
-          icon: t.categoryIcon,
-        },
-      })),
-      totalIncome,
-      totalExpense,
-    };
-  });
-};
 // for backup
 export const transformAccountAndTransactionData = rows => {
   // Group transactions by accountId

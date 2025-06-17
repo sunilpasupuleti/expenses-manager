@@ -97,7 +97,6 @@ export const SheetDetailsScreen = ({
     let finalExpense = 0;
     let finalBalance = 0;
     const grouped = _.groupBy(transactions, t => {
-      totalBalance;
       return moment(t.date).format('YYYY-MM-DD');
     });
 
@@ -152,10 +151,16 @@ export const SheetDetailsScreen = ({
               extension: pictureExtension,
             };
           }
-          navigation.navigate('AddSheetDetail', {
+          const paramsData = {
             smartScan: true,
             sheetDetail: fetchedData,
-          });
+            sheet: sheet,
+          };
+          if (!fetchedData.newCategoryIdentified) {
+            paramsData.selectedCategory = fetchedData.category;
+          }
+
+          navigation.navigate('AddSheetDetail', paramsData);
         });
       }
     };
@@ -324,73 +329,77 @@ export const SheetDetailsScreen = ({
 
         <BottomIconsContainer>
           {/*  for camera option */}
-          <Menu
-            onBackdropPress={() => cameraRef.current.close()}
-            ref={element => (cameraRef.current = element)}>
-            <MenuTrigger
-              customStyles={{
-                triggerTouchable: {
-                  underlayColor: '#eee',
-                  // onPress: () => {
-                  //   console.log('pressed');
-                  //   menuRef.current.open();
-                  // },
-                },
-                TriggerTouchableComponent: TouchableOpacity,
-              }}>
-              <CameraButton onPress={() => cameraRef.current.open()}>
-                <FlexRow>
-                  <CameraIcon
-                    name="scan"
-                    size={20}
-                    color="#fff"
-                    // color={theme.colors.brand.primary}
-                  />
-                  <Spacer position={'left'}>
-                    <Text fontsize="12px" color={'#fff'}>
-                      Smart Scan Receipt
-                    </Text>
-                  </Spacer>
-                </FlexRow>
-              </CameraButton>
-            </MenuTrigger>
+          {!sheet.isLoanAccount ? (
+            <Menu
+              onBackdropPress={() => cameraRef.current.close()}
+              ref={element => (cameraRef.current = element)}>
+              <MenuTrigger
+                customStyles={{
+                  triggerTouchable: {
+                    underlayColor: '#eee',
+                    // onPress: () => {
+                    //   console.log('pressed');
+                    //   menuRef.current.open();
+                    // },
+                  },
+                  TriggerTouchableComponent: TouchableOpacity,
+                }}>
+                <CameraButton onPress={() => cameraRef.current.open()}>
+                  <FlexRow>
+                    <CameraIcon
+                      name="scan"
+                      size={20}
+                      color="#fff"
+                      // color={theme.colors.brand.primary}
+                    />
+                    <Spacer position={'left'}>
+                      <Text fontsize="12px" color={'#fff'}>
+                        Smart Scan Receipt
+                      </Text>
+                    </Spacer>
+                  </FlexRow>
+                </CameraButton>
+              </MenuTrigger>
 
-            <MenuOptions
-              optionsContainerStyle={{
-                marginLeft: 35,
-                marginTop: -80,
-                borderRadius: 10,
-                minWidth: 250,
-              }}>
-              <MenuOption
-                customStyles={menuOptionStyles}
-                onSelect={() => {
-                  cameraRef.current.close();
-                  onClickScanButton('camera');
+              <MenuOptions
+                optionsContainerStyle={{
+                  marginLeft: 35,
+                  marginTop: -80,
+                  borderRadius: 10,
+                  minWidth: 250,
                 }}>
-                <FlexRow justifyContent="space-between">
-                  <Text color="#2f2f2f" fontfamily="heading">
-                    Take a Photo
-                  </Text>
-                  <Ionicons name="camera-outline" size={20} color="#000" />
-                </FlexRow>
-              </MenuOption>
-              <MenuOption
-                customStyles={menuOptionStyles}
-                onSelect={() => {
-                  cameraRef.current.close();
-                  onClickScanButton('gallery');
-                }}>
-                <FlexRow justifyContent="space-between">
-                  <Text color="#2f2f2f" fontfamily="heading">
-                    Choose a Photo
-                  </Text>
-                  <FontAwesome name="photo" size={20} color="#000" />
-                </FlexRow>
-              </MenuOption>
-            </MenuOptions>
-            <Spacer size={'medium'} />
-          </Menu>
+                <MenuOption
+                  customStyles={menuOptionStyles}
+                  onSelect={() => {
+                    cameraRef.current.close();
+                    onClickScanButton('camera');
+                  }}>
+                  <FlexRow justifyContent="space-between">
+                    <Text color="#2f2f2f" fontfamily="heading">
+                      Take a Photo
+                    </Text>
+                    <Ionicons name="camera-outline" size={20} color="#000" />
+                  </FlexRow>
+                </MenuOption>
+                <MenuOption
+                  customStyles={menuOptionStyles}
+                  onSelect={() => {
+                    cameraRef.current.close();
+                    onClickScanButton('gallery');
+                  }}>
+                  <FlexRow justifyContent="space-between">
+                    <Text color="#2f2f2f" fontfamily="heading">
+                      Choose a Photo
+                    </Text>
+                    <FontAwesome name="photo" size={20} color="#000" />
+                  </FlexRow>
+                </MenuOption>
+              </MenuOptions>
+              <Spacer size={'medium'} />
+            </Menu>
+          ) : (
+            <View></View>
+          )}
           <SheetDetailsAddIcon>
             <TouchableNativeFeedback
               onPress={() => {

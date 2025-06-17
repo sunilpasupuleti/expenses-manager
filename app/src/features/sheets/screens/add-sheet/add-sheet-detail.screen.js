@@ -1,6 +1,12 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import {
   Avatar,
   Button,
@@ -133,7 +139,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       ? false
       : true;
   const [isLoanAccount, setIsLoanAccount] = useState(false);
-  const [isEmiPayment, setIsEmiPayment] = useState(false);
+  const [isEmiPayment, setIsEmiPayment] = useState(true);
   const [isPrepayment, setIsPrepayment] = useState(false);
   const [selectedEmiDate, setSelectedEmiDate] = useState(null);
   const [emiDates, setEmiDates] = useState([]);
@@ -147,24 +153,33 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   useEffect(() => {
     if (!sheet) return;
 
-    if (sheet?.isLoanAccount) {
+    const onSetLoanAccountEmiDates = async () => {
       setIsLoanAccount(true);
-      if (sheet.isEmiPayment) {
-        setIsEmiPayment(sheet.isEmiPayment);
-      } else {
-        setIsEmiPayment(true);
-      }
       setActiveType('expense');
-      if (sheet.useReducingBalance) {
-        const {allEmis} = getEmiDates(
-          sheet.loanStartDate,
-          sheet.repaymentFrequency,
-          sheet.loanYears,
-          sheet.loanMonths,
-          sheet.totalPayments,
-        );
-        setEmiDates(allEmis);
-      }
+
+      const {allEmis} = getEmiDates(
+        sheet.loanStartDate,
+        sheet.repaymentFrequency,
+        sheet.loanYears,
+        sheet.loanMonths,
+        sheet.totalPayments,
+      );
+
+      const transactions = await getLinkedDbRecord(sheet, 'transactions');
+      // Get list of emiDate strings from transactions where isEmiPayment is true
+      const paidEmiDates = (transactions || [])
+        .filter(tx => tx.isEmiPayment && tx.emiDate)
+        .map(tx => moment(tx.emiDate).format('YYYY-MM-DD'));
+
+      // Filter out already paid dates
+      const unpaidEmis = allEmis.filter(
+        dt => !paidEmiDates.includes(moment(dt).format('YYYY-MM-DD')),
+      );
+
+      setEmiDates(unpaidEmis);
+    };
+    if (sheet?.isLoanAccount) {
+      onSetLoanAccountEmiDates();
     }
   }, [sheet]);
 
@@ -208,93 +223,105 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   }, []);
 
   useEffect(() => {
+    if (
+      route.params?.smartScan &&
+      route?.params?.sheetDetail &&
+      route?.params?.sheet
+    ) {
+      setSmartScanMode(true);
+
+      const {
+        newCategoryIdentified: newCat,
+        date: dt,
+        notes: nts,
+        image,
+        type,
+        amount: amnt,
+      } = route.params.sheetDetail;
+      delete route.params.sheetDetail.image;
+      if (newCat) {
+        setNewCategoryIdentified({
+          showDialog: true,
+          category: {name: route.params.sheetDetail.category},
+        });
+      }
+      if (dt) {
+        setDate(new Date(dt));
+      }
+      setAmount(amnt);
+      setNotes(nts);
+      setSelectedImage(image);
+      setActiveType(route?.params?.sheet?.isLoanAccount ? 'expense' : type);
+    }
+  }, [route.params]);
+
+  useEffect(() => {
+    if (route?.params?.selectedCategory) {
+      setCategories(route.params.selectedCategory);
+    }
+  }, [route.params]);
+
+  useEffect(() => {
     const onSetData = async () => {
+      setEditMode(true);
+      let {sheetDetail: sd, sheetDetailModel: sdModel} = route.params;
+
+      setSheetDetailModel(sdModel || sd);
+
+      if (sd) {
+        setSheetDetail(sd);
+        setAmount(sd.amount);
+        setNotes(sd.notes);
+
+        setActiveType(sd.type);
+
+        const formattedDate = moment(sd.date).format('YYYY-MM-DD').toString();
+        const localDate = new Date(`${formattedDate}T00:00:00`);
+
+        setDate(localDate);
+
+        let imageUrl = null;
+        if (sd.imageUrl) {
+          imageUrl = getFirebaseAccessUrl(sd.imageUrl);
+        }
+        setSelectedImage({
+          type: sd.imageType,
+          extension: sd.imageExtension,
+          url: imageUrl,
+          originalUrl: sd.imageUrl,
+        });
+
+        setIsEmiPayment(sd.isEmiPayment ? true : false);
+
+        setSelectedEmiDate(sd.isEmiPayment && sd.emiDate ? sd.emiDate : null);
+        setShowTime(sd.showTime ? true : false);
+        if (sd.showTime && sd.time) {
+          setTime(new Date(sd.time));
+        }
+
+        const cgry = sd.category?.name
+          ? sd.category
+          : await getLinkedDbRecord(sd, 'category');
+
+        setSelectedCategory(cgry);
+
+        navigation.setOptions({
+          headerTitle: 'Edit ' + _.capitalize(_.trim(sd.type)),
+        });
+      }
+    };
+    if (route.params.edit) {
+      onSetData();
+    }
+  }, [route.params]);
+  useEffect(() => {
+    const onSetData = async () => {
+      if (!route.params?.sheet) return;
       if (route.params.sheet) {
         setSheet(route.params.sheet);
       }
       if (route.params.activeType) {
         setActiveType(route.params.activeType);
-      }
-      if (route.params.selectedCategory) {
-        setCategories(route.params.selectedCategory);
-      }
-
-      if (route.params && route.params.smartScan) {
-        let sd = route.params.sheetDetail;
-        if (sd) {
-          const {
-            amount,
-            notes,
-            image,
-            type,
-            date,
-            category,
-            newCategoryIdentified,
-          } = sd;
-          setSmartScanMode(true);
-          setAmount(amount);
-          setNotes(notes);
-          setSelectedImage(image);
-          setActiveType(sheet.isLoanAccount ? 'expense' : type);
-          setDate(date ? new Date(date) : new Date());
-
-          if (newCategoryIdentified) {
-            setNewCategoryIdentified({
-              showDialog: true,
-              category: {name: category},
-            });
-          } else {
-            setSelectedCategory(category);
-          }
-        }
-      }
-      if (route.params.edit) {
-        setEditMode(true);
-        let {sheetDetail: sd, sheetDetailModel: sdModel} = route.params;
-
-        setSheetDetailModel(sdModel || sd);
-
-        if (sd) {
-          setSheetDetail(sd);
-          setAmount(sd.amount);
-          setNotes(sd.notes);
-
-          setActiveType(sd.type);
-
-          const formattedDate = moment(sd.date).format('YYYY-MM-DD').toString();
-          const localDate = new Date(`${formattedDate}T00:00:00`);
-
-          setDate(localDate);
-
-          let imageUrl = null;
-          if (sd.imageUrl) {
-            imageUrl = getFirebaseAccessUrl(sd.imageUrl);
-          }
-          setSelectedImage({
-            type: sd.imageType,
-            extension: sd.imageExtension,
-            url: imageUrl,
-            originalUrl: sd.imageUrl,
-          });
-
-          setIsEmiPayment(sd.isEmiPayment ? true : false);
-
-          setSelectedEmiDate(sd.isEmiPayment && sd.emiDate ? sd.emiDate : null);
-          setShowTime(sd.showTime ? true : false);
-          if (sd.showTime && sd.time) {
-            setTime(new Date(sd.time));
-          }
-
-          const cgry = sd.category?.name
-            ? sd.category
-            : await getLinkedDbRecord(sd, 'category');
-
-          setSelectedCategory(cgry);
-
-          navigation.setOptions({
-            headerTitle: 'Edit ' + _.capitalize(_.trim(sd.type)),
-          });
-        }
       }
     };
 
@@ -316,7 +343,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
 
   const checkLoanAccountErrors = () => {
     let hadErrors = false;
-    if (isEmiPayment) {
+
+    if (isEmiPayment && isLoanAccount) {
       if (!selectedEmiDate) {
         showNotification('error', `Please Select EMI Date`);
         hadErrors = true;
@@ -467,9 +495,10 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
     let category = {
       name: _.capitalize(_.trim(newCategoryIdentified.category.name)),
       color: categoryColor,
-      uid: userData.uid,
+      icon: '',
+      userId: userData.id,
       type: 'expense',
-      isLoanRelated: sheet.isLoanAccount ? 1 : 0,
+      isLoanRelated: !!sheet.isLoanAccount,
     };
     onSaveCategory(category, insertedCat => {
       setSelectedCategory(insertedCat);

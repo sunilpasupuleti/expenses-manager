@@ -4,18 +4,17 @@ import {createContext} from 'react';
 import {useDispatch} from 'react-redux';
 import auth from '@react-native-firebase/auth';
 import remoteConfig from '@react-native-firebase/remote-config';
-import useHttp from '../../hooks/use-http';
 import {AuthenticationContext} from '../authentication/authentication.context';
 import {notificationActions} from '../../store/notification-slice';
 import {Alert} from 'react-native';
 import storage from '@react-native-firebase/storage';
-import {SQLiteContext} from '../sqlite/sqlite.context';
 import database from '@react-native-firebase/database';
 import {useNetInfo} from '@react-native-community/netinfo';
 import {loaderActions} from '../../store/loader-slice';
 import {getFirebaseAccessUrl} from '../../components/utility/helper';
 import RNFetchBlob from 'rn-fetch-blob';
 import {CameraRoll} from '@react-native-camera-roll/camera-roll';
+import {WatermelonDBContext} from '../watermelondb/watermelondb.context';
 
 export const ProfileContext = createContext({
   onUpdateProfile: (data, successCallBack, errorCallback) => null,
@@ -25,10 +24,9 @@ export const ProfileContext = createContext({
 });
 
 export const ProfileContextProvider = ({children}) => {
-  const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
   const dispatch = useDispatch();
-  const {sendRequest} = useHttp();
-  const {updateData} = useContext(SQLiteContext);
+  const {db, findRecordById} = useContext(WatermelonDBContext);
+
   const {isConnected} = useNetInfo();
 
   const {onLogout, onGetUserDetails, userData} = useContext(
@@ -151,82 +149,6 @@ export const ProfileContextProvider = ({children}) => {
       }
       errorCallback();
     }
-
-    // currentUser
-    //   .updateEmail(email)
-    //   .then(() => {
-    //     updatedDetails.email = email;
-    //     currentUser
-    //       .updateProfile({
-    //         displayName: displayName,
-    //       })
-    //       .then(() => {
-    //         updatedDetails.displayName = displayName;
-    //         onSuccessUpdatingProfileData(
-    //           updatedDetails,
-    //           successCallBack,
-    //           errorCallback,
-    //         );
-    //       })
-    //       .catch(err => {
-    //         errorCallback();
-    //         console.log('Error occured in updating profile data ' + err);
-    //         dispatch(
-    //           notificationActions.showToast({
-    //             message: 'Error in updating profile',
-    //             status: 'error',
-    //           }),
-    //         );
-    //       });
-    //   })
-    //   .catch(err => {
-    //     let error = '';
-    //     console.log(err.code, 'man error');
-    //     const showError = () => {
-    //       dispatch(
-    //         notificationActions.showToast({
-    //           message: error,
-    //           status: 'error',
-    //         }),
-    //       );
-    //     };
-    //     switch (err.code) {
-    //       case 'auth/invalid-email':
-    //         error = 'Invalid email address';
-    //         showError();
-    //         break;
-    //       case 'auth/email-already-in-use':
-    //         error = 'Email-address is already in use! Try another email.';
-    //         showError();
-    //         break;
-    //       case 'auth/requires-recent-login':
-    //         Alert.alert(
-    //           'We have to identify its you?',
-    //           `For the security reasons, we should identify its you, so please re-login into our app again`,
-    //           [
-    //             {
-    //               text: 'RE-LOGIN',
-    //               onPress: () => {
-    //                 onLogout();
-    //               },
-    //               style: 'default',
-    //             },
-    //             {
-    //               text: 'CANCEL',
-    //               onPress: () => {},
-    //               style: 'cancel',
-    //             },
-    //           ],
-    //         );
-    //         break;
-    //       default:
-    //         error = 'Error Occured while updating email-address.';
-    //         showError();
-    //         break;
-    //     }
-    //     errorCallback();
-    //     console.log('Error occured in updating profile data email' + error);
-    //   });
   };
 
   //   calling this after updating the profile data in firebase to update details in backend
@@ -238,7 +160,22 @@ export const ProfileContextProvider = ({children}) => {
     try {
       let currentUser = await auth().currentUser;
       const uid = currentUser.uid;
-      let results = await updateData('Users', details, `WHERE uid=?`, [uid]);
+      const userRecord = await findRecordById('users', 'id', userData.id);
+
+      if (!userRecord) {
+        throw 'User not found in DB';
+      }
+
+      await db.write(async () => {
+        await userData.update(record => {
+          Object.keys(details).forEach(key => {
+            if (key in record && typeof record[key] !== 'function') {
+              record[key] = details[key];
+            }
+          });
+        });
+      });
+
       await database().ref(`/users/${uid}`).update(details);
       await onGetUserDetails();
       currentUser.reload();

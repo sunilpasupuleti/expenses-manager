@@ -76,8 +76,25 @@ export const SheetDetailsLoanSummary = ({
       <LoanRow
         label1="Total Repayable"
         value1={currentSheet.totalRepayable}
+        subLabel1={`Paid Off - ${GetCurrencySymbol(
+          currentSheet.currency,
+        )} ${GetCurrencyLocalString(currentSheet.totalPaid)}`}
         label2="Total Interest"
         value2={currentSheet.totalInterest}
+        subLabel2={
+          currentSheet.useReducingBalance
+            ? `Interest Paid - ${GetCurrencySymbol(
+                currentSheet.currency,
+              )} ${GetCurrencyLocalString(
+                currentSheet.totalInterestPaid || 0,
+              )}\nRmng Interest - ${GetCurrencySymbol(
+                currentSheet.currency,
+              )} ${GetCurrencyLocalString(
+                (currentSheet.totalInterest || 0) -
+                  (currentSheet.totalInterestPaid || 0),
+              )}`
+            : ''
+        }
         currency={currentSheet.currency}
       />
 

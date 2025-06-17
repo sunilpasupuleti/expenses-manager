@@ -3,10 +3,16 @@ import {Button, Card, Divider, RadioButton, Switch} from 'react-native-paper';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {Text} from '../../../../components/typography/text.component';
 import React from 'react';
-import {Platform, ScrollView, TouchableOpacity, View} from 'react-native';
+import {
+  Platform,
+  ScrollView,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from 'react-native';
 import {useTheme} from 'styled-components/native';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {ButtonText, FlexRow, MainWrapper} from '../../../../components/styles';
+import {ButtonText, FlexRow} from '../../../../components/styles';
 import {Spacer} from '../../../../components/spacer/spacer.component';
 import {useContext} from 'react';
 import {SheetsContext} from '../../../../services/sheets/sheets.context';
@@ -14,11 +20,8 @@ import _ from 'lodash';
 import {useEffect} from 'react';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment';
-import {
-  GetCurrencyLocalString,
-  GetCurrencySymbol,
-} from '../../../../components/symbol.currency';
-import {useDispatch} from 'react-redux';
+
+import {useDispatch, useSelector} from 'react-redux';
 import {notificationActions} from '../../../../store/notification-slice';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
 import {MultipleSelectList} from 'react-native-dropdown-select-list';
@@ -33,7 +36,7 @@ const onSetFromDate = () => {
 };
 
 export const SheetExport = ({navigation, route}) => {
-  const {currentSheet} = useContext(SheetsContext);
+  const [sheet, setSheet] = useState(null);
   const [type, setType] = useState(null);
   const [categoryType, setCategoryType] = useState(null);
   const dispatch = useDispatch();
@@ -56,6 +59,18 @@ export const SheetExport = ({navigation, route}) => {
   const {getCategories} = useContext(CategoriesContext);
 
   const theme = useTheme();
+
+  const appTheme = useSelector(state => state.service.theme);
+  const themeType = useColorScheme();
+
+  let darkMode =
+    appTheme === 'automatic'
+      ? themeType === 'light'
+        ? false
+        : true
+      : appTheme === 'light'
+      ? false
+      : true;
 
   const onCompleteExporting = () => {
     navigation.goBack();
@@ -105,8 +120,10 @@ export const SheetExport = ({navigation, route}) => {
     }
 
     if (dateFilter) {
-      config.from = moment(fromDate).format('YYYY-MM-DD');
-      config.to = moment(toDate).format('YYYY-MM-DD');
+      config.from = moment(fromDate)
+        .startOf('day')
+        .format('YYYY-MM-DD HH:mm:ss');
+      config.to = moment(toDate).endOf('day').format('YYYY-MM-DD HH:mm:ss');
     }
 
     if (categoryType) {
@@ -116,7 +133,7 @@ export const SheetExport = ({navigation, route}) => {
       config.selectedCategories = selectedCategories;
     }
 
-    config.id = currentSheet.id;
+    config.id = sheet.id;
     onCompleteExporting();
 
     if (type === 'pdf') {
@@ -133,17 +150,22 @@ export const SheetExport = ({navigation, route}) => {
   };
 
   useEffect(() => {
-    navigation.setOptions({
-      headerTitle: 'Export ' + currentSheet?.name,
-      headerLeft: () => (
-        <Button uppercase={false} onPress={() => navigation.goBack()}>
-          <ButtonText>Back</ButtonText>
-        </Button>
-      ),
-      headerRight: () => {},
-    });
-  }, [currentSheet]);
+    if (route?.params?.sheet) {
+      const sh = route.params.sheet;
+      setSheet(sh);
+      navigation.setOptions({
+        headerTitle: 'Export ' + sh?.name,
+        headerLeft: () => (
+          <Button uppercase={false} onPress={() => navigation.goBack()}>
+            <ButtonText>Back</ButtonText>
+          </Button>
+        ),
+        headerRight: () => {},
+      });
+    }
+  }, [route.params]);
 
+  if (!sheet) return;
   return (
     <SafeArea child={true}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -192,7 +214,7 @@ export const SheetExport = ({navigation, route}) => {
                   />
                   <Text>Expense</Text>
                 </FlexRow>
-                {!currentSheet.isLoanAccount && (
+                {!sheet.isLoanAccount && (
                   <FlexRow>
                     <RadioButton.Android
                       color={theme.colors.brand.primary}
@@ -231,6 +253,7 @@ export const SheetExport = ({navigation, route}) => {
                   notFoundText="No Categories Found"
                   checkBoxStyles={{
                     borderColor: theme.colors.brand.primary,
+                    backgroundColor: theme.colors.text.primary,
                   }}
                   labelStyles={{color: theme.colors.text.primary}}
                   dropdownTextStyles={{color: theme.colors.text.primary}}
@@ -322,6 +345,7 @@ export const SheetExport = ({navigation, route}) => {
                   {Platform.OS === 'ios' && (
                     <DateTimePicker
                       mode="date"
+                      themeVariant={darkMode ? 'dark' : 'light'}
                       maximumDate={new Date(toDate)}
                       value={fromDate}
                       onChange={(e, d) => {
@@ -413,6 +437,7 @@ export const SheetExport = ({navigation, route}) => {
                     <DateTimePicker
                       maximumDate={new Date()}
                       mode="date"
+                      themeVariant={darkMode ? 'dark' : 'light'}
                       value={toDate}
                       onChange={(e, t) => {
                         if (e.type === 'dismissed') {

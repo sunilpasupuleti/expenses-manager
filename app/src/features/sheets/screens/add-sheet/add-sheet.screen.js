@@ -565,6 +565,7 @@ export const AddSheetScreen = ({navigation, route}) => {
             totalPayments: 0,
             totalRepayable: 0,
             totalInterest: 0,
+            totalInterestPaid: 0,
           }),
     };
 

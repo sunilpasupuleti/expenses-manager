@@ -3,25 +3,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
 import {createContext, useContext, useEffect} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {loaderActions} from '../../store/loader-slice';
 import {notificationActions} from '../../store/notification-slice';
 import {AuthenticationContext} from '../authentication/authentication.context';
 import database from '@react-native-firebase/database';
-import useHttp from '../../hooks/use-http';
-import auth from '@react-native-firebase/auth';
 import storage from '@react-native-firebase/storage';
 import remoteConfig from '@react-native-firebase/remote-config';
 import {
   defaultICloudContainerPath,
   isICloudAvailable,
-  readFile,
   readDir,
-  writeFile,
   unlink,
-  download,
 } from 'react-native-cloud-store';
-import moment from 'moment';
 import {SheetDetailsContext} from '../sheetDetails/sheetDetails.context';
 import {SQLiteContext} from '../sqlite/sqlite.context';
 import {
@@ -31,6 +25,7 @@ import {
   formatDate,
   getCurrentDate,
   getDataFromRows,
+  getLinkedDbRecord,
 } from '../../components/utility/helper';
 import _ from 'lodash';
 import {Alert, Platform} from 'react-native';
@@ -43,7 +38,11 @@ import {
   useNetInfo,
   fetch as netInfoFetch,
 } from '@react-native-community/netinfo';
-import defaultCategories from '../../components/utility/defaultCategories.json';
+
+import {WatermelonDBContext} from '../watermelondb/watermelondb.context';
+import Aes from 'react-native-aes-crypto';
+import {Q} from '@nozbe/watermelondb';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const SyncContext = createContext({
   backUpData: () => null,
@@ -53,295 +52,33 @@ export const SyncContext = createContext({
   onRestoreFromiCloud: () => null,
   onGetRestoresFromiCloud: successCallBack => null,
   onDeleteBackupFromiCloud: () => null,
-  onRecoverLostData: () => null,
 });
 
 export const SyncContextProvider = ({children}) => {
   const {userData} = useContext(AuthenticationContext);
   const {onGetSheetsAndTransactions} = useContext(SheetDetailsContext);
-  const {onSetUserAdditionalDetails, onSetUserDetailsFirebase} = useContext(
-    AuthenticationContext,
-  );
+
   const {
-    onBackUpDatabase,
-    closeDatabase,
     initializeDB,
     getData,
     restoreDbFromBackup,
-    db,
-    executeQuery,
-    createOrReplaceData,
+    db: sqliteDb,
   } = useContext(SQLiteContext);
+  const {db, deleteAllRecords} = useContext(WatermelonDBContext);
   const dispatch = useDispatch();
-  const {sendRequest} = useHttp();
-  const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
   const {isConnected} = useNetInfo();
 
   useEffect(() => {
     if (userData && db) {
-      // onInitialRestoreCheck();
+      onInitialRestoreCheck();
     }
   }, [userData, db]);
 
-  const onRestoreRecoveredDataIntoDb = async (uid, rawData) => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        // await deleteAllTablesData();
-        const userResult = await getData(
-          `SELECT * FROM Users WHERE uid='${uid}' LIMIT 1`,
-        );
-        const users = await getDataFromRows(userResult.rows);
-        if (!users[0]) {
-          resolve(true);
-          return;
-        }
-
-        let query = `SELECT * FROM Categories WHERE uid='${uid}'`;
-        let result = await getData(query);
-
-        if (result.rows.length === 0) {
-          let values = defaultCategories
-            .map(category => {
-              const {name, type, color, icon, isDefault} = category;
-              return `('${name}', '${type}', '${color}','${icon}', ${
-                isDefault ? 1 : 0
-              },'${uid}') `;
-            })
-            .join(',');
-          let insertQuery = `INSERT INTO Categories (name, type, color, icon, isDefault, uid) VALUES ${values}`;
-          await executeQuery(insertQuery);
-        }
-        const data = rawData;
-        const sheets = data.sheets || [];
-        const notValid = [];
-
-        for (let i = 0; i < sheets.length; i++) {
-          let {
-            details,
-            upcoming: upcomingDetails,
-            name,
-            currency,
-            showTotalBalance,
-            updatedAt,
-            archived,
-            pinned,
-          } = sheets[i];
-          const account = {
-            name: _.capitalize(_.trim(name)),
-            showSummary: showTotalBalance ? 1 : 0,
-            updatedAt: formatDate(updatedAt),
-            currency: currency,
-            archived: archived ? 1 : 0,
-            pinned: pinned ? 1 : 0,
-            totalBalance: 0,
-            totalExpense: 0,
-            totalIncome: 0,
-            uid: uid,
-          };
-
-          if (!details || details.length === 0) {
-            details = [];
-          }
-
-          if (upcomingDetails && upcomingDetails.length > 0) {
-            details = [...details, ...upcomingDetails];
-          }
-
-          let accountInsertRes = await createOrReplaceData('Accounts', account);
-          let accountInsertData = await getDataFromRows(accountInsertRes.rows);
-          const accountId = accountInsertRes.insertId;
-          // const accountId = accountInsertData[0].id;
-          if (details?.length > 0) {
-            for (let j = 0; j < details.length; j++) {
-              const {
-                category,
-                amount,
-                notes,
-                type,
-                showTime,
-                image,
-                date,
-                time,
-              } = details[j];
-
-              const transaction = {
-                amount: parseFloat(amount),
-                notes: notes || '',
-                type: type,
-                showTime: showTime ? 1 : 0,
-                accountId: accountId,
-              };
-
-              if (showTime) {
-                const transactionTime = formatDate(time);
-                const minutes = moment(transactionTime).minutes();
-                const hours = moment(transactionTime).hours();
-                const dte = new Date(date);
-                dte.setHours(hours, minutes, 0);
-                transaction.date = formatDate(dte);
-                transaction.time = transactionTime;
-              } else {
-                let dte = new Date(date);
-                dte.setHours(0, 0, 0);
-                transaction.date = formatDate(dte);
-              }
-
-              transaction.upcoming = moment(transaction.date).isAfter(moment())
-                ? 1
-                : 0;
-
-              if (image?.url) {
-                transaction.imageUrl = image.url;
-              }
-              if (image?.extension) {
-                transaction.imageExtension = image.extension;
-              }
-              if (image?.type) {
-                transaction.imageType = image.type;
-              }
-              const categoriesQuery = `SELECT * FROM Categories WHERE uid='${uid}' AND type='${type}' AND LOWER(name) LIKE '%${_.toLower(
-                category.name,
-              )}%'`;
-              const categoriesResult = await getData(categoriesQuery);
-
-              const categories = await getDataFromRows(categoriesResult.rows);
-
-              const categoryExists = categories[0];
-
-              if (categoryExists) {
-                transaction.categoryId = categoryExists.id;
-              } else {
-                const alphanumericPattern = /^[A-Za-z0-9\s]+$/;
-                const validCategory = alphanumericPattern.test(category.name);
-                if (!validCategory) {
-                  transaction.category = category;
-                  notValid.push(transaction);
-                  continue;
-                }
-                const categoryObj = {
-                  name: category.name,
-                  color: category.color,
-                  type: type,
-                  uid: uid,
-                };
-
-                let insertedCategoryRes = await createOrReplaceData(
-                  'Categories',
-                  categoryObj,
-                );
-
-                let insertedCategoryData = await getDataFromRows(
-                  insertedCategoryRes.rows,
-                );
-                transaction.categoryId = insertedCategoryRes.insertId;
-                // transaction.categoryId = insertedCategoryData[0].id;
-              }
-              await createOrReplaceData('Transactions', transaction);
-              // transactionsToInsert.push(transaction);
-            }
-          }
-        }
-        resolve(true);
-        hideLoader();
-        showNotification('success', 'Data recovered successfully');
-        const transformedData = {
-          dataRecovered: 1,
-        };
-        await database().ref(`/users/${uid}`).update(transformedData);
-        onSetUserDetailsFirebase(p => ({
-          ...p,
-          dataRecovered: transformedData.dataRecovered,
-        }));
-      } catch (err) {
-        reject(err);
-        console.log(err, 'error in recovering the data ');
-        hideLoader();
-        showNotification(
-          'error',
-          'Error in recovering your data ' + err.toString(),
-        );
-      }
-    });
-  };
-
-  const onRecoverLostData = async () => {
-    try {
-      const netStatus = await netInfoFetch();
-      if (!netStatus.isConnected) {
-        throw 'Check your internet connection & try again';
-      }
-
-      const onRecover = async () => {
-        showLoader(
-          'app',
-          true,
-          "Please wait while we're recovering the data for you.",
-        );
-        let jwtToken = await auth().currentUser.getIdToken();
-        sendRequest(
-          {
-            type: 'GET',
-            url: BACKEND_URL + '/backup/temp',
-            headers: {
-              authorization: 'Bearer ' + jwtToken,
-            },
-          },
-          {
-            successCallback: async res => {
-              if (!res.backup) {
-                throw 'No Data sent from backend';
-              }
-              // console.log(res.backup, 'RESS');
-              await onRestoreRecoveredDataIntoDb(userData.uid, res.backup);
-              // Clipboard.setString(JSON.stringify(res.backup));
-            },
-            errorCallback: async (err, data) => {
-              if (data?.noBackup) {
-                const transformedData = {
-                  dataRecovered: 1,
-                };
-                await database()
-                  .ref(`/users/${userData.uid}`)
-                  .update(transformedData);
-                onSetUserDetailsFirebase(p => ({
-                  ...p,
-                  dataRecovered: transformedData.dataRecovered,
-                }));
-              }
-              hideLoader();
-              showNotification('error', err.toString());
-            },
-          },
-        );
-      };
-
-      Alert.alert(
-        'Recover Data Confirmation?',
-        'Data recovery will proceed if data is found. It may create duplicate accounts, which you can delete if needed.',
-        [
-          {
-            text: 'Cancel',
-            style: 'destructive',
-          },
-          {
-            text: 'Recover',
-            onPress: async () => {
-              await onRecover();
-            },
-            style: 'default',
-          },
-        ],
-        {cancelable: false},
-      );
-    } catch (err) {
-      console.log(err, 'error in recovering the data from server');
-      hideLoader();
-      showNotification(
-        'error',
-        'Error in recovering your data ' + err.toString(),
-      );
+  useEffect(() => {
+    if (sqliteDb && db && userData) {
+      fallbackSQLiteRestore(null, true);
     }
-  };
+  }, [db, sqliteDb, userData]);
 
   const showLoader = (loaderType, backdrop = true, loaderText = '') => {
     let options = {};
@@ -370,6 +107,177 @@ export const SyncContextProvider = ({children}) => {
     );
   };
 
+  const onBackUpDatabase = async () => {
+    try {
+      const {uid} = userData;
+      const accountsCollection = await db.get('accounts');
+      const accounts = await accountsCollection
+        .query(Q.where('userId', userData.id))
+        .fetch();
+
+      const categoriesCollection = await db.get('categories');
+      const categories = await categoriesCollection
+        .query(Q.where('userId', userData.id))
+        .fetch();
+
+      if (accounts.length === 0) {
+        throw 'No data to export';
+      }
+      const accountsWithTransactions = await Promise.all(
+        accounts.map(async account => {
+          const transactions = await getLinkedDbRecord(account, 'transactions');
+          const sanitizedAccount = {...account._raw};
+          delete sanitizedAccount._status;
+          delete sanitizedAccount._changed;
+
+          const sanitizedTransactions = transactions.map(({_raw}) => {
+            const {accountId, ...rest} = _raw;
+            delete rest._status;
+            delete rest._changed;
+            return rest;
+          });
+
+          return {
+            ...sanitizedAccount,
+            transactions: sanitizedTransactions,
+          };
+        }),
+      );
+
+      const sanitizedCategories = categories.map(({_raw}) => {
+        const {userId, ...rest} = _raw;
+        delete rest._status;
+        delete rest._changed;
+        return rest;
+      });
+
+      const finalData = {
+        accounts: accountsWithTransactions,
+        categories: sanitizedCategories,
+      };
+
+      const jsonString = JSON.stringify(finalData);
+
+      // Aes encrypt
+
+      const salt = uid.slice(0, 8);
+      const key = await Aes.pbkdf2(uid, salt, 5000, 256, 'sha256');
+      const iv = await Aes.randomKey(16);
+      const cipher = await Aes.encrypt(jsonString, key, iv, 'aes-256-cbc');
+
+      const encryptedPayload = JSON.stringify({cipher, iv});
+
+      const fileName = `transactions-${Date.now()}.json`;
+      const path =
+        Platform.OS === 'ios'
+          ? `${RNFS.DocumentDirectoryPath}/${fileName}`
+          : `${RNFS.DownloadDirectoryPath}/${fileName}`;
+
+      await RNFS.writeFile(path, encryptedPayload, 'utf8');
+      return path;
+    } catch (error) {
+      console.error('🔴 Backup encryption failed:', error);
+      throw error;
+    }
+  };
+
+  const restoreEncryptedJsonBackup = async (filePath, uid, userId) => {
+    try {
+      const encryptedString = await RNFS.readFile(filePath, 'utf8');
+      const {cipher, iv} = JSON.parse(encryptedString);
+
+      const salt = uid.slice(0, 8);
+      const key = await Aes.pbkdf2(uid, salt, 5000, 256, 'sha256');
+      const decrypted = await Aes.decrypt(cipher, key, iv, 'aes-256-cbc');
+      const parsedData = JSON.parse(decrypted);
+
+      const {accounts = [], categories = []} = parsedData;
+      if (accounts.length === 0 || categories.length === 0) {
+        throw 'Parsed backup is empty or corrupted';
+      }
+
+      await deleteAllRecords(false); // optional param to avoid deleting user object
+
+      const enrichedCategories = categories.map(c => ({
+        ...c,
+        userId: userId,
+      }));
+
+      const categoryIdMap = {};
+
+      await db.write(async () => {
+        for (let c of enrichedCategories) {
+          const newRecord = await db.get('categories').create(cat => {
+            Object.keys(c).forEach(key => {
+              if (key !== 'id') cat[key] = c[key];
+            });
+            cat.userId = userId;
+          });
+          categoryIdMap[c.id] = newRecord.id;
+        }
+
+        for (const a of accounts) {
+          const {transactions = [], ...accountData} = a;
+          let totalIncome = 0;
+          let totalExpense = 0;
+
+          for (const t of transactions) {
+            if (t.type === 'income') {
+              totalIncome += Number(t.amount || 0);
+            } else if (t.type === 'expense') {
+              totalExpense += Number(t.amount || 0);
+            }
+          }
+
+          const totalBalance = totalIncome - totalExpense;
+
+          const createdAccount = await db.get('accounts').create(acc => {
+            Object.keys(accountData).forEach(key => {
+              if (key !== 'id') acc[key] = accountData[key];
+            });
+            acc.totalIncome = totalIncome;
+            acc.totalExpense = totalExpense;
+            acc.totalBalance = totalBalance;
+            acc.userId = userId;
+          });
+
+          for (const t of transactions) {
+            await db.get('transactions').create(txn => {
+              Object.keys(t).forEach(key => {
+                if (key !== 'id') txn[key] = t[key];
+              });
+              txn.accountId = createdAccount.id;
+              if (t.categoryId && categoryIdMap[t.categoryId]) {
+                txn.categoryId = categoryIdMap[t.categoryId];
+              }
+            });
+          }
+        }
+      });
+
+      return true;
+    } catch (e) {
+      console.error('🧨 Restore failed:', e);
+      throw e;
+    }
+  };
+
+  const onUpdateUserData = async data => {
+    try {
+      await db.write(async () => {
+        await userData.update(record => {
+          Object.keys(data).forEach(key => {
+            if (key in record && typeof record[key] !== 'function') {
+              record[key] = data[key];
+            }
+          });
+        });
+      });
+    } catch (error) {
+      showNotification('error', error.toString());
+    }
+  };
+
   const backUpData = async () => {
     return new Promise(async (resolve, reject) => {
       let fileUrl, uploadPath;
@@ -379,18 +287,17 @@ export const SyncContextProvider = ({children}) => {
         }
         showLoader('backup', true);
         let {uid} = userData;
-        let accounts = await onGetSheetsAndTransactions();
-        if (accounts.length === 0) {
+        let transactions = await onGetSheetsAndTransactions();
+        if (transactions.length === 0) {
           throw {
-            message:
-              'There are no accounts or transactions in accounts to backup',
+            message: 'There are no transactions in accounts to backup',
             error: 'noData',
           };
         }
         fileUrl = await onBackUpDatabase();
 
         const currentDate = new Date().toISOString();
-        uploadPath = `users/${uid}/backups/${currentDate}.db`;
+        uploadPath = `users/${uid}/backups/${currentDate}.json`;
         await firebaseUploadFile(uploadPath, fileUrl);
         let snapshot = await database()
           .ref(`/users/${uid}/backups`)
@@ -429,12 +336,14 @@ export const SyncContextProvider = ({children}) => {
         });
         showNotification(
           'success',
-          'Backup complete! Your data is now safely stored',
+          'Backup complete! Your data is now safely stored & completely encrypted',
         );
-        onSetUserAdditionalDetails(p => ({
-          ...p,
+        await removeFile(fileUrl);
+
+        onUpdateUserData({
           lastSynced: lastSynced,
-        }));
+        });
+
         hideLoader();
         resolve(true);
       } catch (e) {
@@ -452,14 +361,18 @@ export const SyncContextProvider = ({children}) => {
 
   const onInitialRestoreCheck = async () => {
     try {
-      const {uid} = userData;
-      let accounts = await getData(`SELECT * From Accounts WHERE uid='${uid}'`);
+      const {uid, id} = userData;
+      const accountsCollection = await db.get('accounts');
+      const accounts = await accountsCollection
+        .query(Q.where('userId', id))
+        .fetch();
+      const accountsLength = accounts.length;
+
       let snapshot = await database()
         .ref(`/users/${uid}/backups`)
         .once('value');
       let backups = snapshot.val() || {};
       const backupsLength = Object.keys(backups).length;
-      const accountsLength = accounts?.rows?.length || 0;
       if (accountsLength === 0 && backupsLength > 0) {
         Alert.alert(
           `Restore Backup?`,
@@ -491,6 +404,122 @@ export const SyncContextProvider = ({children}) => {
     if (await RNFS.exists(path)) {
       await RNFS.unlink(path);
     }
+  };
+
+  const fallbackSQLiteRestore = async (
+    filePath = null,
+    forceRestore = false,
+  ) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        if (!filePath && !forceRestore) throw 'No file fetched';
+
+        if (!forceRestore) {
+          await restoreDbFromBackup(filePath);
+          await initializeDB(true);
+        } else {
+          const alreadyRestored = await AsyncStorage.getItem(
+            'hasRestoredSQLiteBackup',
+          );
+
+          if (alreadyRestored === 'true') {
+            resolve(true);
+            return;
+          }
+        }
+
+        const rawAccounts = await getData(`SELECT * FROM Accounts;`);
+
+        const accounts = await getDataFromRows(rawAccounts.rows);
+
+        const rawCategories = await getData(`SELECT * FROM Categories;`);
+        const categories = await getDataFromRows(rawCategories.rows);
+
+        const rawTransactions = await getData(`SELECT * FROM Transactions;`);
+        const transactions = await getDataFromRows(rawTransactions.rows);
+
+        if (accounts.length === 0 && categories.length === 0) {
+          throw 'No records found in backup database.';
+        }
+        await deleteAllRecords(false);
+        const getModelWritableFields = model => {
+          const dummy = model.prepareCreate(() => {});
+          return Object.keys(dummy._raw).filter(
+            key =>
+              !['_status', '_changed', 'id', 'createdAt', 'updatedAt'].includes(
+                key,
+              ),
+          );
+        };
+        const enrichedCategories = categories.map(c => ({
+          ...c,
+          userId: userData.id,
+        }));
+        const categoryIdMap = {};
+        await db.write(async () => {
+          // Step 1: Categories
+          const categoryFields = getModelWritableFields(db.get('categories'));
+          for (let c of enrichedCategories) {
+            const newRecord = await db.get('categories').create(cat => {
+              categoryFields.forEach(field => {
+                if (c[field] !== undefined) cat[field] = c[field];
+              });
+              cat.userId = userData.id;
+            });
+            categoryIdMap[c.id] = newRecord.id;
+          }
+
+          // Step 2: Accounts
+          const accountFields = getModelWritableFields(db.get('accounts'));
+          const txnFields = getModelWritableFields(db.get('transactions'));
+
+          for (const a of accounts) {
+            const linkedTransactions = transactions.filter(
+              t => t.accountId === a.id,
+            );
+            const {id, ...accountData} = a;
+
+            const totalIncome = linkedTransactions
+              .filter(t => t.type === 'income' && !t.upcoming)
+              .reduce((sum, t) => sum + (t.amount || 0), 0);
+            const totalExpense = linkedTransactions
+              .filter(t => t.type === 'expense' && !t.upcoming)
+              .reduce((sum, t) => sum + (t.amount || 0), 0);
+            const totalBalance = totalIncome - totalExpense;
+
+            const createdAccount = await db.get('accounts').create(acc => {
+              accountFields.forEach(field => {
+                if (accountData[field] !== undefined)
+                  acc[field] = accountData[field];
+              });
+              acc.totalIncome = totalIncome;
+              acc.totalExpense = totalExpense;
+              acc.totalBalance = totalBalance;
+              acc.userId = userData.id;
+            });
+
+            // Step 3: Transactions
+            for (const t of linkedTransactions) {
+              await db.get('transactions').create(txn => {
+                txnFields.forEach(field => {
+                  if (t[field] !== undefined) txn[field] = t[field];
+                });
+                txn.accountId = createdAccount.id;
+                if (t.categoryId && categoryIdMap[t.categoryId]) {
+                  txn.categoryId = categoryIdMap[t.categoryId];
+                }
+              });
+            }
+          }
+        });
+        if (forceRestore) {
+          await AsyncStorage.setItem('hasRestoredSQLiteBackup', 'true');
+        }
+        resolve(true);
+      } catch (e) {
+        reject(e);
+      }
+    });
   };
 
   const restoreData = async (backup = null, confirmation = true) => {
@@ -541,22 +570,26 @@ export const SyncContextProvider = ({children}) => {
 
           const downloadURL = await reference.getDownloadURL();
 
-          const basePath =
-            Platform.OS === 'ios'
-              ? RNFS.DocumentDirectoryPath
-              : RNFS.DocumentDirectoryPath;
-          const title = 'expenses-manager-restore.db';
-          const downloadedPath = `${basePath}/${title}`;
+          const filePath = `${
+            RNFS.DocumentDirectoryPath
+          }/restore-${Date.now()}.json`;
 
-          await removeFile(downloadedPath);
+          await removeFile(filePath);
 
           const response = await RNFetchBlob.config({
             fileCache: true,
-            path: downloadedPath,
+            path: filePath,
           }).fetch('GET', downloadURL);
           if (response) {
-            await restoreDbFromBackup(downloadedPath);
-            await initializeDB(true);
+            if (backupInfo.path.endsWith('.db')) {
+              await fallbackSQLiteRestore(filePath);
+            } else if (backupInfo.path.endsWith('.json')) {
+              await restoreEncryptedJsonBackup(filePath, uid, userData.id);
+            }
+
+            hideLoader();
+            showNotification('success', 'Legacy backup restored successfully.');
+            resolve(true);
           } else {
             throw ' No file fetched';
           }
@@ -640,20 +673,18 @@ export const SyncContextProvider = ({children}) => {
     return new Promise(async (resolve, reject) => {
       try {
         showLoader('backup', true);
-        let accounts = await onGetSheetsAndTransactions();
-        if (accounts.length === 0) {
+        let transactions = await onGetSheetsAndTransactions();
+        if (transactions.length === 0) {
           throw {
-            message:
-              'There are no accounts or transactions in accounts to backup',
+            message: 'There are no transactions in accounts to backup',
             error: 'noData',
           };
         }
-
         if ((await isICloudAvailable()) && defaultICloudContainerPath) {
           const {uid} = userData;
           const fileUrl = await onBackUpDatabase();
           const currentDate = new Date().toISOString();
-          const fileName = `transactions-${currentDate}.db`;
+          const fileName = `transactions-${currentDate}.json`;
           let path = `${defaultICloudContainerPath}/Documents/${fileName}`;
           await RNFS.copyFile(fileUrl, path);
           const lastSynced = getCurrentDate();
@@ -663,11 +694,10 @@ export const SyncContextProvider = ({children}) => {
               lastSynced: lastSynced,
             });
           }
-
-          onSetUserAdditionalDetails(p => ({
-            ...p,
+          onUpdateUserData({
             lastSynced: lastSynced,
-          }));
+          });
+
           hideLoader();
           showNotification('success', 'Your data backed up safely to iCloud');
         } else {
@@ -690,11 +720,15 @@ export const SyncContextProvider = ({children}) => {
           const {path} = backup;
           const basePath = RNFS.DocumentDirectoryPath;
           if (await RNFS.exists(path)) {
-            await closeDatabase();
-            const originalFile = `${basePath}/${DB_PATH}`;
-            await removeFile(originalFile);
-            await RNFS.copyFile(path, originalFile);
-            await initializeDB(true);
+            const extension = path.split('.').pop();
+            // Check for legacy .db file
+            if (extension === 'db') {
+              await fallbackSQLiteRestore(path);
+            } else if (extension === 'json') {
+              await restoreEncryptedJsonBackup(path, userData.uid, userData.id);
+            } else {
+              throw 'Unsupported file format';
+            }
           } else {
             throw 'File  does not exist ';
           }
@@ -775,16 +809,11 @@ export const SyncContextProvider = ({children}) => {
             files.map(file => {
               let fileName = file.split('/Documents/')[1];
 
-              const regex = /(transactions-.*?\.db)\.?(?:icloud)?$/;
-              const match = regex.exec(fileName);
-              if (match && match[1]) {
-                fileName = match[1];
-              }
-
-              const dateRegex = /transactions-(.*?)\.db/;
-              const extensionRegex = /\.db$/;
+              const dateRegex = /transactions-(.*?)\.(json|db)/;
+              const extensionRegex = /\.(json|db)$/;
               const dateMatch = dateRegex.exec(fileName);
               const extensionMatch = extensionRegex.exec(fileName);
+
               let date, extension;
               if (dateMatch) {
                 date = dateMatch[1];
@@ -835,7 +864,6 @@ export const SyncContextProvider = ({children}) => {
         onGetRestoresFromiCloud,
         onRestoreFromiCloud,
         onDeleteBackupFromiCloud,
-        onRecoverLostData,
       }}>
       {children}
     </SyncContext.Provider>

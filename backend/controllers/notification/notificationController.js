@@ -198,7 +198,6 @@ module.exports = {
   async enableNotifications(req, res) {
     try {
       let { uid } = req.user;
-
       let jobs = schedule.scheduledJobs;
 
       let jobDailyReminderId = `${uid}-daily-reminder`;

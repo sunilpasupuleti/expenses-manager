@@ -7,7 +7,7 @@ import {
 import {Dimensions} from 'react-native';
 import {useTheme} from 'styled-components/native';
 import {CurrenciesScreen} from '../../features/currencies/screens/currencies.screen';
-import {SheetStatsDetailsScreen} from '../../features/sheets/components/sheet-stats/sheet-stats-details.component';
+import {SheetStatsDetailsScreen} from '../../features/sheets/components/sheet-stats/sheet-stats-details.screen';
 import {AddSheetDetailScreen} from '../../features/sheets/screens/add-sheet/add-sheet-detail.screen';
 import {AddSheetScreen} from '../../features/sheets/screens/add-sheet/add-sheet.screen';
 import {MoveSheetScreen} from '../../features/sheets/screens/move-sheet/move-sheet.screen';

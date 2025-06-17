@@ -1,7 +1,7 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {useTheme} from 'styled-components/native';
 import _ from 'lodash';
 import {Dimensions, ScrollView, TouchableOpacity} from 'react-native';
@@ -17,13 +17,13 @@ import {Text} from '../../../../components/typography/text.component';
 import {SafeArea} from '../../../../components/utility/safe-area.component';
 import {StatsInfo} from '../../components/sheet-stats/sheet-stats-info.component';
 import {Spacer} from '../../../../components/spacer/spacer.component';
-import {FlexRow, MainWrapper} from '../../../../components/styles';
+import {FlexRow} from '../../../../components/styles';
 import {StatsTitle} from '../../components/sheet-stats/sheet-stats.styles';
-import {SheetsContext} from '../../../../services/sheets/sheets.context';
 import {PieChart} from 'react-native-chart-kit';
 import {useIsFocused} from '@react-navigation/native';
-import {SheetDetailsContext} from '../../../../services/sheetDetails/sheetDetails.context';
 import {TabsSwitcher} from '../../../../components/tabs-switcher/tabs-switcher.component';
+import {ObservedSheetStats} from './sheet-stats.observed';
+import {getLinkedDbRecord} from '../../../../components/utility/helper';
 const menuOptions = [
   {key: 'daily', value: 'Daily'},
   {key: 'weekly', value: 'Weekly'},
@@ -33,21 +33,42 @@ const menuOptions = [
   {key: 'allitems', value: 'All items'},
 ];
 
-export const SheetStatsScreen = ({navigation, route}) => {
-  const theme = useTheme();
-  const {currentSheet} = useContext(SheetsContext);
-  const {onCheckUpcomingSheetDetails, getSheetDetailsAnalytics} =
-    useContext(SheetDetailsContext);
-  const [sheetDetails, setSheetDetails] = useState({
-    totalCount: 0,
-    finalAmount: 0,
-    transactions: [],
-  });
+export const SheetStatsScreen = ({navigation, route, sheet}) => {
   const [activeType, setActiveType] = useState('expense');
   const [report, setReport] = useState({key: 'monthly', value: 'Monthly'});
+
+  if (!sheet) return null;
+
+  return (
+    <ObservedSheetStats
+      navigation={navigation}
+      route={route}
+      sheet={sheet}
+      activeType={activeType}
+      setActiveType={setActiveType}
+      reportKey={report.key}
+      report={report}
+      setReport={setReport}
+      accountId={sheet.id}
+    />
+  );
+};
+
+export const BaseSheetStatsScreen = ({
+  navigation,
+  route,
+  sheet,
+  lastTransactions,
+  activeType,
+  setActiveType,
+  report,
+  setReport,
+}) => {
+  const theme = useTheme();
+
+  const [sheetDetails, setSheetDetails] = useState({});
   const [chartData, setChartData] = useState(null);
   const routeIsFocused = useIsFocused();
-  const {reRender} = route.params || {};
 
   let menuRef = useRef();
   const menuOptionStyles = {
@@ -57,38 +78,54 @@ export const SheetStatsScreen = ({navigation, route}) => {
 
   useEffect(() => {
     if (routeIsFocused) {
-      onGetSheetDetailsAnalytics(currentSheet, activeType, report.key);
-      checkUpcomingDetails();
-    }
-  }, [routeIsFocused]);
-
-  useEffect(() => {
-    if (reRender) {
-      onGetSheetDetailsAnalytics(currentSheet, activeType, report.key);
-      navigation.setParams({reRender: false});
-    }
-  }, [reRender]);
-
-  useEffect(() => {
-    if (routeIsFocused) {
       onSetNavigationOptions();
     }
   }, [report, activeType, routeIsFocused]);
 
-  const checkUpcomingDetails = () => {
-    onCheckUpcomingSheetDetails(currentSheet, transactionExists => {
-      if (transactionExists) {
-        onGetSheetDetailsAnalytics(currentSheet, activeType, report.key);
-      }
-    });
-  };
+  useEffect(() => {
+    if (!lastTransactions) return;
+
+    const processTransactions = async () => {
+      const grouped = _.groupBy(lastTransactions, t => t.category?.id);
+      const totalBalance = _.sumBy(lastTransactions, t => t.amount);
+
+      const transactions = await Promise.all(
+        Object.keys(grouped).map(async key => {
+          const entries = grouped[key];
+          const category = await getLinkedDbRecord(entries[0], 'category');
+
+          const totalAmount = _.sumBy(entries, t => t.amount);
+          const totalPercentage =
+            totalBalance === 0
+              ? 0
+              : parseFloat(((totalAmount / totalBalance) * 100).toFixed(2));
+
+          return {
+            category,
+            totalAmount,
+            totalPercentage,
+          };
+        }),
+      );
+      transactions.sort((a, b) => b.totalPercentage - a.totalPercentage);
+      setSheetDetails({
+        totalCount: lastTransactions.length,
+        transactions,
+        finalAmount: totalBalance,
+      });
+
+      onSetChartData(transactions);
+    };
+
+    processTransactions();
+  }, [lastTransactions]);
 
   const onSetNavigationOptions = () => {
     navigation.setOptions({
       headerTitle:
-        currentSheet?.name?.length > 25
-          ? currentSheet.name.substring(0, 25) + '...'
-          : currentSheet.name,
+        sheet?.name?.length > 25
+          ? sheet.name.substring(0, 25) + '...'
+          : sheet.name,
       headerLeft: () => (
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <FlexRow>
@@ -177,20 +214,10 @@ export const SheetStatsScreen = ({navigation, route}) => {
 
   const onSetActiveType = type => {
     setActiveType(type);
-    onGetSheetDetailsAnalytics(currentSheet, type, report.key);
   };
 
   const onSetReport = rep => {
     setReport(rep);
-    onGetSheetDetailsAnalytics(currentSheet, activeType, rep.key);
-  };
-
-  const onGetSheetDetailsAnalytics = async (sheet, type, reportKey) => {
-    const data = await getSheetDetailsAnalytics(sheet, type, reportKey);
-    if (data) {
-      setSheetDetails(data);
-      onSetChartData(data.transactions);
-    }
   };
 
   return (
@@ -204,7 +231,7 @@ export const SheetStatsScreen = ({navigation, route}) => {
             <StatsTitle>
               <Text color="#fff">{report.value}</Text>
             </StatsTitle>
-            {!currentSheet.isLoanAccount && (
+            {!sheet.isLoanAccount && (
               <View style={{marginLeft: 10, marginRight: 10, marginTop: 20}}>
                 <TabsSwitcher
                   tabs={[
@@ -261,6 +288,7 @@ export const SheetStatsScreen = ({navigation, route}) => {
                   finalAmount={sheetDetails.finalAmount}
                   sheetDetails={sheetDetails.transactions}
                   navigation={navigation}
+                  sheet={sheet}
                   activeType={activeType}
                   reportKey={report.key}
                 />

@@ -9,38 +9,24 @@ import {
   firebaseCopyMoveFile,
   firebaseRemoveFile,
   firebaseUploadFile,
-  getCurrentDate,
-  getDataFromRows,
+  getLinkedDbRecord,
+  hashCode,
   sendLocalNotification,
 } from '../../components/utility/helper';
 import remoteConfig from '@react-native-firebase/remote-config';
-import {SQLiteContext} from '../sqlite/sqlite.context';
 import {Alert, NativeEventEmitter, NativeModules, Platform} from 'react-native';
 import moment from 'moment';
 import {SheetsContext} from '../sheets/sheets.context';
 import useHttp from '../../hooks/use-http';
 import {useNetInfo} from '@react-native-community/netinfo';
-import {
-  transformAccountAndTransactionData,
-  transformSheetDetails,
-  transformSheetDetailsAnalytics,
-  transformSheetDetailsDashboard,
-  transformSheetDetailsTrends,
-} from '../../components/utility/dataProcessHelper';
-import {navigationRef} from '../../infrastructure/navigation/rootnavigation';
 import {WatermelonDBContext} from '../watermelondb/watermelondb.context';
 import {Q} from '@nozbe/watermelondb';
-import {ExternalStorageDirectoryPath} from 'react-native-fs';
 
 const {AlarmManagerModule} = NativeModules;
 const alarmEmitter =
   Platform.OS === 'android' ? new NativeEventEmitter(AlarmManagerModule) : null;
 
 export const SheetDetailsContext = createContext({
-  getSheetDetails: (sheet, searchKeyword) => null,
-  getSheetDetailsDashboard: (sheet, categoryType) => null,
-  getSheetDetailsAnalytics: (sheet, categoryType, key) => null,
-  getSheetDetailsTrends: (sheet, categoryType, key) => null,
   onSmartScanReceipt: (base64, callback) => null,
 
   onSaveSheetDetail: (sheetDetail, callback = () => null) => null,
@@ -62,17 +48,8 @@ export const SheetDetailsContext = createContext({
 
 export const SheetDetailsContextProvider = ({children}) => {
   const {userData} = useContext(AuthenticationContext);
-  const {onGetAndSetCurrentSheet, currentSheet} = useContext(SheetsContext);
-  const {
-    createOrReplaceData,
-    updateData,
-    getData,
-    deleteData,
-
-    initializeDB,
-    executeQuery,
-  } = useContext(SQLiteContext);
-  const {db, createRecord, getChildRecords} = useContext(WatermelonDBContext);
+  const {onUpdateSheet} = useContext(SheetsContext);
+  const {db, createRecord, findRecordById} = useContext(WatermelonDBContext);
   const {isConnected} = useNetInfo();
 
   const MINDEE_API_KEY = remoteConfig().getValue('MINDEE_API_KEY').asString();
@@ -83,13 +60,12 @@ export const SheetDetailsContextProvider = ({children}) => {
 
   useEffect(() => {
     // Upcoming sheetdetail
-    if (Platform.OS === 'android') {
+    if (Platform.OS === 'android' && db) {
       const subscription = alarmEmitter.addListener(
         'upcomingSheetDetail',
         async data => {
           if (!db) {
             console.log('no database exists intializing again');
-            await initializeDB(true);
           }
           // Giving time to initialize and setting the db variable
           setTimeout(() => {
@@ -102,7 +78,7 @@ export const SheetDetailsContextProvider = ({children}) => {
         subscription.remove();
       };
     }
-  }, []);
+  }, [db]);
 
   useEffect(() => {
     (async () => {
@@ -138,354 +114,6 @@ export const SheetDetailsContextProvider = ({children}) => {
     );
   };
 
-  const getSheetDetails = async (
-    sheet,
-    searchKeyword = null,
-    filterByDate = {status: false, fromDate: null, toDate: null},
-    upcomingScreen = false,
-    categoryId = null,
-    analyticsScreenReportKey = null,
-  ) => {
-    try {
-      let {id} = sheet;
-      let searchCondition = '';
-      const {status, fromDate, toDate} = filterByDate || {};
-
-      if (searchKeyword) {
-        searchCondition = `AND (
-          t.notes LIKE '%${searchKeyword}%' OR
-          CAST(t.amount AS TEXT) LIKE '%${searchKeyword}%' OR
-          c.name LIKE '%${searchKeyword}%'
-        )`;
-      }
-
-      if (status) {
-        searchCondition += ` AND t.date >= '${fromDate}' AND t.date <= '${toDate}'`;
-      }
-
-      if (categoryId !== null) {
-        searchCondition += ` AND c.id=${categoryId}`;
-      }
-
-      if (analyticsScreenReportKey) {
-        searchCondition += getReportKeyConditions(analyticsScreenReportKey);
-      }
-
-      // Query for transactions
-      const commonQuery = `
-        SELECT t.*, c.id AS categoryId, c.name AS categoryName, c.color AS categoryColor, 
-        c.type AS categoryType, c.icon AS categoryIcon, DATE(t.date) as date
-        FROM Transactions t
-        LEFT JOIN Categories c ON t.categoryId = c.id
-        WHERE t.accountId = ${id} AND upcoming=${
-        upcomingScreen ? 1 : 0
-      } ${searchCondition}
-        ORDER BY DATE(t.date) DESC;
-      `;
-
-      const result = await getData(commonQuery);
-      const rows = await getDataFromRows(result.rows);
-
-      // Use the transformSheetDetails function to group transactions by date
-      const transactions = transformSheetDetails(rows);
-
-      // Query for total balance and counts
-      const balanceAndCountQuery = `
-      SELECT 
-        SUM(CASE WHEN t.type = 'income' AND t.upcoming = 0 THEN t.amount ELSE 0 END) AS totalIncome,
-        SUM(CASE WHEN t.type = 'expense' AND t.upcoming = 0 THEN t.amount ELSE 0 END) AS totalExpense,
-        (SELECT COUNT(*) FROM Transactions WHERE accountId=${id} AND upcoming=0 ${searchCondition}) AS totalCount,
-        (SELECT COUNT(*) FROM Transactions WHERE accountId=${id} AND upcoming=1 ${searchCondition}) AS totalUpcomingCount
-      FROM Transactions t
-      LEFT JOIN Categories c ON t.categoryId = c.id
-      WHERE t.accountId = ${id} ${searchCondition};
-    `;
-
-      const balanceAndCountResult = await getData(balanceAndCountQuery);
-      const balanceAndCountData = await getDataFromRows(
-        balanceAndCountResult.rows,
-      );
-
-      const {
-        totalIncome = 0,
-        totalExpense = 0,
-        totalCount = 0,
-        totalUpcomingCount = 0,
-      } = balanceAndCountData[0] || {};
-
-      // Final data object with the required information
-      const data = {
-        totalCount,
-        totalUpcomingCount,
-        totalExpense,
-        totalIncome,
-        totalBalance: totalIncome - totalExpense,
-        ...(upcomingScreen
-          ? {upcomingTransactions: transactions}
-          : {transactions}),
-      };
-
-      return data;
-    } catch (e) {
-      console.log('error retrieving sheet details data - ', e);
-    }
-  };
-
-  const getSheetDetailsDashboard = async (sheet, categoryType) => {
-    try {
-      let {id} = sheet;
-
-      const query = `
-      SELECT t.*, c.id AS categoryId, c.name AS categoryName, c.color AS categoryColor, 
-      c.type AS categoryType, c.icon AS categoryIcon
-      FROM Transactions t
-      LEFT JOIN Categories c ON t.categoryId = c.id
-      WHERE t.accountId = ${id} AND t.upcoming = 0 AND c.type = '${categoryType}'
-      ORDER BY c.id DESC;
-    `;
-
-      const result = await getData(query);
-      const rows = await getDataFromRows(result.rows);
-
-      const transformedData = transformSheetDetailsDashboard(rows);
-
-      let totalCountQuery = `SELECT COUNT(*) AS totalCount FROM Transactions t LEFT JOIN Categories c ON t.categoryId = c.id WHERE accountId='${id}' AND upcoming = 0 AND c.type='${categoryType}'`;
-
-      const totalCountResult = await getData(totalCountQuery);
-      const totalCountData = await getDataFromRows(totalCountResult.rows);
-
-      const data = {
-        totalCount: totalCountData[0].totalCount || 0,
-        transactions: transformedData,
-      };
-      return data;
-    } catch (e) {
-      console.log('error retrieving sheet details dashboard data - ', e);
-    }
-  };
-
-  const getReportKeyConditions = key => {
-    const onFormatDate = date => moment(date).format('YYYY-MM-DD');
-    switch (key) {
-      case 'daily':
-        return ` AND DATE(t.date) = '${moment().format('YYYY-MM-DD')}'`;
-      case 'last14days':
-        const last14Start = onFormatDate(moment().subtract(14, 'days'));
-        const last14End = onFormatDate(moment());
-        return `
-          AND DATE(t.date) BETWEEN '${last14Start}' AND '${last14End}'
-      `;
-      case 'last12months':
-        const last12Start = onFormatDate(
-          moment().subtract(12, 'months').startOf('month'),
-        );
-        const last12End = onFormatDate(
-          moment().subtract(1, 'months').endOf('month'),
-        );
-        return `
-          AND DATE(t.date) BETWEEN '${last12Start}' AND '${last12End}'
-      `;
-      case 'monthly':
-        const monthStart = onFormatDate(moment().startOf('month'));
-        const monthEnd = onFormatDate(moment().endOf('month'));
-        return `
-          AND DATE(t.date) BETWEEN '${monthStart}' AND '${monthEnd}'
-        `;
-      case 'weekly':
-        const weekStart = onFormatDate(moment().startOf('week'));
-        const weekEnd = onFormatDate(moment().endOf('week'));
-        return `
-          AND DATE(t.date) BETWEEN '${weekStart}' AND '${weekEnd}'
-        `;
-      case 'lastweek':
-        const lastWeekStart = onFormatDate(
-          moment().subtract(7, 'days').startOf('week'),
-        );
-        const lastWeekEnd = onFormatDate(moment(lastWeekStart).endOf('week'));
-        return `
-          AND DATE(t.date) BETWEEN '${lastWeekStart}' AND '${lastWeekEnd}'
-        `;
-      case 'yearly':
-        const yearStart = onFormatDate(moment().startOf('year'));
-        const yearEnd = onFormatDate(moment().endOf('year'));
-        return `
-          AND DATE(t.date) BETWEEN '${yearStart}' AND '${yearEnd}'
-        `;
-      default:
-        return '';
-    }
-  };
-
-  const getSheetDetailsAnalytics = async (sheet, categoryType, key = null) => {
-    try {
-      const {id} = sheet;
-
-      let searchCondition = `
-        WHERE t.accountId = ${id} AND t.upcoming = 0 AND c.type='${categoryType}'
-      `;
-      searchCondition += getReportKeyConditions(key);
-
-      // Query to fetch transactions
-      const transactionQuery = `
-        SELECT t.*, 
-          c.id AS categoryId, 
-          c.name AS categoryName,
-          c.color AS categoryColor,
-          c.type AS categoryType,
-          c.icon AS categoryIcon,
-          SUM(t.amount) as totalAmount
-        FROM Transactions t
-        LEFT JOIN Categories c ON t.categoryId = c.id
-        ${searchCondition}
-        GROUP BY c.id
-        ORDER BY totalAmount DESC;
-      `;
-
-      // Query to get the total balance
-      const balanceQuery = `
-        SELECT SUM(t.amount) AS totalBalance
-        FROM Transactions t
-        LEFT JOIN Categories c ON t.categoryId = c.id
-        ${searchCondition};
-      `;
-
-      const [transactionResult, balanceResult] = await Promise.all([
-        getData(transactionQuery),
-        getData(balanceQuery),
-      ]);
-
-      const transactionRows = await getDataFromRows(transactionResult.rows);
-      const balanceData = await getDataFromRows(balanceResult.rows);
-
-      // Ensure totalBalance has a valid value
-      const totalBalance = balanceData[0]?.totalBalance || 0;
-
-      // Transform the transaction data
-      const transactions = transformSheetDetailsAnalytics(
-        transactionRows,
-        totalBalance,
-      );
-
-      // Query to get the total count of transactions
-      const totalCountQuery = `
-        SELECT COUNT(*) AS totalCount
-        FROM Transactions t
-        LEFT JOIN Categories c ON t.categoryId = c.id
-        ${searchCondition};
-      `;
-
-      const [totalCountResult] = await Promise.all([getData(totalCountQuery)]);
-      const totalCountData = await getDataFromRows(totalCountResult.rows);
-
-      return {
-        totalCount: totalCountData[0]?.totalCount || 0,
-        transactions,
-        finalAmount: totalBalance, // Include the total balance as finalAmount
-      };
-    } catch (e) {
-      console.error('Error retrieving sheet details analytics data:', e);
-    }
-  };
-
-  const getSheetDetailsTrends = async (sheet, categoryType) => {
-    try {
-      const {id} = sheet;
-
-      // Define the base search condition
-      const baseCondition = `
-        WHERE t.accountId = ${id} AND t.upcoming = 0 AND c.type='${categoryType}'
-      `;
-
-      // Configuration for both 14 days and 12 months trends
-      const trendsConfig = {
-        last14days: {
-          searchCondition: baseCondition + getReportKeyConditions('last14days'),
-          groupBy: 'DATE(t.date)', // Group by date for 14 days
-          dateKey: 'date', // Label for date grouping
-        },
-        last12months: {
-          searchCondition:
-            baseCondition + getReportKeyConditions('last12months'),
-          groupBy: `strftime('%Y-%m', t.date)`, // Group by month for 12 months
-          dateKey: 'month', // Label for month grouping
-        },
-      };
-
-      // Base query structure to retrieve transactions
-      const transactionQuery = (searchCondition, groupBy) => `
-        SELECT t.*, 
-          c.id AS categoryId, 
-          c.name AS categoryName,
-          c.color AS categoryColor,
-          c.type AS categoryType,
-          c.icon AS categoryIcon,
-          ${groupBy} AS dateKey
-        FROM Transactions t
-        LEFT JOIN Categories c ON t.categoryId = c.id
-        ${searchCondition}
-        GROUP BY t.id, ${groupBy}
-        ORDER BY ${groupBy} DESC;
-      `;
-
-      // Function to get total count query
-      const totalCountQuery = searchCondition => `
-        SELECT COUNT(*) AS totalCount
-        FROM Transactions t
-        LEFT JOIN Categories c ON t.categoryId = c.id
-        ${searchCondition};
-      `;
-
-      // Execute queries for both 14 days and 12 months trends
-      const [
-        last14DaysTotalCountResult,
-        last12MonthsTotalCountResult,
-        last14DaysResult,
-        last12MonthsResult,
-      ] = await Promise.all([
-        getData(totalCountQuery(trendsConfig.last14days.searchCondition)),
-        getData(totalCountQuery(trendsConfig.last12months.searchCondition)),
-        getData(
-          transactionQuery(
-            trendsConfig.last14days.searchCondition,
-            trendsConfig.last14days.groupBy,
-          ),
-        ),
-        getData(
-          transactionQuery(
-            trendsConfig.last12months.searchCondition,
-            trendsConfig.last12months.groupBy,
-          ),
-        ),
-      ]);
-
-      // Convert results to usable data
-      const last14DaysTotalCountData = await getDataFromRows(
-        last14DaysTotalCountResult.rows,
-      );
-      const last12MonthsTotalCountData = await getDataFromRows(
-        last12MonthsTotalCountResult.rows,
-      );
-      const last14DaysData = await getDataFromRows(last14DaysResult.rows);
-      const last12MonthsData = await getDataFromRows(last12MonthsResult.rows);
-
-      // Transform the data into trends format
-      const last14DaysTransactions =
-        transformSheetDetailsTrends(last14DaysData);
-      const last12MonthsTransactions =
-        transformSheetDetailsTrends(last12MonthsData);
-
-      // Return the final structured data
-      return {
-        last14DaysTotalCount: last14DaysTotalCountData[0]?.totalCount || 0,
-        last12MonthsTotalCount: last12MonthsTotalCountData[0]?.totalCount || 0,
-        last14DaysTransactions,
-        last12MonthsTransactions,
-      };
-    } catch (e) {
-      console.error('Error retrieving sheet details trends:', e);
-    }
-  };
-
   const onSmartScanReceipt = async (base64, callback = () => null) => {
     if (!base64) {
       Alert.alert('Required base64 string');
@@ -511,6 +139,7 @@ export const SheetDetailsContextProvider = ({children}) => {
       {
         successCallback: async receivedResponse => {
           hideLoader();
+
           if (
             receivedResponse?.api_request?.status === 'success' &&
             receivedResponse?.document?.inference?.prediction
@@ -518,6 +147,7 @@ export const SheetDetailsContextProvider = ({children}) => {
             let {total_amount, date, supplier_name, category} =
               receivedResponse.document.inference.prediction;
             let amount = total_amount.value;
+
             if (amount === null) {
               showNotification('warning', 'No Text found !');
               return;
@@ -536,18 +166,24 @@ export const SheetDetailsContextProvider = ({children}) => {
                 type: 'expense',
                 newCategoryIdentified: true,
               };
-              const query = `
-                SELECT * FROM Categories 
-                WHERE uid = '${userData.uid}' AND type='expense' AND (
-                  name LIKE '%${fetchedCategory}%'
-                );
-              `;
-              const result = await getData(query);
-              const rows = await getDataFromRows(result.rows);
-              if (rows[0]) {
-                extractedData.category = rows[0];
+
+              const matchingCategories = await db
+                .get('categories')
+                .query(
+                  Q.where('userId', userData.id),
+                  Q.where('type', 'expense'),
+                  Q.where(
+                    'name',
+                    Q.like(`%${Q.sanitizeLikeString(extractedData.category)}%`),
+                  ),
+                )
+                .fetch();
+
+              if (matchingCategories.length > 0) {
+                extractedData.category = matchingCategories[0]._raw;
                 extractedData.newCategoryIdentified = false;
               }
+
               callback(extractedData);
             }
           } else {
@@ -571,14 +207,6 @@ export const SheetDetailsContextProvider = ({children}) => {
     );
   };
 
-  const changeUpdatedAt = async sheet => {
-    await db.write(async () => {
-      await sheet.update(record => {
-        record._raw.updated_at = Date.now();
-      });
-    });
-  };
-
   const onSaveSheetDetail = async (
     sheet,
     sheetDetail,
@@ -591,7 +219,12 @@ export const SheetDetailsContextProvider = ({children}) => {
 
         if (sheetDetail.upcoming) {
           const timeInMillis = new Date(sheetDetail.date).getTime();
-          const uniqueCode = Number(`${sheet.id}${newRecord.id}`);
+
+          const sheetIdHash = Math.abs(hashCode(sheet.id));
+          const sheetDetailIdHash = Math.abs(hashCode(newRecord.id));
+          const uniqueCode = Number(
+            `${timeInMillis}${sheetIdHash % 1000}${sheetDetailIdHash % 1000}`,
+          );
 
           let data = {
             sheetDetailId: newRecord.id,
@@ -605,7 +238,7 @@ export const SheetDetailsContextProvider = ({children}) => {
             uniqueCode,
           );
         }
-        changeUpdatedAt(sheet);
+        await onUpdateSheet(sheet);
 
         hideLoader();
         callback();
@@ -666,7 +299,11 @@ export const SheetDetailsContextProvider = ({children}) => {
             sheetDetailId: sheetDetail.id,
             sheetId: sheet.id,
           };
-          const uniqueCode = Number(`${sheet.id}${sheetDetail.id}`);
+          const sheetIdHash = Math.abs(hashCode(sheet.id));
+          const sheetDetailIdHash = Math.abs(hashCode(sheetDetail.id));
+          const uniqueCode = Number(
+            `${timeInMillis}${sheetIdHash % 1000}${sheetDetailIdHash % 1000}`,
+          );
 
           AlarmManagerModule?.scheduleAlarm(
             timeInMillis,
@@ -675,7 +312,7 @@ export const SheetDetailsContextProvider = ({children}) => {
             uniqueCode,
           );
         }
-        changeUpdatedAt(sheet);
+        await onUpdateSheet(sheet);
         hideLoader();
         callback();
       };
@@ -754,7 +391,7 @@ export const SheetDetailsContextProvider = ({children}) => {
         });
       });
 
-      changeUpdatedAt(sheet);
+      await onUpdateSheet(sheet);
       hideLoader();
       callback();
     } catch (err) {
@@ -781,7 +418,7 @@ export const SheetDetailsContextProvider = ({children}) => {
         delete finalData.updated_at;
 
         const newRecord = await createRecord('transactions', finalData);
-        changeUpdatedAt(sheet);
+        await onUpdateSheet(sheet);
         hideLoader();
         callback();
       };
@@ -834,8 +471,8 @@ export const SheetDetailsContextProvider = ({children}) => {
 
         // create new transaction
         await createRecord('transactions', finalData);
-        changeUpdatedAt(oldSheet);
-        changeUpdatedAt(sheet);
+        await onUpdateSheet(oldSheet);
+        await onUpdateSheet(sheet);
 
         hideLoader();
         callback();
@@ -874,7 +511,7 @@ export const SheetDetailsContextProvider = ({children}) => {
           await sheetDetail.markAsDeleted();
           await sheetDetail.destroyPermanently();
         });
-        changeUpdatedAt(sheet);
+        await onUpdateSheet(sheet);
         callback();
       };
 
@@ -888,67 +525,64 @@ export const SheetDetailsContextProvider = ({children}) => {
   };
 
   const onSetUpcomingSheetDetailFromEvent = async data => {
-    return;
     try {
       if (!data) {
         throw 'No data';
       }
-      let query = `
-      SELECT t.*,
-      t.id AS transaction_id,
-      a.*,
-      a.id AS account_id
-      FROM Transactions AS t
-      JOIN Accounts AS a ON t.accountId = a.id
-      WHERE t.id = ${data.sheetDetailId};
-  `;
+      const txn = await findRecordById(
+        'transactions',
+        'id',
+        data.sheetDetailId,
+      );
+      const account = await getLinkedDbRecord(txn, 'account');
 
-      let result = await getData(query);
+      if (!txn || !account) throw 'No transaction found';
 
-      let resultData = await getDataFromRows(result.rows);
-
-      if (!resultData[0]) {
-        throw 'No Transaction Found';
-      }
-
-      const {transaction_id, notes, name, imageUrl, date} = resultData[0];
+      const {id: transaction_id, notes, imageUrl, date} = txn;
+      const {name} = account;
       const currentDate = moment().set({second: 0, millisecond: 0});
       let upcoming = moment(date).isSameOrAfter(currentDate);
       if (upcoming) {
-        let updateQuery = `
-        UPDATE Transactions
-        SET upcoming = 0
-        WHERE id = ${transaction_id}
-        `;
+        await db.write(async () => {
+          await txn.update(t => {
+            t.upcoming = false;
+          });
 
-        const updateResult = await executeQuery(updateQuery);
+          // 🔁 Recalculate account totals
+          const linkedTxns = await getLinkedDbRecord(account, 'transactions');
+          const {
+            income = 0,
+            expense = 0,
+            balance = 0,
+          } = linkedTxns.reduce(
+            (acc, t) => {
+              if (t.upcoming) return acc; // Skip upcoming
+              if (t.type === 'income') {
+                acc.income += t.amount;
+                acc.balance += t.amount;
+              } else if (t.type === 'expense') {
+                acc.expense += t.amount;
+                acc.balance -= t.amount;
+              }
+              return acc;
+            },
+            {income: 0, expense: 0, balance: 0},
+          );
+
+          await account.update(a => {
+            a.totalIncome = income;
+            a.totalExpense = expense;
+            a.totalBalance = balance;
+          });
+        });
 
         const notificationInfo = {
           title: `New Transaction ${notes ? `:${notes}` : ''}`,
           message: `Added to - ${name} `,
           image: imageUrl,
         };
-        const currentRoute = navigationRef?.current?.getCurrentRoute();
-        const activeRoute = currentRoute?.name;
 
-        if (activeRoute) {
-          const reRenderSubRoutes = [
-            'SheetStats',
-            'SheetTrends',
-            'Dashboard',
-            'Transactions',
-          ];
-          if (
-            reRenderSubRoutes.includes(activeRoute) &&
-            currentSheet?.id === data?.sheetId
-          ) {
-            return navigationRef.current.setParams({reRender: true});
-          }
-
-          navigationRef.current.setParams({reRender: true});
-        }
-
-        sendLocalNotification(notificationInfo, resultData);
+        sendLocalNotification(notificationInfo, txn._raw);
       }
     } catch (err) {
       console.log(err.message);
@@ -1018,6 +652,18 @@ export const SheetDetailsContextProvider = ({children}) => {
       } else {
         callback(false);
       }
+
+      if (sheet) {
+        onUpdateSheet(sheet);
+      } else {
+        // If no sheet was passed, update all related sheets
+        const accountIds = [...new Set(toUpdate.map(tx => tx.accountId))];
+
+        for (const id of accountIds) {
+          const account = await findRecordById('accounts', 'id', id);
+          if (account) await onUpdateSheet(account);
+        }
+      }
     } catch (err) {
       showNotification('error', err.message || err.toString());
     }
@@ -1025,38 +671,25 @@ export const SheetDetailsContextProvider = ({children}) => {
 
   const onGetSheetsAndTransactions = async () => {
     return new Promise(async (resolve, reject) => {
-      let {uid} = userData;
-
       try {
-        let query = `
-          SELECT 
-            a.id AS accountId, 
-            a.name AS accountName,
-            a.totalBalance AS accountBalance,
-            t.id AS transactionId, 
-            t.amount AS transactionAmount, 
-            t.date AS transactionDate, 
-            t.notes AS transactionNotes,
-            t.type AS transactionType,
-            c.id AS categoryId, 
-            c.name AS categoryName, 
-            c.color AS categoryColor, 
-            c.type AS categoryType,
-            c.icon AS categoryIcon
-          FROM Transactions t
-          LEFT JOIN Accounts a ON t.accountId = a.id
-          LEFT JOIN Categories c ON t.categoryId = c.id
-          WHERE a.uid = '${uid}' AND t.upcoming = 0
-          ORDER BY t.accountId, t.date;
-        `;
+        if (!userData?.uid) return resolve([]);
 
-        let result = await getData(query);
-        let data = await getDataFromRows(result.rows);
+        // Get all accounts for the user
+        const accounts = await db
+          .get('accounts')
+          .query(Q.where('userId', userData.id))
+          .fetch();
 
-        // Use the reusable helper function to transform the data
-        let finalResult = transformAccountAndTransactionData(data);
+        const result = [];
 
-        resolve(finalResult);
+        // Loop through each account and get related transactions
+        for (let acc of accounts) {
+          // Filter out upcoming = 1 transactions
+          const transactions = await getLinkedDbRecord(acc, 'transactions');
+          result.push(...transactions);
+        }
+
+        resolve(result);
       } catch (e) {
         reject(e);
       }
@@ -1069,10 +702,6 @@ export const SheetDetailsContextProvider = ({children}) => {
         onSaveSheetDetail,
         onEditSheetDetail,
         onDeleteSheetDetail,
-        getSheetDetails,
-        getSheetDetailsDashboard,
-        getSheetDetailsAnalytics,
-        getSheetDetailsTrends,
         onChangeSheetDetailType,
         onDuplicateSheetDetail,
         onMoveSheetDetail,
