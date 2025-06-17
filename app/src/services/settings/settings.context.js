@@ -49,7 +49,7 @@ export const SettingsContext = createContext({
 
 export const SettingsContextProvider = ({children}) => {
   const {userData} = useContext(AuthenticationContext);
-  const {getMessages} = useContext(SheetsContext);
+  const {getMessages, onUpdateSheet} = useContext(SheetsContext);
   const {db, deleteAllRecords} = useContext(WatermelonDBContext);
   const {sendRequest} = useHttp();
 
@@ -381,6 +381,7 @@ export const SettingsContextProvider = ({children}) => {
           let file = await RNFetchBlob.fs.readFile(fileuri);
           let data = JSON.parse(file);
           let {accounts, categories} = data;
+          const createdAccounts = [];
 
           if (!accounts?.length || !categories?.length) {
             throw 'Empty or corrupted file';
@@ -417,6 +418,8 @@ export const SettingsContextProvider = ({children}) => {
                   acc.userId = userData.id;
                 });
 
+                createdAccounts.push(createdAccount);
+
                 // Insert linked transactions
                 for (const t of transactions) {
                   await db.get('transactions').create(txn => {
@@ -431,6 +434,13 @@ export const SettingsContextProvider = ({children}) => {
                 }
               }
             });
+
+            await Promise.all(
+              createdAccounts.map(async acc => {
+                await onUpdateSheet(acc);
+              }),
+            );
+
             showNotification('success', 'Data Imported Successfully');
             hideLoader();
             resolve(true);

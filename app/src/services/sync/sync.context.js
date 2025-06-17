@@ -43,6 +43,7 @@ import {WatermelonDBContext} from '../watermelondb/watermelondb.context';
 import Aes from 'react-native-aes-crypto';
 import {Q} from '@nozbe/watermelondb';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {SheetsContext} from '../sheets/sheets.context';
 
 export const SyncContext = createContext({
   backUpData: () => null,
@@ -57,6 +58,7 @@ export const SyncContext = createContext({
 export const SyncContextProvider = ({children}) => {
   const {userData} = useContext(AuthenticationContext);
   const {onGetSheetsAndTransactions} = useContext(SheetDetailsContext);
+  const {onUpdateSheet} = useContext(SheetsContext);
 
   const {
     initializeDB,
@@ -204,7 +206,7 @@ export const SyncContextProvider = ({children}) => {
       }));
 
       const categoryIdMap = {};
-
+      const createdAccounts = [];
       await db.write(async () => {
         for (let c of enrichedCategories) {
           const newRecord = await db.get('categories').create(cat => {
@@ -241,6 +243,8 @@ export const SyncContextProvider = ({children}) => {
             acc.userId = userId;
           });
 
+          createdAccounts.push(createdAccount);
+
           for (const t of transactions) {
             await db.get('transactions').create(txn => {
               Object.keys(t).forEach(key => {
@@ -254,6 +258,12 @@ export const SyncContextProvider = ({children}) => {
           }
         }
       });
+
+      await Promise.all(
+        createdAccounts.map(async acc => {
+          await onUpdateSheet(acc);
+        }),
+      );
 
       return true;
     } catch (e) {

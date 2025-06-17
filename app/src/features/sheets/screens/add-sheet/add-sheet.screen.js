@@ -42,24 +42,22 @@ export const AddSheetScreen = ({navigation, route}) => {
   const theme = useTheme();
   const [disabled, setDisabled] = useState(true);
   const [sheetModel, setSheetModel] = useState(null);
-  const [sheetName, setSheetName] = useState('test');
+  const [sheetName, setSheetName] = useState('');
   const [editMode, setEditMode] = useState(false);
   const [editSheet, setEditSheet] = useState(null);
   // Loan Features
-  const [isLoanAccount, setIsLoanAccount] = useState(true);
-  const [loanAmount, setLoanAmount] = useState('50000');
-  const [loanYears, setLoanYears] = useState('7');
+  const [isLoanAccount, setIsLoanAccount] = useState(false);
+  const [loanAmount, setLoanAmount] = useState('');
+  const [loanYears, setLoanYears] = useState('');
   const [loanMonths, setLoanMonths] = useState('0');
-  const [interestRate, setInterestRate] = useState('7');
+  const [interestRate, setInterestRate] = useState('');
   const [repaymentFrequency, setRepaymentFrequency] = useState('monthly');
-  const [loanStartDate, setLoanStartDate] = useState(
-    moment('2025-04-30').toDate(),
-  );
-  const [useReducingBalance, setUseReducingBalance] = useState(true);
+  const [loanStartDate, setLoanStartDate] = useState(moment().toDate());
+  const [useReducingBalance, setUseReducingBalance] = useState(false);
 
   const [interestRateMode, setInterestRateMode] = useState('yearly');
   const [useEndDate, setUseEndDate] = useState(false);
-  const [loanEndDate, setLoanEndDate] = useState(moment('2032-04-30').toDate());
+  const [loanEndDate, setLoanEndDate] = useState(null);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
 
   const [showDatePicker, setShowDatePicker] = useState(false);

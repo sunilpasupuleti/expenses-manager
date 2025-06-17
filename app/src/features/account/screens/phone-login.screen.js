@@ -50,7 +50,7 @@ const smsListenerEmitter =
   Platform.OS === 'android' ? new NativeEventEmitter(SmsListener) : null;
 
 export const PhoneLoginScreen = ({navigation, route}) => {
-  const [phone, setPhone] = useState({value: '9959907940', error: false});
+  const [phone, setPhone] = useState({value: '', error: false});
   const [otp, setOtp] = useState({value: '', error: false, focused: false});
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -67,8 +67,7 @@ export const PhoneLoginScreen = ({navigation, route}) => {
   const boxArray = new Array(maximumOtpLength).fill(0);
   const themeType = useColorScheme();
   const appTheme = useSelector(state => state.service.theme);
-  // const [countryCode, setCountryCode] = useState(getCountry());
-  const [countryCode, setCountryCode] = useState('IN');
+  const [countryCode, setCountryCode] = useState(getCountry());
 
   const [country, setCountry] = useState(null);
 
