@@ -40,6 +40,7 @@ import {colors} from './src/infrastructure/theme/colors';
 import {SQLiteContextProvider} from './src/services/sqlite/sqlite.context';
 import {SocketContextProvider} from './src/services/socket/socket.context';
 import {WatermelonDBContextProvider} from './src/services/watermelondb/watermelondb.context';
+import {APP_STORE_URL, PLAY_STORE_URL} from './config';
 
 moment.suppressDeprecationWarnings = true;
 if (Platform.OS === 'android') {
@@ -110,8 +111,9 @@ const App = () => {
       );
 
       let updateNeeded = await VersionCheck.needUpdate();
+
       if (updateNeeded && updateNeeded.isNeeded) {
-        dispatch(setAppUpdateNeeded(true));
+        // dispatch(setAppUpdateNeeded(true));
         Alert.alert(
           `Plese Update the app from ${currentVersion} to ${latestVersion} `,
           'You will have to update your app to the latest version to continue using.',
@@ -119,8 +121,18 @@ const App = () => {
             {
               text: 'Update',
               onPress: () => {
-                RNExitApp.exitApp();
-                Linking.openURL(updateNeeded.storeUrl);
+                Linking.openURL(updateNeeded.storeUrl)
+                  .then(() => {
+                    RNExitApp.exitApp();
+                  })
+                  .catch(err => {
+                    if (Platform.OS === 'ios') {
+                      Linking.openURL(APP_STORE_URL);
+                    } else if (Platform.OS === 'android') {
+                      Linking.openURL(PLAY_STORE_URL);
+                    } else {
+                    }
+                  });
               },
               style: 'cancel',
             },

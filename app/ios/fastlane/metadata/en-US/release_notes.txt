@@ -1,11 +1,7 @@
-🚀 Major Update: Complete Redesign & Powerful New Features!
+What’s New
 
-Experience a brand-new UI with smoother performance and faster navigation.
+• Real Bank Sync: Link your actual bank accounts to fetch live transactions and real-time balances — view all your spending in one place.
 
-✅ Link multiple supported bank accounts and view real-time balances and transactions directly in the app.
+• Superfast and Improved UI: Experience a faster, smoother, and more refined interface throughout the app.
 
-💳 Manage loans with ease: Create flexible loan accounts, auto-calculate EMI, and view full amortization schedules.
-
-🔐 Your privacy matters — all your data is fully encrypted, stored only on your device. Backups are also end-to-end encrypted and accessible **only by you** — not even we can read them.
-
-This update turns the app into your **one-stop financial manager**, combining speed, security, and powerful tools in one place.
+• End-to-End Data Privacy: Your data is fully encrypted. Nothing is stored on our servers unless you choose to back it up — and even backups are encrypted. Your privacy is our top priority.
