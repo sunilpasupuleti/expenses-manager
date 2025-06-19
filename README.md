@@ -1,4 +1,4 @@
-![Logo](https://expensesmanager.app/graphics/EXPENSES%20MANAGER.jpg)
+![Logo](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/EXPENSES%20MANAGER.jpg)
 
 # Expenses Manager
 
@@ -22,17 +22,45 @@ https://apps.apple.com/in/app/expenses-manager-by-webwizard/id6450874945
 
 ## Screenshots
 
-Android  
-:-------------------------:
-![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/android/1.png) ![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/android/2.png) ![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/android/3.png)
-![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/android/4.png) ![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/android/5.png) ![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/android/6.png)
-![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/android/7.png) ![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/android/8.png) ![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/android/9.png) ![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/android/10.png)
+<h3>Android Screenshots</h3>
 
-IOS  
-:-------------------------:
-![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/1.png) ![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/2.png) ![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/3.png)
-![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/4.png) ![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/5.png) ![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/6.png)
-![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/7.png) ![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/8.png) ![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/9.png) ![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/10.png) ![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/11.png) ![App Screenshot](https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/12.png)
+<p align="center">
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/android/1.png" width="22%" />
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/android/2.png" width="22%" />
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/android/3.png" width="22%" />
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/android/4.png" width="22%" />
+</p>
+
+<p align="center">
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/android/5.png" width="22%" />
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/android/6.png" width="22%" />
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/android/7.png" width="22%" />
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/android/8.png" width="22%" />
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/android/9.png" width="22%" />
+</p>
+
+<h3>iOS Screenshots</h3>
+
+<p align="center">
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/1.png" width="22%" />
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/2.png" width="22%" />
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/3.png" width="22%" />
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/4.png" width="22%" />
+</p>
+
+<p align="center">
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/5.png" width="22%" />
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/6.png" width="22%" />
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/7.png" width="22%" />
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/8.png" width="22%" />
+</p>
+
+<p align="center">
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/9.png" width="22%" />
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/10.png" width="22%" />
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/11.png" width="22%" />
+  <img src="https://cdn.jsdelivr.net/gh/sunilpasupuleti/expenses-manager@master/graphics/reduced/ios/12.png" width="22%" />
+</p>
 
 ## Features
 
