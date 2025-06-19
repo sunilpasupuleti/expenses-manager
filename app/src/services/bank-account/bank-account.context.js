@@ -208,8 +208,6 @@ export const BankAccountContextProvider = ({children}) => {
     errorCallback = () => {},
   ) => {
     try {
-      console.log(data);
-
       showLoader('delete', true, 'Deleting Account');
       let jwtToken = await auth().currentUser.getIdToken();
       sendRequest(

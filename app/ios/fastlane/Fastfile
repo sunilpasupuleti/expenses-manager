@@ -75,7 +75,14 @@ platform :ios do
       },
       submit_for_review: true,
       automatic_release: false, # set to true if you want it auto-live
-      force: true
+      force: true,
+      run_precheck_before_submit: false,
+      submission_information: {
+        export_compliance_uses_encryption: false
+      },
+      skip_screenshots: false,
+      metadata_path: "../fastlane/metadata",
+      screenshots_path: "../fastlane/screenshots"
     )
   end
 end

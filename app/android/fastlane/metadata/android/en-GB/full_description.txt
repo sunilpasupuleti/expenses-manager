@@ -1,4 +1,4 @@
-Expenses Manager has been crafted to keep track of your spending effortlessly, with useful features in a simple, intuitive interface. And with Back up, it's easy to keep all your expenses in sync across your devices.
+Expenses Aura has been crafted to keep track of your spending effortlessly, with useful features in a simple, intuitive interface. And with Back up, it's easy to keep all your expenses in sync across your devices.
 
 Features
 

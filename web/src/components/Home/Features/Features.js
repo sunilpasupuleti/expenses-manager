@@ -28,6 +28,18 @@ export const Features = ({}) => {
           </div>
           <div className={styles.feature}>
             <div className={styles.icon}>
+              <i className={`fa-solid fa-building-columns`}></i>
+            </div>
+            <h5 className={styles.title}>Real Bank Sync (New)</h5>
+            <p className={styles.subtitle}>
+              Securely link your bank accounts to fetch live balances and
+              transactions automatically. All in one place—no need to switch
+              apps.
+            </p>
+          </div>
+
+          <div className={styles.feature}>
+            <div className={styles.icon}>
               <i className={`fa-solid fa-lock`}></i>
             </div>
             <h5 className={styles.title}>Privacy</h5>

@@ -177,7 +177,7 @@ module.exports = {
         client_id: uid,
         user_token: userToken,
         enable_multi_item_link: !updateRequest ? true : false, //multi item link not supported in update mode
-        client_name: "Expenses Manager",
+        client_name: "Expenses Aura",
         webhook: fullWebhookUrl,
         products: ["transactions"],
         country_codes: ["US", "CA"],

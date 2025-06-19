@@ -177,7 +177,7 @@ export const AccountScreen = ({navigation}) => {
           fontfamily="bodyBold"
           color={theme.colors.text.primary}
           fontsize="25px">
-          Expenses Manager
+          Expenses Aura
         </Text>
       </Animatable.View>
 

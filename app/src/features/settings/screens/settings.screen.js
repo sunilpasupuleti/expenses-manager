@@ -262,9 +262,9 @@ export const SettingsScreen = ({navigation}) => {
   const onShareApp = async () => {
     let url = Platform.OS === 'ios' ? APP_STORE_URL : PLAY_STORE_URL;
     Share.open({
-      title: 'Expenses Manager by Webwizard',
+      title: 'Expenses Aura by Webwizard',
       message:
-        'Take control of your budget! Install Expenses Manager today for easy tracking of your income and expenses ',
+        'Take control of your budget! Install Expenses Aura today for easy tracking of your income and expenses ',
       url: url,
     }).catch(err => {
       console.log(err, 'error while sharing the app ');
@@ -289,7 +289,7 @@ export const SettingsScreen = ({navigation}) => {
     };
     Alert.alert(
       'Rate us ⭐️',
-      'Are you enjoying Expenses Manager? Would you like to share your review with us? This will help and motivate us a lot.',
+      'Are you enjoying Expenses Aura? Would you like to share your review with us? This will help and motivate us a lot.',
       [
         {
           text: 'No Thanks!',

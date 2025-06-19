@@ -36,7 +36,7 @@ export const OnBoarding = ({navigation, navigate}) => {
           source={require('../../../../assets/onboarding/1.png')}
         />
       ),
-      title: 'Welcome to Expenses Manager. Track your Expenses.',
+      title: 'Welcome to Expenses Aura. Track your Expenses.',
       subtitle:
         'Effortlessly manage finances with our simple tool for tracking expenses and staying on budget',
     },
@@ -99,7 +99,7 @@ export const OnBoarding = ({navigation, navigate}) => {
           source={require('../../../../assets/onboarding/1.png')}
         />
       ),
-      title: 'Welcome to Expenses Manager. Track your Expenses.',
+      title: 'Welcome to Expenses Aura. Track your Expenses.',
       subtitle:
         'Effortlessly manage finances with our simple tool for tracking expenses and staying on budget',
     },

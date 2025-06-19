@@ -1,0 +1,54 @@
+Expenses Aura is your all-in-one personal finance tracker, designed to help you manage spending effortlessly with a clean, intuitive interface and powerful features — all while keeping your data fully private and secure.
+
+FEATURE HIGHLIGHTS:
+
+🏦 Bank Account Integration  
+Securely link your supported bank accounts to fetch real-time balances and transaction history — no more manual entry needed.
+
+
+🔒 Data Encryption  
+Your data is stored securely and encrypted on your device. No one else — not even us — can access it.
+
+📸 Smart Scanning  
+Scan your receipts or bills directly using the camera and automatically categorize transactions with date and category detection.
+
+📤 Easy Exporting  
+Export your data in multiple formats (PDF, Excel, JSON) to use it however and wherever you like.
+
+🔄 Import from JSON  
+Restore your complete accounts and transactions from a previously exported JSON backup — perfect for device changes or app reinstalls.
+
+📂 Multiple Account Support  
+Create and manage separate accounts with individual currencies and track each account’s transactions independently.
+
+📊 Dashboard & Analytics  
+Get powerful category-wise breakdowns and percentages, with dynamic pie charts and dashboards for each account.
+
+📈 Trends Overview  
+Visualize your financial trends over the past 14 days and 12 months with interactive line and bar charts.
+
+📌 Account Options  
+Pin, archive, edit, or delete any account with a simple tap.
+
+🖼️ Transaction Attachments  
+Attach images to any transaction for easy future reference.
+
+💱 Live Currency Rates  
+Automatically updated exchange rates help manage foreign currency accounts with ease.
+
+📲 Daily Backup & History  
+Your data is backed up daily at midnight, with restore access to your last 10 backups — automated and worry-free.
+
+📅 EMI & Loan Management  
+Add flexible loan accounts with amortization schedules and EMI tracking built-in.
+
+🔔 Smart Reminders  
+Set daily notification reminders to log missed expenses on time.
+
+🔐 App Lock  
+Protect your financial data with a secure app lock.
+
+🌙 Dark Mode & Quick Actions  
+Enjoy a modern UI with Dark Mode, swipeable actions, quick input, and context menus that streamline your workflow.
+
+Expenses Aura is now faster, smarter, and completely encrypted. Whether you're budgeting, tracking a loan, or reviewing your spending trends — manage everything in one secure place.

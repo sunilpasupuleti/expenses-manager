@@ -1,0 +1,4 @@
+What’s New
+	•	🔄 Real Bank Sync: Link your actual bank accounts to get live transactions and up-to-date balances — your spending, all in one place.
+	•	⚡️ Superfast & Improved UI: Enjoy a sleek, faster, and smoother experience throughout the app.
+	•	🔐 End-to-End Data Privacy: Your data is fully encrypted — not even we can access it. Nothing is stored on our servers unless you choose to back it up. Even backups are encrypted. Your privacy is our top priority.

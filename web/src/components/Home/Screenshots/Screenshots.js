@@ -22,6 +22,7 @@ export const Screenshots = (props) => {
     require("../../../assets/webp/screenshots/android/7.webp"),
     require("../../../assets/webp/screenshots/android/8.webp"),
     require("../../../assets/webp/screenshots/android/9.webp"),
+    require("../../../assets/webp/screenshots/android/10.webp"),
   ];
 
   let iosImages = [
@@ -34,6 +35,9 @@ export const Screenshots = (props) => {
     require("../../../assets/webp/screenshots/ios/7.webp"),
     require("../../../assets/webp/screenshots/ios/8.webp"),
     require("../../../assets/webp/screenshots/ios/9.webp"),
+    require("../../../assets/webp/screenshots/ios/10.webp"),
+    require("../../../assets/webp/screenshots/ios/11.webp"),
+    require("../../../assets/webp/screenshots/ios/12.webp"),
   ];
 
   const animations = {

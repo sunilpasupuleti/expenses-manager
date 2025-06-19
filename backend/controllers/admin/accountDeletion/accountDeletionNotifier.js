@@ -48,7 +48,7 @@ async function notifyUserStatusChange({ status, user, rejectedReason = "" }) {
        <p style="font-size: 12px; color: #888;">
         Email Sent (UTC Time): <strong>${timestamp}</strong>
        </p>
-      <p>Thank you,<br/>Expenses Manager Support Team</p>
+      <p>Thank you,<br/>Expenses Aura Support Team</p>
     </div>
     `;
   } else if (status === "rejected") {
@@ -95,7 +95,7 @@ async function notifyUserStatusChange({ status, user, rejectedReason = "" }) {
       <p style="font-size: 12px; color: #888;">
         📅 Email Sent (UTC Time): <strong>${timestamp}</strong>
       </p>
-      <p>Thank you,<br/>💙 <strong>Expenses Manager Support Team</strong></p>
+      <p>Thank you,<br/>💙 <strong>Expenses Aura Support Team</strong></p>
     </div>
     `;
   }

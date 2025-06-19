@@ -141,8 +141,6 @@ export const SheetsInfo = ({
   };
 
   const onPressPinButton = sheet => {
-    console.log(sheet);
-
     onPinSheet(sheet, sheet._raw);
   };
 
