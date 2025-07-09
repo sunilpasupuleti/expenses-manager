@@ -1574,6 +1574,8 @@ PODS:
   - react-native-plaid-link-sdk (12.1.1):
     - Plaid (~> 6.1.0)
     - React-Core
+  - react-native-render-html (6.3.4):
+    - React-Core
   - react-native-restart (0.0.27):
     - React-Core
   - react-native-safe-area-context (4.14.1):
@@ -2281,6 +2283,7 @@ DEPENDENCIES:
   - react-native-onesignal (from `../node_modules/react-native-onesignal`)
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
   - react-native-plaid-link-sdk (from `../node_modules/react-native-plaid-link-sdk`)
+  - react-native-render-html (from `../node_modules/react-native-render-html`)
   - react-native-restart (from `../node_modules/react-native-restart`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-sensitive-info (from `../node_modules/react-native-sensitive-info`)
@@ -2484,6 +2487,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-pager-view"
   react-native-plaid-link-sdk:
     :path: "../node_modules/react-native-plaid-link-sdk"
+  react-native-render-html:
+    :path: "../node_modules/react-native-render-html"
   react-native-restart:
     :path: "../node_modules/react-native-restart"
   react-native-safe-area-context:
@@ -2695,6 +2700,7 @@ SPEC CHECKSUMS:
   react-native-onesignal: 62ad0dfd1dabd68cc1dcc64746cb89e2ccd2ea70
   react-native-pager-view: e0e7112d111ae28b10ce9672f73640fa4531a5ba
   react-native-plaid-link-sdk: 04ab2cf43a1d85b63e075c48aed1a8947eef397d
+  react-native-render-html: 5afc4751f1a98621b3009432ef84c47019dcb2bd
   react-native-restart: 0bc732f4461709022a742bb29bcccf6bbc5b4863
   react-native-safe-area-context: 758e894ca5a9bd1868d2a9cfbca7326a2b6bf9dc
   react-native-sensitive-info: 31674faa5e17977b394fb67986c35ef94f8ffe81

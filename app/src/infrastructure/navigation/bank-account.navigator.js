@@ -7,6 +7,7 @@ import {BankAccountsScreen} from '../../features/bank-accounts/screens/bank-acco
 import {BankDetailsScreen} from '../../features/bank-accounts/screens/bank-details/bank-details.screen';
 import {BankBalanceScreen} from '../../features/bank-accounts/screens/bank-details/bank-balance.screen';
 import {BankTransactionsScreen} from '../../features/bank-accounts/screens/bank-transactions/bank-transactions.screen';
+import {BankAccountsHome} from '../../features/bank-accounts/screens/bank-accounts-home.screen';
 
 const BankAccountStack = createStackNavigator();
 
@@ -31,7 +32,10 @@ export const BankAccountNavigator = () => {
       }}>
       <BankAccountStack.Screen
         name="BankAccountsHome"
-        component={BankAccountsScreen}
+        options={{
+          headerShown: false,
+        }}
+        component={BankAccountsHome}
       />
       <BankAccountStack.Screen
         name="BankDetails"

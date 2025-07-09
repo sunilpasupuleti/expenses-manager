@@ -148,6 +148,8 @@ const Users = ({ title }) => {
         if (result && result.users) {
           let usersList = result.users;
           // let usersList = _.orderBy(result.users, "displayName", "asc");
+          console.log(usersList);
+
           setUsers(usersList);
           setOrgUsers(usersList);
         }

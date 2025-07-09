@@ -7,10 +7,17 @@ import remoteConfig from '@react-native-firebase/remote-config';
 import useHttp from '../../hooks/use-http';
 import auth from '@react-native-firebase/auth';
 import {notificationActions} from '../../store/notification-slice';
+import {PLAID_BACKEND_URL} from '../../../config';
 
 export const BankAccountContext = createContext({
   fetchLinkToken: (data, callback, errorCallback) => {},
   getTransactions: (data, successCallback, errorCallback, loader) => {},
+  getRecurringTransactions: (
+    data,
+    successCallback,
+    errorCallback,
+    loader,
+  ) => {},
   getLinkedBankAccounts: (callback, errorCallback) => {},
   getAccountBalance: (data, successCallback, errorCallback) => {},
   unlinkAccount: (data, successCallback, errorCallback) => {},
@@ -18,9 +25,9 @@ export const BankAccountContext = createContext({
 
 // BankAccountContext Provider
 export const BankAccountContextProvider = ({children}) => {
-  const PLAID_BACKEND_URL = remoteConfig()
-    .getValue('PLAID_BACKEND_URL')
-    .asString();
+  // const PLAID_BACKEND_URL = remoteConfig()
+  //   .getValue('PLAID_BACKEND_URL')
+  //   .asString();
 
   const dispatch = useDispatch();
   const {sendRequest} = useHttp();
@@ -202,6 +209,44 @@ export const BankAccountContextProvider = ({children}) => {
     }
   };
 
+  const getRecurringTransactions = async (
+    data,
+    callback = () => {},
+    errorCallback = () => {},
+    loader = true,
+  ) => {
+    try {
+      if (loader) {
+        showLoader('security', false, 'Getting Transactions');
+      }
+      let jwtToken = await auth().currentUser.getIdToken();
+      sendRequest(
+        {
+          type: 'POST',
+          data: data,
+          url: PLAID_BACKEND_URL + '/bank-account/transactions/recurring',
+          headers: {
+            authorization: 'Bearer ' + jwtToken,
+          },
+        },
+        {
+          successCallback: async res => {
+            callback(res);
+            hideLoader();
+          },
+          errorCallback: err => {
+            hideLoader();
+            errorCallback();
+            showNotification('error', err);
+          },
+        },
+      );
+    } catch (error) {
+      hideLoader();
+      showNotification('error', error);
+    }
+  };
+
   const unlinkAccount = async (
     data,
     callback = () => {},
@@ -245,6 +290,7 @@ export const BankAccountContextProvider = ({children}) => {
         getAccountBalance,
         unlinkAccount,
         getTransactions,
+        getRecurringTransactions,
       }}>
       {children}
     </BankAccountContext.Provider>

@@ -145,10 +145,30 @@ export const BankTransactionsScreen = ({navigation, route}) => {
     const grouped = _.groupBy(filtered, item =>
       moment(item.date).format('MMM DD, YYYY'),
     );
-    const sections = Object.keys(grouped).map(date => ({
-      title: date,
-      data: grouped[date],
-    }));
+
+    let totalIncome = 0,
+      totalExpense = 0;
+
+    const sections = Object.keys(grouped).map(date => {
+      let txns = grouped[date];
+      txns.map(t => {
+        const amount = t.amount;
+        const isExpense = amount > 0 ? true : false; //money moving out treated as positive in plaid
+
+        if (isExpense) {
+          totalExpense += Math.abs(amount);
+        } else {
+          totalIncome += Math.abs(amount);
+        }
+      });
+
+      return {
+        title: date,
+        data: txns,
+        totalBalance: totalIncome - totalExpense,
+        iso_currency_code: txns[0]?.iso_currency_code,
+      };
+    });
 
     setGroupedData(sections);
   }, [searchQuery, transactions]);
@@ -247,7 +267,6 @@ export const BankTransactionsScreen = ({navigation, route}) => {
 
   const onGetTransactions = (reset = true, refresh = false) => {
     const startDate = moment(fromDate).format('YYYY-MM-DD');
-    console.log(reset, refresh);
 
     const endDate = moment(toDate).format('YYYY-MM-DD');
 
@@ -474,12 +493,16 @@ export const BankTransactionsScreen = ({navigation, route}) => {
                 sections={groupedData}
                 keyExtractor={item => item.transaction_id}
                 renderItem={renderTransaction}
-                renderSectionHeader={({section: {title}}) => (
+                renderSectionHeader={({
+                  section: {title, totalBalance, iso_currency_code},
+                }) => (
                   <View
                     style={{
                       padding: 10,
                       borderRadius: 5,
                       backgroundColor: theme.colors.bg.sectionListCard,
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
                     }}>
                     <Text
                       style={{
@@ -487,6 +510,18 @@ export const BankTransactionsScreen = ({navigation, route}) => {
                         color: theme.colors.bg.sectionListCardLabel,
                       }}>
                       {title}
+                    </Text>
+                    <Text
+                      style={{
+                        fontWeight: 'bold',
+                        color:
+                          totalBalance < 0
+                            ? 'tomato'
+                            : theme.colors.text.success,
+                      }}>
+                      {totalBalance < 0 ? '-' : ''}{' '}
+                      {GetCurrencySymbol(iso_currency_code)}{' '}
+                      {Math.abs(totalBalance).toFixed(2)}
                     </Text>
                   </View>
                 )}

@@ -300,6 +300,7 @@ export const AuthenticationContextProvider = ({children}) => {
   };
 
   const requestAppReview = async () => {
+    return;
     let appReviewAvailable = InAppReview.isAvailable();
     if (appReviewAvailable) {
       InAppReview.RequestInAppReview()
@@ -722,6 +723,7 @@ export const AuthenticationContextProvider = ({children}) => {
         hideNotification();
       }
       cancelLocalNotification(null, true);
+      await AsyncStorage.removeItem('@expenses-manager-chat-history');
       await AsyncStorage.removeItem('@expenses-manager-recap');
       await AsyncStorage.removeItem('@expenses-manager-logged');
       authStateTriggered = false;

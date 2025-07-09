@@ -144,7 +144,7 @@ export const loadAppStatus = createAsyncThunk(
         PRIVACY_POLICY_URL: PRIVACY_POLICY_URL,
       })
       .then(() => {
-        remoteConfig().fetchAndActivate();
+        // remoteConfig().fetchAndActivate();
       })
       .then(fetchedRemotely => {
         if (fetchedRemotely) {

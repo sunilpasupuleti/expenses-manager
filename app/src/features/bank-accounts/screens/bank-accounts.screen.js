@@ -64,26 +64,17 @@ export const BankAccountsScreen = ({navigation, route}) => {
   useEffect(() => {
     navigation.setOptions({
       headerTitle: 'Bank Accounts',
-      headerLeft: () => (
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <FlexRow>
-            <Ionicons
-              name="chevron-back-outline"
-              size={25}
-              color={theme.colors.brand.primary}></Ionicons>
-            <Text color={theme.colors.brand.primary}>Back</Text>
-          </FlexRow>
-        </TouchableOpacity>
-      ),
     });
   }, []);
 
   useEffect(() => {
-    onGetLinkedAccounts();
+    if (routeIsFocused) {
+      onGetLinkedAccounts();
+    }
     return () => {
       clearFallbackTimeout();
     };
-  }, []);
+  }, [routeIsFocused]);
 
   useEffect(() => {
     console.log(
@@ -357,15 +348,6 @@ export const BankAccountsScreen = ({navigation, route}) => {
               keyExtractor={institution => institution.institutionId}
               ItemSeparatorComponent={Divider}
             />
-            {showRefresh && (
-              <Button
-                mode="outlined"
-                onPress={onGetLinkedAccounts}
-                style={{marginBottom: 16}}
-                icon="refresh">
-                Refresh Accounts
-              </Button>
-            )}
           </>
         ) : (
           <FlexColumn style={{marginBottom: 250}}>
@@ -379,6 +361,15 @@ export const BankAccountsScreen = ({navigation, route}) => {
             />
             <Text fontsize="20px">No Accounts Found</Text>
           </FlexColumn>
+        )}
+        {showRefresh && (
+          <Button
+            mode="outlined"
+            onPress={onGetLinkedAccounts}
+            style={{marginBottom: 16}}
+            icon="refresh">
+            Refresh Accounts
+          </Button>
         )}
       </MainWrapper>
     </SafeArea>

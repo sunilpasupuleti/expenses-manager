@@ -536,6 +536,7 @@ export const BaseSheetDetailsDashboard = ({
         <TouchableNativeFeedback
           onPress={() => {
             navigation.navigate('AddSheetDetail', {
+              sheet: sheet,
               activeType: activeType,
             });
           }}>

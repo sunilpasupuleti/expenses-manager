@@ -12,6 +12,7 @@ const {
   getLinkedAccounts,
   getAccountBalance,
   unlinkAccount,
+  getAllRecurringTransactions,
 } = require("../controllers/bankAccount/bankAccountController");
 const {
   validateExchangeToken,
@@ -52,6 +53,13 @@ router.post(
   validateBankingAccess(TRANSACTIONS),
   validateGetTransactions,
   getTransactions
+);
+
+router.post(
+  "/transactions/recurring",
+  VerifyToken,
+  validateBankingAccess(TRANSACTIONS),
+  getAllRecurringTransactions
 );
 
 router.post(

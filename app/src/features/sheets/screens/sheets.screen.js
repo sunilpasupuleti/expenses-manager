@@ -1,43 +1,53 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unstable-nested-components */
 import React, {useCallback, useContext, useEffect, useState} from 'react';
-import {TouchableOpacity, useWindowDimensions} from 'react-native';
+import {
+  ScrollView,
+  TouchableHighlight,
+  TouchableOpacity,
+  useWindowDimensions,
+} from 'react-native';
 import {useTheme} from 'styled-components/native';
 import {SheetsInfo} from '../components/sheet-info/sheet-info.component';
 import {
-  AddSheetIcon,
-  IconsContainer,
+  AiButton,
+  HeaderRow,
   LastSyncedContainer,
-  NewSheet,
+  NavIconButton,
+  NavIconCircle,
+  NavigationBar,
+  NavLabel,
   NoSheets,
+  Search,
+  SearchIcon,
   TopContainer,
-  UpperIcon,
 } from '../components/sheets.styles';
 import {Spacer} from '../../../components/spacer/spacer.component';
 import {Input, MainWrapper} from '../../../components/styles';
 import {Text} from '../../../components/typography/text.component';
 import {SafeArea} from '../../../components/utility/safe-area.component';
-import {SheetsContext} from '../../../services/sheets/sheets.context';
 import _ from 'lodash';
-import {
-  getNextEmiAcrossAccounts,
-  searchKeywordRegex,
-} from '../../../components/utility/helper';
-import {useIsFocused} from '@react-navigation/native';
+import {getNextEmiAcrossAccounts} from '../../../components/utility/helper';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 import {AuthenticationContext} from '../../../services/authentication/authentication.context';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 import moment from 'moment';
 import {DailyStoryCard} from '../../story/components/dailyStory.component';
 import Animated, {
   FadeInDown,
-  FadeOutUp,
   useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
 } from 'react-native-reanimated';
 import {Image, View} from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import Carousel, {Pagination} from 'react-native-reanimated-carousel';
 import SheetCardSkeleton from '../components/sheet-card-skeleton.component';
+import aiIcon from '../../../../assets/ai_icon.png';
+import Svg, {Path} from 'react-native-svg';
 
 const CarouselInfoCards = ({cardsData = [], theme}) => {
   const {width} = useWindowDimensions();
@@ -54,7 +64,7 @@ const CarouselInfoCards = ({cardsData = [], theme}) => {
         autoPlayInterval={6000}
         data={cardsData}
         scrollAnimationDuration={600}
-        style={{marginTop: 16}}
+        style={{marginTop: 20}}
         renderItem={({item}) => (
           <TouchableOpacity onPress={item.onPress}>
             <LinearGradient
@@ -62,7 +72,7 @@ const CarouselInfoCards = ({cardsData = [], theme}) => {
               start={{x: 0, y: 0}}
               end={{x: 1, y: 1}}
               style={{
-                borderRadius: 16,
+                borderRadius: 20,
                 marginHorizontal: 8,
                 height: '100%',
                 flexDirection: 'row',
@@ -177,6 +187,22 @@ export const SheetsScreen = ({
     loanSheets.length === 0 &&
     archivedSheets.length === 0;
 
+  const aiGlow = useSharedValue(1);
+
+  useEffect(() => {
+    aiGlow.value = withRepeat(withTiming(1.1, {duration: 1000}), -1, true);
+  }, []);
+
+  const aiButtonAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{scale: aiGlow.value}],
+      shadowColor: '#fff',
+      shadowOpacity: 0.6,
+      shadowRadius: 10,
+      elevation: 10,
+    };
+  });
+
   useEffect(() => {
     if (loanSheets && loanSheets.length > 0) {
       const upcomingDues = getNextEmiAcrossAccounts(loanSheets);
@@ -211,123 +237,182 @@ export const SheetsScreen = ({
         <CarouselInfoCards cardsData={carouselCards} theme={theme} />
         <TopContainer
           lastSynced={userAdditionalDetails?.lastSynced ? true : false}>
-          <View />
-          <IconsContainer>
-            {!isLoading && (
-              <>
-                <TouchableOpacity onPress={() => setShowSearch(prev => !prev)}>
-                  <MaterialIcons
-                    style={{
-                      marginTop: 20,
-                      marginLeft: 20,
-                    }}
-                    name="search"
-                    size={25}
-                    color={theme.colors.brand.primary}
-                  />
-                </TouchableOpacity>
-              </>
-            )}
+          <View></View>
+          <NavigationBar>
+            <NavIconButton
+              onPress={() =>
+                navigation.navigate('BankAccounts', {
+                  screen: 'BankAccountsHome',
+                  params: {
+                    screen: 'Subscriptions',
+                  },
+                })
+              }>
+              <NavIconCircle style={{backgroundColor: '#F59E0B'}}>
+                <MaterialCommunityIcons
+                  name="calendar-sync"
+                  size={20}
+                  color="white"
+                />
+              </NavIconCircle>
+              <NavLabel>Renewals</NavLabel>
+            </NavIconButton>
 
-            <TouchableOpacity
+            <NavIconButton
               onPress={() =>
                 navigation.navigate('BankAccounts', {
                   screen: 'BankAccountsHome',
                 })
               }>
-              <MaterialCommunityIcons
-                style={{
-                  marginTop: 20,
-                  marginLeft: 20,
-                }}
-                name="bank"
-                size={25}
-                color={theme.colors.brand.primary}
-              />
-            </TouchableOpacity>
+              <NavIconCircle style={{backgroundColor: '#3b82f6'}}>
+                <MaterialCommunityIcons name="bank" size={20} color="white" />
+              </NavIconCircle>
+              <NavLabel>Bank</NavLabel>
+            </NavIconButton>
 
-            <TouchableOpacity
+            <NavIconButton
               onPress={() => navigation.navigate('Settings', {screen: 'Sync'})}>
-              <UpperIcon
-                name="cloud-offline-outline"
-                size={25}
-                color={theme.colors.brand.primary}
-              />
-            </TouchableOpacity>
+              <NavIconCircle style={{backgroundColor: '#607D8B'}}>
+                <Ionicons
+                  name="cloud-offline-outline"
+                  size={20}
+                  color="white"
+                />
+              </NavIconCircle>
+              <NavLabel>Sync</NavLabel>
+            </NavIconButton>
 
-            <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
-              <UpperIcon
-                name="cog-outline"
-                size={30}
-                color={theme.colors.brand.primary}
-              />
-            </TouchableOpacity>
-          </IconsContainer>
+            <NavIconButton onPress={() => navigation.navigate('Settings')}>
+              <NavIconCircle style={{backgroundColor: '#4682B4'}}>
+                <Ionicons name="cog-outline" size={18} color="white" />
+              </NavIconCircle>
+              <NavLabel>Settings</NavLabel>
+            </NavIconButton>
+
+            <NavIconButton
+              onPress={() => {
+                navigation.navigate('AddSheet');
+              }}>
+              <NavIconCircle
+                style={{backgroundColor: theme.colors.brand.primary}}>
+                <Ionicons name="add" size={18} color="white" />
+              </NavIconCircle>
+              <NavLabel>Add </NavLabel>
+            </NavIconButton>
+          </NavigationBar>
         </TopContainer>
-        {showSearch && (
-          <Animated.View entering={FadeInDown.duration(300).springify()}>
-            <Spacer size="medium">
-              <Input
-                value={searchKeyword}
-                theme={{roundness: 10}}
-                style={{elevation: 2, marginBottom: 20}}
-                placeholder="Search"
-                onChangeText={k => setSearchKeyword(k)}
-                clearButtonMode="while-editing"
-              />
-            </Spacer>
-          </Animated.View>
-        )}
+        <Spacer size="medium" />
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{borderRadius: 15}}>
+          {showSearch && (
+            <Animated.View entering={FadeInDown.duration(300).springify()}>
+              <Spacer size="medium">
+                <Input
+                  value={searchKeyword}
+                  theme={{roundness: 10}}
+                  style={{elevation: 2, marginBottom: 20}}
+                  placeholder="Search"
+                  onChangeText={k => setSearchKeyword(k)}
+                  clearButtonMode="while-editing"
+                />
+              </Spacer>
+            </Animated.View>
+          )}
+
+          <HeaderRow>
+            <View>
+              <Text fontfamily="bodyBold" fontsize="30px">
+                Accounts
+              </Text>
+              {userData?.lastSynced && (
+                <LastSyncedContainer>
+                  <Text color={'green'} fontfamily="bodyBold" fontsize="12px">
+                    Last Synced :{' '}
+                    {moment(userAdditionalDetails?.lastSynced).calendar()}
+                  </Text>
+                </LastSyncedContainer>
+              )}
+            </View>
+            {!isLoading && (
+              <Search
+                onPress={() => {
+                  setShowSearch(prev => !prev);
+                }}>
+                <SearchIcon name="search" size={15} color="#fff" />
+              </Search>
+            )}
+          </HeaderRow>
+
+          <Spacer size="medium" />
+
+          {isLoading ? (
+            <>
+              {[...Array(3)].map((_, i) => (
+                <SheetCardSkeleton key={i} colorMode="dark" />
+              ))}
+            </>
+          ) : hasNoSheets ? (
+            <NoSheets>
+              <Text style={{textAlign: 'center'}}>
+                You don't have any accounts yet. Tap the add button above to
+                create your first account.
+              </Text>
+            </NoSheets>
+          ) : (
+            <SheetsInfo
+              navigation={navigation}
+              totalCount={
+                regularSheets.length +
+                pinnedSheets.length +
+                archivedSheets.length +
+                loanSheets.length
+              }
+              regularSheets={regularSheets}
+              pinnedSheets={pinnedSheets}
+              archivedSheets={archivedSheets}
+              loanSheets={loanSheets}
+            />
+          )}
+        </ScrollView>
+
         <DailyStoryCard
           forceShowRecap={forceShowRecap}
           setForceShowRecap={setForceShowRecap}
         />
 
-        <Text fontfamily="bodyBold" fontsize="30px">
-          Accounts
-        </Text>
-        {userData?.lastSynced && (
-          <LastSyncedContainer>
-            <Text color={'green'} fontfamily="bodyBold" fontsize="12px">
-              Last Synced :{' '}
-              {moment(userAdditionalDetails?.lastSynced).calendar()}
-            </Text>
-          </LastSyncedContainer>
-        )}
-        <Spacer size="medium" />
-
-        {isLoading ? (
-          <>
-            {[...Array(3)].map((_, i) => (
-              <SheetCardSkeleton key={i} colorMode="dark" />
-            ))}
-          </>
-        ) : hasNoSheets ? (
-          <NoSheets>
-            <Text style={{textAlign: 'center'}}>
-              There are no accounts yet. Create a new account by clicking on
-              plus icon.
-            </Text>
-          </NoSheets>
-        ) : (
-          <SheetsInfo
-            navigation={navigation}
-            totalCount={
-              regularSheets.length +
-              pinnedSheets.length +
-              archivedSheets.length +
-              loanSheets.length
-            }
-            regularSheets={regularSheets}
-            pinnedSheets={pinnedSheets}
-            archivedSheets={archivedSheets}
-            loanSheets={loanSheets}
-          />
-        )}
-
-        <NewSheet onPress={() => navigation.navigate('AddSheet')}>
-          <AddSheetIcon name="add-outline" size={25} color="#fff" />
-        </NewSheet>
+        <TouchableHighlight
+          underlayColor={'#aaa'}
+          onPress={() => navigation.navigate('ChatBot')}>
+          <Animated.View style={aiButtonAnimatedStyle}>
+            <View style={{alignItems: 'flex-end'}}>
+              <AiButton>
+                <Image
+                  source={aiIcon}
+                  style={{width: 25, height: 25, marginRight: 5}}
+                  resizeMode="contain"
+                />
+                <Text fontsize="14px" fontfamily="bodyBold" color="black">
+                  Ask Aura
+                </Text>
+              </AiButton>
+              <Svg
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                style={{
+                  position: 'absolute',
+                  bottom: 10, // adjust as needed
+                  right: 11, // align flush to the bubble edge
+                }}>
+                <Path
+                  d="M0,0 C5,0 10,8 15,15 C17,17 18,18 20,20 L0,20 Z"
+                  fill="#ffffff"
+                />
+              </Svg>
+            </View>
+          </Animated.View>
+        </TouchableHighlight>
       </MainWrapper>
     </SafeArea>
   );

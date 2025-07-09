@@ -1,2 +1,4 @@
-::ffff:10.0.0.47 - - [17/Jun/2025:04:08:29 +0000] "POST /notification/enable-notifications/ HTTP/1.1" 200 48 "-" "expensesmanager/18 CFNetwork/3826.500.131 Darwin/24.5.0"
-::ffff:10.0.0.47 - - [17/Jun/2025:04:10:14 +0000] "POST /notification/enable-notifications/ HTTP/1.1" 200 48 "-" "expensesmanager/18 CFNetwork/3826.500.131 Darwin/24.5.0"
+::ffff:10.0.0.47 - - [09/Jul/2025:05:09:22 +0000] "POST /chat-bot/query/ HTTP/1.1" 200 563 "-" "expensesmanager/27 CFNetwork/3826.500.131 Darwin/24.5.0"
+::ffff:10.0.0.47 - - [09/Jul/2025:05:09:27 +0000] "POST /chat-bot/form-response/ HTTP/1.1" 200 446 "-" "expensesmanager/27 CFNetwork/3826.500.131 Darwin/24.5.0"
+::ffff:10.0.0.47 - - [09/Jul/2025:05:40:14 +0000] "POST /chat-bot/query/ HTTP/1.1" 200 563 "-" "okhttp/4.9.2"
+::ffff:10.0.0.47 - - [09/Jul/2025:05:40:20 +0000] "POST /chat-bot/form-response/ HTTP/1.1" 200 764 "-" "okhttp/4.9.2"

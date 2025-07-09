@@ -19,8 +19,9 @@ import {CategoriesContextProvider} from '../../services/categories/categories.co
 import {SheetDetailsContextProvider} from '../../services/sheetDetails/sheetDetails.context';
 import {BankAccountContextProvider} from '../../services/bank-account/bank-account.context';
 import {BankAccountNavigator} from './bank-account.navigator';
-import {navigate} from './rootnavigation';
 import {PlaidOAuthRedirectScreen} from '../../features/bank-accounts/components/plaid-oauth-redirect.screen';
+import {ChatBotContextProvider} from '../../services/chat-bot/chat-bot.context';
+import ChatBotScreen from '../../features/chat-bot/screens/chat-bot.screen';
 
 const Stack = createStackNavigator();
 
@@ -42,54 +43,70 @@ export const AppNavigator = () => {
 
   return (
     <>
-      <BankAccountContextProvider>
-        <CategoriesContextProvider>
-          <SheetsContextProvider>
-            <SheetDetailsContextProvider>
-              <SettingsContextProvider>
-                <SyncContextProvider>
-                  <ProfileContextProvider>
-                    <SmsTransactions />
+      <ChatBotContextProvider>
+        <BankAccountContextProvider>
+          <CategoriesContextProvider>
+            <SheetsContextProvider>
+              <SheetDetailsContextProvider>
+                <SettingsContextProvider>
+                  <SyncContextProvider>
+                    <ProfileContextProvider>
+                      <SmsTransactions />
 
-                    <SelectBaseCurrency />
+                      <SelectBaseCurrency />
 
-                    <Stack.Navigator
-                      screenOptions={{
-                        headerShown: false,
-                      }}>
-                      <Stack.Screen name="Sheets" component={SheetsNavigator} />
+                      <Stack.Navigator
+                        screenOptions={{
+                          headerShown: false,
+                        }}>
+                        {/* <Stack.Screen
+                          name="BankSubscriptions"
+                          component={BankSubscriptionsScreen}
+                        /> */}
 
-                      {/* Used just for Plaid OAUthRedirection */}
-                      <Stack.Screen
-                        name="PlaidOAuthRedirect"
-                        component={PlaidOAuthRedirectScreen}
-                      />
+                        <Stack.Screen
+                          name="Sheets"
+                          component={SheetsNavigator}
+                        />
 
-                      <Stack.Screen
-                        options={{
-                          headerMode: 'screen',
-                          gestureResponseDistance:
-                            Dimensions.get('window').height - 200,
-                          ...TransitionPresets.ModalPresentationIOS,
-                        }}
-                        name="Settings"
-                        component={SettingsNavigator}
-                      />
+                        {/* Used just for Plaid OAUthRedirection */}
+                        <Stack.Screen
+                          name="PlaidOAuthRedirect"
+                          component={PlaidOAuthRedirectScreen}
+                        />
+                        <Stack.Screen
+                          name="ChatBot"
+                          component={ChatBotScreen}
+                        />
+                        <Stack.Screen
+                          options={{
+                            headerMode: 'screen',
+                            gestureResponseDistance:
+                              Dimensions.get('window').height - 200,
+                            ...TransitionPresets.ModalPresentationIOS,
+                          }}
+                          name="Settings"
+                          component={SettingsNavigator}
+                        />
 
-                      <Stack.Screen
-                        options={{headerShown: false, headerMode: 'screen'}}
-                        name="BankAccounts"
-                        component={BankAccountNavigator}
-                      />
-                      <Stack.Screen name="Applock" component={AppLockScreen} />
-                    </Stack.Navigator>
-                  </ProfileContextProvider>
-                </SyncContextProvider>
-              </SettingsContextProvider>
-            </SheetDetailsContextProvider>
-          </SheetsContextProvider>
-        </CategoriesContextProvider>
-      </BankAccountContextProvider>
+                        <Stack.Screen
+                          options={{headerShown: false, headerMode: 'screen'}}
+                          name="BankAccounts"
+                          component={BankAccountNavigator}
+                        />
+                        <Stack.Screen
+                          name="Applock"
+                          component={AppLockScreen}
+                        />
+                      </Stack.Navigator>
+                    </ProfileContextProvider>
+                  </SyncContextProvider>
+                </SettingsContextProvider>
+              </SheetDetailsContextProvider>
+            </SheetsContextProvider>
+          </CategoriesContextProvider>
+        </BankAccountContextProvider>
+      </ChatBotContextProvider>
     </>
   );
 };

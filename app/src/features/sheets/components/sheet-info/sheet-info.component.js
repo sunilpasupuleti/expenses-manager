@@ -197,6 +197,10 @@ export const SheetsInfo = ({
 
   return (
     <SectionList
+      scrollEnabled={false}
+      style={{
+        marginBottom: 100,
+      }}
       showsVerticalScrollIndicator={false}
       stickySectionHeadersEnabled={false}
       sections={[
@@ -275,7 +279,33 @@ export const SheetsInfo = ({
               });
             }}>
             <TouchableHighlightWithColor
-              style={{backgroundColor: theme.colors.bg.card}}
+              style={{
+                backgroundColor: theme.colors.bg.card,
+                borderTopLeftRadius:
+                  index === 0 &&
+                  (section.data.length === 1 || section.data.length > 1)
+                    ? 15
+                    : 0,
+                borderTopRightRadius:
+                  index === 0 &&
+                  (section.data.length === 1 || section.data.length > 1)
+                    ? 15
+                    : 0,
+                borderBottomLeftRadius:
+                  (index === 0 && section.data.length === 1) ||
+                  (section.data.length - 1 === index && section.data.length > 0)
+                    ? 15
+                    : 0,
+                borderBottomRightRadius:
+                  (index === 0 && section.data.length === 1) ||
+                  (section.data.length - 1 === index && section.data.length > 0)
+                    ? 15
+                    : 0,
+                // borderTopLeftRadius:
+                //   section.data.length - 1 === index && section.data.length > 1
+                //     ? 12
+                //     : 12,
+              }}
               onLongPress={() => onLongPressActions(item)}
               padding={'0px'}
               onPress={() => onClickSheet(item)}>
