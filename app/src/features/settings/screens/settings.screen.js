@@ -476,6 +476,38 @@ export const SettingsScreen = ({navigation}) => {
                   </FlexRow>
                 </Setting>
               </SettingsCardContent>
+
+              <SettingsCardContent
+                onPress={() =>
+                  navigation.navigate('BankAccounts', {
+                    screen: 'BankAccountsHome',
+                    params: {
+                      screen: 'Subscriptions',
+                    },
+                  })
+                }>
+                <Setting justifyContent="space-between">
+                  <FlexRow>
+                    <SettingIconWrapper color="#F59E0B">
+                      <MaterialCommunityIcons
+                        name="calendar-sync"
+                        size={20}
+                        color="#fff"
+                      />
+                    </SettingIconWrapper>
+
+                    <View>
+                      <SettingTitle>
+                        Subscriptions, Bills and Deposits
+                      </SettingTitle>
+                      <SettingSubTitle>
+                        Manage your recurring transactions like bills and
+                        deposits.
+                      </SettingSubTitle>
+                    </View>
+                  </FlexRow>
+                </Setting>
+              </SettingsCardContent>
             </SettingsCard>
           </Spacer>
           <Spacer size={'large'}>

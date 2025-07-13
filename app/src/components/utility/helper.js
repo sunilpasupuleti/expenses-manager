@@ -791,7 +791,10 @@ export const sendLocalNotification = (
     channelId: 'expenses-manager-local-notification',
     title: title,
     message: message,
-    userInfo: data,
+    userInfo: {
+      ...data,
+      date: new Date(),
+    },
     ongoing: false,
     playSound: true,
     vibrate: true,
@@ -803,6 +806,7 @@ export const sendLocalNotification = (
     picture: pictureUrl,
     bigPictureUrl: pictureUrl,
     largeIconUrl: pictureUrl,
+    ignoreInForeground: false,
     // only ios
     subtitle: subtitle,
     actions: ['Dismiss'],
@@ -810,6 +814,7 @@ export const sendLocalNotification = (
   if (notificationId) {
     baseNotification.id = notificationId;
   }
+
   if (scheduleDate) {
     baseNotification.date = new Date(scheduleDate);
 

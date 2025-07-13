@@ -10,11 +10,8 @@ import auth from '@react-native-firebase/auth';
 import {WatermelonDBContext} from '../watermelondb/watermelondb.context';
 import {Q} from '@nozbe/watermelondb';
 import {AuthenticationContext} from '../authentication/authentication.context';
-import {getLinkedDbRecord} from '../../components/utility/helper';
-import moment from 'moment';
 import useHttp from '../../hooks/use-http';
 import remoteConfig from '@react-native-firebase/remote-config';
-import {BACKEND_URL} from '../../../config';
 
 export const ChatBotContext = createContext({
   onQueryChatBot: (query, callback, successCallback) => {},
@@ -26,9 +23,7 @@ export const ChatBotContextProvider = ({children}) => {
   const {sendRequest} = useHttp();
   const {db} = useContext(WatermelonDBContext);
   const dispatch = useDispatch();
-  // const BACKEND_URL  = remoteConfig()
-  //   .getValue('PLAID_BACKEND_URL')
-  //   .asString();
+  const BACKEND_URL = remoteConfig().getValue('PLAID_BACKEND_URL').asString();
 
   const showLoader = (loaderType, backdrop = true, loaderText = '') => {
     let options = {};

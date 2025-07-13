@@ -1,6 +1,6 @@
 import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Alert, AppState} from 'react-native';
+import {Alert, AppState, Platform} from 'react-native';
 import {loaderActions} from './loader-slice';
 import remoteConfig from '@react-native-firebase/remote-config';
 import {
@@ -121,6 +121,7 @@ export const setAppUpdateNeeded = createAsyncThunk(
 export const loadAppStatus = createAsyncThunk(
   'service/loadAppStatus',
   async () => {
+    await remoteConfig().reset();
     await remoteConfig().fetch(30 * 60);
     await remoteConfig()
       .setDefaults({
@@ -143,8 +144,8 @@ export const loadAppStatus = createAsyncThunk(
         DB_NAME: DB_NAME,
         PRIVACY_POLICY_URL: PRIVACY_POLICY_URL,
       })
-      .then(() => {
-        // remoteConfig().fetchAndActivate();
+      .then(async () => {
+        // await remoteConfig().activate();
       })
       .then(fetchedRemotely => {
         if (fetchedRemotely) {

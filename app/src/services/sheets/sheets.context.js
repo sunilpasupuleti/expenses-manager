@@ -35,6 +35,7 @@ import {
   sendLocalNotification,
   getLinkedDbRecord,
   calculateInterestFromAmortizationSchedule,
+  hashCode,
 } from '../../components/utility/helper';
 
 import {CategoriesContext} from '../categories/categories.context';
@@ -72,33 +73,82 @@ const scheduleLoanEmiNotifications = account => {
     account.loanMonths,
     account.totalPayments,
   );
-  let testCount = 0;
+  let processedEmis = 0;
 
   upcomingEmis.forEach((date, index) => {
-    if (testCount > 2) {
+    if (processedEmis > 2) {
       return;
     }
-    const scheduleDate = moment(date, 'YYYY-MM-DD')
-      .hour(9)
-      .minute(0)
-      .second(0)
-      .toDate();
+    const emiDate = moment(date, 'YYYY-MM-DD');
+    const today = moment().startOf('day');
+    const daysUntilEmi = emiDate.diff(today, 'days');
 
-    const currencySymbol = GetCurrencySymbol(account.currency || 'INR');
-    const emiAmount = account.emi || 0;
-    sendLocalNotification(
-      {
-        title: '💰 EMI Due Reminder',
-        message: `Your EMI of ${currencySymbol}${emiAmount} for "${account.name}" is due today. Don't forget to make the payment on time.`,
-        notificationId: `${account.id}${index}`,
-      },
-      {
-        accountId: account.id,
-      },
-      scheduleDate,
-    );
+    if (daysUntilEmi >= 0 && daysUntilEmi <= 6) {
+      const currencySymbol = GetCurrencySymbol(account.currency || 'INR');
+      const emiAmount = account.emi || 0;
+
+      // Schedule reminder 2 days before (if applicable)
+      if (daysUntilEmi >= 2) {
+        const reminderDate = moment(date, 'YYYY-MM-DD')
+          .subtract(2, 'days')
+          .hour(9)
+          .minute(0)
+          .second(0)
+          .toDate();
+
+        const reminderNotificationId = `emi_reminder_${account.id}_${index}`;
+
+        sendLocalNotification(
+          {
+            title: '💰 EMI Reminder',
+            message: `Reminder: Your EMI of ${currencySymbol}${emiAmount} for "${
+              account.name
+            }" is due in 2 days (${moment(date).format('MMM DD')}).`,
+            notificationId: hashCode(reminderNotificationId),
+          },
+          {
+            accountId: account.id,
+            type: 'emi_reminder',
+            originalId: reminderNotificationId,
+          },
+          reminderDate,
+        );
+      }
+
+      // Schedule notification on the actual EMI date (if within 3 days)
+      if (daysUntilEmi >= 0 && daysUntilEmi <= 3) {
+        const scheduleDate = moment(date, 'YYYY-MM-DD')
+          .hour(9)
+          .minute(0)
+          .second(0)
+          .toDate();
+
+        const notificationId = `emi_due_${account.id}_${index}`;
+
+        sendLocalNotification(
+          {
+            title: '💰 EMI Due Today',
+            message: `Your EMI of ${currencySymbol}${emiAmount} for "${
+              account.name
+            }" is due ${
+              daysUntilEmi === 0
+                ? 'today'
+                : `in ${daysUntilEmi} day${daysUntilEmi > 1 ? 's' : ''}`
+            }. Don't forget to make the payment on time.`,
+            notificationId: hashCode(notificationId),
+          },
+          {
+            accountId: account.id,
+            type: 'emi_due',
+            originalId: notificationId,
+          },
+          scheduleDate,
+        );
+      }
+
+      processedEmis++; // Move this inside the if condition
+    }
   });
-  testCount++;
 };
 
 const cancelLoanEmiNotifications = accountId => {
@@ -106,8 +156,14 @@ const cancelLoanEmiNotifications = accountId => {
     PushNotification.getScheduledLocalNotifications(notifications => {
       notifications.forEach(notification => {
         const id = notification?.id?.toString();
+        const originalId =
+          notification?.data?.originalId || notification?.userInfo?.originalId;
+
         const userInfoAccountId = notification?.data?.accountId;
-        if (id?.startsWith(`${accountId}`) || userInfoAccountId === accountId) {
+        if (
+          originalId?.startsWith(`${accountId}`) ||
+          userInfoAccountId === accountId
+        ) {
           PushNotification.cancelLocalNotification(id);
         }
       });

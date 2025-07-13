@@ -142,7 +142,6 @@ export const BankDetailsScreen = ({navigation, route}) => {
       () => {
         navigation.navigate('BankAccounts', {
           screen: 'BankAccountsHome',
-          params: {reRender: true},
         });
       },
     );

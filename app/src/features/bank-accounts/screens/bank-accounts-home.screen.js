@@ -18,30 +18,20 @@ export const BankAccountsHome = ({navigation, route}) => {
   const theme = useTheme();
   const appState = useSelector(state => state.service.appState);
 
-  const BankAccountsComponent = () => {
-    return <BankAccountsScreen navigation={navigation} route={route} />;
+  const BankAccountsComponent = props => {
+    return <BankAccountsScreen navigation={props.navigation} route={route} />;
   };
 
   const BankSubscriptionsComponent = () => {
     return <BankSubscriptionsScreen navigation={navigation} route={route} />;
   };
 
-  const routeName = useNavigationState(state => {
-    const tab = state.routes.find(r => r.name === 'BankAccountsHome');
-    const tabState = tab?.state;
-    if (tabState) {
-      const activeTab = tabState.routes[tabState.index];
-      return activeTab.name;
-    }
-    return tab?.params?.screen || null;
-  });
-
   return (
     <Tab.Navigator
       initialRouteName="Accounts"
       screenOptions={{
         headerTitleAlign: 'center',
-        headerShown: true,
+        headerShown: false,
         lazy: true,
         tabBarActiveTintColor: theme.colors.brand.primary,
         tabBarItemStyle: {
@@ -50,19 +40,15 @@ export const BankAccountsHome = ({navigation, route}) => {
 
         tabBarBackground: () => (
           <LinearGradient
-            colors={
-              routeName === 'Subscriptions'
-                ? ['#8B5CF6', '#A855F7', '#9333EA']
-                : [theme.colors.bg.primary, theme.colors.bg.primary]
-            }
+            colors={['#8B5CF6', '#A855F7', '#9333EA']}
             start={{x: 0, y: 0}}
             end={{x: 1, y: 1}}
             style={{flex: 1}}
           />
         ),
         tabBarStyle: {
+          backgroundColor: '#8B5CF6',
           // backgroundColor: theme.colors.bg.primary,
-          backgroundColor: 'transparent',
           paddingBottom: 25,
           height: 80,
           display: appState === 'active' ? 'flex' : 'none',
@@ -86,7 +72,7 @@ export const BankAccountsHome = ({navigation, route}) => {
           tabBarIcon: ({focused, color, size}) => (
             <MaterialCommunityIcons
               name="bank"
-              color={routeName === 'Subscriptions' ? '#bbb' : color}
+              color={focused ? '#fff' : '#bbb'}
               size={27}
               style={{
                 paddingTop: 2,
@@ -97,7 +83,8 @@ export const BankAccountsHome = ({navigation, route}) => {
             <Text
               style={{
                 fontSize: 12,
-                color: routeName === 'Subscriptions' ? '#bbb' : color,
+                fontWeight: focused ? 'bold' : '400',
+                color: focused ? '#fff' : '#bbb',
               }}>
               Bank Accounts
             </Text>
@@ -109,25 +96,22 @@ export const BankAccountsHome = ({navigation, route}) => {
         options={{
           headerShown: false,
           title: 'Subscriptions',
-          tabBarIcon: ({color, size}) => (
+          tabBarIcon: ({focused, color, size}) => (
             <MaterialCommunityIcons
               name="calendar-sync"
-              color={routeName === 'Subscriptions' ? '#fff' : color}
+              color={focused ? '#fff' : '#bbb'}
               size={27}
               style={{
                 paddingTop: 2,
               }}
             />
           ),
-          tabBarStyle: {
-            backgroundColor: '#8B5CF6',
-          },
           tabBarLabel: ({focused, color}) => (
             <Text
               fontsize="12px"
               style={{
-                fontWeight: 'bold',
-                color: routeName === 'Subscriptions' ? '#fff' : color,
+                fontWeight: focused ? 'bold' : '400',
+                color: focused ? '#fff' : '#bbb',
               }}>
               Subscriptions
             </Text>

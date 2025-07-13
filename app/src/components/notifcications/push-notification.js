@@ -1,4 +1,5 @@
 import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import moment from 'moment';
 import PushNotification, {Importance} from 'react-native-push-notification';
 
 const initializePushNotification = async () => {
@@ -8,7 +9,7 @@ const initializePushNotification = async () => {
     },
 
     onNotification: notification => {
-      // console.log(notification, 'NOTIFICATIOn');
+      console.log(notification, 'NOTIFICATIOn ----------');
       notification.finish(PushNotificationIOS.FetchResult.NoData);
     },
 

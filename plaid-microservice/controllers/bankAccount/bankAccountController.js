@@ -556,123 +556,145 @@ module.exports = {
 
       // 🔁 Iterate over each access token (institution) to fetch recurring transactions
       for (const accessTokenObj of accessTokens) {
-        const decryptedAccessToken = decryptAES(accessTokenObj.token, uid);
+        try {
+          const decryptedAccessToken = decryptAES(accessTokenObj.token, uid);
 
-        // 🔁 Fetch linked accounts under this token
-        const accountsResponse = await plaidClient.accountsGet({
-          access_token: decryptedAccessToken,
-        });
-        const accountIds = accountsResponse.data.accounts.map(
-          (acc) => acc.account_id
-        );
-        const accountCurrencyMap = {};
-        accountsResponse.data.accounts.forEach((acc) => {
-          accountCurrencyMap[acc.account_id] = acc.iso_currency_code || "USD";
-        });
-
-        if (accountIds.length === 0) continue;
-
-        // 🔁 Fetch institution details
-        const institutionId = accountsResponse.data.item.institution_id || null;
-        let institutionLogo = null;
-        let institutionName =
-          accountsResponse.data.item.institution_name || "Unknown Bank";
-
-        if (institutionId) {
-          try {
-            const institutionResponse = await plaidClient.institutionsGetById({
-              institution_id: institutionId,
-              country_codes: ["US", "CA"],
-              options: { include_optional_metadata: true },
-            });
-            institutionLogo = institutionResponse.data.institution.logo || null;
-            institutionName =
-              institutionResponse.data.institution.name || institutionName;
-          } catch (instErr) {
-            console.warn(
-              `⚠️ Failed to fetch institution details for ${institutionId}:`,
-              instErr?.response?.data?.error_message || instErr.message
-            );
-          }
-        }
-
-        // 🔁 Fetch recurring transactions for these accounts
-        const recurringResponse = await plaidClient.transactionsRecurringGet({
-          access_token: decryptedAccessToken,
-          account_ids: accountIds,
-          options: {},
-        });
-
-        const { inflow_streams = [], outflow_streams = [] } =
-          recurringResponse.data;
-
-        // 🔁 Fetch ALL transactions for these accounts in a single call
-        const txResponse = await plaidClient.transactionsGet({
-          access_token: decryptedAccessToken,
-          start_date: moment().subtract(2, "years").format("YYYY-MM-DD"),
-          end_date: moment().format("YYYY-MM-DD"),
-          options: { account_ids: accountIds, count: 500, offset: 0 },
-        });
-        const allTransactions = txResponse.data.transactions || [];
-
-        // 🔁 Create a transaction map for quick lookup by ID
-        const transactionMap = {};
-        allTransactions.forEach((tx) => {
-          transactionMap[tx.transaction_id] = tx;
-        });
-
-        // 🔁 Helper to structure streams into services
-        const processStreams = (streams, isInflow) => {
-          streams.forEach((stream) => {
-            const transactions = (stream.transaction_ids || [])
-              .map((id) => transactionMap[id])
-              .filter(Boolean)
-              .map((tx) => ({
-                transactionId: tx.transaction_id,
-                date: tx.date,
-                amount: tx.amount,
-                merchantName: tx.merchant_name,
-                merchantLogo:
-                  tx.counterparties?.[0]?.logo_url ||
-                  tx.personal_finance_category_icon_url ||
-                  null,
-                name: tx.name,
-                category: tx.personal_finance_category,
-              }));
-
-            const service = {
-              streamId: stream.stream_id || null,
-              serviceName:
-                stream.merchant_name || stream.description || "Unknown",
-              merchantName: stream.merchant_name || null,
-              merchantLogo: transactions[0]?.merchantLogo || null,
-              averageAmount: stream.average_amount?.amount || null,
-              lastAmount: stream.last_amount?.amount || null,
-              predictedNextDate: stream.predicted_next_date || null,
-              frequency: stream.frequency || null,
-              isActive: stream.is_active,
-              institutionId,
-              institutionName,
-              institutionLogo,
-              transactions,
-              currencyCode: transactions[0]
-                ? accountCurrencyMap[transactions[0].account_id] || "USD"
-                : "USD",
-            };
-
-            if (isInflow) {
-              if (stream.is_active) inflowActive.push(service);
-              else inflowInactive.push(service);
-            } else {
-              if (stream.is_active) outflowActive.push(service);
-              else outflowInactive.push(service);
-            }
+          // 🔁 Fetch linked accounts under this token
+          const accountsResponse = await plaidClient.accountsGet({
+            access_token: decryptedAccessToken,
           });
-        };
+          const accountIds = accountsResponse.data.accounts.map(
+            (acc) => acc.account_id
+          );
+          const accountCurrencyMap = {};
+          accountsResponse.data.accounts.forEach((acc) => {
+            accountCurrencyMap[acc.account_id] = acc.iso_currency_code || "USD";
+          });
 
-        // 🔁 Process inflow and outflow streams
-        processStreams(inflow_streams, true);
-        processStreams(outflow_streams, false);
+          if (accountIds.length === 0) continue;
+
+          // 🔁 Fetch institution details
+          const institutionId =
+            accountsResponse.data.item.institution_id || null;
+          let institutionLogo = null;
+          let institutionName =
+            accountsResponse.data.item.institution_name || "Unknown Bank";
+
+          if (institutionId) {
+            try {
+              const institutionResponse = await plaidClient.institutionsGetById(
+                {
+                  institution_id: institutionId,
+                  country_codes: ["US", "CA"],
+                  options: { include_optional_metadata: true },
+                }
+              );
+              institutionLogo =
+                institutionResponse.data.institution.logo || null;
+              institutionName =
+                institutionResponse.data.institution.name || institutionName;
+            } catch (instErr) {
+              console.warn(
+                `⚠️ Failed to fetch institution details for ${institutionId}:`,
+                instErr?.response?.data?.error_message || instErr.message
+              );
+            }
+          }
+
+          // 🔁 Fetch recurring transactions for these accounts
+          const recurringResponse = await plaidClient.transactionsRecurringGet({
+            access_token: decryptedAccessToken,
+            account_ids: accountIds,
+            options: {},
+          });
+
+          const { inflow_streams = [], outflow_streams = [] } =
+            recurringResponse.data;
+
+          // 🔁 Fetch ALL transactions for these accounts in a single call
+          const txResponse = await plaidClient.transactionsGet({
+            access_token: decryptedAccessToken,
+            start_date: moment().subtract(2, "years").format("YYYY-MM-DD"),
+            end_date: moment().format("YYYY-MM-DD"),
+            options: { account_ids: accountIds, count: 500, offset: 0 },
+          });
+          const allTransactions = txResponse.data.transactions || [];
+
+          // 🔁 Create a transaction map for quick lookup by ID
+          const transactionMap = {};
+          allTransactions.forEach((tx) => {
+            transactionMap[tx.transaction_id] = tx;
+          });
+
+          // 🔁 Helper to structure streams into services
+          const processStreams = (streams, isInflow) => {
+            streams.forEach((stream) => {
+              const transactions = (stream.transaction_ids || [])
+                .map((id) => transactionMap[id])
+                .filter(Boolean)
+                .map((tx) => {
+                  return {
+                    transactionId: tx.transaction_id,
+                    date: tx.date,
+                    amount: tx.amount,
+                    merchantName: tx.merchant_name,
+                    merchantLogo:
+                      tx.counterparties?.[0]?.logo_url ||
+                      tx.personal_finance_category_icon_url ||
+                      null,
+                    name: tx.name,
+                    originalMerchantLogo: tx.counterparties?.[0]?.logo_url,
+                    category: tx.personal_finance_category,
+                  };
+                });
+
+              const service = {
+                streamId: stream.stream_id || null,
+                serviceName:
+                  stream.merchant_name || stream.description || "Unknown",
+                merchantName: stream.merchant_name || null,
+                primaryCategory:
+                  stream.personal_finance_category?.primary || null,
+                detailedCategory:
+                  stream.personal_finance_category?.detailed || null,
+                merchantLogo: transactions[0]?.merchantLogo || null,
+                originalMerchantLogo:
+                  transactions[0]?.originalMerchantLogo || null,
+                averageAmount: stream.average_amount?.amount || null,
+                lastAmount: stream.last_amount?.amount || null,
+                predictedNextDate: stream.predicted_next_date || null,
+                frequency: stream.frequency || null,
+                isActive: stream.is_active,
+                institutionId,
+                institutionName,
+                institutionLogo,
+                transactions,
+                currencyCode: transactions[0]
+                  ? accountCurrencyMap[transactions[0].account_id] || "USD"
+                  : "USD",
+              };
+
+              if (isInflow) {
+                if (stream.is_active) inflowActive.push(service);
+                else inflowInactive.push(service);
+              } else {
+                if (stream.is_active) outflowActive.push(service);
+                else outflowInactive.push(service);
+              }
+            });
+          };
+
+          // 🔁 Process inflow and outflow streams
+          processStreams(inflow_streams, true);
+          processStreams(outflow_streams, false);
+        } catch (institutionError) {
+          console.warn(
+            `⚠️ Skipping institution due to error:`,
+            institutionError?.response?.data?.error_message ||
+              institutionError.message
+          );
+          continue;
+        }
       }
 
       // 🔁 Sort by predictedNextDate ascending (nulls last)
@@ -703,6 +725,8 @@ module.exports = {
         message: "Fetched all recurring transactions successfully",
       });
     } catch (error) {
+      console.log(error);
+
       const errorMessage =
         error?.response?.data?.error_message ||
         "Failed to fetch subscriptions: " + error.toString();

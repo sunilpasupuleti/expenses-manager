@@ -29,7 +29,7 @@ import {SafeArea} from '../../../components/utility/safe-area.component';
 import _ from 'lodash';
 import {getNextEmiAcrossAccounts} from '../../../components/utility/helper';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import plaidCategories from '../../../components/utility/plaidCategories.json';
 import {AuthenticationContext} from '../../../services/authentication/authentication.context';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -48,6 +48,9 @@ import Carousel, {Pagination} from 'react-native-reanimated-carousel';
 import SheetCardSkeleton from '../components/sheet-card-skeleton.component';
 import aiIcon from '../../../../assets/ai_icon.png';
 import Svg, {Path} from 'react-native-svg';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {GetCurrencySymbol} from '../../../components/symbol.currency';
+import {useIsFocused} from '@react-navigation/native';
 
 const CarouselInfoCards = ({cardsData = [], theme}) => {
   const {width} = useWindowDimensions();
@@ -65,54 +68,63 @@ const CarouselInfoCards = ({cardsData = [], theme}) => {
         data={cardsData}
         scrollAnimationDuration={600}
         style={{marginTop: 20}}
-        renderItem={({item}) => (
-          <TouchableOpacity onPress={item.onPress}>
-            <LinearGradient
-              colors={item.gradient}
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 1}}
-              style={{
-                borderRadius: 20,
-                marginHorizontal: 8,
-                height: '100%',
-                flexDirection: 'row',
-                alignItems: 'center',
-              }}>
-              <Image
-                source={item.image}
+        renderItem={({item}) => {
+          const subscriptionCard = item.cardType === 'subscription';
+
+          return (
+            <TouchableOpacity onPress={item.onPress}>
+              <LinearGradient
+                colors={item.gradient}
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 1}}
                 style={{
-                  width: 100,
-                  height: 100,
-                  marginRight: 12,
-                  marginLeft: 10,
-                }}
-                resizeMode="contain"
-              />
-              <View style={{flex: 1}}>
-                <Text
-                  fontfamily="headingBold"
-                  color={'#fcfdfe'}
-                  fontsize="16px"
-                  style={{marginBottom: 4}}>
-                  {item.title}
-                </Text>
-                <Text fontsize="13px" color={'#fdf3ff'}>
-                  {item.subtitle}
-                </Text>
-                <Spacer size="medium" />
-                <Text
-                  fontsize="13px"
+                  borderRadius: 20,
+                  marginHorizontal: 8,
+                  height: '100%',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <Image
+                  source={item.image}
                   style={{
-                    color: '#ffffff',
-                    textDecorationLine: 'underline',
-                    fontWeight: '500',
-                  }}>
-                  {item.cta}
-                </Text>
-              </View>
-            </LinearGradient>
-          </TouchableOpacity>
-        )}
+                    width: !subscriptionCard ? 100 : 60,
+                    height: !subscriptionCard ? 100 : 60,
+                    borderRadius: !subscriptionCard ? 0 : 100,
+                    marginRight: 12,
+                    marginLeft: 10,
+                  }}
+                  resizeMode="contain"
+                />
+                <View style={{flex: 1}}>
+                  <Text
+                    fontfamily="headingBold"
+                    color={'#fcfdfe'}
+                    fontsize="16px"
+                    style={{marginBottom: 4}}>
+                    {item.title}
+                  </Text>
+                  <Text
+                    fontsize="13px"
+                    color={'#fdf3ff'}
+                    style={{paddingRight: 5}}>
+                    {item.subtitle}
+                  </Text>
+                  <Spacer size="medium" />
+                  <Text
+                    fontsize="13px"
+                    style={{
+                      color: '#ffffff',
+                      textDecorationLine: 'underline',
+                      fontWeight: '500',
+                      paddingBottom: 5,
+                    }}>
+                    {item.cta}
+                  </Text>
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+          );
+        }}
       />
       <Pagination.Basic
         progress={progress}
@@ -164,6 +176,7 @@ export const SheetsScreen = ({
   const theme = useTheme();
   const {userAdditionalDetails, userData} = useContext(AuthenticationContext);
   const [showSearch, setShowSearch] = useState(false);
+  const [upcomingSubscriptions, setUpcomingSubscriptions] = useState([]);
   const [forceShowRecap, setForceShowRecap] = useState(false);
   const [carouselCards, setCarouselCards] = useState(carouselCardsData);
 
@@ -186,7 +199,7 @@ export const SheetsScreen = ({
     pinnedSheets.length === 0 &&
     loanSheets.length === 0 &&
     archivedSheets.length === 0;
-
+  const routeIsFocused = useIsFocused();
   const aiGlow = useSharedValue(1);
 
   useEffect(() => {
@@ -203,32 +216,147 @@ export const SheetsScreen = ({
     };
   });
 
-  useEffect(() => {
-    if (loanSheets && loanSheets.length > 0) {
-      const upcomingDues = getNextEmiAcrossAccounts(loanSheets);
+  const getUpcomingSubscriptions = async () => {
+    try {
+      const data = await AsyncStorage.getItem(
+        '@expenses-manager-subscriptions',
+      );
 
+      if (data) {
+        const services = JSON.parse(data);
+
+        if (services?.length > 0) {
+          setUpcomingSubscriptions(services);
+        }
+      }
+    } catch (error) {
+      console.error(
+        'Error getting upcoming subscriptions from AsyncStorage:',
+        error,
+      );
+    }
+  };
+
+  const getShortDescription = detailedCategory => {
+    const match = plaidCategories.find(
+      cat => cat.detailed === detailedCategory,
+    );
+    return match ? match.shortDescription : '';
+  };
+
+  useEffect(() => {
+    if (routeIsFocused) {
+      getUpcomingSubscriptions();
+    }
+  }, [routeIsFocused]);
+
+  useEffect(() => {
+    if (
+      (loanSheets?.length > 0 || upcomingSubscriptions?.length > 0) &&
+      routeIsFocused
+    ) {
       let cards = _.cloneDeep(carouselCardsData);
 
-      upcomingDues.forEach(due => {
-        cards.push({
-          title: `${due.name} - Upcoming EMI`,
-          subtitle: `Scheduled for ${moment(due.date).format(
-            'dddd (MMM DD, YYYY)',
-          )}`,
-          cta: 'View Loan Details →',
-          gradient: ['#f77062', '#fe5196', '#ff758c'],
-          image: require('../../../../assets/emi-due.png'),
-          onPress: () => {
-            onClickSheet(due.sheet);
-          },
-        });
-      });
+      if (loanSheets.length > 0) {
+        const upcomingDues = getNextEmiAcrossAccounts(loanSheets);
 
-      setCarouselCards(cards);
+        upcomingDues.forEach(due => {
+          cards.push({
+            title: `${due.name} - Upcoming EMI`,
+            subtitle: `Scheduled for ${moment(due.date).format(
+              'dddd (MMM DD, YYYY)',
+            )}`,
+            date: due.date,
+            cta: 'View Loan Details →',
+            gradient: ['#f77062', '#fe5196', '#ff758c'],
+            image: require('../../../../assets/emi-due.png'),
+            onPress: () => {
+              onClickSheet(due.sheet);
+            },
+          });
+        });
+      }
+      if (upcomingSubscriptions.length > 0) {
+        upcomingSubscriptions.forEach(service => {
+          const isInflow = service.type === 'inflow';
+
+          const shortDescription = getShortDescription(
+            service.detailedCategory,
+          );
+          const fullServiceName =
+            `${shortDescription} (${service.serviceName})` ||
+            service.serviceName ||
+            service.merchantName ||
+            'Unknown Service';
+
+          const serviceName = _.truncate(fullServiceName, {
+            length: 25,
+            omission: '...',
+          });
+
+          const predictedNextDate = moment(service.predictedNextDate)
+            .format('YYYY-MM-DD')
+            .toString();
+
+          if (!predictedNextDate) return;
+
+          const nextDate = moment(predictedNextDate);
+          const today = moment().startOf('day');
+          const daysUntilNext = nextDate.diff(today, 'days');
+          const amount =
+            Math.abs(service.averageAmount || service.lastAmount) || 0;
+          const isBase64 = !service?.originalMerchantLogo?.startsWith('http');
+          const image = {
+            uri: isBase64
+              ? `data:image/png;base64,${
+                  service.originalMerchantLogo || service.institutionLogo
+                }`
+              : service.originalMerchantLogo || service.institutionLogo,
+          };
+
+          cards.push({
+            title: serviceName,
+            subtitle: `${GetCurrencySymbol(
+              service.currencyCode,
+            )}${amount.toFixed(2)} ${isInflow ? 'expected to' : 'due from'} ${
+              service.institutionName || 'your account'
+            } ${
+              daysUntilNext === 0
+                ? 'today'
+                : daysUntilNext === 1
+                ? 'tomorrow'
+                : `in ${daysUntilNext} day${daysUntilNext > 1 ? 's' : ''}`
+            } (${moment(service.predictedNextDate).format('MMM DD, YYYY')})`,
+            cta: 'Check Subscription Details →',
+            gradient: isInflow
+              ? ['#2dd4bf', '#10b981', '#059669']
+              : ['#ff9a56', '#ffad56', '#ff6b56'], // Orange for outgoing
+            image: image,
+            isBase64: isBase64,
+            cardType: 'subscription',
+            date: service.predictedNextDate || null,
+            onPress: () => {
+              // Navigate to subscriptions or bank details
+              navigation.navigate('BankAccounts', {
+                screen: 'BankAccountsHome',
+                params: {screen: 'Subscriptions'},
+              });
+            },
+          });
+        });
+      }
+
+      setCarouselCards(
+        _.orderBy(
+          cards,
+          [card => (card.date ? moment(card.date).valueOf() : Infinity)],
+          ['asc'], // ascending - earliest dates first, null dates last
+        ),
+      );
     } else {
       setCarouselCards(carouselCardsData);
     }
-  }, [loanSheets]);
+  }, [loanSheets, upcomingSubscriptions]);
 
   return (
     <SafeArea>

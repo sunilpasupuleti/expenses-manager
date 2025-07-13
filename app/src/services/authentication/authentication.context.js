@@ -35,6 +35,7 @@ import defaultCategories from '../../components/utility/defaultCategories.json';
 import {SocketContext} from '../socket/socket.context';
 import * as Sentry from '@sentry/react-native';
 import {WatermelonDBContext} from '../watermelondb/watermelondb.context';
+import PushNotification from 'react-native-push-notification';
 
 GoogleSignin.configure({
   webClientId: remoteConfig().getValue('WEB_CLIENT_ID').asString(),
@@ -300,7 +301,6 @@ export const AuthenticationContextProvider = ({children}) => {
   };
 
   const requestAppReview = async () => {
-    return;
     let appReviewAvailable = InAppReview.isAvailable();
     if (appReviewAvailable) {
       InAppReview.RequestInAppReview()
@@ -726,6 +726,8 @@ export const AuthenticationContextProvider = ({children}) => {
       await AsyncStorage.removeItem('@expenses-manager-chat-history');
       await AsyncStorage.removeItem('@expenses-manager-recap');
       await AsyncStorage.removeItem('@expenses-manager-logged');
+      await AsyncStorage.removeItem('@expenses-manager-subscriptions');
+
       authStateTriggered = false;
       setUserData(null);
       setUserAdditionalDetails(null);
@@ -737,11 +739,7 @@ export const AuthenticationContextProvider = ({children}) => {
 
     if (auth().currentUser) {
       let uid = await auth().currentUser.uid;
-      console.log('called logout', uid);
-
       let jwtToken = await auth().currentUser.getIdToken();
-      console.log('called logout', uid, jwtToken);
-
       auth()
         .signOut()
         .then(async () => {

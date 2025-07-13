@@ -234,9 +234,12 @@ export const SuccessSubtext = styled.Text`
 
 export const TabsContainer = styled.View`
   flex-direction: row;
+  z-index: 999;
+  position: relative;
   justify-content: space-around;
   align-items: center;
   margin: 20px;
+  margin-top: 0px;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 25px;
   padding: 6px;
@@ -275,7 +278,12 @@ export const FlexRowBetween = styled.View`
 `;
 
 export const Chip = styled.View`
-  background-color: #f1f5f9;
+  background-color: ${({activeTab, chipType}) =>
+    chipType === 'amount'
+      ? activeTab === 'Deposits'
+        ? 'rgba(16, 185, 129, 0.1)'
+        : 'rgba(255, 165, 0, 0.1)'
+      : '#f1f5f9'};
   border-radius: 12px;
   padding: 4px 10px;
   margin-right: 8px;
@@ -283,7 +291,9 @@ export const Chip = styled.View`
 
 export const ChipText = styled.Text`
   font-size: 12px;
-  color: #334155;
+  color: ${({activeTab}) =>
+    activeTab ? (activeTab === 'Deposits' ? 'green' : 'tomato') : '#64748b'};
+  font-weight: 700;
 `;
 
 export const InstitutionContainer = styled.View`
@@ -302,4 +312,34 @@ export const InstitutionNameText = styled.Text`
   font-size: 12px;
   color: #64748b;
   margin-left: 6px;
+`;
+
+export const InactiveToggleContainer = styled.View`
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0px 20px 15px 20px;
+  padding-vertical: 6px;
+  padding-horizontal: 16px;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+`;
+
+export const InactiveToggleText = styled.Text`
+  margin-left: 4px;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 500;
+`;
+
+export const SubscriptionIllustration = styled.Image.attrs({
+  resizeMode: 'contain',
+})`
+  position: absolute;
+  top: 10px;
+  right: 5px;
+  width: 130px;
+  height: 130px;
+  z-index: -1;
+  transform: rotate(20deg);
 `;

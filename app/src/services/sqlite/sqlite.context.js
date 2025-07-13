@@ -19,7 +19,7 @@ import {
   LoanAccountEditTrigger,
   triggerNames,
 } from './sqliteTriggers';
-import {DB_BACKUP_PATH, DB_PATH} from '../../../config';
+import {DB_PATH} from '../../../config';
 import {Platform} from 'react-native';
 import RNFS from 'react-native-fs';
 

@@ -341,11 +341,15 @@ const ChatBotScreen = ({navigation}) => {
                 backgroundColor: '#ffffff', // match CustomBubble bg
                 borderRadius: 15, // match CustomBubble radius
                 padding: 10,
+
                 marginVertical: 4,
                 maxWidth: width * 0.8, // match normal bubble width
               }}>
               <RenderHTML
                 contentWidth={width * 0.7}
+                baseStyle={{
+                  color: '#000000',
+                }}
                 source={{html: currentMessage.html}}
               />
             </MotiView>
