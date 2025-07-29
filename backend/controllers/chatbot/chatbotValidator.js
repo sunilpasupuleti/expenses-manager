@@ -18,6 +18,17 @@ module.exports = {
     }
   },
 
+  async validateVoiceChat(req, res, next) {
+    try {
+      console.log(req.file);
+      next();
+    } catch (err) {
+      return sendResponse(res, httpCodes.BAD_REQUEST, {
+        message: err.toString(),
+      });
+    }
+  },
+
   async validateFormResponseChatBot(req, res, next) {
     try {
       const { question, data } = req.body;

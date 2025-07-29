@@ -15,7 +15,7 @@ import {
   Divider,
   Portal,
 } from 'react-native-paper';
-import {useTheme} from 'styled-components/native';
+import { useTheme } from 'styled-components/native';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {
@@ -42,7 +42,7 @@ import {
 } from 'react-native';
 import moment from 'moment';
 import Haptics from 'react-native-haptic-feedback';
-import {ScrollView} from 'react-native';
+import { ScrollView } from 'react-native';
 import {
   ButtonText,
   FlexRow,
@@ -51,35 +51,35 @@ import {
   SelectListInput,
   ToggleSwitch,
 } from '../../../../components/styles';
-import {Text} from '../../../../components/typography/text.component';
+import { Text } from '../../../../components/typography/text.component';
 import {
   GetCurrencyLocalString,
   GetCurrencySymbol,
 } from '../../../../components/symbol.currency';
-import {SheetsContext} from '../../../../services/sheets/sheets.context';
+import { SheetsContext } from '../../../../services/sheets/sheets.context';
 
-import {Spacer} from '../../../../components/spacer/spacer.component';
-import {SafeArea} from '../../../../components/utility/safe-area.component';
-import {useDispatch, useSelector} from 'react-redux';
-import {notificationActions} from '../../../../store/notification-slice';
-import {launchImageLibrary} from 'react-native-image-picker';
+import { Spacer } from '../../../../components/spacer/spacer.component';
+import { SafeArea } from '../../../../components/utility/safe-area.component';
+import { useDispatch, useSelector } from 'react-redux';
+import { notificationActions } from '../../../../store/notification-slice';
+import { launchImageLibrary } from 'react-native-image-picker';
 import RNFetchBlob from 'rn-fetch-blob';
-import {loaderActions} from '../../../../store/loader-slice';
-import {CameraRoll} from '@react-native-camera-roll/camera-roll';
+import { loaderActions } from '../../../../store/loader-slice';
+import { CameraRoll } from '@react-native-camera-roll/camera-roll';
 import {
   formatDate,
   getEmiDates,
   getFirebaseAccessUrl,
   getLinkedDbRecord,
 } from '../../../../components/utility/helper';
-import {SheetDetailsContext} from '../../../../services/sheetDetails/sheetDetails.context';
-import {CategoriesContext} from '../../../../services/categories/categories.context';
+import { SheetDetailsContext } from '../../../../services/sheetDetails/sheetDetails.context';
+import { CategoriesContext } from '../../../../services/categories/categories.context';
 import _ from 'lodash';
-import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
-import {useNetInfo} from '@react-native-community/netinfo';
-import {TabsSwitcher} from '../../../../components/tabs-switcher/tabs-switcher.component';
+import { AuthenticationContext } from '../../../../services/authentication/authentication.context';
+import { useNetInfo } from '@react-native-community/netinfo';
+import { TabsSwitcher } from '../../../../components/tabs-switcher/tabs-switcher.component';
 
-export const AddSheetDetailScreen = ({navigation, route}) => {
+export const AddSheetDetailScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const [disabled, setDisabled] = useState(true);
   const [activeType, setActiveType] = useState('expense');
@@ -95,7 +95,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   d.setDate(date.getDate());
   const [time, setTime] = useState(d);
   const dispatch = useDispatch();
-  const {onSaveSheetDetail, onEditSheetDetail} =
+  const { onSaveSheetDetail, onEditSheetDetail } =
     useContext(SheetDetailsContext);
 
   const [showPicker, setShowPicker] = useState({
@@ -104,8 +104,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   });
   const [sheet, setSheet] = useState(null);
 
-  const {onSaveCategory} = useContext(CategoriesContext);
-  const {userData} = useContext(AuthenticationContext);
+  const { onSaveCategory } = useContext(CategoriesContext);
+  const { userData } = useContext(AuthenticationContext);
 
   // inputs states
   const [amount, setAmount] = useState(0);
@@ -118,7 +118,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   const [selectedImage, setSelectedImage] = useState({
     url: null,
   });
-  const {isConnected} = useNetInfo();
+  const { isConnected } = useNetInfo();
   const [imageChanged, setImageChanged] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -157,7 +157,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       setIsLoanAccount(true);
       setActiveType('expense');
 
-      const {allEmis} = getEmiDates(
+      const { allEmis } = getEmiDates(
         sheet.loanStartDate,
         sheet.repaymentFrequency,
         sheet.loanYears,
@@ -242,7 +242,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
       if (newCat) {
         setNewCategoryIdentified({
           showDialog: true,
-          category: {name: route.params.sheetDetail.category},
+          category: { name: route.params.sheetDetail.category },
         });
       }
       if (dt) {
@@ -264,7 +264,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
   useEffect(() => {
     const onSetData = async () => {
       setEditMode(true);
-      let {sheetDetail: sd, sheetDetailModel: sdModel} = route.params;
+      let { sheetDetail: sd, sheetDetailModel: sdModel } = route.params;
 
       setSheetDetailModel(sdModel || sd);
 
@@ -620,8 +620,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
         {!editMode && !smartScanMode && !isLoanAccount && (
           <TabsSwitcher
             tabs={[
-              {key: 'expense', label: 'Expense'},
-              {key: 'income', label: 'Income'},
+              { key: 'expense', label: 'Expense' },
+              { key: 'income', label: 'Income' },
             ]}
             setActiveKey={onSetActiveType}
             activeKey={activeType}
@@ -630,7 +630,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
 
         <ScrollView
           keyboardShouldPersistTaps="never"
-          showsVerticalScrollIndicator={false}>
+          showsVerticalScrollIndicator={false}
+        >
           <AddAmountContainer>
             <AddAmountInputTextContainer>
               <View onLayout={e => setAmountWidth(e.nativeEvent.layout.width)}>
@@ -685,7 +686,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                 backgroundColor: theme.colors.bg.card,
                 margin: 0.5,
                 marginBottom: 20,
-              }}>
+              }}
+            >
               <Card.Content>
                 <FlexRow justifyContent="space-between">
                   <Text fontfamily="heading">Is this an EMI Payment?</Text>
@@ -751,7 +753,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
               backgroundColor: theme.colors.bg.card,
               margin: 0.5,
             }}
-            theme={{roundness: 5}}
+            theme={{ roundness: 5 }}
             onPress={() => {
               let paramsObject = passPresentEditedDetailsToSelectCategory();
               navigation.navigate('SelectCategory', {
@@ -762,7 +764,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                 editModeParams: paramsObject,
                 sheetDetailModel: sheetDetailModel,
               });
-            }}>
+            }}
+          >
             <Card.Title
               title={
                 selectedCategory ? selectedCategory?.name : 'Select Category'
@@ -807,11 +810,12 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
           <Spacer size={'large'} />
 
           <Card
-            theme={{roundness: 5}}
+            theme={{ roundness: 5 }}
             style={{
               backgroundColor: theme.colors.bg.card,
               margin: 1,
-            }}>
+            }}
+          >
             <Spacer size="large" />
 
             {(!isLoanAccount ||
@@ -828,7 +832,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                         <Ionicons
                           name="calendar-outline"
                           size={25}
-                          color={theme.colors.brand.primary}>
+                          color={theme.colors.brand.primary}
+                        >
                           <Spacer position={'left'} />
                         </Ionicons>
                         <Text fontfamily="heading">Date</Text>
@@ -849,7 +854,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                                 ...prevState,
                                 date: true,
                               }))
-                            }>
+                            }
+                          >
                             <Text fontfamily="bodySemiBold" fontsize="14px">
                               {moment(date).format('DD MMM YYYY')}
                             </Text>
@@ -939,7 +945,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                             <Ionicons
                               name="time-outline"
                               size={25}
-                              color={theme.colors.brand.primary}>
+                              color={theme.colors.brand.primary}
+                            >
                               <Spacer position={'left'} />
                             </Ionicons>
                             <Text fontfamily="heading">Time</Text>
@@ -960,7 +967,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                                     ...prevState,
                                     time: true,
                                   }))
-                                }>
+                                }
+                              >
                                 <Text fontfamily="bodySemiBold" fontsize="14px">
                                   {moment(time).format('hh:mm A')}
                                 </Text>
@@ -1054,7 +1062,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                   <TouchableOpacity
                     onPress={() => {
                       onAddImage();
-                    }}>
+                    }}
+                  >
                     <Text>Change Image</Text>
                   </TouchableOpacity>
 
@@ -1094,7 +1103,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
               editMode ? onEdit() : onSave();
             }}
             mode="contained"
-            disabled={disabled}>
+            disabled={disabled}
+          >
             <ButtonText disabled={disabled} color="#fff">
               Done
             </ButtonText>
@@ -1110,7 +1120,7 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
               //   setNewCategoryIdentified(p => ({...p, showDialog: false}))
               // }
             >
-              <Dialog.Title style={{textAlign: 'center'}}>
+              <Dialog.Title style={{ textAlign: 'center' }}>
                 <Ionicons
                   name="alert-circle-outline"
                   size={30}
@@ -1123,7 +1133,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                   the&nbsp;&nbsp;&nbsp;
                   <Text
                     fontfamily="headingBold"
-                    style={{textTransform: 'uppercase'}}>
+                    style={{ textTransform: 'uppercase' }}
+                  >
                     {newCategoryIdentified.category?.name}
                   </Text>
                   &nbsp;&nbsp; category? Do you want to proceed by adding this
@@ -1133,9 +1144,10 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
               <Dialog.Actions>
                 <Button
                   onPress={() =>
-                    setNewCategoryIdentified(p => ({...p, showDialog: false}))
+                    setNewCategoryIdentified(p => ({ ...p, showDialog: false }))
                   }
-                  textColor="#aaa">
+                  textColor="#aaa"
+                >
                   Cancel
                 </Button>
                 <Spacer position={'left'} size="large" />
@@ -1144,7 +1156,8 @@ export const AddSheetDetailScreen = ({navigation, route}) => {
                   icon={'plus'}
                   mode="outlined"
                   onPress={onAddNewCategory}
-                  textColor={theme.colors.brand.primary}>
+                  textColor={theme.colors.brand.primary}
+                >
                   Add and Continue
                 </Button>
               </Dialog.Actions>

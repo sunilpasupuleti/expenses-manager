@@ -1,26 +1,26 @@
 import React from 'react';
-import {createContext, useContext, useEffect, useState} from 'react';
-import {useDispatch} from 'react-redux';
-import {loaderActions} from '../../store/loader-slice';
-import {notificationActions} from '../../store/notification-slice';
-import {AuthenticationContext} from '../authentication/authentication.context';
-import {Alert, NativeModules, Platform} from 'react-native';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { loaderActions } from '../../store/loader-slice';
+import { notificationActions } from '../../store/notification-slice';
+import { AuthenticationContext } from '../authentication/authentication.context';
+import { Alert, NativeModules, Platform } from 'react-native';
 import Share from 'react-native-share';
-import DocumentPicker from 'react-native-document-picker';
+import { pick, types } from '@react-native-documents/picker';
 import RNFetchBlob from 'rn-fetch-blob';
 import RNFS from 'react-native-fs';
 import useHttp from '../../hooks/use-http';
 import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import XLSX from 'xlsx';
 import moment from 'moment';
-import {zip} from 'react-native-zip-archive';
+import { zip } from 'react-native-zip-archive';
 import auth from '@react-native-firebase/auth';
 import messaging from '@react-native-firebase/messaging';
 import remoteConfig from '@react-native-firebase/remote-config';
-import {useTheme} from 'styled-components/native';
-import {getTimeZone} from 'react-native-localize';
+import { useTheme } from 'styled-components/native';
+import { getTimeZone } from 'react-native-localize';
 import _ from 'lodash';
-import {SheetsContext} from '../sheets/sheets.context';
+import { SheetsContext } from '../sheets/sheets.context';
 import {
   excelSheetAccountColWidth,
   getExcelSheetAccountRows,
@@ -29,10 +29,10 @@ import {
   getPdfAccountTableHtml,
 } from '../../components/utility/helper';
 import database from '@react-native-firebase/database';
-import {WatermelonDBContext} from '../watermelondb/watermelondb.context';
-import {Q} from '@nozbe/watermelondb';
+import { WatermelonDBContext } from '../watermelondb/watermelondb.context';
+import { Q } from '@nozbe/watermelondb';
 
-const {AlarmManagerModule} = NativeModules;
+const { AlarmManagerModule } = NativeModules;
 
 export const SettingsContext = createContext({
   onExportData: () => null,
@@ -47,11 +47,11 @@ export const SettingsContext = createContext({
   setBaseCurrency: null,
 });
 
-export const SettingsContextProvider = ({children}) => {
-  const {userData} = useContext(AuthenticationContext);
-  const {getMessages, onUpdateSheet} = useContext(SheetsContext);
-  const {db, deleteAllRecords} = useContext(WatermelonDBContext);
-  const {sendRequest} = useHttp();
+export const SettingsContextProvider = ({ children }) => {
+  const { userData } = useContext(AuthenticationContext);
+  const { getMessages, onUpdateSheet } = useContext(SheetsContext);
+  const { db, deleteAllRecords } = useContext(WatermelonDBContext);
+  const { sendRequest } = useHttp();
 
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -284,12 +284,12 @@ export const SettingsContextProvider = ({children}) => {
       const accountsWithTransactions = await Promise.all(
         accounts.map(async account => {
           const transactions = await getLinkedDbRecord(account, 'transactions');
-          const sanitizedAccount = {...account._raw};
+          const sanitizedAccount = { ...account._raw };
           delete sanitizedAccount.userId;
           delete sanitizedAccount._status;
           delete sanitizedAccount._changed;
-          const sanitizedTransactions = transactions.map(({_raw}) => {
-            const {accountId, ...rest} = _raw;
+          const sanitizedTransactions = transactions.map(({ _raw }) => {
+            const { accountId, ...rest } = _raw;
             delete rest._status;
             delete rest._changed;
             return rest;
@@ -301,8 +301,8 @@ export const SettingsContextProvider = ({children}) => {
         }),
       );
 
-      const sanitizedCategories = categories.map(({_raw}) => {
-        const {userId, ...rest} = _raw;
+      const sanitizedCategories = categories.map(({ _raw }) => {
+        const { userId, ...rest } = _raw;
         delete rest._status;
         delete rest._changed;
         return rest;
@@ -363,11 +363,11 @@ export const SettingsContextProvider = ({children}) => {
       return new Promise(async (resolve, reject) => {
         try {
           showLoader();
-          let res = await DocumentPicker.pickSingle({
-            type: [DocumentPicker.types.allFiles],
+          let res = await pick({
+            type: [types.allFiles],
             copyTo: 'documentDirectory',
           }).catch(() => {});
-          const {type: fileType, uri, fileCopyUri} = res;
+          const { type: fileType, uri, fileCopyUri } = res;
           if (fileType !== 'application/json') {
             throw 'Only JSON files are allowed';
           }
@@ -380,7 +380,7 @@ export const SettingsContextProvider = ({children}) => {
           }
           let file = await RNFetchBlob.fs.readFile(fileuri);
           let data = JSON.parse(file);
-          let {accounts, categories} = data;
+          let { accounts, categories } = data;
           const createdAccounts = [];
 
           if (!accounts?.length || !categories?.length) {
@@ -409,7 +409,7 @@ export const SettingsContextProvider = ({children}) => {
                 categoryIdMap[c.id] = newRecord.id;
               }
               for (const a of accounts) {
-                const {transactions = [], ...accountData} = a;
+                const { transactions = [], ...accountData } = a;
 
                 const createdAccount = await db.get('accounts').create(acc => {
                   Object.keys(accountData).forEach(key => {
@@ -470,7 +470,7 @@ export const SettingsContextProvider = ({children}) => {
           style: 'default',
         },
       ],
-      {cancelable: false},
+      { cancelable: false },
     );
   };
 
@@ -520,7 +520,7 @@ export const SettingsContextProvider = ({children}) => {
             }),
         );
 
-        let {name} = account;
+        let { name } = account;
         let html = getPdfAccountTableHtml(theme, account, transactions);
         let options = {
           html: html,
@@ -612,7 +612,7 @@ export const SettingsContextProvider = ({children}) => {
             }),
         );
 
-        const {name} = account;
+        const { name } = account;
         const rows = getExcelSheetAccountRows(account, transactions); // custom formatter
         const ws = XLSX.utils.json_to_sheet(rows);
 
@@ -679,7 +679,8 @@ export const SettingsContextProvider = ({children}) => {
         baseCurrency,
         setBaseCurrency,
         onUpdateBaseCurrency,
-      }}>
+      }}
+    >
       {children}
     </SettingsContext.Provider>
   );

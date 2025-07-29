@@ -26,6 +26,28 @@ export const MainContainer = styled.View`
   padding: 0px;
 `;
 
+export const RenderBlurView = () => {
+  const appState = useSelector(state => state.service.appState);
+  const {width: viewportWidth, height: viewportHeight} =
+    Dimensions.get('window');
+  const theme = useTheme();
+  const defaultStyleSheetProps = {
+    theme,
+    viewportHeight,
+    viewportWidth,
+  };
+
+  return (
+    (appState === 'inactive' || appState === 'background') && (
+      <BlurView
+        blurType="extraDark"
+        blurAmount={7}
+        style={styles(defaultStyleSheetProps).blurView}
+      />
+    )
+  );
+};
+
 export const SafeArea = props => {
   const appState = useSelector(state => state.service.appState);
   const {width: viewportWidth, height: viewportHeight} =

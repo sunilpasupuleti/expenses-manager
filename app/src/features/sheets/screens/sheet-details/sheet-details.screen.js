@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable no-shadow */
-import React, {useContext, useEffect, useState, useRef, useMemo} from 'react';
+import React, { useContext, useEffect, useState, useRef, useMemo } from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -17,7 +17,7 @@ import {
   useColorScheme,
   View,
 } from 'react-native';
-import {useTheme} from 'styled-components/native';
+import { useTheme } from 'styled-components/native';
 
 import moment from 'moment';
 import _ from 'lodash';
@@ -27,12 +27,16 @@ import {
   MenuOption,
   MenuTrigger,
 } from 'react-native-popup-menu';
-import {useDispatch, useSelector} from 'react-redux';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {FlexRow, Input, NotFoundContainer} from '../../../../components/styles';
+import { useDispatch, useSelector } from 'react-redux';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import {
+  FlexRow,
+  Input,
+  NotFoundContainer,
+} from '../../../../components/styles';
 
-import {Text} from '../../../../components/typography/text.component';
-import {SafeArea} from '../../../../components/utility/safe-area.component';
+import { Text } from '../../../../components/typography/text.component';
+import { SafeArea } from '../../../../components/utility/safe-area.component';
 import {
   BottomIconsContainer,
   CameraButton,
@@ -45,16 +49,16 @@ import {
   SheetDetailsUnderline,
 } from '../../components/sheet-details/sheet-details.styles';
 
-import {Spacer} from '../../../../components/spacer/spacer.component';
+import { Spacer } from '../../../../components/spacer/spacer.component';
 import {
   GetCurrencyLocalString,
   GetCurrencySymbol,
 } from '../../../../components/symbol.currency';
 import Lottie from 'lottie-react-native';
 import noTransactions from '../../../../../assets/lottie/no_transactions.json';
-import {SheetDetailsContext} from '../../../../services/sheetDetails/sheetDetails.context';
-import {Divider} from 'react-native-paper';
-import {SheetDetailsInfo} from '../../components/sheet-details/sheet-details-info.component';
+import { SheetDetailsContext } from '../../../../services/sheetDetails/sheetDetails.context';
+import { Divider } from 'react-native-paper';
+import { SheetDetailsInfo } from '../../components/sheet-details/sheet-details-info.component';
 
 export const SheetDetailsScreen = ({
   navigation,
@@ -72,11 +76,11 @@ export const SheetDetailsScreen = ({
 
   const theme = useTheme();
   const [amountWidth, setAmountWidth] = useState(0);
-  const {onSmartScanReceipt} = useContext(SheetDetailsContext);
-  const {onCheckUpcomingSheetDetails} = useContext(SheetDetailsContext);
+  const { onSmartScanReceipt } = useContext(SheetDetailsContext);
+  const { onCheckUpcomingSheetDetails } = useContext(SheetDetailsContext);
   let cameraRef = useRef();
   const menuOptionStyles = {
-    optionWrapper: {padding: 15, paddingTop: 10},
+    optionWrapper: { padding: 15, paddingTop: 10 },
     OptionTouchableComponent: TouchableOpacity,
   };
 
@@ -193,10 +197,12 @@ export const SheetDetailsScreen = ({
             onLayout={e => setAmountWidth(e.nativeEvent.layout.width)}
             style={{
               alignItems: 'center',
-            }}>
+            }}
+          >
             <SheetDetailsTotalBalance
               fontsize={'30px'}
-              fontfamily="bodySemiBold">
+              fontfamily="bodySemiBold"
+            >
               {GetCurrencySymbol(sheet.currency)}{' '}
               {GetCurrencyLocalString(totalBalance)}
             </SheetDetailsTotalBalance>
@@ -224,7 +230,7 @@ export const SheetDetailsScreen = ({
 
         <Input
           value={searchKeyword}
-          style={{elevation: 2, margin: 10, marginBottom: 0}}
+          style={{ elevation: 2, margin: 10, marginBottom: 0 }}
           placeholder="Search by Category / Notes / Amount"
           onChangeText={k => setSearchKeyword(k)}
           clearButtonMode="while-editing"
@@ -236,10 +242,12 @@ export const SheetDetailsScreen = ({
                 navigation.navigate('UpcomingSheetDetails', {
                   sheet: sheet,
                 });
-              }}>
+              }}
+            >
               <FlexRow
                 justifyContent="space-between"
-                style={{paddingLeft: 16, paddingRight: 16}}>
+                style={{ paddingLeft: 16, paddingRight: 16 }}
+              >
                 <Text fontsize="20px" color={theme.colors.brand.primary}>
                   Upcoming ({upcomingTransactions.length})
                 </Text>
@@ -267,7 +275,7 @@ export const SheetDetailsScreen = ({
             />
           }
           sections={groupedTransactions.map(
-            ({title, transactions, totalBalance}) => ({
+            ({ title, transactions, totalBalance }) => ({
               title: title,
               data: transactions,
               totalBalance: totalBalance,
@@ -276,7 +284,7 @@ export const SheetDetailsScreen = ({
           keyExtractor={(item, index) =>
             item?.id ? item.id.toString() : `index-${index}`
           }
-          renderSectionHeader={({section}) => {
+          renderSectionHeader={({ section }) => {
             return (
               <SheetDetailHeader>
                 <SheetDetailHeaderLabel>
@@ -284,9 +292,9 @@ export const SheetDetailsScreen = ({
                     lastDay: '[Yesterday]',
                     sameDay: '[Today]',
                     nextDay: '[Tomorrow]',
-                    lastWeek: 'DD MMM YYYY',
-                    nextWeek: 'DD MMM YYYY',
-                    sameElse: 'DD MMM YYYY',
+                    lastWeek: 'DD MMM YYYY - dddd',
+                    nextWeek: 'DD MMM YYYY - dddd',
+                    sameElse: 'DD MMM YYYY - dddd',
                   })}
                 </SheetDetailHeaderLabel>
                 <SheetDetailHeaderLabel>
@@ -298,7 +306,7 @@ export const SheetDetailsScreen = ({
           }}
           maxToRenderPerBatch={20}
           ItemSeparatorComponent={Divider}
-          renderItem={({item, index, section}) => (
+          renderItem={({ item, index, section }) => (
             <SheetDetailsInfo
               transaction={item}
               sheet={sheet}
@@ -306,7 +314,7 @@ export const SheetDetailsScreen = ({
               index={index}
             />
           )}
-          contentContainerStyle={{paddingBottom: 150}}
+          contentContainerStyle={{ paddingBottom: 150 }}
           stickySectionHeadersEnabled
         />
 
@@ -332,7 +340,8 @@ export const SheetDetailsScreen = ({
           {!sheet.isLoanAccount ? (
             <Menu
               onBackdropPress={() => cameraRef.current.close()}
-              ref={element => (cameraRef.current = element)}>
+              ref={element => (cameraRef.current = element)}
+            >
               <MenuTrigger
                 customStyles={{
                   triggerTouchable: {
@@ -343,7 +352,8 @@ export const SheetDetailsScreen = ({
                     // },
                   },
                   TriggerTouchableComponent: TouchableOpacity,
-                }}>
+                }}
+              >
                 <CameraButton onPress={() => cameraRef.current.open()}>
                   <FlexRow>
                     <CameraIcon
@@ -367,13 +377,15 @@ export const SheetDetailsScreen = ({
                   marginTop: -80,
                   borderRadius: 10,
                   minWidth: 250,
-                }}>
+                }}
+              >
                 <MenuOption
                   customStyles={menuOptionStyles}
                   onSelect={() => {
                     cameraRef.current.close();
                     onClickScanButton('camera');
-                  }}>
+                  }}
+                >
                   <FlexRow justifyContent="space-between">
                     <Text color="#2f2f2f" fontfamily="heading">
                       Take a Photo
@@ -386,7 +398,8 @@ export const SheetDetailsScreen = ({
                   onSelect={() => {
                     cameraRef.current.close();
                     onClickScanButton('gallery');
-                  }}>
+                  }}
+                >
                   <FlexRow justifyContent="space-between">
                     <Text color="#2f2f2f" fontfamily="heading">
                       Choose a Photo
@@ -406,7 +419,8 @@ export const SheetDetailsScreen = ({
                 navigation.navigate('AddSheetDetail', {
                   sheet: sheet,
                 });
-              }}>
+              }}
+            >
               <FlexRow>
                 <AntDesign name="plus" size={20} color={'#fff'} />
                 <Spacer position={'left'}>

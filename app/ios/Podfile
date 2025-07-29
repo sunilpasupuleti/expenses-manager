@@ -1,3 +1,4 @@
+require File.join(File.dirname(`node --print "require.resolve('expo/package.json')"`), "scripts/autolinking")
 def node_require(script)
   # Resolve script with node to allow for hoisting
   require Pod::Executable.execute_command('node', ['-p',
@@ -51,6 +52,20 @@ use_frameworks! :linkage => :static
 $RNFirebaseAsStaticFramework = true
 
 target 'expensesmanager' do
+  use_expo_modules!
+  
+  post_integrate do |installer|
+    begin
+      expo_patch_react_imports!(installer)
+    rescue => e
+      Pod::UI.warn e
+    end
+    begin
+      expo_patch_react_imports!(installer)
+    rescue => e
+      Pod::UI.warn e
+    end
+  end
   # added
   # use_frameworks!
   
@@ -73,12 +88,15 @@ target 'expensesmanager' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
-  target 'expensesmanagerTests' do
-    inherit! :complete
-    # Pods for testing
-  end
 
   post_install do |installer|
+    system("chmod -R u+w Pods/RCT-Folly")
+    Dir.glob("Pods/RCT-Folly/folly/Portability.h").each do |file|
+      text = File.read(file)
+      new_contents = text.gsub('#define FOLLY_HAS_COROUTINES 1', '#define FOLLY_HAS_COROUTINES 0')
+      File.open(file, "w") { |file| file.puts new_contents }
+    end
+
     # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
     react_native_post_install(
       installer,

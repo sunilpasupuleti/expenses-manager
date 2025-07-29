@@ -16,9 +16,8 @@ module.exports = function (api) {
           },
         },
       ],
-      ['@babel/plugin-proposal-decorators', {legacy: true}],
-      ['@babel/plugin-proposal-class-properties', {loose: true}],
-      'react-native-reanimated/plugin', // This MUST be last
+      ['@babel/plugin-proposal-decorators', { legacy: true }],
+      'react-native-worklets/plugin', // THIS MUST BE LAST
     ],
   };
 };

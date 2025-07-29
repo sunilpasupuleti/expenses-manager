@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import {
   Image,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -16,12 +17,19 @@ import {
   Vibration,
   View,
 } from 'react-native';
-import {GiftedChat, SystemMessage, Day, Avatar} from 'react-native-gifted-chat';
-import {MotiView, AnimatePresence} from 'moti';
+import {
+  GiftedChat,
+  SystemMessage,
+  Day,
+  Avatar,
+  Time,
+} from 'react-native-gifted-chat';
+import { MotiView, AnimatePresence } from 'moti';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import RenderHTML from 'react-native-render-html';
-import {Dimensions} from 'react-native';
-const {width} = Dimensions.get('window');
+import { Dimensions } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+const { width } = Dimensions.get('window');
 
 import {
   Container,
@@ -38,22 +46,24 @@ import {
   FloatingActionButton,
   ParticleContainer,
   Particle,
+  HeaderView,
 } from '../components/chat-bot.styles';
-import {AuthenticationContext} from '../../../services/authentication/authentication.context';
-import {getFirebaseAccessUrl} from '../../../components/utility/helper';
+import { AuthenticationContext } from '../../../services/authentication/authentication.context';
+import { getFirebaseAccessUrl } from '../../../components/utility/helper';
 import botImage from '../../../../assets/bot.png';
 import userImage from '../../../../assets/user_bot.png';
-import {ChatBotContext} from '../../../services/chat-bot/chat-bot.context';
-import {Text} from '../../../components/typography/text.component';
+import { ChatBotContext } from '../../../services/chat-bot/chat-bot.context';
+import { Text } from '../../../components/typography/text.component';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 const CHAT_HISTORY_KEY = '@expenses-manager-chat-history';
-const ChatBotScreen = ({navigation}) => {
+const ChatBotScreen = ({ navigation }) => {
   const [messages, setMessages] = useState([]);
   const [isTyping, setIsTyping] = useState(false);
   const [inputText, setInputText] = useState('');
   const [isOnline, setIsOnline] = useState(true);
-  const {userData} = useContext(AuthenticationContext);
-  const {onQueryChatBot} = useContext(ChatBotContext);
+  const { userData } = useContext(AuthenticationContext);
+  const { onQueryChatBot } = useContext(ChatBotContext);
+  const keyboardAwareRef = useRef(null);
 
   const chatRef = useRef(null);
 
@@ -192,6 +202,12 @@ const ChatBotScreen = ({navigation}) => {
     setIsTyping(true);
     const botResponse = generateBotResponse(newMessages[0].text);
     setMessages(prev => GiftedChat.append(prev, [botResponse]));
+
+    setTimeout(() => {
+      if (keyboardAwareRef.current) {
+        keyboardAwareRef.current.scrollToEnd({ animated: true });
+      }
+    }, 100);
   }, []);
 
   const generateBotResponse = userMessage => {
@@ -244,6 +260,12 @@ const ChatBotScreen = ({navigation}) => {
         setMessages(prev => GiftedChat.append(prev, [aiMessage]));
         setIsTyping(false);
         Vibration.vibrate(50);
+
+        setTimeout(() => {
+          if (keyboardAwareRef.current) {
+            keyboardAwareRef.current.scrollToEnd({ animated: true });
+          }
+        }, 100);
       },
       err => {
         // Handle error with a fallback AI message
@@ -259,7 +281,6 @@ const ChatBotScreen = ({navigation}) => {
         };
         setMessages(prev => GiftedChat.append(prev, [errorMessage]));
         setIsTyping(false);
-
         Vibration.vibrate([0, 100, 50, 100]);
       },
     );
@@ -277,27 +298,30 @@ const ChatBotScreen = ({navigation}) => {
 
     return (
       <MotiView
-        from={{opacity: 0, translateY: 20}}
-        animate={{opacity: 1, translateY: 0}}
-        exit={{opacity: 0, translateY: -20}}
-        transition={{type: 'spring', damping: 15}}
+        from={{ opacity: 0, translateY: 20 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        exit={{ opacity: 0, translateY: -20 }}
+        transition={{ type: 'spring', damping: 15 }}
         style={{
           backgroundColor: 'rgba(255,255,255,0.05)', // very subtle transparent bg
           paddingVertical: 8,
           paddingHorizontal: 10,
           marginBottom: 4,
-        }}>
+          width: '90%',
+        }}
+      >
         {rows.map((rowItems, rowIndex) => (
           <ScrollView
             key={rowIndex}
             horizontal
             showsHorizontalScrollIndicator={false}
-            style={{marginBottom: 8}}>
+            style={{ marginBottom: 8 }}
+          >
             {rowItems.map((s, index) => (
               <MotiView
                 key={index}
-                from={{scale: 0.9, opacity: 0}}
-                animate={{scale: 1, opacity: 1}}
+                from={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
                 transition={{
                   type: 'timing',
                   duration: 300,
@@ -309,9 +333,10 @@ const ChatBotScreen = ({navigation}) => {
                   paddingVertical: 8,
                   paddingHorizontal: 16,
                   marginRight: 10,
-                }}>
+                }}
+              >
                 <TouchableOpacity onPress={() => handleSuggestionPress(s)}>
-                  <Text style={{color: 'white', fontSize: 14}}>{s}</Text>
+                  <Text style={{ color: 'white', fontSize: 14 }}>{s}</Text>
                 </TouchableOpacity>
               </MotiView>
             ))}
@@ -322,7 +347,7 @@ const ChatBotScreen = ({navigation}) => {
   };
 
   const renderBubble = props => {
-    const {currentMessage} = props;
+    const { currentMessage } = props;
 
     if (currentMessage.type === 'suggestions') {
       return renderSuggestions();
@@ -330,60 +355,47 @@ const ChatBotScreen = ({navigation}) => {
 
     if (currentMessage.html) {
       return (
-        <AnimatePresence>
-          <AnimatedMessageWrapper
-            from={{opacity: 0, translateY: 20, scale: 0.8}}
-            animate={{opacity: 1, translateY: 0, scale: 1}}
-            exit={{opacity: 0, translateY: -20, scale: 0.8}}
-            transition={{type: 'timing', duration: 400}}>
-            <MotiView
-              style={{
-                backgroundColor: '#ffffff', // match CustomBubble bg
-                borderRadius: 15, // match CustomBubble radius
-                padding: 10,
-
-                marginVertical: 4,
-                maxWidth: width * 0.8, // match normal bubble width
-              }}>
-              <RenderHTML
-                contentWidth={width * 0.7}
-                baseStyle={{
-                  color: '#000000',
-                }}
-                source={{html: currentMessage.html}}
-              />
-            </MotiView>
-          </AnimatedMessageWrapper>
-        </AnimatePresence>
+        <View
+          style={{
+            backgroundColor: '#ffffff', // match CustomBubble bg
+            borderRadius: 15, // match CustomBubble radius
+            padding: 10,
+            marginVertical: 4,
+            maxWidth: width * 0.8, // match normal bubble width
+          }}
+        >
+          <RenderHTML
+            contentWidth={width * 0.7}
+            baseStyle={{
+              color: '#000000',
+            }}
+            source={{ html: currentMessage.html }}
+          />
+        </View>
       );
     }
 
     return (
-      <AnimatePresence>
-        <AnimatedMessageWrapper
-          from={{opacity: 0, translateY: 20, scale: 0.8}}
-          animate={{opacity: 1, translateY: 0, scale: 1}}
-          exit={{opacity: 0, translateY: -20, scale: 0.8}}
-          transition={{type: 'timing', duration: 400}}>
-          <CustomBubble
-            {...props}
-            style={{
-              shadowColor: '#000',
-              shadowOpacity: 0.22,
-              shadowRadius: 2.22,
-              elevation: 3,
-            }}
-          />
-        </AnimatedMessageWrapper>
-      </AnimatePresence>
+      <View>
+        <CustomBubble
+          {...props}
+          style={{
+            shadowColor: '#000',
+            shadowOpacity: 0.22,
+            shadowRadius: 2.22,
+            elevation: 3,
+          }}
+        />
+      </View>
     );
   };
 
   const renderInputToolbar = props => (
     <MotiView
-      from={{opacity: 0, translateY: 50}}
-      animate={{opacity: 1, translateY: 0}}
-      transition={{type: 'timing', duration: 300}}>
+      from={{ opacity: 0, translateY: 50 }}
+      animate={{ opacity: 1, translateY: 0 }}
+      transition={{ type: 'timing', duration: 300 }}
+    >
       <CustomInputToolbar
         {...props}
         style={{
@@ -396,49 +408,58 @@ const ChatBotScreen = ({navigation}) => {
   );
 
   const renderSend = props => {
-    const disabled = isTyping || !props.text?.trim();
+    const hasText = props.text?.trim();
+    const disabled = isTyping;
 
     return (
       <MotiView
-        animate={{scale: !disabled ? 1.1 : 0.9}}
-        transition={{type: 'spring', damping: 15, mass: 1}}>
+        animate={{ scale: !disabled ? 1.1 : 0.9 }}
+        transition={{ type: 'spring', damping: 15, mass: 1 }}
+      >
         <CustomSend {...props} disabled={disabled} style={{}}>
-          <Icon
-            name="send"
-            size={20}
-            color={disabled ? '#ccc' : '#667eea'}
-            style={{opacity: disabled ? 0.5 : 1}}
-          />
+          {hasText ? (
+            <Icon
+              name="send"
+              size={20}
+              color={disabled ? '#ccc' : '#667eea'}
+              style={{ opacity: disabled ? 0.5 : 1 }}
+            />
+          ) : (
+            <Icon
+              name="mic"
+              size={20}
+              color={disabled ? '#ccc' : '#667eea'}
+              onPress={() => navigation.navigate('VoiceChat')}
+              style={{ opacity: disabled ? 0.5 : 1 }}
+            />
+          )}
         </CustomSend>
       </MotiView>
     );
   };
 
   const renderSystemMessage = props => (
-    <MotiView
-      from={{opacity: 0, scale: 0.8}}
-      animate={{opacity: 1, scale: 1}}
-      transition={{type: 'timing', duration: 300}}>
+    <View>
       <SystemMessage {...props} />
-    </MotiView>
+    </View>
   );
 
   const renderDay = props => (
-    <MotiView
-      from={{opacity: 0, translateY: -10}}
-      animate={{opacity: 1, translateY: 0}}
-      transition={{type: 'timing', duration: 400}}>
+    <View>
       <Day {...props} />
-    </MotiView>
+    </View>
+  );
+
+  const renderTime = props => (
+    <View>
+      <Time {...props} />
+    </View>
   );
 
   const renderAvatar = props => (
-    <MotiView
-      from={{scale: 0}}
-      animate={{scale: 1}}
-      transition={{type: 'spring', damping: 15, mass: 1}}>
+    <View>
       <Avatar {...props} />
-    </MotiView>
+    </View>
   );
 
   // Custom typing indicator that integrates with the chat
@@ -447,10 +468,10 @@ const ChatBotScreen = ({navigation}) => {
 
     return (
       <MotiView
-        from={{opacity: 0, translateY: 20}}
-        animate={{opacity: 1, translateY: 0}}
-        exit={{opacity: 0, translateY: -20}}
-        transition={{type: 'spring', damping: 15}}
+        from={{ opacity: 0, translateY: 20 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        exit={{ opacity: 0, translateY: -20 }}
+        transition={{ type: 'spring', damping: 15 }}
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -459,7 +480,8 @@ const ChatBotScreen = ({navigation}) => {
           marginLeft: 0, // Align with bot messages
           marginRight: 60,
           marginBottom: 8,
-        }}>
+        }}
+      >
         <MotiView
           style={{
             backgroundColor: '#f0f0f0',
@@ -472,13 +494,14 @@ const ChatBotScreen = ({navigation}) => {
             shadowOpacity: 0.1,
             shadowRadius: 2,
             elevation: 2,
-          }}>
+          }}
+        >
           <TypingDots>
             {[0, 1, 2].map(index => (
               <TypingDot
                 key={index}
-                from={{scale: 1, opacity: 0.5, translateY: 0}}
-                animate={{scale: 1.4, opacity: 1, translateY: -2}}
+                from={{ scale: 1, opacity: 0.5, translateY: 0 }}
+                animate={{ scale: 1.4, opacity: 1, translateY: -2 }}
                 transition={{
                   type: 'timing',
                   duration: 500,
@@ -522,110 +545,110 @@ const ChatBotScreen = ({navigation}) => {
       </ParticleContainer>
 
       <Header>
-        <MotiView
-          from={{opacity: 0, translateX: -20}}
-          animate={{opacity: 1, translateX: 0}}
-          transition={{type: 'timing', duration: 500}}>
-          <HeaderTitle>Aura – AI Assistant</HeaderTitle>
-        </MotiView>
+        <HeaderView>
+          <MotiView
+            from={{ opacity: 0, translateX: -20 }}
+            animate={{ opacity: 1, translateX: 0 }}
+            transition={{ type: 'timing', duration: 500 }}
+          >
+            <HeaderTitle>Aura – AI Assistant</HeaderTitle>
+          </MotiView>
 
-        <MotiView
-          from={{scale: 0}}
-          animate={{scale: 1}}
-          transition={{type: 'spring', damping: 10, delay: 200}}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            flex: 1,
-            justifyContent: 'space-between',
-          }}>
-          <OnlineIndicator isOnline={isOnline} />
-
-          <Icon
-            name="close"
-            size={24}
-            color="#fff"
-            onPress={() => navigation.goBack()}
+          <MotiView
+            from={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', damping: 10, delay: 200 }}
             style={{
-              marginLeft: 12,
-              backgroundColor: '#667eea',
-              borderRadius: 20,
-              padding: 4,
+              flexDirection: 'row',
+              alignItems: 'center',
+              flex: 1,
+              justifyContent: 'space-between',
             }}
-          />
-        </MotiView>
+          >
+            <OnlineIndicator isOnline={isOnline} />
+
+            <Icon
+              name="close"
+              size={24}
+              color="#fff"
+              onPress={() => navigation.goBack()}
+              style={{
+                marginLeft: 12,
+                backgroundColor: '#667eea',
+                borderRadius: 20,
+                padding: 4,
+              }}
+            />
+          </MotiView>
+        </HeaderView>
       </Header>
 
       <MessageContainer>
-        <KeyboardAvoidingView
-          style={{flex: 1}}
-          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? 88 : 0}>
-          <GiftedChat
-            ref={chatRef}
-            messages={messages}
-            onSend={onSend}
-            text={inputText}
-            onInputTextChanged={setInputText}
-            user={{
-              _id: 1,
-              name: 'User',
-              avatar: userData?.photoURL
-                ? userData.photoURL.startsWith('users/')
-                  ? `${getFirebaseAccessUrl(
-                      userData.photoURL,
-                    )}&time=${Date.now()}`
-                  : userData.photoURL
-                : Image.resolveAssetSource(userImage).uri,
-            }}
-            renderBubble={renderBubble}
-            // renderMessage={renderMessage}
-            renderInputToolbar={renderInputToolbar}
-            renderSend={renderSend}
-            renderSystemMessage={renderSystemMessage}
-            renderDay={renderDay}
-            renderAvatar={renderAvatar}
-            placeholder="Type your message..."
-            alwaysShowSend
-            showUserAvatar
-            scrollToBottom
-            infiniteScroll
-            keyboardShouldPersistTaps="handled"
-            messagesContainerStyle={{paddingBottom: 10}}
-            textInputStyle={{
-              backgroundColor: 'rgba(248, 249, 250, 0.95)',
-              borderRadius: 25,
-              borderWidth: 1,
-              borderColor: 'rgba(102, 126, 234, 0.2)',
-              paddingLeft: 24,
-              paddingRight: 20,
-              paddingVertical: 12,
-              marginHorizontal: 12,
-              marginBottom: 18,
-              minHeight: 50,
-              maxHeight: 120,
-            }}
-            multiline
-            maxInputLength={500}
-            timeTextStyle={{
-              left: {color: '#999'},
-              right: {color: '#999'},
-            }}
-            renderTime={() => null}
-            showAvatarForEveryMessage={false}
-            renderFooter={renderCustomTypingIndicator}
-          />
-        </KeyboardAvoidingView>
+        <GiftedChat
+          ref={chatRef}
+          messages={messages}
+          onSend={onSend}
+          text={inputText}
+          onInputTextChanged={setInputText}
+          user={{
+            _id: 1,
+            name: 'User',
+            avatar: userData?.photoURL
+              ? userData.photoURL.startsWith('users/')
+                ? `${getFirebaseAccessUrl(
+                    userData.photoURL,
+                  )}&time=${Date.now()}`
+                : userData.photoURL
+              : Image.resolveAssetSource(userImage).uri,
+          }}
+          renderBubble={renderBubble}
+          // renderMessage={renderMessage}
+          renderInputToolbar={renderInputToolbar}
+          renderSend={renderSend}
+          renderSystemMessage={renderSystemMessage}
+          renderDay={renderDay}
+          renderTime={renderTime}
+          renderAvatar={renderAvatar}
+          placeholder="Type your message..."
+          alwaysShowSend
+          showUserAvatar
+          isScrollToBottomEnabled={false}
+          isKeyboardInternallyHandled={false}
+          infiniteScroll={false}
+          messagesContainerStyle={{ paddingBottom: 10 }}
+          textInputStyle={{
+            backgroundColor: 'rgba(248, 249, 250, 0.95)',
+            borderRadius: 25,
+            borderWidth: 1,
+            borderColor: 'rgba(102, 126, 234, 0.2)',
+            paddingLeft: 24,
+            paddingRight: 20,
+            paddingVertical: 12,
+            marginHorizontal: 12,
+            marginBottom: 18,
+            minHeight: 50,
+            maxHeight: 120,
+          }}
+          multiline
+          maxInputLength={500}
+          timeTextStyle={{
+            left: { color: '#999' },
+            right: { color: '#999' },
+          }}
+          showAvatarForEveryMessage={false}
+          renderFooter={renderCustomTypingIndicator}
+        />
       </MessageContainer>
 
       <Pressable onPress={clearChatHistory}>
         <MotiView
-          from={{scale: 0, rotate: '0deg'}}
+          from={{ scale: 0, rotate: '0deg' }}
           animate={{
             scale: messages.length > 0 ? 1 : 0.8,
             rotate: messages.length > 0 ? '0deg' : '180deg',
           }}
-          transition={{type: 'spring', damping: 15}}>
+          transition={{ type: 'spring', damping: 15 }}
+        >
           <FloatingActionButton>
             <Icon
               name={messages.length > 0 ? 'clear-all' : 'refresh'}

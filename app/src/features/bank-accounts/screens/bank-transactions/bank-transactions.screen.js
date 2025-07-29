@@ -2,64 +2,84 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React, {useContext, useEffect, useState} from 'react';
 import {
-  Alert,
-  FlatList,
   Image,
   Platform,
   SectionList,
-  TextInput,
   TouchableOpacity,
+  StatusBar,
 } from 'react-native';
 import {useTheme} from 'styled-components/native';
 import {useIsFocused} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
-import {BankAccountContext} from '../../../../services/bank-account/bank-account.context';
-import {FlexColumn, FlexRow, MainWrapper} from '../../../../components/styles';
-import {Text} from '../../../../components/typography/text.component';
-import {notificationActions} from '../../../../store/notification-slice';
-import {SafeArea} from '../../../../components/utility/safe-area.component';
-import {
-  ActivityIndicator,
-  Button,
-  Divider,
-  IconButton,
-  List,
-  Modal,
-  Portal,
-  Searchbar,
-} from 'react-native-paper';
-import {View} from 'react-native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {Spacer} from '../../../../components/spacer/spacer.component';
-import Animated from 'react-native-reanimated';
-import {
-  Logo,
-  Row,
-  SearchContainer,
-  SearchInput,
-  TransactionAmount,
-  TransactionCard,
-  TransactionSubText,
-  TransactionTitle,
-} from '../../components/bank-transactions/bank-transactions.styles';
+import {MotiView} from 'moti';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import Animated from 'react-native-reanimated';
+import Fuse from 'fuse.js';
 import moment from 'moment';
 import _ from 'lodash';
-import Fuse from 'fuse.js';
+
+import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
+import {BankAccountContext} from '../../../../services/bank-account/bank-account.context';
+import {FlexRow} from '../../../../components/styles';
+import {Text} from '../../../../components/typography/text.component';
+import {notificationActions} from '../../../../store/notification-slice';
+import {Spacer} from '../../../../components/spacer/spacer.component';
 import {GetCurrencySymbol} from '../../../../components/symbol.currency';
+import {ActivityIndicator, Button, Modal, Portal} from 'react-native-paper';
+import {View} from 'react-native';
+
+// Import styled components
+import {
+  Container,
+  Header,
+  InstitutionHeader,
+  InstitutionInfo,
+  InstitutionName,
+  AccountDetails,
+  InstitutionLogo,
+  ControlsCard,
+  SearchContainer,
+  SearchInput,
+  FilterButton,
+  RefreshButton,
+  RefreshButtonText,
+  DateRangeText,
+  TransactionCard,
+  Row,
+  TransactionLeft,
+  TransactionRight,
+  Logo,
+  TransactionInfo,
+  TransactionTitle,
+  TransactionSubText,
+  TransactionAmount,
+  SectionHeader,
+  SectionTitle,
+  SectionBalance,
+  EmptyStateContainer,
+  EmptyStateImage,
+  EmptyStateText,
+  LoadingFooter,
+  LoadingText,
+  PendingBadge,
+  PendingText,
+  BackButton,
+  BackButtonText,
+} from '../../components/bank-transactions/bank-transactions.styles';
+import plaidCategories from '../../../../components/utility/plaidCategories.json';
+import {RenderBlurView} from '../../../../components/utility/safe-area.component';
 
 export const BankTransactionsScreen = ({navigation, route}) => {
   const theme = useTheme();
   const routeIsFocused = useIsFocused();
   const {institution, account} = route.params;
+
   const [transactions, setTransactions] = useState([]);
   const [groupedData, setGroupedData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-
-  const {userData} = useContext(AuthenticationContext);
-  const {getTransactions} = useContext(BankAccountContext);
   const [modalVisible, setModalVisible] = useState(false);
   const [fromDate, setFromDate] = useState(
     moment().subtract(30, 'days').toDate(),
@@ -67,12 +87,13 @@ export const BankTransactionsScreen = ({navigation, route}) => {
   const [toDate, setToDate] = useState(new Date());
   const [showPicker, setShowPicker] = useState({from: false, to: false});
   const [pickerTarget, setPickerTarget] = useState(null);
-
   const [offset, setOffset] = useState(0);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const LIMIT = 50;
 
+  const {userData} = useContext(AuthenticationContext);
+  const {getTransactions} = useContext(BankAccountContext);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -143,7 +164,7 @@ export const BankTransactionsScreen = ({navigation, route}) => {
         : transactions;
 
     const grouped = _.groupBy(filtered, item =>
-      moment(item.date).format('MMM DD, YYYY'),
+      moment(item.date).format('MMM DD, YYYY - dddd'),
     );
 
     let totalIncome = 0,
@@ -153,7 +174,7 @@ export const BankTransactionsScreen = ({navigation, route}) => {
       let txns = grouped[date];
       txns.map(t => {
         const amount = t.amount;
-        const isExpense = amount > 0 ? true : false; //money moving out treated as positive in plaid
+        const isExpense = amount > 0 ? true : false;
 
         if (isExpense) {
           totalExpense += Math.abs(amount);
@@ -182,69 +203,6 @@ export const BankTransactionsScreen = ({navigation, route}) => {
     );
   };
 
-  const renderTransaction = ({item}) => {
-    // plaid handles reverse
-    const isExpense = item.amount > 0 ? true : false; //money moving out treated as positive in plaid
-    const amountColor = isExpense ? 'tomato' : theme.colors.text.success;
-    const isPending = item.pending;
-
-    return (
-      <Animated.View entering={Animated.FadeInUp} exiting={Animated.FadeOutUp}>
-        <TransactionCard>
-          <Row>
-            <Row>
-              <Logo
-                source={
-                  item.logo_url
-                    ? {uri: item.logo_url}
-                    : item.personal_finance_category_icon_url
-                    ? {uri: item.personal_finance_category_icon_url}
-                    : require('../../../../../assets/bank.png')
-                }
-              />
-              <View>
-                <TransactionTitle
-                  numberOfLines={5}
-                  ellipsizeMode="tail"
-                  style={{maxWidth: 180, fontSize: 14}}>
-                  {item.merchant_name || item.name}
-                </TransactionTitle>
-
-                <TransactionSubText>
-                  {moment(item.date).format('MMM DD, YYYY')}
-                </TransactionSubText>
-                <TransactionSubText>
-                  {item.personal_finance_category?.primary || 'Category'}
-                </TransactionSubText>
-
-                <TransactionSubText>
-                  Transaction Channel - {item.payment_channel}
-                </TransactionSubText>
-              </View>
-            </Row>
-            <View>
-              {isPending && (
-                <FlexRow gap={5} style={{marginTop: 2}}>
-                  <MaterialCommunityIcons
-                    name="clock-outline"
-                    size={14}
-                    color="orange"
-                  />
-                  <Text style={{fontSize: 12, color: 'orange'}}>Pending</Text>
-                </FlexRow>
-              )}
-              <TransactionAmount style={{color: amountColor}}>
-                {isExpense ? '-' : '+'}{' '}
-                {GetCurrencySymbol(item.iso_currency_code)}{' '}
-                {Math.abs(item.amount).toFixed(2)}
-              </TransactionAmount>
-            </View>
-          </Row>
-        </TransactionCard>
-      </Animated.View>
-    );
-  };
-
   const handleDateChange = (event, selectedDate) => {
     if (event.type === 'dismissed') {
       setShowPicker({from: false, to: false});
@@ -267,7 +225,6 @@ export const BankTransactionsScreen = ({navigation, route}) => {
 
   const onGetTransactions = (reset = true, refresh = false) => {
     const startDate = moment(fromDate).format('YYYY-MM-DD');
-
     const endDate = moment(toDate).format('YYYY-MM-DD');
 
     const data = {
@@ -290,7 +247,6 @@ export const BankTransactionsScreen = ({navigation, route}) => {
               message: res.message,
             }),
           );
-
           return navigation.goBack();
         }
         if (res.transactions) {
@@ -304,7 +260,6 @@ export const BankTransactionsScreen = ({navigation, route}) => {
         }
         setIsLoadingMore(false);
       },
-
       err => {
         console.log(err);
         setIsLoadingMore(false);
@@ -326,70 +281,140 @@ export const BankTransactionsScreen = ({navigation, route}) => {
     }
   };
 
-  return (
-    <SafeArea child={true}>
-      <MainWrapper>
-        <>
-          <FlexRow
-            style={{alignItems: 'center', justifyContent: 'space-between'}}>
-            <Button mode="outlined" style={{width: '85%', marginRight: 10}}>
-              {account.name} - {account.mask}
-            </Button>
-            <IconButton
-              icon="reload"
-              mode="contained"
-              containerColor={theme.colors.brand.primary}
-              iconColor="#fff"
-              size={20}
-              onPress={onHardRefreshTransactions}
+  const getShortDescription = detailedCategory => {
+    const match = plaidCategories.find(
+      cat => cat.detailed === detailedCategory,
+    );
+    return match ? match.shortDescription : '';
+  };
+
+  const renderTransaction = ({item, index}) => {
+    const isExpense = item.amount > 0 ? true : false;
+    const amountColor = isExpense ? '#ffb3b3' : '#b3ffb3';
+    const isPending = item.pending;
+    const merchantName = item.merchant_name || item.name;
+    const truncatedName = _.truncate(merchantName, {
+      length: 25,
+      separator: ' ',
+    });
+
+    return (
+      <TransactionCard>
+        <Row>
+          <TransactionLeft>
+            <Logo
+              source={
+                item.logo_url
+                  ? {uri: item.logo_url}
+                  : item.personal_finance_category_icon_url
+                  ? {uri: item.personal_finance_category_icon_url}
+                  : require('../../../../../assets/bank.png')
+              }
             />
-          </FlexRow>
+            <TransactionInfo>
+              <TransactionTitle numberOfLines={2} ellipsizeMode="tail">
+                {truncatedName}
+              </TransactionTitle>
+              <TransactionSubText>
+                {getShortDescription(
+                  item.personal_finance_category?.detailed,
+                ) || 'Category'}{' '}
+              </TransactionSubText>
+            </TransactionInfo>
+          </TransactionLeft>
 
-          <Text
-            fontsize="12px"
-            variantType="caption"
-            color={'#888'}
-            style={{
-              marginTop: 6,
-              textAlign: 'center',
-            }}>
-            If you think the data isn't up to date, tap to fetch real-time
-            transactions. Limited to 3 times/day.
-          </Text>
-
-          <Spacer size="large">
-            <FlexRow justifyContent="space-between">
-              <SearchContainer>
-                <SearchInput
-                  editable={!isLoadingMore}
-                  placeholder={`Search ${transactions.length} transactions`}
-                  value={searchQuery}
-                  onChangeText={setSearchQuery}
-                  placeholderTextColor="#999"
-                />
-              </SearchContainer>
-
-              <TouchableOpacity
-                onPress={() => setModalVisible(true)}
-                style={{marginLeft: 10}}>
+          <TransactionRight>
+            {isPending && (
+              <PendingBadge>
                 <MaterialCommunityIcons
-                  name="filter"
-                  size={24}
-                  color={theme.colors.brand.primary}
+                  name="clock-outline"
+                  size={12}
+                  color="#ffd700"
                 />
-              </TouchableOpacity>
-            </FlexRow>
-            <Text
-              fontsize="12px"
-              style={{
-                marginTop: 8,
-                marginBottom: 10,
-              }}>
-              Showing results from {moment(fromDate).format('MMM DD, YYYY')} to{' '}
+                <PendingText>Pending</PendingText>
+              </PendingBadge>
+            )}
+            <TransactionAmount color={amountColor}>
+              {isExpense ? '-' : '+'}{' '}
+              {GetCurrencySymbol(item.iso_currency_code)}{' '}
+              {Math.abs(item.amount).toFixed(2)}
+            </TransactionAmount>
+          </TransactionRight>
+        </Row>
+      </TransactionCard>
+    );
+  };
+
+  return (
+    <>
+      <Container>
+        <StatusBar
+          barStyle="light-content"
+          translucent
+          backgroundColor="#8B5CF6"
+        />
+
+        <SafeAreaView edges={['top']}>
+          <BackButton onPress={() => navigation.goBack()}>
+            <Ionicons name="chevron-back" size={24} color="white" />
+            <BackButtonText>Accounts</BackButtonText>
+          </BackButton>
+        </SafeAreaView>
+
+        <Header>
+          <MotiView
+            from={{opacity: 0, translateX: 50}}
+            animate={{opacity: 1, translateX: 0}}
+            transition={{type: 'timing', duration: 600}}>
+            <InstitutionHeader>
+              <InstitutionInfo>
+                <InstitutionName>{institution.institutionName}</InstitutionName>
+                <AccountDetails>
+                  {account.name} - XXXX-{account.mask}
+                </AccountDetails>
+              </InstitutionInfo>
+              <InstitutionLogo
+                source={
+                  institution.institutionLogo
+                    ? {
+                        uri: `data:image/png;base64,${institution.institutionLogo}`,
+                      }
+                    : require('../../../../../assets/bank.png')
+                }
+              />
+            </InstitutionHeader>
+          </MotiView>
+        </Header>
+
+        <MotiView
+          from={{opacity: 0, translateY: 20}}
+          animate={{opacity: 1, translateY: 0}}
+          transition={{delay: 200, type: 'timing', duration: 600}}>
+          <ControlsCard>
+            <RefreshButton onPress={onHardRefreshTransactions}>
+              <Ionicons name="refresh" size={18} color="white" />
+              <RefreshButtonText>Refresh</RefreshButtonText>
+            </RefreshButton>
+
+            <SearchContainer>
+              <SearchInput
+                editable={!isLoadingMore}
+                placeholder={`Search ${transactions.length} transactions`}
+                value={searchQuery}
+                onChangeText={setSearchQuery}
+                placeholderTextColor="rgba(255, 255, 255, 0.7)"
+              />
+              <FilterButton onPress={() => setModalVisible(true)}>
+                <Ionicons name="filter" size={22} color="white" />
+              </FilterButton>
+            </SearchContainer>
+
+            <DateRangeText>
+              {moment(fromDate).format('MMM DD, YYYY')} -{' '}
               {moment(toDate).format('MMM DD, YYYY')}
-            </Text>
-          </Spacer>
-        </>
+            </DateRangeText>
+          </ControlsCard>
+        </MotiView>
 
         <Portal>
           <Modal
@@ -397,10 +422,7 @@ export const BankTransactionsScreen = ({navigation, route}) => {
             transparent={false}
             visible={modalVisible}
             onDismiss={() => setModalVisible(false)}>
-            <View
-              style={{
-                margin: 10,
-              }}>
+            <View style={{margin: 10}}>
               <View
                 style={{
                   backgroundColor: '#fff',
@@ -418,7 +440,6 @@ export const BankTransactionsScreen = ({navigation, route}) => {
                   }}>
                   From: {moment(fromDate).format('DD MMM YYYY')}
                 </Button>
-                {/* Platform-specific pickers */}
                 {showPicker.from && Platform.OS === 'android' && (
                   <Spacer size="large">
                     <DateTimePicker
@@ -458,7 +479,6 @@ export const BankTransactionsScreen = ({navigation, route}) => {
                     />
                   </Spacer>
                 )}
-
                 {Platform.OS === 'ios' && showPicker.to && (
                   <Spacer size="large">
                     <DateTimePicker
@@ -468,9 +488,9 @@ export const BankTransactionsScreen = ({navigation, route}) => {
                     />
                   </Spacer>
                 )}
-
                 <Spacer size="large" />
                 <Button
+                  textColor="#fff"
                   mode="contained"
                   onPress={() => {
                     setModalVisible(false);
@@ -485,85 +505,50 @@ export const BankTransactionsScreen = ({navigation, route}) => {
             </View>
           </Modal>
         </Portal>
+
         {transactions && transactions.length > 0 ? (
-          <>
-            <Spacer size="large">
-              <SectionList
-                scrollEnabled={!isLoadingMore}
-                sections={groupedData}
-                keyExtractor={item => item.transaction_id}
-                renderItem={renderTransaction}
-                renderSectionHeader={({
-                  section: {title, totalBalance, iso_currency_code},
-                }) => (
-                  <View
-                    style={{
-                      padding: 10,
-                      borderRadius: 5,
-                      backgroundColor: theme.colors.bg.sectionListCard,
-                      flexDirection: 'row',
-                      justifyContent: 'space-between',
-                    }}>
-                    <Text
-                      style={{
-                        fontWeight: 'bold',
-                        color: theme.colors.bg.sectionListCardLabel,
-                      }}>
-                      {title}
-                    </Text>
-                    <Text
-                      style={{
-                        fontWeight: 'bold',
-                        color:
-                          totalBalance < 0
-                            ? 'tomato'
-                            : theme.colors.text.success,
-                      }}>
-                      {totalBalance < 0 ? '-' : ''}{' '}
-                      {GetCurrencySymbol(iso_currency_code)}{' '}
-                      {Math.abs(totalBalance).toFixed(2)}
-                    </Text>
-                  </View>
-                )}
-                showsVerticalScrollIndicator={false}
-                stickySectionHeadersEnabled={true}
-                ItemSeparatorComponent={Divider}
-                contentContainerStyle={{paddingBottom: 150}}
-                onEndReached={handleEndReached}
-                ListFooterComponent={
-                  isLoadingMore && (
-                    <View style={{paddingVertical: 20, alignItems: 'center'}}>
-                      <ActivityIndicator
-                        animating={true}
-                        color={theme.colors.brand.primary}
-                      />
-                      <Text style={{marginTop: 10}}>
-                        Fetching more transactions...
-                      </Text>
-                    </View>
-                  )
-                }
-                onEndReachedThreshold={0.6}
-              />
-            </Spacer>
-          </>
+          <SectionList
+            scrollEnabled={!isLoadingMore}
+            sections={groupedData}
+            keyExtractor={item => item.transaction_id}
+            renderItem={renderTransaction}
+            renderSectionHeader={({
+              section: {title, totalBalance, iso_currency_code},
+            }) => (
+              <SectionHeader>
+                <SectionTitle>{title}</SectionTitle>
+                <SectionBalance
+                  color={totalBalance < 0 ? '#ffb3b3' : '#b3ffb3'}>
+                  {totalBalance < 0 ? '-' : ''}{' '}
+                  {GetCurrencySymbol(iso_currency_code)}{' '}
+                  {Math.abs(totalBalance).toFixed(2)}
+                </SectionBalance>
+              </SectionHeader>
+            )}
+            showsVerticalScrollIndicator={false}
+            stickySectionHeadersEnabled={true}
+            contentContainerStyle={{paddingBottom: 80}}
+            onEndReached={handleEndReached}
+            ListFooterComponent={
+              isLoadingMore && (
+                <LoadingFooter>
+                  <ActivityIndicator animating={true} color="white" />
+                  <LoadingText>Loading more transactions...</LoadingText>
+                </LoadingFooter>
+              )
+            }
+            onEndReachedThreshold={0.6}
+          />
         ) : (
-          <FlexColumn
-            style={{
-              marginBottom: 200,
-            }}>
-            <Image
+          <EmptyStateContainer>
+            <EmptyStateImage
               source={require('../../../../../assets/no_accounts.png')}
-              style={{
-                width: '80%',
-                height: '80%',
-                resizeMode: 'contain',
-              }}
             />
-            <Text fontsize="20px">No Recent Transactions Found</Text>
-          </FlexColumn>
+            <EmptyStateText>No Recent Transactions Found</EmptyStateText>
+          </EmptyStateContainer>
         )}
-      </MainWrapper>
-    </SafeArea>
+      </Container>
+      <RenderBlurView />
+    </>
   );
 };

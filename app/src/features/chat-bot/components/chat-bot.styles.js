@@ -1,16 +1,16 @@
 import styled from 'styled-components/native';
-import {MotiView, MotiText} from 'moti';
-import {Bubble, InputToolbar, Send} from 'react-native-gifted-chat';
-import {Dimensions, Platform} from 'react-native';
+import { MotiView, MotiText } from 'moti';
+import { Bubble, InputToolbar, Send } from 'react-native-gifted-chat';
+import { Dimensions, Platform } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 // Main Container using LinearGradient with enhanced colors
 export const Container = styled(LinearGradient).attrs({
   colors: ['#667eea', '#764ba2', '#667eea'],
-  start: {x: 0, y: 0},
-  end: {x: 1, y: 1},
+  start: { x: 0, y: 0 },
+  end: { x: 1, y: 1 },
 })`
   flex: 1;
 `;
@@ -18,17 +18,19 @@ export const Container = styled(LinearGradient).attrs({
 // Header Components using LinearGradient with glassmorphism effect
 export const Header = styled(LinearGradient).attrs({
   colors: ['rgba(102, 126, 234, 0.9)', 'rgba(118, 75, 162, 0.9)'],
-  start: {x: 0, y: 0},
-  end: {x: 1, y: 1},
+  start: { x: 0, y: 0 },
+  end: { x: 1, y: 1 },
 })`
+  elevation: 8;
+  backdrop-filter: blur(20px);
+`;
+export const HeaderView = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
   padding: ${Platform.OS === 'ios'
-    ? '60px 20px 35px 20px'
-    : '60px 20px 35px 20px'};
-  elevation: 8;
-  backdrop-filter: blur(20px);
+    ? '60px 20px 20px 20px'
+    : '40px 20px 20px 20px'};
 `;
 
 export const HeaderTitle = styled.Text`
@@ -55,20 +57,24 @@ export const OnlineIndicator = styled(MotiView)`
   backdrop-filter: blur(20px);
 `;
 
-// Message Container with improved styling
+// Fixed Message Container - removed negative margin and improved flex
 export const MessageContainer = styled.View`
   flex: 1;
   background-color: rgba(255, 255, 255, 0.6);
   border-top-left-radius: 35px;
   border-top-right-radius: 35px;
-  margin-top: -25px;
-  padding-top: 30px;
   overflow: hidden;
   elevation: 12;
   shadow-color: #000;
   shadow-offset: 0px -4px;
   shadow-opacity: 0.15;
   shadow-radius: 12px;
+`;
+
+// Chat Content Wrapper - new component for better keyboard handling
+export const ChatContentWrapper = styled.View`
+  flex: 1;
+  padding-top: 20px;
 `;
 
 // Animated Message Wrapper
@@ -111,7 +117,7 @@ export const CustomBubble = styled(Bubble).attrs(props => ({
   },
 }))``;
 
-// Input Toolbar
+// Input Toolbar - improved keyboard handling
 export const CustomInputToolbar = styled(InputToolbar).attrs({
   containerStyle: {
     backgroundColor: '#ffffff',
@@ -121,6 +127,7 @@ export const CustomInputToolbar = styled(InputToolbar).attrs({
     paddingVertical: 8,
     borderRadius: 0,
     elevation: 4,
+    minHeight: 60,
   },
   primaryStyle: {
     alignItems: 'center',
@@ -135,7 +142,7 @@ export const CustomSend = styled(Send).attrs({
     alignItems: 'center',
     justifyContent: 'center',
     marginHorizontal: 8,
-    marginBottom: 15,
+    marginBottom: 8,
     borderRadius: 22,
     backgroundColor: '#f0f0f0',
     elevation: 2,
@@ -180,12 +187,11 @@ export const TypingDot = styled(MotiView)`
   margin-horizontal: 2px;
 `;
 
-// Floating Action Button
 // Floating Action Button using LinearGradient
 export const FloatingActionButton = styled(LinearGradient).attrs({
   colors: ['#667eea', '#764ba2'],
-  start: {x: 0, y: 0},
-  end: {x: 1, y: 1},
+  start: { x: 0, y: 0 },
+  end: { x: 1, y: 1 },
 })`
   position: absolute;
   bottom: 100px;
@@ -257,8 +263,8 @@ export const AvatarContainer = styled(MotiView)`
 
 export const AvatarGradient = styled(LinearGradient).attrs({
   colors: ['#667eea', '#764ba2'],
-  start: {x: 0, y: 0},
-  end: {x: 1, y: 1},
+  start: { x: 0, y: 0 },
+  end: { x: 1, y: 1 },
 })`
   width: 100%;
   height: 100%;

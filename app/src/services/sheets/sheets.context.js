@@ -596,6 +596,7 @@ export const SheetsContextProvider = ({children}) => {
         }
         // Fetch transactions before starting db.write
         const allTransactions = await getLinkedDbRecord(sheet, 'transactions');
+
         const transactions = allTransactions.filter(t => !t.upcoming);
         let totalIncome = 0;
         let totalExpense = 0;

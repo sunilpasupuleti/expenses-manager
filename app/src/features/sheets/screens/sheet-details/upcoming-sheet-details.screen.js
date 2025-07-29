@@ -1,18 +1,18 @@
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable react/no-unstable-nested-components */
-import React, {useContext, useEffect, useMemo, useState} from 'react';
-import {SafeArea} from '../../../../components/utility/safe-area.component';
-import {useTheme} from 'styled-components/native';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { SafeArea } from '../../../../components/utility/safe-area.component';
+import { useTheme } from 'styled-components/native';
 import moment from 'moment';
 import _ from 'lodash';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Spacer} from '../../../../components/spacer/spacer.component';
-import {Pressable, SectionList, View} from 'react-native';
+import { Spacer } from '../../../../components/spacer/spacer.component';
+import { Pressable, SectionList, View } from 'react-native';
 
-import {SheetDetailsContext} from '../../../../services/sheetDetails/sheetDetails.context';
-import {useIsFocused} from '@react-navigation/native';
-import {Text} from '../../../../components/typography/text.component';
-import {FlexRow, Input} from '../../../../components/styles';
+import { SheetDetailsContext } from '../../../../services/sheetDetails/sheetDetails.context';
+import { useIsFocused } from '@react-navigation/native';
+import { Text } from '../../../../components/typography/text.component';
+import { FlexRow, Input } from '../../../../components/styles';
 import {
   SheetDetailHeader,
   SheetDetailHeaderLabel,
@@ -23,10 +23,10 @@ import {
   GetCurrencyLocalString,
   GetCurrencySymbol,
 } from '../../../../components/symbol.currency';
-import {SheetDetailsInfo} from '../../components/sheet-details/sheet-details-info.component';
-import {ObservedUpcomingSheetDetails} from './upcoming-sheet-details.observerd';
+import { SheetDetailsInfo } from '../../components/sheet-details/sheet-details-info.component';
+import { ObservedUpcomingSheetDetails } from './upcoming-sheet-details.observerd';
 
-export const UpcomingSheetDetails = ({navigation, route}) => {
+export const UpcomingSheetDetails = ({ navigation, route }) => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [sheet, setSheet] = useState(null);
   const theme = useTheme();
@@ -39,7 +39,8 @@ export const UpcomingSheetDetails = ({navigation, route}) => {
       headerRight: () => (
         <Pressable
           onPress={() => navigation.goBack()}
-          style={{marginRight: 10}}>
+          style={{ marginRight: 10 }}
+        >
           <Ionicons
             name="close-circle-outline"
             size={30}
@@ -84,7 +85,7 @@ export const BaseUpcomingSheetDetails = ({
   setSearchKeyword,
   sheet,
 }) => {
-  const {onCheckUpcomingSheetDetails} = useContext(SheetDetailsContext);
+  const { onCheckUpcomingSheetDetails } = useContext(SheetDetailsContext);
   const routeIsFocused = useIsFocused();
   const [amountWidth, setAmountWidth] = useState(0);
   const [totalBalance, setTotalBalance] = useState(0);
@@ -137,7 +138,8 @@ export const BaseUpcomingSheetDetails = ({
           onLayout={e => setAmountWidth(e.nativeEvent.layout.width)}
           style={{
             alignItems: 'center',
-          }}>
+          }}
+        >
           <SheetDetailsTotalBalance fontsize={'30px'} fontfamily="bodySemiBold">
             {GetCurrencySymbol(sheet.currency)}{' '}
             {GetCurrencyLocalString(totalBalance)}
@@ -150,7 +152,7 @@ export const BaseUpcomingSheetDetails = ({
       <Spacer size={'large'} />
       <Input
         value={searchKeyword}
-        style={{elevation: 2, margin: 10, marginBottom: 0}}
+        style={{ elevation: 2, margin: 10, marginBottom: 0 }}
         placeholder="Search by Category / Notes / Amount"
         onChangeText={k => setSearchKeyword(k)}
         clearButtonMode="while-editing"
@@ -161,7 +163,7 @@ export const BaseUpcomingSheetDetails = ({
 
           <SectionList
             sections={groupedTransactions.map(
-              ({transactions, title, totalBalance}) => ({
+              ({ transactions, title, totalBalance }) => ({
                 title: title,
                 data: transactions,
                 totalBalance: totalBalance,
@@ -170,16 +172,16 @@ export const BaseUpcomingSheetDetails = ({
             keyExtractor={(item, index) =>
               item?.id ? item.id.toString() : `index-${index}`
             }
-            renderSectionHeader={({section}) => (
+            renderSectionHeader={({ section }) => (
               <SheetDetailHeader>
                 <SheetDetailHeaderLabel>
                   {moment(section.title).calendar(null, {
                     lastDay: '[Yesterday]',
                     sameDay: '[Today]',
                     nextDay: '[Tomorrow]',
-                    lastWeek: 'DD MMM YYYY',
-                    nextWeek: 'DD MMM YYYY',
-                    sameElse: 'DD MMM YYYY',
+                    lastWeek: 'DD MMM YYYY - dddd',
+                    nextWeek: 'DD MMM YYYY - dddd',
+                    sameElse: 'DD MMM YYYY - dddd',
                   })}
                 </SheetDetailHeaderLabel>
                 <SheetDetailHeaderLabel>
@@ -188,7 +190,7 @@ export const BaseUpcomingSheetDetails = ({
                 </SheetDetailHeaderLabel>
               </SheetDetailHeader>
             )}
-            renderItem={({item, index, section}) => (
+            renderItem={({ item, index, section }) => (
               <SheetDetailsInfo
                 transaction={item}
                 sheet={sheet}
@@ -196,7 +198,7 @@ export const BaseUpcomingSheetDetails = ({
                 index={index}
               />
             )}
-            contentContainerStyle={{paddingBottom: 50}}
+            contentContainerStyle={{ paddingBottom: 50 }}
             showsVerticalScrollIndicator={false}
             stickySectionHeadersEnabled
           />
@@ -209,7 +211,8 @@ export const BaseUpcomingSheetDetails = ({
             flex: 1,
             alignItems: 'center',
             justifyContent: 'center',
-          }}>
+          }}
+        >
           <Text>No upcoming transactions found.</Text>
         </View>
       )}

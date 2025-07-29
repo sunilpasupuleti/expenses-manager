@@ -52,7 +52,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>27</string>
+	<string>31</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>whatsapp</string>
@@ -86,10 +86,14 @@
 	<string>Enabling Face ID allows you quick and secure access to your account.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Allow $(PRODUCT_NAME) to access your location</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Allow ${PRODUCT_NAME} to access your microphone for voice commands</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Allow $(PRODUCT_NAME) to access Library</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Allow $(PRODUCT_NAME) to access Library</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Allow ${PRODUCT_NAME} to access speech recognition for voice commands</string>
 	<key>NSUbiquitousContainers</key>
 	<dict>
 		<key>[THIS_IS_CONTAINER_ID_YOU_CHECKED_ABOVE]</key>
@@ -100,6 +104,8 @@
 			<string>[THIS_IS_THE_NAME_SHOWED_IN_ICLOUD_DRIVE]</string>
 		</dict>
 	</dict>
+	<key>RCTNewArchEnabled</key>
+	<true/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>AntDesign.ttf</string>

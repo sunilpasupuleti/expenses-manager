@@ -1,12 +1,12 @@
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable react/no-unstable-nested-components */
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import React, {useEffect, useMemo, useState} from 'react';
-import {SectionList, TouchableOpacity, View} from 'react-native';
-import {useTheme} from 'styled-components/native';
-import {FlexRow, Input} from '../../../../components/styles';
-import {Text} from '../../../../components/typography/text.component';
-import {SafeArea} from '../../../../components/utility/safe-area.component';
+import React, { useEffect, useMemo, useState } from 'react';
+import { SectionList, TouchableOpacity, View } from 'react-native';
+import { useTheme } from 'styled-components/native';
+import { FlexRow, Input } from '../../../../components/styles';
+import { Text } from '../../../../components/typography/text.component';
+import { SafeArea } from '../../../../components/utility/safe-area.component';
 
 import moment from 'moment';
 import _ from 'lodash';
@@ -16,16 +16,16 @@ import {
   SheetDetailsTotalBalance,
   SheetDetailsUnderline,
 } from '../sheet-details/sheet-details.styles';
-import {Spacer} from '../../../../components/spacer/spacer.component';
+import { Spacer } from '../../../../components/spacer/spacer.component';
 import {
   GetCurrencyLocalString,
   GetCurrencySymbol,
 } from '../../../../components/symbol.currency';
 
-import {SheetDetailsInfo} from '../sheet-details/sheet-details-info.component';
-import {ObservedSheetStatsDetails} from './sheet-stats-details.observed';
-import {useIsFocused} from '@react-navigation/native';
-export const SheetStatsDetailsScreen = ({navigation, route}) => {
+import { SheetDetailsInfo } from '../sheet-details/sheet-details-info.component';
+import { ObservedSheetStatsDetails } from './sheet-stats-details.observed';
+import { useIsFocused } from '@react-navigation/native';
+export const SheetStatsDetailsScreen = ({ navigation, route }) => {
   const [sheet, setSheet] = useState(null);
   const [category, setCategory] = useState('');
   const [reportKey, setReportKey] = useState('');
@@ -41,7 +41,8 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
             <Ionicons
               name="chevron-back-outline"
               size={25}
-              color={theme.colors.brand.primary}></Ionicons>
+              color={theme.colors.brand.primary}
+            ></Ionicons>
             <Text color={theme.colors.brand.primary}>Back</Text>
           </FlexRow>
         </TouchableOpacity>
@@ -57,7 +58,7 @@ export const SheetStatsDetailsScreen = ({navigation, route}) => {
 
   useEffect(() => {
     if (route.params?.sheet && route?.params?.category) {
-      const {sheet: sh, category: cat, reportKey: repKey} = route.params;
+      const { sheet: sh, category: cat, reportKey: repKey } = route.params;
 
       setSheet(sh);
       setCategory(cat);
@@ -131,13 +132,15 @@ export const BaseSheetStatsDetailsScreen = ({
   return (
     <SafeArea child={true}>
       <>
-        <View style={{alignItems: 'center'}}>
+        <View style={{ alignItems: 'center' }}>
           <View
             onLayout={e => setAmountWidth(e.nativeEvent.layout.width)}
-            style={{flexDirection: 'row'}}>
+            style={{ flexDirection: 'row' }}
+          >
             <SheetDetailsTotalBalance
               fontsize={'30px'}
-              fontfamily="bodySemiBold">
+              fontfamily="bodySemiBold"
+            >
               {GetCurrencySymbol(sheet.currency)}{' '}
               {GetCurrencyLocalString(totalBalance)}
             </SheetDetailsTotalBalance>
@@ -148,7 +151,7 @@ export const BaseSheetStatsDetailsScreen = ({
         <Spacer size={'medium'} />
         <Input
           value={searchKeyword}
-          style={{elevation: 2, margin: 10, marginBottom: 0}}
+          style={{ elevation: 2, margin: 10, marginBottom: 0 }}
           placeholder="Search by Category / Notes / Amount"
           onChangeText={k => setSearchKeyword(k)}
           clearButtonMode="while-editing"
@@ -158,7 +161,7 @@ export const BaseSheetStatsDetailsScreen = ({
         {transactions.length > 0 ? (
           <SectionList
             sections={groupedTransactions.map(
-              ({transactions: txns, title, totalBalance: totalBal}) => ({
+              ({ transactions: txns, title, totalBalance: totalBal }) => ({
                 title: title,
                 data: txns,
                 totalBalance: totalBal,
@@ -167,16 +170,16 @@ export const BaseSheetStatsDetailsScreen = ({
             keyExtractor={(item, index) =>
               item?.id ? item.id.toString() : `index-${index}`
             }
-            renderSectionHeader={({section}) => (
+            renderSectionHeader={({ section }) => (
               <SheetDetailHeader>
                 <SheetDetailHeaderLabel>
                   {moment(section.title).calendar(null, {
                     lastDay: '[Yesterday]',
                     sameDay: '[Today]',
                     nextDay: '[Tomorrow]',
-                    lastWeek: 'DD MMM YYYY',
-                    nextWeek: 'DD MMM YYYY',
-                    sameElse: 'DD MMM YYYY',
+                    lastWeek: 'DD MMM YYYY - dddd',
+                    nextWeek: 'DD MMM YYYY - dddd',
+                    sameElse: 'DD MMM YYYY - dddd',
                   })}
                 </SheetDetailHeaderLabel>
                 <SheetDetailHeaderLabel>
@@ -185,7 +188,7 @@ export const BaseSheetStatsDetailsScreen = ({
                 </SheetDetailHeaderLabel>
               </SheetDetailHeader>
             )}
-            renderItem={({item, index}) => (
+            renderItem={({ item, index }) => (
               <SheetDetailsInfo
                 transaction={item}
                 sheet={sheet}
@@ -193,7 +196,7 @@ export const BaseSheetStatsDetailsScreen = ({
                 index={index}
               />
             )}
-            contentContainerStyle={{paddingBottom: 50}}
+            contentContainerStyle={{ paddingBottom: 50 }}
             showsVerticalScrollIndicator={false}
             stickySectionHeadersEnabled
           />
@@ -203,7 +206,8 @@ export const BaseSheetStatsDetailsScreen = ({
               flex: 1,
               alignItems: 'center',
               justifyContent: 'center',
-            }}>
+            }}
+          >
             <Text>No Transactions found.</Text>
           </View>
         )}

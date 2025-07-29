@@ -1,28 +1,28 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable curly */
-import {SwipeableView} from './sheet-info-card.styles';
+import { SwipeableView } from './sheet-info-card.styles';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
-import {Alert, SectionList, TouchableOpacity} from 'react-native';
-import {useActionSheet} from '@expo/react-native-action-sheet';
+import { Alert, SectionList, TouchableOpacity, View } from 'react-native';
+import { useActionSheet } from '@expo/react-native-action-sheet';
 import Haptics from 'react-native-haptic-feedback';
-import {useTheme} from 'styled-components/native';
-import {Spacer} from '../../../../components/spacer/spacer.component';
-import {SheetsContext} from '../../../../services/sheets/sheets.context';
-import {SheetInfoCard} from './sheet-info-card.component';
-import {Text} from '../../../../components/typography/text.component';
+import { useTheme } from 'styled-components/native';
+import { Spacer } from '../../../../components/spacer/spacer.component';
+import { SheetsContext } from '../../../../services/sheets/sheets.context';
+import { SheetInfoCard } from './sheet-info-card.component';
+import { Text } from '../../../../components/typography/text.component';
 import _ from 'lodash';
 import {
   FlexRow,
   TouchableHighlightWithColor,
 } from '../../../../components/styles';
-import Animated, {FadeInRight} from 'react-native-reanimated';
+import Animated, { FadeInRight } from 'react-native-reanimated';
 
 export const SheetsInfo = ({
   navigation,
@@ -31,13 +31,14 @@ export const SheetsInfo = ({
   regularSheets,
   loanSheets,
 }) => {
-  const {onDeleteSheet, onArchiveSheet, onPinSheet} = useContext(SheetsContext);
+  const { onDeleteSheet, onArchiveSheet, onPinSheet } =
+    useContext(SheetsContext);
   const theme = useTheme();
   const [showArchived, setShowArchived] = useState(false);
   const [showPinned, setShowPinned] = useState(true);
   const [showAccounts, setShowAccounts] = useState(true);
   const [showLoanAccounts, setShowLoanAccounts] = useState(true);
-  const {showActionSheetWithOptions} = useActionSheet();
+  const { showActionSheetWithOptions } = useActionSheet();
 
   let swipeableRefs = new Map();
 
@@ -148,13 +149,13 @@ export const SheetsInfo = ({
     return (
       <>
         <TouchableOpacity onPress={() => onPressDeleteButton(sheet)}>
-          <SwipeableView style={{backgroundColor: '#fe3c30'}}>
+          <SwipeableView style={{ backgroundColor: '#fe3c30' }}>
             <Ionicons name="trash-outline" color={'#fff'} size={25} />
           </SwipeableView>
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => onPressEditButton(sheet)}>
-          <SwipeableView style={{backgroundColor: '#babac1'}}>
+          <SwipeableView style={{ backgroundColor: '#babac1' }}>
             <Ionicons name="create-outline" color={'#fff'} size={25} />
           </SwipeableView>
         </TouchableOpacity>
@@ -166,7 +167,7 @@ export const SheetsInfo = ({
     return !sheet.isLoanAccount ? (
       <>
         <TouchableOpacity onPress={() => onPressArchiveButton(sheet)}>
-          <SwipeableView style={{backgroundColor: '#babac1'}}>
+          <SwipeableView style={{ backgroundColor: '#babac1' }}>
             {sheet.archived ? (
               <MaterialIcons name="unarchive" color={'#fff'} size={30} />
             ) : (
@@ -176,7 +177,7 @@ export const SheetsInfo = ({
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => onPressPinButton(sheet)}>
-          <SwipeableView style={{backgroundColor: '#ed9938'}}>
+          <SwipeableView style={{ backgroundColor: '#ed9938' }}>
             <MaterialCommunityIcons
               name={sheet.pinned ? 'pin-off-outline' : 'pin-outline'}
               color={'#fff'}
@@ -234,9 +235,9 @@ export const SheetsInfo = ({
         },
       ].filter(section => section.visible)}
       keyExtractor={(item, index) => item.id || index.toString()}
-      renderSectionHeader={({section}) => (
+      renderSectionHeader={({ section }) => (
         <Spacer size="large">
-          <FlexRow justifyContent="space-between" style={{marginBottom: 10}}>
+          <FlexRow justifyContent="space-between" style={{ marginBottom: 10 }}>
             <Text fontfamily="bodyMedium">{section.title}</Text>
             <Ionicons
               onPress={section.toggle}
@@ -256,15 +257,16 @@ export const SheetsInfo = ({
           </FlexRow>
         </Spacer>
       )}
-      renderItem={({item, index, section}) => (
+      renderItem={({ item, index, section }) => (
         <Animated.View
           key={item.id || index}
-          entering={FadeInRight.delay(index * 70).springify()}>
+          entering={FadeInRight.delay(index * 70).springify()}
+        >
           <Swipeable
-            renderRightActions={({progress, dragX}) =>
+            renderRightActions={({ progress, dragX }) =>
               rightSwipeActions(progress, dragX, item)
             }
-            renderLeftActions={({progress, dragX}) =>
+            renderLeftActions={({ progress, dragX }) =>
               leftSwipeActions(progress, dragX, item)
             }
             friction={2}
@@ -277,7 +279,8 @@ export const SheetsInfo = ({
               [...swipeableRefs.entries()].forEach(([key, ref]) => {
                 if (key !== item.id && ref) ref.close();
               });
-            }}>
+            }}
+          >
             <TouchableHighlightWithColor
               style={{
                 backgroundColor: theme.colors.bg.card,
@@ -308,7 +311,8 @@ export const SheetsInfo = ({
               }}
               onLongPress={() => onLongPressActions(item)}
               padding={'0px'}
-              onPress={() => onClickSheet(item)}>
+              onPress={() => onClickSheet(item)}
+            >
               <SheetInfoCard
                 sheet={item}
                 index={index}

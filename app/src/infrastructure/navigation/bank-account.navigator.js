@@ -21,7 +21,7 @@ export const BankAccountNavigator = () => {
   return (
     <BankAccountStack.Navigator
       screenOptions={{
-        headerShown: headerShown,
+        headerShown: false,
         headerMode: 'screen',
         headerTitleAlign: 'center',
         headerShadowVisible: false,

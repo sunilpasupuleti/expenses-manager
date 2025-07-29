@@ -1,18 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import 'react-native-gesture-handler';
-import {ThemeProvider} from 'styled-components/native';
-import {darkTheme, lightTheme} from './src/infrastructure/theme';
-import {Navigation} from './src/infrastructure/navigation';
+import { ThemeProvider } from 'styled-components/native';
+import { darkTheme, lightTheme } from './src/infrastructure/theme';
+import { Navigation } from './src/infrastructure/navigation';
 import {
   MD3DarkTheme,
   MD3LightTheme,
   Provider as PaperProvider,
 } from 'react-native-paper';
-import {AuthenticationContextProvider} from './src/services/authentication/authentication.context';
+import { AuthenticationContextProvider } from './src/services/authentication/authentication.context';
 import {
   Alert,
   AppState,
+  BackHandler,
   DeviceEventEmitter,
   Linking,
   LogBox,
@@ -20,10 +21,9 @@ import {
   StatusBar,
   useColorScheme,
 } from 'react-native';
-import RNExitApp from 'react-native-exit-app';
-import {ActionSheetProvider} from '@expo/react-native-action-sheet';
-import {MenuProvider} from 'react-native-popup-menu';
-import {useDispatch, useSelector} from 'react-redux';
+import { ActionSheetProvider } from '@expo/react-native-action-sheet';
+import { MenuProvider } from 'react-native-popup-menu';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchExchangeRates,
   fetchTheme,
@@ -33,14 +33,14 @@ import {
 } from './src/store/service-slice';
 import moment from 'moment';
 import SplashScreen from 'react-native-splash-screen';
-import {fetchAppLock} from './src/store/applock-slice';
+import { fetchAppLock } from './src/store/applock-slice';
 import VersionCheck from 'react-native-version-check';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
-import {colors} from './src/infrastructure/theme/colors';
-import {SQLiteContextProvider} from './src/services/sqlite/sqlite.context';
-import {SocketContextProvider} from './src/services/socket/socket.context';
-import {WatermelonDBContextProvider} from './src/services/watermelondb/watermelondb.context';
-import {APP_STORE_URL, PLAY_STORE_URL} from './config';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { colors } from './src/infrastructure/theme/colors';
+import { SQLiteContextProvider } from './src/services/sqlite/sqlite.context';
+import { SocketContextProvider } from './src/services/socket/socket.context';
+import { WatermelonDBContextProvider } from './src/services/watermelondb/watermelondb.context';
+import { APP_STORE_URL, PLAY_STORE_URL } from './config';
 
 moment.suppressDeprecationWarnings = true;
 if (Platform.OS === 'android') {
@@ -71,7 +71,7 @@ const App = () => {
         if (nextAppState === 'active') {
           checkAppUpdateNeeded();
         }
-        dispatch(setAppState({state: nextAppState}));
+        dispatch(setAppState({ state: nextAppState }));
       });
     }
     if (Platform.OS === 'android') {
@@ -81,7 +81,7 @@ const App = () => {
           if (e.event === 'active') {
             checkAppUpdateNeeded();
           }
-          dispatch(setAppState({state: e.event}));
+          dispatch(setAppState({ state: e.event }));
         },
       );
     }
@@ -123,7 +123,8 @@ const App = () => {
               onPress: () => {
                 Linking.openURL(updateNeeded.storeUrl)
                   .then(() => {
-                    RNExitApp.exitApp();
+                    BackHandler.exitApp();
+                    // RNExitApp.exitApp();
                   })
                   .catch(err => {
                     if (Platform.OS === 'ios') {
@@ -137,7 +138,7 @@ const App = () => {
               style: 'cancel',
             },
           ],
-          {cancelable: false},
+          { cancelable: false },
         );
       } else {
         dispatch(setAppUpdateNeeded(false));
@@ -168,7 +169,7 @@ const App = () => {
   };
 
   return (
-    <GestureHandlerRootView style={{flex: 1}}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider
         theme={
           appTheme === 'automatic'
@@ -178,7 +179,8 @@ const App = () => {
             : appTheme === 'light'
             ? lightTheme
             : darkTheme
-        }>
+        }
+      >
         <ActionSheetProvider>
           <MenuProvider>
             <PaperProvider
@@ -190,7 +192,8 @@ const App = () => {
                   : appTheme === 'light'
                   ? MD3MergedLightTheme
                   : MD3MergedDarkTheme
-              }>
+              }
+            >
               {appStatus && appStatus.hideSplashScreen && (
                 <SQLiteContextProvider>
                   <WatermelonDBContextProvider>

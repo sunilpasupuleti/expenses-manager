@@ -301,6 +301,7 @@ export const AuthenticationContextProvider = ({children}) => {
   };
 
   const requestAppReview = async () => {
+    return;
     let appReviewAvailable = InAppReview.isAvailable();
     if (appReviewAvailable) {
       InAppReview.RequestInAppReview()
@@ -614,6 +615,7 @@ export const AuthenticationContextProvider = ({children}) => {
           transformedData.photoURL = photoURL;
           transformedData.providerId = providerId;
           transformedData.uid = uid;
+          transformedData.dailyBackupEnabled = true;
           transformedData.phoneNumber = phoneNumber;
           transformedData.providerId = providerId;
           transformedData.lastSynced = '';

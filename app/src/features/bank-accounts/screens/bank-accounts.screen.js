@@ -15,18 +15,18 @@ import {
   StatusBar,
   Easing,
 } from 'react-native';
-import {useTheme} from 'styled-components/native';
-import {useFocusEffect, useIsFocused} from '@react-navigation/native';
-import {BankAccountContext} from '../../../services/bank-account/bank-account.context';
-import {open, create, usePlaidEmitter} from 'react-native-plaid-link-sdk';
-import {useDispatch} from 'react-redux';
-import {loaderActions} from '../../../store/loader-slice';
-import {notificationActions} from '../../../store/notification-slice';
-import {AuthenticationContext} from '../../../services/authentication/authentication.context';
-import {SocketContext} from '../../../services/socket/socket.context';
+import { useTheme } from 'styled-components/native';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
+import { BankAccountContext } from '../../../services/bank-account/bank-account.context';
+import { open, create, usePlaidEmitter } from 'react-native-plaid-link-sdk';
+import { useDispatch, useSelector } from 'react-redux';
+import { loaderActions } from '../../../store/loader-slice';
+import { notificationActions } from '../../../store/notification-slice';
+import { AuthenticationContext } from '../../../services/authentication/authentication.context';
+import { SocketContext } from '../../../services/socket/socket.context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {MotiView} from 'moti';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { MotiView } from 'moti';
 import LinearGradient from 'react-native-linear-gradient';
 
 import {
@@ -39,16 +39,13 @@ import {
   InstitutionInfo,
   InstitutionName,
   InstitutionAccounts,
-  EmptyStateContainer,
-  EmptyImage,
-  EmptyTitle,
-  EmptySubtext,
 } from './bank-accounts.styles';
-import {Text} from '../../../components/typography/text.component';
-import {Animated} from 'react-native';
-import {ScrollView} from 'react-native';
-import {FlexRow} from '../../../components/styles';
-import {Button} from 'react-native-paper';
+import { Text } from '../../../components/typography/text.component';
+import { Animated } from 'react-native';
+import { ScrollView } from 'react-native';
+import { FlexRow } from '../../../components/styles';
+import { Button } from 'react-native-paper';
+import { RenderBlurView } from '../../../components/utility/safe-area.component';
 
 // Bank icons - you can replace these with your actual bank icon assets
 const bankIcons = [
@@ -106,10 +103,11 @@ const BankAccountsEmptyState = ({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20,
-      }}>
+      }}
+    >
       <MotiView
-        from={{scale: 0.8, opacity: 0}}
-        animate={{scale: 1, opacity: 1}}
+        from={{ scale: 0.8, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
         transition={{
           type: 'timing',
           duration: 800,
@@ -117,177 +115,196 @@ const BankAccountsEmptyState = ({
         style={{
           width: '100%',
           maxWidth: 380,
-        }}>
+        }}
+      >
         <LinearGradient
           colors={['rgba(255,255,255,0.6)', 'rgba(255,255,255,0.6)']}
           style={{
             borderRadius: 20,
-            padding: 25,
             width: '100%',
             maxWidth: 380,
             shadowColor: '#000',
-            shadowOffset: {width: 0, height: 5},
+            shadowOffset: { width: 0, height: 5 },
             shadowOpacity: 0.15,
             shadowRadius: 10,
             elevation: 8,
-            alignItems: 'center',
-          }}>
-          {/* Row 1 - Scrolling Bank Icons */}
+          }}
+        >
           <View
             style={{
-              height: 60,
-              overflow: 'hidden',
-              width: '100%',
-              marginBottom: 10,
-            }}>
-            <Animated.View
+              padding: 25,
+              alignItems: 'center',
+            }}
+          >
+            {/* Row 1 - Scrolling Bank Icons */}
+            <View
               style={{
-                flexDirection: 'row',
-                transform: [{translateX: scrollAnim1}],
-              }}>
-              {firstRowIcons.concat(firstRowIcons).map((icon, index) => (
-                <View
-                  key={`row1-${index}`}
-                  style={{
-                    width: 50,
-                    height: 50,
-                    marginHorizontal: 5,
-                    borderRadius: 10,
-                    backgroundColor: 'white',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    shadowColor: '#000',
-                    shadowOffset: {width: 0, height: 2},
-                    shadowOpacity: 0.1,
-                    shadowRadius: 4,
-                    elevation: 3,
-                  }}>
-                  <Image
-                    source={icon}
+                height: 60,
+                overflow: 'hidden',
+                width: '100%',
+                marginBottom: 10,
+              }}
+            >
+              <Animated.View
+                style={{
+                  flexDirection: 'row',
+                  transform: [{ translateX: scrollAnim1 }],
+                }}
+              >
+                {firstRowIcons.concat(firstRowIcons).map((icon, index) => (
+                  <View
+                    key={`row1-${index}`}
                     style={{
-                      width: 35,
-                      height: 35,
-                      borderRadius: 8,
+                      width: 50,
+                      height: 50,
+                      marginHorizontal: 5,
+                      borderRadius: 10,
+                      backgroundColor: 'white',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      shadowColor: '#000',
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.1,
+                      shadowRadius: 4,
+                      elevation: 3,
                     }}
-                    resizeMode="contain"
-                  />
-                </View>
-              ))}
-            </Animated.View>
-          </View>
+                  >
+                    <Image
+                      source={icon}
+                      style={{
+                        width: 35,
+                        height: 35,
+                        borderRadius: 8,
+                      }}
+                      resizeMode="contain"
+                    />
+                  </View>
+                ))}
+              </Animated.View>
+            </View>
 
-          {/* Row 2 - Scrolling Bank Icons (Reverse Direction) */}
-          <View
-            style={{
-              height: 60,
-              overflow: 'hidden',
-              width: '100%',
-              marginBottom: 25,
-            }}>
-            <Animated.View
+            {/* Row 2 - Scrolling Bank Icons (Reverse Direction) */}
+            <View
               style={{
-                flexDirection: 'row',
-                transform: [{translateX: scrollAnim2}],
-              }}>
-              {secondRowIcons.concat(secondRowIcons).map((icon, index) => (
-                <View
-                  key={`row2-${index}`}
-                  style={{
-                    width: 50,
-                    height: 50,
-                    marginHorizontal: 5,
-                    borderRadius: 10,
-                    backgroundColor: 'white',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    shadowColor: '#000',
-                    shadowOffset: {width: 0, height: 2},
-                    shadowOpacity: 0.1,
-                    shadowRadius: 4,
-                    elevation: 3,
-                  }}>
-                  <Image
-                    source={icon}
+                height: 60,
+                overflow: 'hidden',
+                width: '100%',
+                marginBottom: 25,
+              }}
+            >
+              <Animated.View
+                style={{
+                  flexDirection: 'row',
+                  transform: [{ translateX: scrollAnim2 }],
+                }}
+              >
+                {secondRowIcons.concat(secondRowIcons).map((icon, index) => (
+                  <View
+                    key={`row2-${index}`}
                     style={{
-                      width: 35,
-                      height: 35,
-                      borderRadius: 8,
+                      width: 50,
+                      height: 50,
+                      marginHorizontal: 5,
+                      borderRadius: 10,
+                      backgroundColor: 'white',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      shadowColor: '#000',
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.1,
+                      shadowRadius: 4,
+                      elevation: 3,
                     }}
-                    resizeMode="contain"
-                  />
-                </View>
-              ))}
-            </Animated.View>
+                  >
+                    <Image
+                      source={icon}
+                      style={{
+                        width: 35,
+                        height: 35,
+                        borderRadius: 8,
+                      }}
+                      resizeMode="contain"
+                    />
+                  </View>
+                ))}
+              </Animated.View>
+            </View>
+
+            {!hasExistingAccounts && (
+              <>
+                <Text
+                  style={{
+                    color: '#111',
+                    fontSize: 24,
+                    fontWeight: 'bold',
+                    textAlign: 'center',
+                    marginBottom: 8,
+                  }}
+                >
+                  Connect Your Banks
+                </Text>
+                <Text
+                  style={{
+                    color: '#444',
+                    fontSize: 15,
+                    textAlign: 'center',
+                    marginBottom: 25,
+                    lineHeight: 22,
+                  }}
+                >
+                  Link your bank accounts to get a complete view of your
+                  finances and manage everything in one place
+                </Text>
+              </>
+            )}
+
+            <TouchableOpacity onPress={onConnectPress} activeOpacity={0.85}>
+              <LinearGradient
+                colors={['#7b2ff7', '#f107a3']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 0 }}
+                style={{
+                  borderRadius: 25,
+                  shadowColor: '#7b2ff7',
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.3,
+                  shadowRadius: 8,
+                  elevation: 6,
+                }}
+              >
+                <Text
+                  style={{
+                    color: 'white',
+                    fontWeight: 'bold',
+                    fontSize: 16,
+                    textAlign: 'center',
+                    paddingVertical: 14,
+                    paddingHorizontal: 45,
+                  }}
+                >
+                  {hasExistingAccounts
+                    ? 'Add New Bank Account'
+                    : 'Connect Your Bank'}
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
           </View>
-
-          {!hasExistingAccounts && (
-            <>
-              <Text
-                style={{
-                  color: '#111',
-                  fontSize: 24,
-                  fontWeight: 'bold',
-                  textAlign: 'center',
-                  marginBottom: 8,
-                }}>
-                Connect Your Banks
-              </Text>
-              <Text
-                style={{
-                  color: '#444',
-                  fontSize: 15,
-                  textAlign: 'center',
-                  marginBottom: 25,
-                  lineHeight: 22,
-                }}>
-                Link your bank accounts to get a complete view of your finances
-                and manage everything in one place
-              </Text>
-            </>
-          )}
-
-          <TouchableOpacity onPress={onConnectPress} activeOpacity={0.85}>
-            <LinearGradient
-              colors={['#7b2ff7', '#f107a3']}
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
-              style={{
-                paddingVertical: 14,
-                paddingHorizontal: 45,
-                borderRadius: 25,
-                shadowColor: '#7b2ff7',
-                shadowOffset: {width: 0, height: 4},
-                shadowOpacity: 0.3,
-                shadowRadius: 8,
-                elevation: 6,
-              }}>
-              <Text
-                style={{
-                  color: 'white',
-                  fontWeight: 'bold',
-                  fontSize: 16,
-                  textAlign: 'center',
-                }}>
-                {hasExistingAccounts
-                  ? 'Add New Bank Account'
-                  : 'Connect Your Bank'}
-              </Text>
-            </LinearGradient>
-          </TouchableOpacity>
         </LinearGradient>
       </MotiView>
     </View>
   );
 };
 
-export const BankAccountsScreen = ({navigation, route}) => {
+export const BankAccountsScreen = ({ navigation, route }) => {
   const theme = useTheme();
+  const appState = useSelector(state => state.service.appState);
+
   const routeIsFocused = useIsFocused();
   const [institutions, setInstitutions] = useState([]);
-  const {userData} = useContext(AuthenticationContext);
-  const {fetchLinkToken, getLinkedBankAccounts} =
+  const { userData } = useContext(AuthenticationContext);
+  const { fetchLinkToken, getLinkedBankAccounts, unlinkAccount } =
     useContext(BankAccountContext);
-  const {plaidSocket} = useContext(SocketContext);
+  const { plaidSocket } = useContext(SocketContext);
   const dispatch = useDispatch();
   const timeoutRef = useRef(null);
   const [updateAccountMode, setUpdateAccountMode] = useState(false);
@@ -295,7 +312,7 @@ export const BankAccountsScreen = ({navigation, route}) => {
     useState(false);
 
   const showNotification = (status = 'error', message) => {
-    dispatch(notificationActions.showToast({status, message}));
+    dispatch(notificationActions.showToast({ status, message }));
   };
 
   useFocusEffect(
@@ -307,6 +324,17 @@ export const BankAccountsScreen = ({navigation, route}) => {
     }, [route.params?.updateAccountMode]),
   );
 
+  const onUnlinkAccount = institution => {
+    unlinkAccount(
+      {
+        accessToken: institution.accessToken,
+      },
+      () => {
+        onGetLinkedAccounts();
+      },
+    );
+  };
+
   useEffect(() => {
     if (updateAccountMode && updateAccountModeInstitution) {
       handleOpenPlaid(true);
@@ -314,7 +342,7 @@ export const BankAccountsScreen = ({navigation, route}) => {
   }, [updateAccountMode]);
 
   useEffect(() => {
-    if (routeIsFocused) onGetLinkedAccounts();
+    if (routeIsFocused && appState === 'active') onGetLinkedAccounts();
     return () => clearTimeout(timeoutRef.current);
   }, [routeIsFocused]);
 
@@ -340,6 +368,7 @@ export const BankAccountsScreen = ({navigation, route}) => {
 
   usePlaidEmitter(event => {
     if (event?.eventName === 'EXIT') {
+      setUpdateAccountMode(false);
       dispatch(loaderActions.hideLoader());
       showNotification('warning', 'Process cancelled by user');
     }
@@ -352,7 +381,7 @@ export const BankAccountsScreen = ({navigation, route}) => {
   };
 
   const getLinkToken = async (updateMode = false) => {
-    let data = {platform: Platform.OS};
+    let data = { platform: Platform.OS };
     const accessToken = updateAccountModeInstitution?.accessToken;
     if (updateMode && accessToken) {
       data.accessToken = accessToken;
@@ -372,34 +401,36 @@ export const BankAccountsScreen = ({navigation, route}) => {
       const linkToken = await getLinkToken(updateMode);
       setUpdateAccountMode(false);
       setUpdateAccountModeInstitution(null);
-      await create({token: linkToken});
+      await create({ token: linkToken });
       dispatch(
-        loaderActions.showLoader({loaderType: 'linkBank', backdrop: true}),
+        loaderActions.showLoader({ loaderType: 'linkBank', backdrop: true }),
       );
-      await open({onSuccess: onGetLinkedAccounts, onExit: () => {}});
+      await open({ onSuccess: onGetLinkedAccounts, onExit: () => {} });
     } catch (error) {
       showNotification('error', error.toString());
     }
   };
 
-  const renderInstitution = ({item}) => {
+  const renderInstitution = ({ item }) => {
     const showFixButton = item.needsUpdate;
 
     return (
       <MotiView
-        from={{opacity: 0, translateY: 10}}
-        animate={{opacity: 1, translateY: 0}}
-        transition={{type: 'timing', duration: 400}}>
+        from={{ opacity: 0, translateY: 10 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ type: 'timing', duration: 400 }}
+      >
         <InstitutionCard
           onPress={() =>
             showFixButton
               ? null
-              : navigation.navigate('BankDetails', {institution: item})
-          }>
+              : navigation.navigate('BankDetails', { institution: item })
+          }
+        >
           <InstitutionLogo
             source={
               item.institutionLogo
-                ? {uri: `data:image/png;base64,${item.institutionLogo}`}
+                ? { uri: `data:image/png;base64,${item.institutionLogo}` }
                 : require('../../../../assets/bank.png')
             }
           />
@@ -409,23 +440,40 @@ export const BankAccountsScreen = ({navigation, route}) => {
               {item.accounts.length} accounts linked
             </InstitutionAccounts>
             {showFixButton && (
-              <Button
-                icon="alert-circle"
-                mode="outlined"
-                buttonColor="#fff"
-                textColor="tomato"
-                style={{
-                  borderColor: 'tomato',
-                  borderWidth: 1,
-                  borderRadius: 8,
-                  marginTop: 10,
-                }}
-                onPress={() => {
-                  setUpdateAccountMode(true);
-                  setUpdateAccountModeInstitution(item);
-                }}>
-                Action Required
-              </Button>
+              <View style={{ marginTop: 10, gap: 8 }}>
+                <Button
+                  icon="refresh-circle"
+                  mode="outlined"
+                  buttonColor="#fff"
+                  textColor="#FF6B35"
+                  style={{
+                    borderColor: '#FF6B35',
+                    borderWidth: 1,
+                    borderRadius: 8,
+                  }}
+                  onPress={() => {
+                    setUpdateAccountMode(true);
+                    setUpdateAccountModeInstitution(item);
+                  }}
+                >
+                  Re-authentication Required
+                </Button>
+
+                <Button
+                  icon="trash-can"
+                  mode="outlined"
+                  buttonColor="#fff"
+                  textColor="#EF4444"
+                  style={{
+                    borderColor: '#EF4444',
+                    borderWidth: 1,
+                    borderRadius: 8,
+                  }}
+                  onPress={() => onUnlinkAccount(item)}
+                >
+                  Unlink Bank
+                </Button>
+              </View>
             )}
           </InstitutionInfo>
 
@@ -438,69 +486,74 @@ export const BankAccountsScreen = ({navigation, route}) => {
   };
 
   return (
-    <Container>
-      <StatusBar
-        barStyle="light-content"
-        translucent
-        backgroundColor="#8B5CF6"
-      />
-      <SafeAreaView edges={['top']}>
-        <FlexRow justifyContent="space-between" alignItems="center">
-          <TouchableOpacity
-            onPress={() => navigation.goBack()}
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginLeft: 10,
-              marginTop: 10,
-            }}>
-            <Ionicons
-              name="chevron-back-outline"
-              size={25}
-              color="white"
-              style={{marginRight: 10}}
+    <>
+      <Container>
+        <StatusBar
+          barStyle="light-content"
+          translucent
+          backgroundColor="#8B5CF6"
+        />
+        <SafeAreaView edges={['top']}>
+          <FlexRow justifyContent="space-between" alignItems="center">
+            <TouchableOpacity
+              onPress={() => navigation.goBack()}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginLeft: 10,
+                marginTop: 10,
+              }}
+            >
+              <Ionicons
+                name="chevron-back-outline"
+                size={25}
+                color="white"
+                style={{ marginRight: 10 }}
+              />
+              <Text color={'#fff'} fontsize="20px">
+                Back
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={onGetLinkedAccounts}
+              style={{
+                padding: 8,
+                borderRadius: 20,
+                marginRight: 20,
+                top: 2,
+                backgroundColor: 'rgba(255,255,255,0.1)',
+              }}
+              activeOpacity={0.7}
+            >
+              <Ionicons name="refresh-outline" size={20} color="white" />
+            </TouchableOpacity>
+          </FlexRow>
+        </SafeAreaView>
+
+        {institutions.length > 0 ? (
+          <ScrollView>
+            <BankAccountsEmptyState
+              onConnectPress={handleOpenPlaid}
+              hasExistingAccounts={true}
             />
-            <Text color={'#fff'} fontsize="20px">
-              Back
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={onGetLinkedAccounts}
-            style={{
-              padding: 8,
-              borderRadius: 20,
-              marginRight: 20,
-              top: 2,
-              backgroundColor: 'rgba(255,255,255,0.1)',
-            }}
-            activeOpacity={0.7}>
-            <Ionicons name="refresh-outline" size={20} color="white" />
-          </TouchableOpacity>
-        </FlexRow>
-      </SafeAreaView>
-
-      {institutions.length > 0 ? (
-        <ScrollView>
-          <BankAccountsEmptyState
-            onConnectPress={handleOpenPlaid}
-            hasExistingAccounts={true}
-          />
-          <StyledFlatList
-            data={institutions}
-            scrollEnabled={false}
-            keyExtractor={item => item.institutionId}
-            renderItem={renderInstitution}
-          />
-        </ScrollView>
-      ) : (
-        <>
-          <Header>
-            <Title>Manage{'\n'}Bank Accounts</Title>
-          </Header>
-          <BankAccountsEmptyState onConnectPress={handleOpenPlaid} />
-        </>
-      )}
-    </Container>
+            <StyledFlatList
+              data={institutions}
+              scrollEnabled={false}
+              keyExtractor={item => item.institutionId}
+              renderItem={renderInstitution}
+            />
+          </ScrollView>
+        ) : (
+          <>
+            <Header>
+              <Title>Manage{'\n'}Bank Accounts</Title>
+            </Header>
+            <BankAccountsEmptyState onConnectPress={handleOpenPlaid} />
+          </>
+        )}
+      </Container>
+      <RenderBlurView />
+    </>
   );
 };

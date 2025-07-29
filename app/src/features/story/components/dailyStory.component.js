@@ -1,14 +1,13 @@
-import React, {useState, useEffect, useContext} from 'react';
-import {View, StyleSheet, Dimensions, TouchableOpacity} from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
-import {BlurView} from '@react-native-community/blur';
+import { BlurView } from '@react-native-community/blur';
 import LinearGradient from 'react-native-linear-gradient';
-import {Pagination} from 'react-native-reanimated-carousel';
+import { Pagination } from 'react-native-reanimated-carousel';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Animated, {
   interpolate,
   runOnJS,
-  SlideInUp,
   useAnimatedProps,
   useAnimatedStyle,
   useDerivedValue,
@@ -17,19 +16,17 @@ import Animated, {
   ZoomIn,
 } from 'react-native-reanimated';
 import moment from 'moment';
-import {SQLiteContext} from '../../../services/sqlite/sqlite.context';
-import {SheetsContext} from '../../../services/sheets/sheets.context';
-import {AuthenticationContext} from '../../../services/authentication/authentication.context';
-import {Text} from '../../../components/typography/text.component';
-import {GetCurrencySymbol} from '../../../components/symbol.currency';
+import { AuthenticationContext } from '../../../services/authentication/authentication.context';
+import { Text } from '../../../components/typography/text.component';
+import { GetCurrencySymbol } from '../../../components/symbol.currency';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Gesture, GestureDetector} from 'react-native-gesture-handler';
-import {WatermelonDBContext} from '../../../services/watermelondb/watermelondb.context';
-import {Q} from '@nozbe/watermelondb';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import { WatermelonDBContext } from '../../../services/watermelondb/watermelondb.context';
+import { Q } from '@nozbe/watermelondb';
 
 const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const STORAGE_KEY = '@expenses-manager-recap';
 
 // Gradient backgroundsf
@@ -49,9 +46,9 @@ const formatCurrency = (amount, symbol = '₹') => {
   })}`;
 };
 // AsyncStorage.removeItem(STORAGE_KEY);
-export const DailyStoryCard = ({forceShowRecap, setForceShowRecap}) => {
-  const {db, getChildRecords} = useContext(WatermelonDBContext);
-  const {userData} = useContext(AuthenticationContext);
+export const DailyStoryCard = ({ forceShowRecap, setForceShowRecap }) => {
+  const { db, getChildRecords } = useContext(WatermelonDBContext);
+  const { userData } = useContext(AuthenticationContext);
   const [storyList, setStoryList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showRecap, setShowRecap] = useState(true);
@@ -100,7 +97,7 @@ export const DailyStoryCard = ({forceShowRecap, setForceShowRecap}) => {
   }, [userData, forceShowRecap]);
 
   const animatedStyles = useAnimatedStyle(() => ({
-    transform: [{translateY: translateY.value}],
+    transform: [{ translateY: translateY.value }],
   }));
 
   const blurAmount = useDerivedValue(() => {
@@ -141,7 +138,7 @@ export const DailyStoryCard = ({forceShowRecap, setForceShowRecap}) => {
         let totalIncome = 0;
         let totalExpense = 0;
         let totalTransactions = 0;
-        let biggestTxn = {amount: 0, categoryName: ''};
+        let biggestTxn = { amount: 0, categoryName: '' };
 
         // Fetch transactions for this account from yesterday
         const txns = await acc.collections
@@ -220,6 +217,14 @@ export const DailyStoryCard = ({forceShowRecap, setForceShowRecap}) => {
     }
   };
 
+  // Reset translateY when component should show to prevent off-screen positioning
+  // Reset translateY immediately when component should show
+  useEffect(() => {
+    if (showRecap || forceShowRecap) {
+      translateY.value = 0;
+    }
+  }, [showRecap, forceShowRecap]);
+
   const onCloseRecap = async () => {
     translateY.value = withSpring(height, {
       damping: 20,
@@ -234,7 +239,7 @@ export const DailyStoryCard = ({forceShowRecap, setForceShowRecap}) => {
       }
       setShowRecap(false);
       setForceShowRecap(false);
-      translateY.value = 0;
+      // translateY.value = 0;
     }, 300);
   };
 
@@ -267,12 +272,9 @@ export const DailyStoryCard = ({forceShowRecap, setForceShowRecap}) => {
       />
       <GestureDetector gesture={dragGesture}>
         <Animated.View
-          entering={
-            forceShowRecap
-              ? SlideInUp.springify().damping(15)
-              : ZoomIn.duration(500)
-          }
-          style={[styles.sheetContainer, animatedStyles]}>
+          entering={ZoomIn.duration(500)}
+          style={[styles.sheetContainer, animatedStyles]}
+        >
           <View style={styles.handleBar} />
 
           <TouchableOpacity style={styles.closeButton} onPress={onCloseRecap}>
@@ -291,14 +293,15 @@ export const DailyStoryCard = ({forceShowRecap, setForceShowRecap}) => {
               scrollAnimationDuration={1600}
               data={storyList}
               onProgressChange={progress}
-              renderItem={({item, index}) => (
+              renderItem={({ item, index }) => (
                 <LinearGradient
                   colors={gradientColors[index % gradientColors.length]}
-                  start={{x: 0, y: 0}}
-                  end={{x: 1, y: 1}}
-                  style={styles.card}>
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.card}
+                >
                   {noRecapAvailable ? (
-                    <>
+                    <View style={{ padding: 30 }}>
                       <Text style={styles.title}>🧘‍♂️ No Recap Available</Text>
                       <Text style={styles.message}>
                         Yesterday was a day of balance. ✨ No income, no
@@ -307,9 +310,9 @@ export const DailyStoryCard = ({forceShowRecap, setForceShowRecap}) => {
                         focused, keep your goals in sight, and make today count!
                         🚀
                       </Text>
-                    </>
+                    </View>
                   ) : (
-                    <>
+                    <View style={{ padding: 30 }}>
                       <Text style={styles.title}>{item.title}</Text>
 
                       <Text style={styles.message}>
@@ -360,7 +363,7 @@ export const DailyStoryCard = ({forceShowRecap, setForceShowRecap}) => {
                         {'\n\n'}
                         {item.verdict}
                       </Text>
-                    </>
+                    </View>
                   )}
                 </LinearGradient>
               )}
@@ -381,7 +384,7 @@ export const DailyStoryCard = ({forceShowRecap, setForceShowRecap}) => {
                 borderRadius: 5,
                 backgroundColor: '#ffffff',
               }}
-              containerStyle={{marginTop: 18, gap: 8}}
+              containerStyle={{ marginTop: 18, gap: 8 }}
             />
           </View>
         </Animated.View>
@@ -444,7 +447,6 @@ const styles = StyleSheet.create({
     width: width * 0.85,
     height: height * 0.5,
     borderRadius: 26,
-    padding: 30,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',

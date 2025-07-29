@@ -48,6 +48,12 @@ var accessLogStream = rfs.createStream("api.log", {
 app.use(morgan("dev", {}));
 app.use(morgan("combined", { stream: accessLogStream }));
 
+// Create required folders
+const uploadDir = "voice-chat-uploads/temp";
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
 /**
  * Connect to database
  */

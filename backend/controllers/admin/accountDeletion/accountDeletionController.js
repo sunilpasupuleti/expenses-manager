@@ -195,17 +195,33 @@ module.exports = {
       const accessTokens = _.get(user, "plaid.accessTokens", []);
       await Promise.all(
         accessTokens.map(async (tokenObj) => {
-          const decrypted = decryptAES(tokenObj.token, uid);
-          await plaidClient.itemRemove({
-            access_token: decrypted,
-          });
+          try {
+            const decrypted = decryptAES(tokenObj.token, uid);
+            await plaidClient.itemRemove({
+              access_token: decrypted,
+            });
+          } catch (plaidError) {
+            const errData = plaidError?.response?.data;
+            if (errData?.error_code !== "INVALID_ACCESS_TOKEN") {
+              throw plaidError;
+            }
+          }
         })
       );
+      console.log(plaidUserToken);
+
       if (plaidUserToken) {
-        const decryptedPliadUserToken = decryptAES(userToken, uid);
-        await plaidClient.userRemove({
-          user_token: decryptedPliadUserToken,
-        });
+        const decryptedPliadUserToken = decryptAES(plaidUserToken, uid);
+        try {
+          await plaidClient.userRemove({
+            user_token: decryptedPliadUserToken,
+          });
+        } catch (plaidError) {
+          const errData = plaidError?.response?.data;
+          if (errData?.error_code !== "INVALID_USER_TOKEN") {
+            throw plaidError;
+          }
+        }
       }
 
       const adminRef = database().ref("/admin/plaid");
@@ -252,7 +268,7 @@ module.exports = {
         message: "Account and its data deleted successfully",
       });
     } catch (err) {
-      const errorMessage = err?.data?.error_message || err.toString();
+      const errorMessage = err?.response?.data?.error_message || err.toString();
 
       logger.error(
         "Error occured while deleting user from firebase " + errorMessage

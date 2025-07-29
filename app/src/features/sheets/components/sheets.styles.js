@@ -55,7 +55,7 @@ export const NavLabel = styled(Text)`
 // position: absolute;
 // bottom: 20px;
 // right: 20px;
-export const Search = styled.TouchableOpacity`
+export const HeaderIconContainer = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
   background-color: #10b981;
@@ -75,24 +75,23 @@ export const AiButton = styled.View`
   flex-direction: row;
   align-items: center;
   position: absolute;
-  background-color: #ffffff;
-  bottom: 10px;
+  background-color: rgba(255, 255, 255, 0.9);
+  bottom: 20px;
   right: 20px;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  border-bottom-left-radius: 20px;
-  border-bottom-right-radius: 5px;
-  padding-vertical: 10px;
-  padding-horizontal: 14px;
-  max-width: 70%;
-  shadow-color: #000;
-  shadow-offset: 0px 2px;
-  shadow-opacity: 0.2;
-  shadow-radius: 4px;
-  elevation: 5;
+  border-radius: 50px;
+  padding-vertical: 14px;
+  padding-horizontal: 18px;
+  min-width: 140px;
+  border-width: 1px;
+  border-color: rgba(255, 255, 255, 0.3);
+  shadow-color: #667eea;
+  shadow-offset: 0px 4px;
+  shadow-opacity: 0.15;
+  shadow-radius: 20px;
+  elevation: 12;
 `;
 
-export const SearchIcon = styled(Ionicons)`
+export const HeaderIcon = styled(Ionicons)`
   margin-right: 3px;
 `;
 

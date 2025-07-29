@@ -1,0 +1,7 @@
+::1 - - [18/Jul/2025:03:45:03 +0000] "POST /chatbot/voice HTTP/1.1" 404 153 "-" "PostmanRuntime/7.43.3"
+::1 - - [18/Jul/2025:03:45:18 +0000] "POST /chat-bot/voice HTTP/1.1" 400 194 "-" "PostmanRuntime/7.43.3"
+::1 - - [18/Jul/2025:03:46:35 +0000] "POST /chat-bot/voice HTTP/1.1" 200 302 "-" "PostmanRuntime/7.43.3"
+::1 - - [18/Jul/2025:03:47:33 +0000] "POST /chat-bot/voice HTTP/1.1" 200 491 "-" "PostmanRuntime/7.43.3"
+::1 - - [18/Jul/2025:03:49:19 +0000] "POST /chat-bot/voice HTTP/1.1" 200 491 "-" "PostmanRuntime/7.43.3"
+::1 - - [18/Jul/2025:03:50:28 +0000] "POST /chat-bot/voice HTTP/1.1" 200 570 "-" "PostmanRuntime/7.43.3"
+::1 - - [18/Jul/2025:03:50:55 +0000] "POST /chat-bot/voice HTTP/1.1" 200 414 "-" "PostmanRuntime/7.43.3"

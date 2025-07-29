@@ -6,28 +6,28 @@ import {
   categoryColumns,
   transactionColumns,
 } from '../../services/sqlite/sqliteSchemas';
-import {GetCurrencyLocalString, GetCurrencySymbol} from '../symbol.currency';
+import { GetCurrencyLocalString, GetCurrencySymbol } from '../symbol.currency';
 import momentTz from 'moment-timezone';
-import {getTimeZone} from 'react-native-localize';
+import { getTimeZone } from 'react-native-localize';
 import PushNotification from 'react-native-push-notification';
 import SInfo from 'react-native-sensitive-info';
 
 export const repaymentFrequencyOptions = [
-  {key: 'daily', value: 'Every Day', unit: 'days', step: 1},
-  {key: 'weekly', value: 'Every Week', unit: 'weeks', step: 1},
-  {key: 'biweekly', value: 'Every 2 Weeks', unit: 'weeks', step: 2},
-  {key: 'semi_monthly', value: 'Every Half Month', unit: 'days', step: 15},
-  {key: 'monthly', value: 'Every Month', unit: 'months', step: 1},
-  {key: 'quarterly', value: 'Every Quarter', unit: 'months', step: 3},
-  {key: 'semi_annually', value: 'Every 6 Months', unit: 'months', step: 6},
-  {key: 'yearly', value: 'Every Year', unit: 'years', step: 1},
+  { key: 'daily', value: 'Every Day', unit: 'days', step: 1 },
+  { key: 'weekly', value: 'Every Week', unit: 'weeks', step: 1 },
+  { key: 'biweekly', value: 'Every 2 Weeks', unit: 'weeks', step: 2 },
+  { key: 'semi_monthly', value: 'Every Half Month', unit: 'days', step: 15 },
+  { key: 'monthly', value: 'Every Month', unit: 'months', step: 1 },
+  { key: 'quarterly', value: 'Every Quarter', unit: 'months', step: 3 },
+  { key: 'semi_annually', value: 'Every 6 Months', unit: 'months', step: 6 },
+  { key: 'yearly', value: 'Every Year', unit: 'years', step: 1 },
 ];
 
 export const getFrequencyInterval = frequencyKey => {
   const match = repaymentFrequencyOptions.find(opt => opt.key === frequencyKey);
   return match
-    ? {unit: match.unit, step: match.step}
-    : {unit: 'months', step: 1};
+    ? { unit: match.unit, step: match.step }
+    : { unit: 'months', step: 1 };
 };
 
 export const getNextEmiAcrossAccounts = (loanSheets = [], days = 10) => {
@@ -38,7 +38,7 @@ export const getNextEmiAcrossAccounts = (loanSheets = [], days = 10) => {
 
   const emis = loanSheets
     .map(sheet => {
-      const {upcomingEmis} = getEmiDates(
+      const { upcomingEmis } = getEmiDates(
         sheet.loanStartDate,
         sheet.repaymentFrequency,
         sheet.loanYears,
@@ -75,7 +75,7 @@ export const getEmiDates = (
   loanMonths,
   count = 3,
 ) => {
-  const {unit, step} = getFrequencyInterval(repaymentFrequency);
+  const { unit, step } = getFrequencyInterval(repaymentFrequency);
   const start = moment(loanStartDate).startOf('day');
   const end = start
     .clone()
@@ -117,7 +117,7 @@ export const generateAmortizationSchedule = ({
   useReducingBalance,
 }) => {
   const schedule = [];
-  const {unit, step} = getFrequencyInterval(repaymentFrequency);
+  const { unit, step } = getFrequencyInterval(repaymentFrequency);
   const start = moment(startDate).startOf('day');
 
   const rateDivisor =
@@ -254,7 +254,7 @@ export const calculateInterestFromAmortizationSchedule = ({
   totalRepayable,
   useReducingBalance,
 }) => {
-  const {totalInterest, totalPrincipal, schedule, loanPayoffDuration} =
+  const { totalInterest, totalPrincipal, schedule, loanPayoffDuration } =
     generateAmortizationSchedule({
       loanAmount,
       interestRate,
@@ -319,15 +319,15 @@ export const calculateInterestFromAmortizationSchedule = ({
 };
 
 export const compoundingOptions = [
-  {key: 'annually', value: 'Annually (APY)'},
-  {key: 'semi_annually', value: 'Semi-annually'},
-  {key: 'quarterly', value: 'Quarterly'},
-  {key: 'monthly', value: 'Monthly (APR)'},
-  {key: 'semi_monthly', value: 'Semi-monthly'},
-  {key: 'biweekly', value: 'Biweekly'},
-  {key: 'weekly', value: 'Weekly'},
-  {key: 'daily', value: 'Daily'},
-  {key: 'continuously', value: 'Continuously'},
+  { key: 'annually', value: 'Annually (APY)' },
+  { key: 'semi_annually', value: 'Semi-annually' },
+  { key: 'quarterly', value: 'Quarterly' },
+  { key: 'monthly', value: 'Monthly (APR)' },
+  { key: 'semi_monthly', value: 'Semi-monthly' },
+  { key: 'biweekly', value: 'Biweekly' },
+  { key: 'weekly', value: 'Weekly' },
+  { key: 'daily', value: 'Daily' },
+  { key: 'continuously', value: 'Continuously' },
 ];
 
 const FIREBASE_STORAGE_URL = remoteConfig()
@@ -532,10 +532,10 @@ export const getDataFromRows = rows => {
 };
 
 export const getExcelSheetAccountRows = (account, transactions) => {
-  const {currency} = account;
+  const { currency } = account;
   const structuredDetails = [];
   transactions.forEach((transaction, i) => {
-    let {date, showTime, time, type, amount, imageUrl, notes, category} =
+    let { date, showTime, time, type, amount, imageUrl, notes, category } =
       transaction;
     let dt = moment(date).format('MMM DD, YYYY');
     if (showTime) {
@@ -559,7 +559,7 @@ export const getExcelSheetAccountRows = (account, transactions) => {
 };
 
 export const getExcelSheetAccountSummary = account => {
-  let {totalIncome, totalExpense, totalBalance, currency} = account;
+  let { totalIncome, totalExpense, totalBalance, currency } = account;
   totalIncome =
     GetCurrencySymbol(currency) + ' ' + GetCurrencyLocalString(totalIncome);
   totalExpense =
@@ -576,7 +576,7 @@ export const getExcelSheetAccountSummary = account => {
 };
 
 export const getPdfAccountTableHtml = (theme, account, transactions) => {
-  let {totalIncome, totalExpense, totalBalance, currency, name} = account;
+  let { totalIncome, totalExpense, totalBalance, currency, name } = account;
   let tableHeads = `
   <th>S.NO</th>
   <th>DATE</th>
@@ -588,7 +588,7 @@ export const getPdfAccountTableHtml = (theme, account, transactions) => {
   let styles = getPdfAccountStyles(theme);
   let tableBody = '';
   transactions.forEach((transaction, index) => {
-    let {date, showTime, time, type, amount, imageUrl, notes, category} =
+    let { date, showTime, time, type, amount, imageUrl, notes, category } =
       transaction;
     let dt = moment(date).format('MMM DD, YYYY ');
     if (showTime) {
@@ -696,12 +696,12 @@ export const getPdfAccountTableHtml = (theme, account, transactions) => {
 };
 
 export const excelSheetAccountColWidth = [
-  {wch: 5},
-  {wch: 40},
-  {wch: 40},
-  {wch: 40},
-  {wch: 40},
-  {wch: 40},
+  { wch: 5 },
+  { wch: 40 },
+  { wch: 40 },
+  { wch: 40 },
+  { wch: 40 },
+  { wch: 40 },
 ];
 
 export const getPdfAccountStyles = theme => `
@@ -783,7 +783,7 @@ export const sendLocalNotification = (
   data,
   scheduleDate = null,
 ) => {
-  let {title, subtitle, message, image, notificationId} = notification;
+  let { title, subtitle, message, image, notificationId } = notification;
   let picturePath = image || 'notification/local_transaction_added.png';
   let pictureUrl = getFirebaseAccessUrl(picturePath);
 
@@ -844,4 +844,41 @@ export const getSensitiveInfo = async name => {
     sharedPreferencesName: 'expensesmanager_secure_storage',
     keychainService: 'expensesmanager_secure_keychain',
   });
+};
+
+export const getFileExtension = filePath => {
+  const extension = filePath.split('.').pop().toLowerCase();
+  return extension;
+};
+
+// Get MIME type based on extension
+export const getMimeType = extension => {
+  switch (extension) {
+    case 'm4a':
+      return 'audio/mp4';
+    case 'mp4':
+      return 'audio/mp4';
+    case 'wav':
+      return 'audio/wav';
+    case 'aac':
+      return 'audio/aac';
+    case 'caf':
+      return 'audio/x-caf'; // CAF format
+    case 'mp3':
+      return 'audio/mpeg';
+    case 'ogg':
+      return 'audio/ogg';
+    case 'opus':
+      return 'audio/ogg';
+    case 'webm':
+      return 'audio/webm';
+    case 'flac':
+      return 'audio/flac';
+    case 'alac':
+      return 'audio/mp4'; // ALAC uses MP4 container
+    case 'amr':
+      return 'audio/amr';
+    default:
+      return 'audio/mp4'; // Default fallback
+  }
 };

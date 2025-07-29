@@ -1,7 +1,7 @@
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable react/no-unstable-nested-components */
-import React, {useContext, useEffect, useMemo, useState} from 'react';
-import {Text} from '../../../../components/typography/text.component';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { Text } from '../../../../components/typography/text.component';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -18,9 +18,9 @@ import {
   TouchableHighlightWithColor,
 } from '../../../../components/styles';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {useTheme} from 'styled-components/native';
-import {useIsFocused} from '@react-navigation/native';
-import {SafeArea} from '../../../../components/utility/safe-area.component';
+import { useTheme } from 'styled-components/native';
+import { useIsFocused } from '@react-navigation/native';
+import { SafeArea } from '../../../../components/utility/safe-area.component';
 import {
   InEx,
   InExAmount,
@@ -31,17 +31,17 @@ import {
   SheetSummaryTotalBalance,
 } from './sheet-details-dashboard.styles';
 import LinearGradient from 'react-native-linear-gradient';
-import {Spacer} from '../../../../components/spacer/spacer.component';
+import { Spacer } from '../../../../components/spacer/spacer.component';
 import {
   GetCurrencyLocalString,
   GetCurrencySymbol,
 } from '../../../../components/symbol.currency';
-import {Card} from 'react-native-paper';
-import {CategoryColor} from '../../../categories/components/categories.styles';
+import { Card } from 'react-native-paper';
+import { CategoryColor } from '../../../categories/components/categories.styles';
 import _ from 'lodash';
-import {SheetsContext} from '../../../../services/sheets/sheets.context';
-import {DashboardAddButton} from './sheet-details.styles';
-import {SheetDetailsContext} from '../../../../services/sheetDetails/sheetDetails.context';
+import { SheetsContext } from '../../../../services/sheets/sheets.context';
+import { DashboardAddButton } from './sheet-details.styles';
+import { SheetDetailsContext } from '../../../../services/sheetDetails/sheetDetails.context';
 import {
   calculateInterestFromAmortizationSchedule,
   compoundingOptions,
@@ -50,14 +50,14 @@ import {
   getLinkedDbRecord,
   repaymentFrequencyOptions,
 } from '../../../../components/utility/helper';
-import {SheetDetailsLoanSummary} from './sheet-details-loan-summary.component';
-import {TabsSwitcher} from '../../../../components/tabs-switcher/tabs-switcher.component';
-import {SheetDetailsEmiList} from './sheet-details-emilist.component';
-import {SheetDetailsAmortizationList} from './sheet-details-amortizationlist.component';
-import {ObservedSheetDetailsDashboard} from './sheet-details-dashboard.observed';
+import { SheetDetailsLoanSummary } from './sheet-details-loan-summary.component';
+import { TabsSwitcher } from '../../../../components/tabs-switcher/tabs-switcher.component';
+import { SheetDetailsEmiList } from './sheet-details-emilist.component';
+import { SheetDetailsAmortizationList } from './sheet-details-amortizationlist.component';
+import { ObservedSheetDetailsDashboard } from './sheet-details-dashboard.observed';
 import moment from 'moment';
 
-export const SheetDetailsDashboard = ({navigation, route, sheet}) => {
+export const SheetDetailsDashboard = ({ navigation, route, sheet }) => {
   const [activeType, setActiveType] = useState('expense');
   const [loanTab, setLoanTab] = useState('transactions');
 
@@ -76,7 +76,8 @@ export const SheetDetailsDashboard = ({navigation, route, sheet}) => {
             <Ionicons
               name="chevron-back-outline"
               size={25}
-              color={theme.colors.brand.primary}></Ionicons>
+              color={theme.colors.brand.primary}
+            ></Ionicons>
             <Text color={theme.colors.brand.primary}>Back</Text>
           </FlexRow>
         </TouchableOpacity>
@@ -89,7 +90,8 @@ export const SheetDetailsDashboard = ({navigation, route, sheet}) => {
                   navigation.navigate('SheetExport', {
                     sheet: sheet,
                   })
-                }>
+                }
+              >
                 <FlexRow>
                   <FontAwesome5
                     name="file-export"
@@ -140,7 +142,7 @@ export const BaseSheetDetailsDashboard = ({
 }) => {
   const theme = useTheme();
   const routeIsFocused = useIsFocused();
-  const {onCheckUpcomingSheetDetails} = useContext(SheetDetailsContext);
+  const { onCheckUpcomingSheetDetails } = useContext(SheetDetailsContext);
   const [sheetDetails, setSheetDetails] = useState({
     transactions: [],
     totalCount: 0,
@@ -184,7 +186,7 @@ export const BaseSheetDetailsDashboard = ({
         repaidPercent =
           totalExpected > 0 ? (totalPaid / totalExpected) * 100 : 0;
 
-        const {upcomingEmis} = getEmiDates(
+        const { upcomingEmis } = getEmiDates(
           sheet.loanStartDate,
           sheet.repaymentFrequency,
           sheet.loanYears,
@@ -258,7 +260,7 @@ export const BaseSheetDetailsDashboard = ({
     if (transactions?.length > 0) {
       processTransactions();
     } else {
-      setSheetDetails({totalCount: 0, transactions: [], finalAmount: 0});
+      setSheetDetails({ totalCount: 0, transactions: [], finalAmount: 0 });
     }
   }, [transactions]);
 
@@ -286,79 +288,97 @@ export const BaseSheetDetailsDashboard = ({
         ListHeaderComponent={
           <MainWrapper>
             <LinearGradient
-              start={{x: 0, y: 0}}
-              end={{x: 1, y: 0}}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
               colors={['#4D9DE9', '#D06AF0', '#F9907D']}
-              style={{borderRadius: 15, padding: 20}}>
-              {sheet.isLoanAccount ? (
-                <SheetDetailsLoanSummary
-                  currentSheet={sheet}
-                  emiDates={emiDates}
-                  getCompoundingLabel={getCompoudingFrequencyLabel}
-                  getRepaymentLabel={getRepaymentFrequencyLabel}
-                />
-              ) : (
-                <>
-                  <SheetSummaryTotalBalance>
-                    <Text
-                      color="#fff"
-                      fontfamily="headingSemiBold"
-                      fontsize="16px">
-                      Total Balance
-                    </Text>
+              style={{ borderRadius: 15 }}
+            >
+              <View style={{ padding: 20 }}>
+                {sheet.isLoanAccount ? (
+                  <SheetDetailsLoanSummary
+                    currentSheet={sheet}
+                    emiDates={emiDates}
+                    getCompoundingLabel={getCompoudingFrequencyLabel}
+                    getRepaymentLabel={getRepaymentFrequencyLabel}
+                  />
+                ) : (
+                  <>
+                    <SheetSummaryTotalBalance>
+                      <Text
+                        color="#fff"
+                        fontfamily="headingSemiBold"
+                        fontsize="16px"
+                      >
+                        Total Balance
+                      </Text>
+                      <Spacer size={'large'} />
+                      <Text
+                        color="#fff"
+                        fontfamily="headingBold"
+                        fontsize="38px"
+                      >
+                        {GetCurrencySymbol(sheet.currency)}{' '}
+                        {GetCurrencyLocalString(sheet.totalBalance)}
+                      </Text>
+                    </SheetSummaryTotalBalance>
                     <Spacer size={'large'} />
-                    <Text color="#fff" fontfamily="headingBold" fontsize="38px">
-                      {GetCurrencySymbol(sheet.currency)}{' '}
-                      {GetCurrencyLocalString(sheet.totalBalance)}
-                    </Text>
-                  </SheetSummaryTotalBalance>
-                  <Spacer size={'large'} />
-                  <FlexRow justifyContent="space-between">
-                    <InEx>
-                      <InExIcon>
-                        <Ionicons
-                          name="arrow-down-outline"
-                          size={20}
-                          color="#32B896"
-                        />
-                      </InExIcon>
-                      <InExAmount>
-                        <Text color="#fff" fontfamily="heading" fontsize="16px">
-                          Income
-                        </Text>
-                        <Spacer />
-                        <Text
-                          color="#fff"
-                          fontfamily="headingBold"
-                          fontsize="16px">
-                          {GetCurrencyLocalString(sheet.totalIncome)}
-                        </Text>
-                      </InExAmount>
-                    </InEx>
-                    <InEx>
-                      <InExIcon>
-                        <Ionicons
-                          name="arrow-up-outline"
-                          size={20}
-                          color="tomato"
-                        />
-                      </InExIcon>
-                      <InExAmount>
-                        <Text color="#fff" fontfamily="heading" fontsize="16px">
-                          Expenses
-                        </Text>
-                        <Spacer />
-                        <Text
-                          color="#fff"
-                          fontfamily="headingBold"
-                          fontsize="16px">
-                          {GetCurrencyLocalString(sheet.totalExpense)}
-                        </Text>
-                      </InExAmount>
-                    </InEx>
-                  </FlexRow>
-                </>
-              )}
+                    <FlexRow justifyContent="space-between">
+                      <InEx>
+                        <InExIcon>
+                          <Ionicons
+                            name="arrow-down-outline"
+                            size={20}
+                            color="#32B896"
+                          />
+                        </InExIcon>
+                        <InExAmount>
+                          <Text
+                            color="#fff"
+                            fontfamily="heading"
+                            fontsize="16px"
+                          >
+                            Income
+                          </Text>
+                          <Spacer />
+                          <Text
+                            color="#fff"
+                            fontfamily="headingBold"
+                            fontsize="16px"
+                          >
+                            {GetCurrencyLocalString(sheet.totalIncome)}
+                          </Text>
+                        </InExAmount>
+                      </InEx>
+                      <InEx>
+                        <InExIcon>
+                          <Ionicons
+                            name="arrow-up-outline"
+                            size={20}
+                            color="tomato"
+                          />
+                        </InExIcon>
+                        <InExAmount>
+                          <Text
+                            color="#fff"
+                            fontfamily="heading"
+                            fontsize="16px"
+                          >
+                            Expenses
+                          </Text>
+                          <Spacer />
+                          <Text
+                            color="#fff"
+                            fontfamily="headingBold"
+                            fontsize="16px"
+                          >
+                            {GetCurrencyLocalString(sheet.totalExpense)}
+                          </Text>
+                        </InExAmount>
+                      </InEx>
+                    </FlexRow>
+                  </>
+                )}
+              </View>
             </LinearGradient>
             {sheet.isLoanAccount ? (
               <LoanProgressContainer>
@@ -375,8 +395,8 @@ export const BaseSheetDetailsDashboard = ({
             {sheet.isLoanAccount ? (
               <TabsSwitcher
                 tabs={[
-                  {key: 'transactions', label: 'Transactions'},
-                  {key: 'emi_schedule', label: 'EMI Schedule'},
+                  { key: 'transactions', label: 'Transactions' },
+                  { key: 'emi_schedule', label: 'EMI Schedule' },
                 ]}
                 activeKey={loanTab}
                 setActiveKey={setLoanTab}
@@ -384,8 +404,8 @@ export const BaseSheetDetailsDashboard = ({
             ) : (
               <TabsSwitcher
                 tabs={[
-                  {key: 'expense', label: 'Expense'},
-                  {key: 'income', label: 'Income'},
+                  { key: 'expense', label: 'Expense' },
+                  { key: 'income', label: 'Income' },
                 ]}
                 activeKey={activeType}
                 setActiveKey={onSetActiveType}
@@ -394,15 +414,15 @@ export const BaseSheetDetailsDashboard = ({
             )}
 
             {loanTab === 'transactions' && sheetDetails.totalCount > 0 && (
-              <View style={{marginBottom: 100}}>
+              <View style={{ marginBottom: 100 }}>
                 {sheetDetails.transactions.map((sd, index) => {
-                  let {category, transactions, totalAmount, totalPercentage} =
+                  let { category, transactions, totalAmount, totalPercentage } =
                     sd;
-                  let {icon, name, color} = category;
+                  let { icon, name, color } = category;
                   return (
                     <Spacer size={'large'} key={index}>
                       <Card
-                        theme={{roundness: 0}}
+                        theme={{ roundness: 0 }}
                         elevation={2}
                         style={{
                           position: 'relative',
@@ -410,7 +430,8 @@ export const BaseSheetDetailsDashboard = ({
                           borderTopRightRadius: 10,
                           backgroundColor: theme.colors.bg.card,
                           margin: 1,
-                        }}>
+                        }}
+                      >
                         <TouchableHighlightWithColor
                           style={{
                             paddingTop: 12,
@@ -423,7 +444,8 @@ export const BaseSheetDetailsDashboard = ({
                               category,
                               sheet: sheet,
                             });
-                          }}>
+                          }}
+                        >
                           <>
                             <View
                               style={{
@@ -439,7 +461,8 @@ export const BaseSheetDetailsDashboard = ({
                                 <FlexRow>
                                   <CategoryColor
                                     color={category.color}
-                                    style={{width: 50, height: 50}}>
+                                    style={{ width: 50, height: 50 }}
+                                  >
                                     {icon && (
                                       <MaterialCommunityIcon
                                         name={icon}
@@ -465,7 +488,8 @@ export const BaseSheetDetailsDashboard = ({
                                     <Text
                                       fontsize="16px"
                                       fontfamily="heading"
-                                      color="grey">
+                                      color="grey"
+                                    >
                                       {totalPercentage}%
                                     </Text>
                                   </FlexRow>
@@ -482,7 +506,7 @@ export const BaseSheetDetailsDashboard = ({
             )}
 
             {loanTab === 'emi_schedule' && (
-              <View style={{marginTop: 20}}>
+              <View style={{ marginTop: 20 }}>
                 {allEmiDates.length > 0 ? (
                   // sheet.useReducingBalance ? (
                   <SheetDetailsAmortizationList
@@ -503,7 +527,7 @@ export const BaseSheetDetailsDashboard = ({
                   //     totalPayments={sheet.totalPayments}
                   //   />
                   // )
-                  <Text style={{textAlign: 'center'}}>
+                  <Text style={{ textAlign: 'center' }}>
                     No EMI schedule found.
                   </Text>
                 )}
@@ -514,7 +538,8 @@ export const BaseSheetDetailsDashboard = ({
               <View
                 style={{
                   marginTop: 100,
-                }}>
+                }}
+              >
                 <Text
                   fontfamily="heading"
                   style={{
@@ -522,7 +547,8 @@ export const BaseSheetDetailsDashboard = ({
                     letterSpacing: 1,
                     lineHeight: 30,
                     marginBottom: 100,
-                  }}>
+                  }}
+                >
                   There are no {_.capitalize(activeType)}s to display. Create
                   one from Transactions tab or Below.
                 </Text>
@@ -539,7 +565,8 @@ export const BaseSheetDetailsDashboard = ({
               sheet: sheet,
               activeType: activeType,
             });
-          }}>
+          }}
+        >
           <FlexRow>
             <AntDesign name="plus" size={20} color={'#fff'} />
           </FlexRow>

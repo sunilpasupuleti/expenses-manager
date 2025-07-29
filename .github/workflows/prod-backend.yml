@@ -38,6 +38,12 @@ jobs:
           export GPG_TTY=$(tty)
           sops -d backend/config/expensesmanager.json.enc | base64 -d > backend/config/expensesmanager.json
 
+      - name: Decrypt expensesmanager-gcp.json using SOPS
+        run: |
+          export SOPS_GPG_EXEC=gpg
+          export GPG_TTY=$(tty)
+          sops -d backend/config/expensesmanager-gcp.json.enc | base64 -d > backend/config/expensesmanager-gcp.json
+
       - name: Upload .env.production to VPS
         run: |
           sshpass -p "${{ secrets.PASS_WORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.HOST_NAME }} "mkdir -p /expenses-manager/prod/backend/config"
@@ -47,6 +53,11 @@ jobs:
         run: |
           sshpass -p "${{ secrets.PASS_WORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.HOST_NAME }} "mkdir -p /expenses-manager/prod/backend/config"
           sshpass -p "${{ secrets.PASS_WORD }}" scp backend/config/expensesmanager.json ${{ secrets.HOST_NAME }}:/expenses-manager/prod/backend/config/expensesmanager.json
+
+      - name: Upload expensesmanager-gcp.json to VPS
+        run: |
+          sshpass -p "${{ secrets.PASS_WORD }}" ssh -o StrictHostKeyChecking=no ${{ secrets.HOST_NAME }} "mkdir -p /expenses-manager/dev/backend/config"
+          sshpass -p "${{ secrets.PASS_WORD }}" scp backend/config/expensesmanager-gcp.json ${{ secrets.HOST_NAME }}:/expenses-manager/dev/backend/config/expensesmanager-gcp.json
 
       - name: Login to Docker Hub
         uses: docker/login-action@v2

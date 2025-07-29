@@ -2,7 +2,6 @@ import React, {useCallback} from 'react';
 
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {Dimensions} from 'react-native';
-import {Notification} from '../../components/utility/Notification';
 import {SheetsContextProvider} from '../../services/sheets/sheets.context';
 import {SyncContextProvider} from '../../services/sync/sync.context';
 import {SettingsNavigator} from './settings.navigator';
@@ -22,6 +21,7 @@ import {BankAccountNavigator} from './bank-account.navigator';
 import {PlaidOAuthRedirectScreen} from '../../features/bank-accounts/components/plaid-oauth-redirect.screen';
 import {ChatBotContextProvider} from '../../services/chat-bot/chat-bot.context';
 import ChatBotScreen from '../../features/chat-bot/screens/chat-bot.screen';
+import VoiceChatScreen from '../../features/chat-bot/screens/voice-chat/voice-chat.screen';
 
 const Stack = createStackNavigator();
 
@@ -43,10 +43,10 @@ export const AppNavigator = () => {
 
   return (
     <>
-      <ChatBotContextProvider>
-        <BankAccountContextProvider>
-          <CategoriesContextProvider>
-            <SheetsContextProvider>
+      <BankAccountContextProvider>
+        <CategoriesContextProvider>
+          <SheetsContextProvider>
+            <ChatBotContextProvider>
               <SheetDetailsContextProvider>
                 <SettingsContextProvider>
                   <SyncContextProvider>
@@ -59,11 +59,6 @@ export const AppNavigator = () => {
                         screenOptions={{
                           headerShown: false,
                         }}>
-                        {/* <Stack.Screen
-                          name="BankSubscriptions"
-                          component={BankSubscriptionsScreen}
-                        /> */}
-
                         <Stack.Screen
                           name="Sheets"
                           component={SheetsNavigator}
@@ -78,6 +73,11 @@ export const AppNavigator = () => {
                           name="ChatBot"
                           component={ChatBotScreen}
                         />
+                        <Stack.Screen
+                          name="VoiceChat"
+                          component={VoiceChatScreen}
+                        />
+
                         <Stack.Screen
                           options={{
                             headerMode: 'screen',
@@ -103,10 +103,10 @@ export const AppNavigator = () => {
                   </SyncContextProvider>
                 </SettingsContextProvider>
               </SheetDetailsContextProvider>
-            </SheetsContextProvider>
-          </CategoriesContextProvider>
-        </BankAccountContextProvider>
-      </ChatBotContextProvider>
+            </ChatBotContextProvider>
+          </SheetsContextProvider>
+        </CategoriesContextProvider>
+      </BankAccountContextProvider>
     </>
   );
 };

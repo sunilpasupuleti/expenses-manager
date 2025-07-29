@@ -7,29 +7,58 @@ import {
   Image,
   StyleSheet,
   TouchableOpacity,
+  StatusBar,
+  View,
 } from 'react-native';
 import {useTheme} from 'styled-components/native';
 import {useIsFocused} from '@react-navigation/native';
 import {useDispatch} from 'react-redux';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {MotiView} from 'moti';
+import {SafeAreaView} from 'react-native-safe-area-context';
+
 import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
 import {BankAccountContext} from '../../../../services/bank-account/bank-account.context';
-import {FlexRow, MainWrapper} from '../../../../components/styles';
+import {FlexRow} from '../../../../components/styles';
 import {Text} from '../../../../components/typography/text.component';
 import {notificationActions} from '../../../../store/notification-slice';
-import {SafeArea} from '../../../../components/utility/safe-area.component';
-import {Button, Divider, List} from 'react-native-paper';
-import {View} from 'react-native';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import {Spacer} from '../../../../components/spacer/spacer.component';
 import moment from 'moment';
 import {loaderActions} from '../../../../store/loader-slice';
-import {StickyButtonContainer} from '../../components/bank-details/bank-details.styles';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+
+// Import the new styled components
+import {
+  Container,
+  Header,
+  Title,
+  InstitutionHeader,
+  InstitutionLogo,
+  InstitutionInfo,
+  InstitutionName,
+  InstitutionAccounts,
+  AccountCard,
+  AccountContent,
+  AccountHeader,
+  AccountIcon,
+  AccountInfo,
+  AccountName,
+  AccountType,
+  AccountMask,
+  ActionButtonsContainer,
+  ActionButton,
+  ActionButtonText,
+  StickyButtonContainer,
+  BottomButton,
+  BottomButtonText,
+  ScrollContainer,
+  EmptyStateContainer,
+  EmptyStateText,
+} from '../../components/bank-details/bank-details.styles';
 
 export const BankDetailsScreen = ({navigation, route}) => {
   const theme = useTheme();
-  const styles = makeStyles(theme);
   const routeIsFocused = useIsFocused();
   const {institution} = route.params;
 
@@ -40,6 +69,7 @@ export const BankDetailsScreen = ({navigation, route}) => {
 
   const dispatch = useDispatch();
 
+  // Preserve all existing useEffect hooks exactly as they were
   useEffect(() => {
     if (routeIsFocused) {
     } else {
@@ -87,6 +117,7 @@ export const BankDetailsScreen = ({navigation, route}) => {
     });
   }, [route.params]);
 
+  // Preserve all existing business logic functions exactly as they were
   const showNotification = (status = 'error', message) => {
     dispatch(
       notificationActions.showToast({
@@ -106,6 +137,7 @@ export const BankDetailsScreen = ({navigation, route}) => {
         return require('../../../../../assets/bank.png'); // Default icon
     }
   };
+
   const onCheckBalance = account => {
     const data = {
       accessToken: institution.accessToken,
@@ -154,130 +186,127 @@ export const BankDetailsScreen = ({navigation, route}) => {
     });
   };
 
-  const renderAccountItem = ({item}) => (
-    <List.Item
-      title={`${item.name}`}
-      titleStyle={styles.accountTitle}
-      titleNumberOfLines={2}
-      descriptionStyle={{
-        color: '#aaa',
-        fontSize: 12,
-      }}
-      description={() => (
-        <View>
-          <Text color={'#aaa'} variantType="caption">
-            {item.subtype}
-          </Text>
+  // Redesigned renderAccountItem with new styling but same functionality
+  const renderAccountItem = ({item, index}) => (
+    <MotiView
+      from={{opacity: 0, translateY: 20, scale: 0.95}}
+      animate={{opacity: 1, translateY: 0, scale: 1}}
+      transition={{
+        delay: index * 100,
+        type: 'timing',
+        duration: 400,
+      }}>
+      <AccountCard activeOpacity={0.8}>
+        <AccountContent>
+          <AccountHeader>
+            <AccountIcon source={getAccountIcon(item.subtype)} />
+            <AccountInfo>
+              <AccountName numberOfLines={2}>{item.name}</AccountName>
+              <AccountType>{item.subtype}</AccountType>
+            </AccountInfo>
+            <AccountMask>XXXX-{item.mask}</AccountMask>
+          </AccountHeader>
 
-          <FlexRow gap={5}>
-            <Button
-              icon={'wallet-outline'}
-              mode="elevated"
-              buttonColor="#4CAF50"
-              textColor="#fff"
-              onPress={() => onCheckBalance(item)}
-              contentStyle={{
-                paddingHorizontal: 8,
-              }}
-              style={styles.actionBtn}>
-              Balance
-            </Button>
-            <Button
-              icon="swap-horizontal"
-              mode="outlined"
-              style={[styles.actionBtn, styles.transactionBtn]}
+          <ActionButtonsContainer>
+            <ActionButton
+              primary
+              activeOpacity={0.8}
+              onPress={() => onCheckBalance(item)}>
+              <Ionicons name="wallet-outline" size={16} color="white" />
+              <ActionButtonText primary>Balance</ActionButtonText>
+            </ActionButton>
+
+            <ActionButton
+              activeOpacity={0.8}
               onPress={() => onNavigateToTransactions(item)}>
-              Transactions
-            </Button>
-          </FlexRow>
-        </View>
-      )}
-      right={() => (
-        <Text fontsize="12px" style={{marginLeft: 1}}>
-          XXXX- {item.mask}
-        </Text>
-      )}
-      left={() => (
-        <Image
-          source={getAccountIcon(item.subtype)}
-          style={styles.accountIcon}
-        />
-      )}
-    />
+              <Ionicons name="swap-horizontal" size={16} color="#8B5CF6" />
+              <ActionButtonText>Transactions</ActionButtonText>
+            </ActionButton>
+          </ActionButtonsContainer>
+        </AccountContent>
+      </AccountCard>
+    </MotiView>
   );
 
   return (
-    <SafeArea child={true}>
-      <MainWrapper>
+    <Container>
+      <StatusBar
+        barStyle="light-content"
+        translucent
+        backgroundColor="#8B5CF6"
+      />
+
+      <SafeAreaView edges={['top']}>
+        <FlexRow justifyContent="space-between" alignItems="center">
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              marginLeft: 10,
+              marginTop: 10,
+            }}>
+            <Ionicons
+              name="chevron-back-outline"
+              size={25}
+              color="white"
+              style={{marginRight: 10}}
+            />
+            <Text style={{color: '#fff', fontSize: 20}}>Back</Text>
+          </TouchableOpacity>
+        </FlexRow>
+      </SafeAreaView>
+
+      <MotiView
+        from={{opacity: 0, translateY: 50}}
+        animate={{opacity: 1, translateY: 0}}
+        transition={{type: 'timing', duration: 600}}>
+        <InstitutionHeader>
+          <InstitutionInfo>
+            <InstitutionName>{institution.institutionName}</InstitutionName>
+            <InstitutionAccounts>
+              {institution.accounts.length} accounts linked
+            </InstitutionAccounts>
+          </InstitutionInfo>
+          <Spacer size="large" position="left">
+            <InstitutionLogo
+              source={
+                institution.institutionLogo
+                  ? {
+                      uri: `data:image/png;base64,${institution.institutionLogo}`,
+                    }
+                  : require('../../../../../assets/bank.png')
+              }
+            />
+          </Spacer>
+        </InstitutionHeader>
+      </MotiView>
+
+      <ScrollContainer
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{
+          paddingBottom: insets.bottom + 100,
+        }}>
         <FlatList
-          showsVerticalScrollIndicator={false}
+          scrollEnabled={false}
           data={institution.accounts}
           renderItem={renderAccountItem}
           keyExtractor={account => account.account_id}
-          ItemSeparatorComponent={Divider}
-          contentContainerStyle={{
-            paddingBottom: insets.bottom + 80,
-          }}
+          showsVerticalScrollIndicator={false}
         />
-        <StickyButtonContainer insets={insets}>
-          <Button
-            icon={'bank-outline'}
-            mode="contained"
-            style={styles.bottomBtn}
-            buttonColor={theme.colors.brand.primary}
-            textColor="#fff"
-            onPress={onManageAccount}>
-            Manage Accounts
-          </Button>
-          <Button
-            icon={'trash-can'}
-            mode="contained"
-            buttonColor="tomato"
-            textColor="#fff"
-            onPress={onUnlinkAccount}
-            style={styles.bottomBtn}>
-            Remove Bank
-          </Button>
-        </StickyButtonContainer>
-      </MainWrapper>
-    </SafeArea>
+      </ScrollContainer>
+
+      <StickyButtonContainer insets={insets}>
+        <BottomButton activeOpacity={0.8} onPress={onManageAccount}>
+          <Ionicons name="settings-outline" size={20} color="white" />
+          <BottomButtonText>Manage</BottomButtonText>
+        </BottomButton>
+
+        <BottomButton danger activeOpacity={0.8} onPress={onUnlinkAccount}>
+          <Ionicons name="trash-outline" size={20} color="white" />
+          <BottomButtonText>Unlink Bank</BottomButtonText>
+        </BottomButton>
+      </StickyButtonContainer>
+    </Container>
   );
 };
-
-const makeStyles = theme =>
-  StyleSheet.create({
-    logo: {
-      width: 30,
-      height: 30,
-      marginRight: 10,
-      resizeMode: 'contain',
-    },
-    title: {
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    accountTitle: {
-      fontWeight: '500',
-    },
-    accountIcon: {
-      width: 30,
-      height: 30,
-      marginLeft: 10,
-      resizeMode: 'contain',
-    },
-    actionBtn: {
-      borderRadius: 10,
-      marginTop: 10,
-    },
-    transactionBtn: {
-      marginLeft: 5,
-      borderColor: theme.colors.brand.primary,
-    },
-    bottomBtn: {
-      flex: 1,
-      marginHorizontal: 5,
-      borderRadius: 10,
-      height: 50,
-      justifyContent: 'center',
-    },
-  });
