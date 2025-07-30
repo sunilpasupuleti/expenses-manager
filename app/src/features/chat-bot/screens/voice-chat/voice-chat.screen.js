@@ -86,7 +86,9 @@ const VoiceChatScreen = ({ navigation }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSpeaking, setIsSpeaking] = useState(false);
-
+  const [processingText, setProcessingText] = useState(
+    'Processing your voice...',
+  );
   const [isError, setIsError] = useState(false);
 
   const [hasPermission, setHasPermission] = useState(
@@ -136,6 +138,35 @@ const VoiceChatScreen = ({ navigation }) => {
       console.log('Error clearing voice chat history:', error);
     }
   };
+
+  useEffect(() => {
+    let processingInterval;
+
+    if (isProcessing) {
+      const messages = [
+        'Processing your voice...',
+        'Understanding your request...',
+        'Almost there...',
+        'Getting your result...',
+        'Just a moment more...',
+      ];
+
+      let messageIndex = 0;
+
+      processingInterval = setInterval(() => {
+        messageIndex = (messageIndex + 1) % messages.length;
+        setProcessingText(messages[messageIndex]);
+      }, 2000); // Change text every 2 seconds
+    } else {
+      setProcessingText('Processing your voice...');
+    }
+
+    return () => {
+      if (processingInterval) {
+        clearInterval(processingInterval);
+      }
+    };
+  }, [isProcessing]);
 
   useEffect(() => {
     if (isRecording) {
@@ -831,7 +862,7 @@ const VoiceChatScreen = ({ navigation }) => {
                         marginLeft: 8,
                       }}
                     >
-                      Processing your voice...
+                      {processingText}
                     </MotiText>
                   </ProcessingStatus>
                 </MotiView>

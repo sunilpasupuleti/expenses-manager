@@ -50,8 +50,8 @@ export const DailyStoryCard = ({ forceShowRecap, setForceShowRecap }) => {
   const { db, getChildRecords } = useContext(WatermelonDBContext);
   const { userData } = useContext(AuthenticationContext);
   const [storyList, setStoryList] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showRecap, setShowRecap] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [showRecap, setShowRecap] = useState(false);
   const progress = useSharedValue(0);
   const [noRecapAvailable, setNoRecapAvailable] = useState(false);
   const translateY = useSharedValue(0);
@@ -79,15 +79,21 @@ export const DailyStoryCard = ({ forceShowRecap, setForceShowRecap }) => {
 
         if (accounts.length === 0 && !forceShowRecap) {
           setShowRecap(false); // New user - no accounts - don't show
+          setLoading(false);
           return;
         }
 
         if (storedDate === today && !forceShowRecap) {
           setShowRecap(false); // Already shown today
+          setLoading(false);
           return;
         }
 
-        await fetchData(accounts); // Load recap normally
+        if (forceShowRecap || storedDate !== today) {
+          setShowRecap(true);
+          setLoading(true);
+          await fetchData(accounts);
+        }
       } catch (error) {
         console.error('Error loading daily recap:', error);
       }
@@ -233,10 +239,8 @@ export const DailyStoryCard = ({ forceShowRecap, setForceShowRecap }) => {
     });
 
     setTimeout(async () => {
-      if (!forceShowRecap) {
-        const today = moment().format('YYYY-MM-DD');
-        await setStoredRecapDate(today);
-      }
+      const today = moment().format('YYYY-MM-DD');
+      await setStoredRecapDate(today);
       setShowRecap(false);
       setForceShowRecap(false);
       // translateY.value = 0;

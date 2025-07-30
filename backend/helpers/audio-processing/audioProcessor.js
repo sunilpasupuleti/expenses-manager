@@ -1,16 +1,23 @@
 const speech = require("@google-cloud/speech");
+const { Storage } = require("@google-cloud/storage");
 const textToSpeech = require("@google-cloud/text-to-speech");
 const fs = require("fs").promises;
 const serviceAccount = require("../../config/expensesmanager-gcp.json");
 const path = require("path");
 const { exec } = require("child_process");
 // Initialize clients
+
+const storage = new Storage({
+  credentials: serviceAccount,
+});
 const speechClient = new speech.SpeechClient({
   credentials: serviceAccount,
 });
 const ttsClient = new textToSpeech.TextToSpeechClient({
   credentials: serviceAccount,
 });
+
+const bucketName = process.env.GCS_BUCKET_NAME;
 
 const convertCafToWav = (inputPath) => {
   return new Promise((resolve, reject) => {
@@ -39,6 +46,58 @@ const convertCafToWav = (inputPath) => {
   });
 };
 
+const handleLongAudio = async (audioFilePath) => {
+  return new Promise(async (resolve, reject) => {
+    const fileName = `temp-audio/${path.basename(audioFilePath)}`;
+    console.log(fileName);
+    const bucket = storage.bucket(bucketName);
+    const file = bucket.file(fileName);
+
+    try {
+      const audioBytes = await fs.readFile(audioFilePath);
+      await file.save(audioBytes, {
+        metadata: {
+          contentType: "audio/wav",
+        },
+      });
+
+      const gcsUri = `gs://${bucketName}/${fileName}`;
+
+      console.log("✅ Uploaded to:", gcsUri);
+      const request = {
+        audio: { uri: gcsUri },
+        config: {
+          encoding: "LINEAR16",
+          sampleRateHertz: 16000,
+          languageCode: "en-US",
+          enableAutomaticPunctuation: true,
+          model: "latest_long",
+          useEnhanced: true,
+        },
+      };
+
+      const [operation] = await speechClient.longRunningRecognize(request);
+      const [response] = await operation.promise();
+
+      // Clean up file
+      await file.delete().catch(console.error);
+
+      if (!response.results || response.results.length === 0) {
+        throw "No speech detected in audio";
+      }
+
+      const result = response.results
+        .map((result) => result.alternatives[0].transcript)
+        .join("\n");
+      resolve(result);
+    } catch (error) {
+      // Clean up on error
+      await file.delete().catch(console.error);
+      reject(error);
+    }
+  });
+};
+
 // Convert audio file to text using Google Speech-to-Text
 const speechToText = (audioFilePath) => {
   return new Promise(async (resolve, reject) => {
@@ -58,30 +117,42 @@ const speechToText = (audioFilePath) => {
         return reject("Audio file is empty");
       }
 
-      const request = {
-        audio: {
-          content: audioBytes.toString("base64"),
-        },
-        config: {
-          encoding: "LINEAR16", // or 'LINEAR16' for wav files
-          sampleRateHertz: 16000,
-          languageCode: "en-US",
-          enableAutomaticPunctuation: true,
-          model: "latest_long",
-          useEnhanced: true,
-        },
-      };
+      const estimatedDuration = audioBytes.length / 32000;
 
-      const [response] = await speechClient.recognize(request);
+      if (estimatedDuration > 55) {
+        console.log("🕐 Long audio detected, using longRunningRecognize");
+        try {
+          const result = await handleLongAudio(audioFilePath);
+          resolve(result);
+        } catch (err) {
+          throw err;
+        }
+      } else {
+        const request = {
+          audio: {
+            content: audioBytes.toString("base64"),
+          },
+          config: {
+            encoding: "LINEAR16", // or 'LINEAR16' for wav files
+            sampleRateHertz: 16000,
+            languageCode: "en-US",
+            enableAutomaticPunctuation: true,
+            model: "latest_long",
+            useEnhanced: true,
+          },
+        };
 
-      if (!response.results || response.results.length === 0) {
-        return reject("No speech detected in audio");
+        const [response] = await speechClient.recognize(request);
+
+        if (!response.results || response.results.length === 0) {
+          return reject("No speech detected in audio");
+        }
+
+        const transcription = response.results
+          .map((result) => result.alternatives[0].transcript)
+          .join("\n");
+        resolve(transcription);
       }
-
-      const transcription = response.results
-        .map((result) => result.alternatives[0].transcript)
-        .join("\n");
-      resolve(transcription);
     } catch (error) {
       console.error("Speech-to-Text error:", error);
       reject("Failed to convert speech to text: " + error.message);
