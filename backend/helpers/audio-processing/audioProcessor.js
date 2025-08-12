@@ -5,6 +5,7 @@ const fs = require("fs").promises;
 const serviceAccount = require("../../config/expensesmanager-gcp.json");
 const path = require("path");
 const { exec } = require("child_process");
+const { deleteFile } = require("../utility");
 // Initialize clients
 
 const storage = new Storage({
@@ -19,9 +20,10 @@ const ttsClient = new textToSpeech.TextToSpeechClient({
 
 const bucketName = process.env.GCS_BUCKET_NAME;
 
-const convertCafToWav = (inputPath) => {
+const convertAudioToWav = (inputPath, extension) => {
   return new Promise((resolve, reject) => {
-    const outputPath = inputPath.replace(".caf", ".wav");
+    const outputPath = inputPath.replace(extension, ".wav");
+
     const command = `ffmpeg -i "${inputPath}" -ar 16000 -ac 1 "${outputPath}"`;
 
     exec(command, async (error, stdout, stderr) => {
@@ -29,9 +31,9 @@ const convertCafToWav = (inputPath) => {
         console.error("FFmpeg conversion error:", error);
         reject(error);
       } else {
-        console.log("✅ CAF converted to WAV:", outputPath);
+        console.log(`✅ ${extension} converted to WAV:`, outputPath);
         try {
-          await fs.unlink(inputPath);
+          await deleteFile(inputPath);
           console.log("🗑️ Deleted original CAF file:", inputPath);
         } catch (deleteError) {
           console.log(
@@ -161,7 +163,7 @@ const speechToText = (audioFilePath) => {
 };
 
 // Convert text to audio using Google Text-to-Speech
-const textToSpeechConvert = (text) => {
+const textToSpeechConvert = (text, saveFile = false) => {
   return new Promise(async (resolve, reject) => {
     try {
       console.log("🔊 Converting text to speech...");
@@ -174,14 +176,13 @@ const textToSpeechConvert = (text) => {
         input: { text: text.substring(0, 5000) }, // Limit text length
         voice: {
           languageCode: "en-US",
-          name: "en-US-Chirp3-HD-Achernar",
-          ssmlGender: "FEMALE",
+          name: "en-US-Chirp3-HD-Despina",
         },
-        effectsProfileId: ["telephony-class-application"],
         audioConfig: {
-          audioEncoding: "MP3",
-          speakingRate: 1.0,
-          pitch: 0.0,
+          audioEncoding: "LINEAR16",
+          effectsProfileId: ["telephony-class-application"],
+          speakingRate: 1,
+          pitch: 0,
         },
       };
 
@@ -190,11 +191,20 @@ const textToSpeechConvert = (text) => {
       if (!response.audioContent) {
         return reject("No audio content generated");
       }
+
+      if (saveFile) {
+        const rootDir = process.cwd();
+        let audioDir = path.join(rootDir, `voice-chat-uploads/temp`);
+        fs.mkdir(audioDir, { recursive: true });
+        audioDir += `/tts_${Date.now()}.wav`;
+        fs.writeFile(audioDir, response.audioContent);
+      }
+
       const audioBase64 = response.audioContent.toString("base64");
 
       resolve({
         audioData: audioBase64,
-        mimeType: "audio/mpeg",
+        mimeType: "audio/wav",
         encoding: "base64",
       });
     } catch (error) {
@@ -204,36 +214,8 @@ const textToSpeechConvert = (text) => {
   });
 };
 
-// Delete specific file
-const deleteFile = (filePath) => {
-  return new Promise(async (resolve, reject) => {
-    try {
-      await fs.unlink(filePath);
-      console.log("🗑️ File deleted:", filePath);
-      resolve(true);
-    } catch (error) {
-      console.log("Delete file error:", error.message);
-      resolve(false); // Don't reject, just resolve false
-    }
-  });
-};
-
-// Check if file exists
-const fileExists = (filePath) => {
-  return new Promise(async (resolve) => {
-    try {
-      await fs.access(filePath);
-      resolve(true);
-    } catch {
-      resolve(false);
-    }
-  });
-};
-
 module.exports = {
   speechToText,
   textToSpeechConvert,
-  deleteFile,
-  fileExists,
-  convertCafToWav,
+  convertAudioToWav,
 };

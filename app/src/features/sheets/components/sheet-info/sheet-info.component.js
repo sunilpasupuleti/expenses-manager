@@ -22,7 +22,7 @@ import {
   FlexRow,
   TouchableHighlightWithColor,
 } from '../../../../components/styles';
-import Animated, { FadeInRight } from 'react-native-reanimated';
+import { MotiView } from 'moti';
 
 export const SheetsInfo = ({
   navigation,
@@ -258,9 +258,20 @@ export const SheetsInfo = ({
         </Spacer>
       )}
       renderItem={({ item, index, section }) => (
-        <Animated.View
+        <MotiView
           key={item.id || index}
-          entering={FadeInRight.delay(index * 70).springify()}
+          from={{
+            opacity: 0,
+            translateX: 50,
+          }}
+          animate={{
+            opacity: 1,
+            translateX: 0,
+          }}
+          transition={{
+            type: 'spring',
+            delay: index * 70,
+          }}
         >
           <Swipeable
             renderRightActions={({ progress, dragX }) =>
@@ -320,7 +331,7 @@ export const SheetsInfo = ({
               />
             </TouchableHighlightWithColor>
           </Swipeable>
-        </Animated.View>
+        </MotiView>
       )}
     />
   );

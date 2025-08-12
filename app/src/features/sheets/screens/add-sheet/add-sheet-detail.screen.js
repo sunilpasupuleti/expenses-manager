@@ -127,7 +127,7 @@ export const AddSheetDetailScreen = ({ navigation, route }) => {
     category: null,
   });
   const [showTime, setShowTime] = useState(false);
-
+  const amountInputRef = useRef(null);
   const themeType = useColorScheme();
   const appTheme = useSelector(state => state.service.theme);
   let darkMode =
@@ -633,33 +633,41 @@ export const AddSheetDetailScreen = ({ navigation, route }) => {
           showsVerticalScrollIndicator={false}
         >
           <AddAmountContainer>
-            <AddAmountInputTextContainer>
-              <View onLayout={e => setAmountWidth(e.nativeEvent.layout.width)}>
-                <AddAmountInputText fontsize={'30px'}>
-                  {activeType === 'expense' && '-'}
-                  {GetCurrencySymbol(sheet?.currency)}{' '}
-                  {GetCurrencyLocalString(amount)}
-                </AddAmountInputText>
-                <AddAmountInputTextBlinkingCursor />
-              </View>
-            </AddAmountInputTextContainer>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => amountInputRef.current?.focus()}
+            >
+              <AddAmountInputTextContainer>
+                <View
+                  onLayout={e => setAmountWidth(e.nativeEvent.layout.width)}
+                >
+                  <AddAmountInputText fontsize={'30px'}>
+                    {activeType === 'expense' && '-'}
+                    {GetCurrencySymbol(sheet?.currency)}{' '}
+                    {GetCurrencyLocalString(amount)}
+                  </AddAmountInputText>
+                  <AddAmountInputTextBlinkingCursor />
+                </View>
+              </AddAmountInputTextContainer>
 
-            <AddAmountInput
-              mode="outlined"
-              value={amount === 0 ? '' : amount.toString()}
-              returnKeyType="done"
-              onChangeText={n => {
-                // console.log(n.match(/\./).length);
-                if (/\./.test(n) && n.match(/\./g).length === 1) {
-                  setAmount(n);
-                } else {
-                  setAmount(parseFloat(n));
-                }
-              }}
-              placeholder="How much?"
-              keyboardType="decimal-pad"
-              maxLength={10}
-            />
+              <AddAmountInput
+                ref={amountInputRef}
+                mode="outlined"
+                value={amount === 0 ? '' : amount.toString()}
+                returnKeyType="done"
+                onChangeText={n => {
+                  // console.log(n.match(/\./).length);
+                  if (/\./.test(n) && n.match(/\./g).length === 1) {
+                    setAmount(n);
+                  } else {
+                    setAmount(parseFloat(n));
+                  }
+                }}
+                placeholder="How much?"
+                keyboardType="decimal-pad"
+                maxLength={10}
+              />
+            </TouchableOpacity>
           </AddAmountContainer>
 
           <SheetDetailsUnderline width={amountWidth} />
@@ -672,6 +680,9 @@ export const AddSheetDetailScreen = ({ navigation, route }) => {
             returnKeyType="done"
             blurOnSubmit
             multiline
+            style={{
+              paddingTop: 20,
+            }}
             value={notes}
             onChangeText={n => (!notes ? setNotes(n.trim()) : setNotes(n))}
             placeholder="Notes / Description"
@@ -761,6 +772,7 @@ export const AddSheetDetailScreen = ({ navigation, route }) => {
                 selectedCategory,
                 isLoanAccount: isLoanAccount,
                 editMode,
+                sheet: sheet,
                 editModeParams: paramsObject,
                 sheetDetailModel: sheetDetailModel,
               });

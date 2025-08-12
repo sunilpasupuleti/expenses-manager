@@ -8,6 +8,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {
+  Alert,
   FlatList,
   Pressable,
   RefreshControl,
@@ -41,6 +42,7 @@ import {
   BottomIconsContainer,
   CameraButton,
   CameraIcon,
+  DeleteBar,
   FilterIconContainer,
   SheetDetailHeader,
   SheetDetailHeaderLabel,
@@ -71,13 +73,16 @@ export const SheetDetailsScreen = ({
   upcomingTransactions = [],
 }) => {
   const [refreshing, setRefreshing] = useState(false);
+  const [multiSelectMode, setMultiSelectMode] = useState(false);
+  const [selectedTransactions, setSelectedTransactions] = useState([]);
 
   const [totalBalance, setTotalBalance] = useState(0);
 
   const theme = useTheme();
   const [amountWidth, setAmountWidth] = useState(0);
   const { onSmartScanReceipt } = useContext(SheetDetailsContext);
-  const { onCheckUpcomingSheetDetails } = useContext(SheetDetailsContext);
+  const { onCheckUpcomingSheetDetails, onDeleteSheetDetail } =
+    useContext(SheetDetailsContext);
   let cameraRef = useRef();
   const menuOptionStyles = {
     optionWrapper: { padding: 15, paddingTop: 10 },
@@ -115,7 +120,7 @@ export const SheetDetailsScreen = ({
       finalExpense += totalExpense;
       return {
         title: date,
-        transactions: txns,
+        transactions: txns.reverse(),
         totalBalance: totalIncome - totalExpense,
       };
     });
@@ -189,8 +194,64 @@ export const SheetDetailsScreen = ({
     });
   };
 
+  const onDeleteTransactions = () => {
+    Alert.alert(
+      'Confirm Delete',
+      `Delete ${selectedTransactions.length} transactions?`,
+      [
+        { text: 'Cancel' },
+        {
+          text: 'Delete',
+          onPress: () => {
+            selectedTransactions.forEach(id => {
+              const txn = transactions.find(t => t.id === id);
+              if (txn) onDeleteSheetDetail(sheet, txn, () => {});
+            });
+            setSelectedTransactions([]);
+            setMultiSelectMode(false);
+          },
+          style: 'destructive',
+        },
+      ],
+    );
+  };
+
   return (
     <SafeArea child={true}>
+      {multiSelectMode && (
+        <DeleteBar>
+          <TouchableOpacity onPress={onDeleteTransactions}>
+            <Text color="red">Delete ({selectedTransactions.length})</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => {
+              // Select All if not all selected, else clear all
+              if (selectedTransactions.length < transactions.length) {
+                setSelectedTransactions(transactions.map(t => t.id));
+              } else {
+                setSelectedTransactions([]);
+              }
+            }}
+          >
+            <Text>
+              {selectedTransactions.length < transactions.length
+                ? 'Select All'
+                : 'Deselect All'}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => {
+              setSelectedTransactions([]);
+              setMultiSelectMode(false);
+            }}
+          >
+            <Text>Cancel</Text>
+          </TouchableOpacity>
+        </DeleteBar>
+      )}
+
       <>
         <FlexRow justifyContent="center">
           <View
@@ -308,6 +369,10 @@ export const SheetDetailsScreen = ({
           ItemSeparatorComponent={Divider}
           renderItem={({ item, index, section }) => (
             <SheetDetailsInfo
+              selectedTransactions={selectedTransactions}
+              setSelectedTransactions={setSelectedTransactions}
+              multiSelectMode={multiSelectMode}
+              setMultiSelectMode={setMultiSelectMode}
               transaction={item}
               sheet={sheet}
               navigation={navigation}

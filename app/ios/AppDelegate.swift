@@ -11,16 +11,15 @@ import React
 import React_RCTAppDelegate
 import ReactAppDependencyProvider
 import Firebase
-import Expo
 
 @main
-class AppDelegate: ExpoAppDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
   var window: UIWindow?
   
   var reactNativeDelegate: ReactNativeDelegate?
   var reactNativeFactory: RCTReactNativeFactory?
   
-  override func application(
+  func application(
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
@@ -34,12 +33,11 @@ class AppDelegate: ExpoAppDelegate {
     
     // New RN 0.80 pattern
     let delegate = ReactNativeDelegate()
-    let factory = ExpoReactNativeFactory(delegate: delegate)
+    let factory = RCTReactNativeFactory(delegate: delegate)
     delegate.dependencyProvider = RCTAppDependencyProvider()
     
     reactNativeDelegate = delegate
     reactNativeFactory = factory
-    bindReactNativeFactory(factory)
     window = UIWindow(frame: UIScreen.main.bounds)
     
     factory.startReactNative(
@@ -48,11 +46,11 @@ class AppDelegate: ExpoAppDelegate {
       launchOptions: launchOptions
     )
     
-    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
+    return true
   }
   
   // Push notification registration (your existing code)
-  override func application(
+  func application(
     _ application: UIApplication,
     didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
   ) {
@@ -60,7 +58,7 @@ class AppDelegate: ExpoAppDelegate {
   }
   
   // Deep linking support (your existing code)
-  override func application(
+  func application(
     _ app: UIApplication,
     open url: URL,
     options: [UIApplication.OpenURLOptionsKey: Any] = [:]
@@ -69,7 +67,7 @@ class AppDelegate: ExpoAppDelegate {
   }
   
   // Universal links support (your existing code)
-  override func application(
+  func application(
     _ application: UIApplication,
     continue userActivity: NSUserActivity,
     restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void
@@ -82,15 +80,15 @@ class AppDelegate: ExpoAppDelegate {
   }
 }
 
-class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
+class ReactNativeDelegate: RCTDefaultReactNativeFactoryDelegate {
   override func sourceURL(for bridge: RCTBridge) -> URL? {
-    // needed to return the correct URL for expo-dev-client.
-    bridge.bundleURL ?? bundleURL()
+    self.bundleURL()
   }
   
   override func bundleURL() -> URL? {
     #if DEBUG
     RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index")
+    // return URL(string: "http://10.0.0.47:8081/index.bundle?platform=ios&dev=true")
     #else
     Bundle.main.url(forResource: "main", withExtension: "jsbundle")
     #endif

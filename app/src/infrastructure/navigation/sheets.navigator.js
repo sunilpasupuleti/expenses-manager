@@ -2,25 +2,25 @@ import React from 'react';
 import {
   CardStyleInterpolators,
   createStackNavigator,
-  TransitionPresets,
+  TransitionSpecs,
 } from '@react-navigation/stack';
-import {Dimensions} from 'react-native';
-import {useTheme} from 'styled-components/native';
-import {CurrenciesScreen} from '../../features/currencies/screens/currencies.screen';
-import {SheetStatsDetailsScreen} from '../../features/sheets/components/sheet-stats/sheet-stats-details.screen';
-import {AddSheetDetailScreen} from '../../features/sheets/screens/add-sheet/add-sheet-detail.screen';
-import {AddSheetScreen} from '../../features/sheets/screens/add-sheet/add-sheet.screen';
-import {MoveSheetScreen} from '../../features/sheets/screens/move-sheet/move-sheet.screen';
-import {SelectCategoryScreen} from '../../features/sheets/screens/select-category/select-category.screen';
-import {SheetsScreen} from '../../features/sheets/screens/sheets.screen';
+import { Dimensions } from 'react-native';
+import { useTheme } from 'styled-components/native';
+import { CurrenciesScreen } from '../../features/currencies/screens/currencies.screen';
+import { SheetStatsDetailsScreen } from '../../features/sheets/components/sheet-stats/sheet-stats-details.screen';
+import { AddSheetDetailScreen } from '../../features/sheets/screens/add-sheet/add-sheet-detail.screen';
+import { AddSheetScreen } from '../../features/sheets/screens/add-sheet/add-sheet.screen';
+import { MoveSheetScreen } from '../../features/sheets/screens/move-sheet/move-sheet.screen';
+import { SelectCategoryScreen } from '../../features/sheets/screens/select-category/select-category.screen';
 
-import {useSelector} from 'react-redux';
-import {SheetExport} from '../../features/sheets/components/sheet-export/sheet-export.component';
-import {SheetDetailsFilter} from '../../features/sheets/components/sheet-details/sheet-details-filter.component';
-import {UpcomingSheetDetails} from '../../features/sheets/screens/sheet-details/upcoming-sheet-details.screen';
+import { useSelector } from 'react-redux';
+import { SheetExport } from '../../features/sheets/components/sheet-export/sheet-export.component';
+import { SheetDetailsFilter } from '../../features/sheets/components/sheet-details/sheet-details-filter.component';
+import { UpcomingSheetDetails } from '../../features/sheets/screens/sheet-details/upcoming-sheet-details.screen';
 
 import SheetsHomeScreen from '../../features/sheets/screens/sheets-home.screen';
-import {SheetDetailsHomeNavigatorScreen} from '../../features/sheets/screens/sheet-details/sheet-details-home-navigator.screen';
+import { SheetDetailsHomeNavigatorScreen } from '../../features/sheets/screens/sheet-details/sheet-details-home-navigator.screen';
+import { ModalPresets } from './app.navigator';
 
 const SheetStack = createStackNavigator();
 
@@ -41,14 +41,16 @@ export const SheetsNavigator = () => {
     <SheetStack.Navigator
       screenOptions={{
         headerShown: false,
-      }}>
+      }}
+    >
       <SheetStack.Screen name=" " component={SheetsHomeScreen} />
+
       <SheetStack.Screen
         options={{
           headerShown: true,
           gestureResponseDistance: Dimensions.get('window').height - 200,
           ...headerStyles,
-          ...TransitionPresets.ModalPresentationIOS,
+          ...ModalPresets,
         }}
         name="AddSheet"
         component={AddSheetScreen}
@@ -58,8 +60,17 @@ export const SheetsNavigator = () => {
         options={{
           headerShown: true,
           headerMode: 'screen',
-          ...headerStyles,
-          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+          ...(Platform.OS === 'android'
+            ? {
+                gestureEnabled: true,
+                cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+                presentation: 'transparentModal',
+                transitionSpec: {
+                  open: TransitionSpecs.TransitionIOSSpec,
+                  close: TransitionSpecs.TransitionIOSSpec,
+                },
+              }
+            : {}),
         }}
         name="SheetDetailsHome"
         component={SheetDetailsHomeNavigatorScreen}
@@ -70,7 +81,7 @@ export const SheetsNavigator = () => {
           headerShown: true,
           gestureResponseDistance: Dimensions.get('window').height - 200,
           ...headerStyles,
-          ...TransitionPresets.ModalPresentationIOS,
+          ...ModalPresets,
         }}
         name="AddSheetDetail"
         component={AddSheetDetailScreen}
@@ -81,7 +92,7 @@ export const SheetsNavigator = () => {
           headerShown: true,
           gestureResponseDistance: Dimensions.get('window').height - 200,
           ...headerStyles,
-          ...TransitionPresets.ModalPresentationIOS,
+          ...ModalPresets,
         }}
         name="SheetExport"
         component={SheetExport}
@@ -92,7 +103,7 @@ export const SheetsNavigator = () => {
           headerShown: true,
           gestureResponseDistance: Dimensions.get('window').height - 200,
           ...headerStyles,
-          ...TransitionPresets.ModalPresentationIOS,
+          ...ModalPresets,
         }}
         name="SheetDetailsFilter"
         component={SheetDetailsFilter}
@@ -103,7 +114,7 @@ export const SheetsNavigator = () => {
           headerShown: true,
           ...headerStyles,
           gestureResponseDistance: Dimensions.get('window').height - 200,
-          ...TransitionPresets.ModalPresentationIOS,
+          ...ModalPresets,
         }}
         name="MoveSheet"
         component={MoveSheetScreen}
@@ -116,7 +127,7 @@ export const SheetsNavigator = () => {
           headerMode: 'screen',
           ...headerStyles,
           gestureResponseDistance: Dimensions.get('window').height - 200,
-          ...TransitionPresets.ModalPresentationIOS,
+          ...ModalPresets,
         }}
         name="SheetStatsDetails"
         component={SheetStatsDetailsScreen}
@@ -128,7 +139,7 @@ export const SheetsNavigator = () => {
           headerMode: 'screen',
           ...headerStyles,
           gestureResponseDistance: Dimensions.get('window').height - 200,
-          ...TransitionPresets.ModalPresentationIOS,
+          ...ModalPresets,
         }}
         name="UpcomingSheetDetails"
         component={UpcomingSheetDetails}
@@ -137,7 +148,7 @@ export const SheetsNavigator = () => {
       <SheetStack.Screen
         options={{
           headerShown: true,
-          ...TransitionPresets.ModalPresentationIOS,
+          ...ModalPresets,
           gestureResponseDistance: Dimensions.get('window').height - 200,
           headerTitle: 'Select Category',
           ...headerStyles,
@@ -149,7 +160,7 @@ export const SheetsNavigator = () => {
       <SheetStack.Screen
         options={{
           headerShown: true,
-          ...TransitionPresets.ModalPresentationIOS,
+          ...ModalPresets,
           gestureResponseDistance: Dimensions.get('window').height - 200,
           ...headerStyles,
         }}
@@ -160,7 +171,7 @@ export const SheetsNavigator = () => {
       <SheetStack.Screen
         options={{
           headerShown: true,
-          ...TransitionPresets.ModalPresentationIOS,
+          ...ModalPresets,
           gestureResponseDistance: Dimensions.get('window').height - 200,
           ...headerStyles,
         }}

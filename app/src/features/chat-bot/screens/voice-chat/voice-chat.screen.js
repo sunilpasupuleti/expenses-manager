@@ -5,7 +5,7 @@ import AudioRecorderPlayer, {
   AudioSourceAndroidType,
   AVEncoderAudioQualityIOSType,
   AVEncodingOption,
-  AVLinearPCMBitDepthKeyIOSType,
+  OutputFormatAndroidType,
 } from 'react-native-audio-recorder-player';
 import {
   Alert,
@@ -74,11 +74,7 @@ import {
   withTiming,
 } from 'react-native-reanimated';
 import RNFS from 'react-native-fs';
-import TrackPlayer, {
-  Capability,
-  State,
-  Event,
-} from 'react-native-track-player';
+import Sound from 'react-native-sound';
 
 const VOICE_CHAT_HISTORY_KEY = '@expenses-manager-voice-chat-history';
 
@@ -89,6 +85,7 @@ const VoiceChatScreen = ({ navigation }) => {
   const [processingText, setProcessingText] = useState(
     'Processing your voice...',
   );
+  const [currentSound, setCurrentSound] = useState(null);
   const [isError, setIsError] = useState(false);
 
   const [hasPermission, setHasPermission] = useState(
@@ -96,9 +93,10 @@ const VoiceChatScreen = ({ navigation }) => {
   );
   const [conversationHistory, setConversationHistory] = useState([]);
   const [recordingTime, setRecordingTime] = useState(0);
+  const [queryResponse, setQueryResponse] = useState({});
 
   // ADD this line after other useRef declarations:
-  const audioRecorderPlayer = new AudioRecorderPlayer();
+  const audioRecorderPlayer = useRef(new AudioRecorderPlayer()).current;
   const [recordingPath, setRecordingPath] = useState(null);
 
   const recordingInterval = useRef(null);
@@ -106,7 +104,7 @@ const VoiceChatScreen = ({ navigation }) => {
   const siriGlow = useSharedValue(0);
   const siriOpacity = useSharedValue(0);
 
-  const { onVoiceChat } = useContext(ChatBotContext);
+  const { onQueryChatBot } = useContext(ChatBotContext);
   const { userData } = useContext(AuthenticationContext);
 
   const saveConversationHistory = async conversations => {
@@ -131,6 +129,7 @@ const VoiceChatScreen = ({ navigation }) => {
   };
 
   const clearConversationHistory = async () => {
+    setQueryResponse({});
     try {
       await AsyncStorage.removeItem(VOICE_CHAT_HISTORY_KEY);
       setConversationHistory([]);
@@ -138,6 +137,17 @@ const VoiceChatScreen = ({ navigation }) => {
       console.log('Error clearing voice chat history:', error);
     }
   };
+
+  // ADD this entire useEffect after line 152:
+  useEffect(() => {
+    return () => {
+      if (isRecording) {
+        audioRecorderPlayer.stopRecorder().catch(() => {});
+      }
+      audioRecorderPlayer.removeRecordBackListener();
+      audioRecorderPlayer.removePlayBackListener();
+    };
+  }, []);
 
   useEffect(() => {
     let processingInterval;
@@ -197,20 +207,6 @@ const VoiceChatScreen = ({ navigation }) => {
   }, [isRecording]);
 
   useEffect(() => {
-    return () => {
-      audioRecorderPlayer.removeRecordBackListener();
-      audioRecorderPlayer.removePlayBackListener();
-    };
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      TrackPlayer.stop();
-    };
-  }, []);
-
-  useEffect(() => {
-    setupTrackPlayer();
     const fetchConversationHistory = async () => {
       const history = await loadConversationHistory();
       if (history && history.length > 0) {
@@ -225,26 +221,6 @@ const VoiceChatScreen = ({ navigation }) => {
       saveConversationHistory(conversationHistory);
     }
   }, [conversationHistory]);
-
-  const setupTrackPlayer = async () => {
-    try {
-      await TrackPlayer.setupPlayer({
-        waitForBuffer: true,
-      });
-
-      await TrackPlayer.updateOptions({
-        stopWithApp: true,
-        capabilities: [Capability.Play, Capability.Pause, Capability.Stop],
-        compactCapabilities: [Capability.Play, Capability.Pause],
-      });
-
-      console.log('✅ TrackPlayer setup complete');
-      return true;
-    } catch (error) {
-      console.error('❌ TrackPlayer setup error:', error);
-      return false;
-    }
-  };
 
   const requestMicrophonePermission = async () => {
     try {
@@ -309,10 +285,10 @@ const VoiceChatScreen = ({ navigation }) => {
         }
       }
 
-      const state = await TrackPlayer.getState();
-      if (state === State.Playing || state === State.Paused) {
-        await TrackPlayer.stop();
-        await TrackPlayer.reset();
+      if (currentSound) {
+        currentSound.stop();
+        currentSound.release();
+        setCurrentSound(null);
         setIsSpeaking(false);
       }
 
@@ -320,8 +296,10 @@ const VoiceChatScreen = ({ navigation }) => {
 
       const result = await audioRecorderPlayer.startRecorder(undefined, {
         AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
+        AudioSamplingRateAndroid: 16000,
+        AudioEncodingBitRateAndroid: 64000,
         AudioSourceAndroid: AudioSourceAndroidType.MIC,
-        OutputFormatAndroid: 'wav',
+        OutputFormatAndroid: OutputFormatAndroidType.MPEG_4,
         AVNumberOfChannelsKeyIOS: 2, // Try 2 channels
         AVFormatIDKeyIOS: AVEncodingOption.lpcm,
         AVLinearPCMBitDepthKeyIOSType: 16,
@@ -349,7 +327,10 @@ const VoiceChatScreen = ({ navigation }) => {
       console.log('🛑 Stopping recording...');
 
       await audioRecorderPlayer.stopRecorder();
+      await audioRecorderPlayer.removeRecordBackListener();
+      await audioRecorderPlayer.removePlayBackListener();
       setIsRecording(false);
+
       if (recordingPath) {
         processVoiceInput(recordingPath);
         setRecordingPath(null);
@@ -357,6 +338,8 @@ const VoiceChatScreen = ({ navigation }) => {
     } catch (error) {
       console.error('Stop recording error:', error);
       setIsRecording(false);
+      await audioRecorderPlayer.removeRecordBackListener();
+      await audioRecorderPlayer.removePlayBackListener();
       Alert.alert('Error', 'Failed to stop recording.');
     }
   };
@@ -386,6 +369,8 @@ const VoiceChatScreen = ({ navigation }) => {
 
   const processVoiceInput = async audioFilePath => {
     try {
+      console.log(audioFilePath);
+
       setIsProcessing(true);
       // const audioBase64 = await RNFS.readFile(audioFilePath, 'base64');
       // const extension = audioFilePath.split('.').pop();
@@ -393,22 +378,44 @@ const VoiceChatScreen = ({ navigation }) => {
       //   base64: audioBase64,
       //   extension: extension,
       // };
-      onVoiceChat(
+      onQueryChatBot(
+        null,
+        queryResponse?.claudeResponse?.operation === 'incomplete_info'
+          ? queryResponse
+          : null,
+        true,
         audioFilePath,
         res => {
           const {
             transcription,
-            operation,
+            claudeResponse,
             response_text,
             audioData,
             audioMimeType,
+            playOnlyAudio,
+            playAudioFileName,
           } = res;
+
+          const qResponse = {
+            ...res,
+            userMessage: transcription,
+          };
+          setQueryResponse(qResponse);
+
+          if (playOnlyAudio && playAudioFileName) {
+            playAudio(
+              playAudioFileName === 'analyze' ? 'analyze.wav' : 'processed.wav',
+              'audio/mpeg',
+              false,
+            );
+            return;
+          }
 
           const newConversation = {
             id: Date.now(),
             userInput: transcription,
             aiResponse: response_text,
-            operation: operation,
+            claudeResponse: claudeResponse,
             timestamp: moment().format('hh:mm A'),
             fullDate: new Date().toISOString(),
             success: res.status !== false,
@@ -418,7 +425,7 @@ const VoiceChatScreen = ({ navigation }) => {
           setIsProcessing(false);
           // Play audio response
           if (audioData && audioMimeType) {
-            playAudioFromBase64(audioData, audioMimeType);
+            playAudio(audioData, audioMimeType);
           } else {
             console.log('✅ Processing completed');
           }
@@ -431,6 +438,7 @@ const VoiceChatScreen = ({ navigation }) => {
         },
       );
     } catch (error) {
+      setQueryResponse(null);
       console.error('Voice processing error:', error);
       cleanUpFile(audioFilePath);
       onSetError('Audio Input Error', error);
@@ -454,48 +462,72 @@ const VoiceChatScreen = ({ navigation }) => {
     setIsError(true);
   };
 
-  const playAudioFromBase64 = async (audioData, mimeType) => {
+  const playAudio = async (audioData, mimeType, base64 = true) => {
     const tempDir = RNFS.TemporaryDirectoryPath;
     const fileExtension = mimeType === 'audio/mpeg' ? 'mp3' : 'wav';
     const tempFilePath = `${tempDir}temp_tts_${Date.now()}.${fileExtension}`;
 
     try {
       // Stop any current audio
-      const state = await TrackPlayer.getState();
-      if (state === State.Playing || state === State.Paused) {
-        await TrackPlayer.stop();
+      if (currentSound) {
+        currentSound.stop();
+
+        currentSound.release();
       }
-      // Create temporary file from base64
-      await RNFS.writeFile(tempFilePath, audioData, 'base64');
-      await TrackPlayer.reset();
+      setTimeout(async () => {
+        if (base64) {
+          // Create temporary file from base64
+          await RNFS.writeFile(tempFilePath, audioData, 'base64');
 
-      await TrackPlayer.add({
-        id: `tts-${Date.now()}`,
-        url: Platform.OS === 'ios' ? tempFilePath : `file:///${tempFilePath}`,
-        title: 'Aura Response',
-        artist: 'AI Assistant',
-      });
+          const sound = new Sound(tempFilePath, '', error => {
+            if (error) {
+              console.error('Sound loading error:', error);
+              setIsSpeaking(false);
+              return;
+            }
 
-      await TrackPlayer.play();
-      setIsSpeaking(true);
+            setCurrentSound(sound);
+            setIsSpeaking(true);
 
-      console.log('🔊 Audio playing...');
+            sound.play(success => {
+              setIsSpeaking(false);
+              sound.release();
+              cleanUpFile(tempFilePath);
 
-      // Listen for completion
-      const unsubscribe = TrackPlayer.addEventListener(
-        Event.PlaybackState,
-        async data => {
-          if (data.state === State.Error) {
-            unsubscribe.remove();
-            throw data.error.message;
-          }
-          if (data.state === State.Ended || data.state === State.Stopped) {
-            setIsSpeaking(false);
-            cleanUpFile(tempFilePath);
-            unsubscribe.remove();
-          }
-        },
-      );
+              if (!success) {
+                console.error('Sound playback failed');
+              }
+            });
+          });
+        } else {
+          console.log(audioData);
+
+          const sound = new Sound(
+            audioData,
+            base64 ? '' : Sound.MAIN_BUNDLE,
+            error => {
+              if (error) {
+                console.error('Static Sound loading error:', error);
+                setIsSpeaking(false);
+                return;
+              }
+
+              setCurrentSound(sound);
+              setIsSpeaking(true);
+
+              sound.play(success => {
+                setIsSpeaking(false);
+                sound.release();
+                cleanUpFile(tempFilePath);
+
+                if (!success) {
+                  console.error('Static Sound playback failed');
+                }
+              });
+            },
+          );
+        }
+      }, 2000);
     } catch (error) {
       console.error('Audio playback error:', error);
       cleanUpFile(tempFilePath);
@@ -505,7 +537,11 @@ const VoiceChatScreen = ({ navigation }) => {
 
   const stopSpeaking = async () => {
     try {
-      await TrackPlayer.stop();
+      if (currentSound) {
+        currentSound.stop();
+        currentSound.release();
+        setCurrentSound(null);
+      }
       setIsSpeaking(false);
       console.log('🛑 Audio stopped');
     } catch (error) {
@@ -616,9 +652,7 @@ const VoiceChatScreen = ({ navigation }) => {
             source={{
               uri: userData?.photoURL
                 ? userData.photoURL.startsWith('users/')
-                  ? `${getFirebaseAccessUrl(
-                      userData.photoURL,
-                    )}&time=${Date.now()}`
+                  ? `${getFirebaseAccessUrl(userData.photoURL)}`
                   : userData.photoURL
                 : Image.resolveAssetSource(userImage).uri,
             }}
@@ -769,8 +803,10 @@ const VoiceChatScreen = ({ navigation }) => {
                     : "Hi! I'm Aura 👋"}
                 </WelcomeTitle>
                 <WelcomeText>
-                  Share your weekly spending story! Describe what you bought,
-                  how much, and where. I'll add transactions automatically.
+                  Share your weekly spending story! {'\n'}I can create
+                  transactions, accounts, or categories based on what you tell
+                  me. {'\n'} I can also analyse your financial data to give you
+                  clear summaries, trends, and insights.
                 </WelcomeText>
 
                 <ExampleContainer>
@@ -778,7 +814,7 @@ const VoiceChatScreen = ({ navigation }) => {
                   <ExampleText>
                     "Log my expense coffee 5 dollars HDFC"
                   </ExampleText>
-                  <ExampleText>"Add income salary 3000 from Chase"</ExampleText>
+                  <ExampleText>"How much did I spend today?"</ExampleText>
                   <ExampleText>"Create new account Emergency Fund"</ExampleText>
                 </ExampleContainer>
               </WelcomeContainer>

@@ -40,9 +40,21 @@ const colors = [
 ];
 
 export const ChatBotContext = createContext({
-  onQueryChatBot: (query, callback, successCallback) => {},
-  onVoiceChat: (audioFilePath, callback, successCallback, errorCallback) => {},
-  onFormResponseChatBot: (question, data, callback, errorCallback) => {},
+  onQueryChatBot: (
+    query,
+    previousQuery,
+    fromVoiceChat,
+    audioFilePath,
+    callback,
+    successCallback,
+  ) => {},
+  onFormResponseChatBot: (
+    question,
+    data,
+    fromVoiceChat,
+    callback,
+    errorCallback,
+  ) => {},
 });
 
 export const ChatBotContextProvider = ({ children }) => {
@@ -97,7 +109,7 @@ export const ChatBotContextProvider = ({ children }) => {
       return records
         .map(r => {
           // Start with standard transaction fields
-          let summary = `Transaction ${r.id}: amount: ${r.amount} ${r.currency}, date: ${r.date}, categoryName: ${r.categoryName}, accountName: ${r.accountName}, notes: ${r.notes}, type: ${r.type}`;
+          let summary = `Transaction ${r.id}: amount: ${r.amount}, currency:${r.currency}, date: ${r.date}, categoryName: ${r.categoryName}, accountName: ${r.accountName}, notes: ${r.notes}, type: ${r.type}`;
 
           // Include any extra computed fields dynamically
           const standardKeys = [
@@ -172,154 +184,12 @@ export const ChatBotContextProvider = ({ children }) => {
 
   const onQueryChatBot = async (
     query,
+    previousQuery = null,
+    fromVoiceChat = false,
+    audioFilePath = null,
     callback = () => {},
     errorCallback = () => {},
   ) => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        let jwtToken = await auth().currentUser.getIdToken();
-        let categories = (await userData.categories.fetch()) || [];
-        categories = categories.map(c => `${c.name}`).join(',');
-        let accounts = (await userData.accounts.fetch()) || [];
-        accounts = accounts.map(a => `${a.name}`).join(',');
-
-        sendRequest(
-          {
-            type: 'POST',
-            url: BACKEND_URL + '/chat-bot/query/',
-            data: { query, categories, accounts },
-            headers: {
-              authorization: 'Bearer ' + jwtToken,
-            },
-          },
-          {
-            successCallback: async res => {
-              try {
-                const claudeResponse = res?.claudeResponse; // Adjust based on actual API response key
-
-                if (!claudeResponse) {
-                  throw 'No Claude response found.';
-                }
-
-                const { collectionName, sqlQuery, params, joinTables, type } =
-                  claudeResponse;
-
-                if (type === 'query') {
-                  // 🔥 Execute DB query dynamically
-                  const records = await db
-                    .get(collectionName)
-                    .query(
-                      ...(joinTables && joinTables.length > 0
-                        ? [Q.experimentalJoinTables(joinTables)]
-                        : []),
-                      Q.unsafeSqlQuery(
-                        sqlQuery,
-                        params && params.length > 0 ? params : [],
-                      ),
-                    )
-                    .unsafeFetchRaw();
-
-                  const summarizedRecords = onSummarizeRecords(
-                    records,
-                    collectionName,
-                  );
-                  // console.log('AI Summarized Results:', summarizedRecords);
-
-                  callback({
-                    html: null,
-                    formatting: true,
-                  });
-
-                  const finalAnswer = await onFormResponseChatBot(
-                    query,
-                    summarizedRecords,
-                  );
-                  // console.log(finalAnswer);
-
-                  // Return results to caller
-                  callback(finalAnswer);
-                  resolve(finalAnswer);
-                } else {
-                  callback(claudeResponse);
-                  resolve(claudeResponse);
-                }
-              } catch (err) {
-                console.error('DB Query Error:', err);
-                errorCallback(err);
-                reject(
-                  'There was some error occured while reading the data. Please try again later!',
-                );
-              }
-            },
-            errorCallback: err => {
-              errorCallback(
-                'Error occured for the following query, can you please try again!',
-              );
-              hideLoader();
-              showNotification('error', err);
-            },
-          },
-        );
-      } catch (err) {
-        reject(err);
-        showNotification('error', err.toString());
-      }
-    });
-  };
-
-  const onFormResponseChatBot = async (
-    question,
-    data,
-    callback = () => {},
-    errorCallback = () => {},
-  ) => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        let jwtToken = await auth().currentUser.getIdToken();
-
-        sendRequest(
-          {
-            type: 'POST',
-            url: BACKEND_URL + '/chat-bot/form-response/',
-            data: { question, data },
-            headers: { authorization: 'Bearer ' + jwtToken },
-          },
-          {
-            successCallback: res => {
-              const finalAnswer = res;
-              callback(finalAnswer);
-              resolve(finalAnswer);
-            },
-            errorCallback: err => {
-              errorCallback(err);
-              showNotification('error', err);
-              reject(err);
-            },
-          },
-        );
-      } catch (err) {
-        reject(err);
-        showNotification('error', err.toString());
-      }
-    });
-  };
-
-  const onVoiceChat = async (
-    audioFilePath,
-    callback = () => {},
-    errorCallback = () => {},
-  ) => {
-    // const resolvedData = {
-    //   transcription: 'hi how are you',
-    //   audioData: '',
-    //   operation: 'other_query',
-    //   claudeResponse: {},
-    //   audioMimeType: '',
-    //   response_text: 'Good thanks for the info',
-    // };
-
-    // callback(resolvedData);
-    // return;
     return new Promise(async (resolve, reject) => {
       try {
         let jwtToken = await auth().currentUser.getIdToken();
@@ -345,74 +215,145 @@ export const ChatBotContextProvider = ({ children }) => {
             return summary;
           })
           .join('; ');
+        let reqData = {
+          query,
+          categories,
+          accounts,
+          fromVoiceChat,
+        };
+        let formData = new FormData();
+        if (fromVoiceChat && audioFilePath) {
+          const extension = getFileExtension(audioFilePath);
+          const mimeType = getMimeType(extension);
+          formData.append('audio', {
+            uri:
+              Platform.OS === 'android'
+                ? audioFilePath
+                : audioFilePath.replace('file://', ''),
+            type: mimeType,
+            name: `voice.${extension}`,
+          });
+          formData.append('categories', categories);
+          formData.append('accounts', accounts);
+          formData.append('fromVoiceChat', fromVoiceChat);
+        }
 
-        const extension = getFileExtension(audioFilePath);
-        const mimeType = getMimeType(extension);
-
-        const formData = new FormData();
-        formData.append('audio', {
-          uri:
-            Platform.OS === 'android'
-              ? audioFilePath
-              : audioFilePath.replace('file://', ''),
-          type: mimeType,
-          name: `voice.${extension}`,
-        });
-        formData.append('categories', categories);
-        formData.append('accounts', accounts);
-
+        if (
+          (previousQuery && previousQuery?.operation === 'incomplete_info') ||
+          previousQuery?.claudeResponse?.operation === 'incomplete_info'
+        ) {
+          reqData.previousQuery = previousQuery?.userMessage;
+          reqData.previousQueryResponse = previousQuery?.response_text;
+          formData.append('previousQuery', previousQuery?.userMessage);
+          formData.append(
+            'previousQueryResponse',
+            previousQuery?.response_text,
+          );
+        }
+        let headers = {
+          authorization: 'Bearer ' + jwtToken,
+        };
+        if (fromVoiceChat) {
+          headers['Content-Type'] = 'multipart/form-data';
+        }
         sendRequest(
           {
             type: 'POST',
-            url: BACKEND_URL + '/chat-bot/voice/',
-            data: formData,
-            headers: {
-              authorization: 'Bearer ' + jwtToken,
-              'Content-Type': 'multipart/form-data',
-            },
+            url: BACKEND_URL + '/chat-bot/test/',
+            data: fromVoiceChat ? formData : reqData,
+            headers: headers,
           },
           {
             successCallback: async res => {
               try {
-                const { data } = res;
+                const claudeResponse = res?.claudeResponse; // Adjust based on actual API response key
 
-                if (!data) {
+                if (!claudeResponse) {
                   throw 'No Claude response found.';
                 }
 
                 const {
-                  transcription,
-                  claudeResponse,
-                  audioData,
-                  audioMimeType,
-                  response_text,
-                } = data;
-
-                console.log(data);
-
-                const operation = claudeResponse.operation;
-                const claudeData = claudeResponse.data || {};
-
-                const trData = claudeData;
-                const resolvedData = {
-                  transcription,
-                  audioData,
+                  collectionName,
+                  sqlQuery,
+                  params,
+                  joinTables,
+                  type,
                   operation,
-                  claudeResponse,
-                  audioMimeType,
-                  response_text,
-                };
+                } = claudeResponse;
 
-                const allowedOperations = [
-                  'create_transaction',
-                  'create_account',
-                  'create_category',
-                ];
-                if (!allowedOperations.includes(operation)) {
-                  callback(resolvedData);
-                  resolve(resolvedData);
-                } else {
+                if (type) {
+                  if (type === 'query') {
+                    // 🔥 Execute DB query dynamically
+                    const records = await db
+                      .get(collectionName)
+                      .query(
+                        ...(joinTables && joinTables.length > 0
+                          ? [Q.experimentalJoinTables(joinTables)]
+                          : []),
+                        Q.unsafeSqlQuery(
+                          sqlQuery,
+                          params && params.length > 0 ? params : [],
+                        ),
+                      )
+                      .unsafeFetchRaw();
+
+                    const summarizedRecords = onSummarizeRecords(
+                      records,
+                      collectionName,
+                    );
+                    // console.log('AI Summarized Results:', summarizedRecords);
+
+                    if (!fromVoiceChat) {
+                      callback({
+                        html: null,
+                        formatting: true,
+                      });
+                    }
+
+                    const finalAnswer = await onFormResponseChatBot(
+                      fromVoiceChat ? res.transcription : query,
+                      summarizedRecords,
+                      fromVoiceChat,
+                      () => {},
+                      () => {},
+                    );
+                    // console.log(finalAnswer);
+
+                    // Return results to caller
+                    callback({
+                      ...finalAnswer,
+                      response_text: finalAnswer?.html,
+                    });
+                    resolve({
+                      ...finalAnswer,
+                      response_text: finalAnswer?.html,
+                    });
+                  } else if (type === 'text') {
+                    if (fromVoiceChat) {
+                      const resolvedData = {
+                        ...claudeResponse,
+                        response_text: claudeResponse?.response_text,
+                        audioData: res.audioData || null,
+                        audioMimeType: res.audioMimeType || null,
+                        audioEncoding: res.encoding || null,
+                        transcription: res.transcription,
+                      };
+                      callback(resolvedData);
+                      resolve(resolvedData);
+                    } else {
+                      const resolvedData = {
+                        ...claudeResponse,
+                        response_text: claudeResponse?.response_text,
+                      };
+                      callback(resolvedData);
+                      resolve(resolvedData);
+                    }
+                  }
+                }
+
+                if (operation) {
                   if (operation === 'create_transaction') {
+                    const trData = claudeResponse?.data;
                     const transactions = trData
                       .filter(t => t.accountId)
                       .map(tx => {
@@ -424,7 +365,7 @@ export const ChatBotContextProvider = ({ children }) => {
                           date,
                           time,
                           showTime,
-                          type,
+                          type: txnType,
                         } = tx;
                         return {
                           amount: amount,
@@ -436,7 +377,7 @@ export const ChatBotContextProvider = ({ children }) => {
                           showTime: showTime,
                           isEmiPayment: false,
                           emiDate: null,
-                          type: type,
+                          type: txnType,
                         };
                       });
 
@@ -458,24 +399,22 @@ export const ChatBotContextProvider = ({ children }) => {
                     } catch (err) {
                       throw err.toString();
                     }
-                    callback(resolvedData);
-                    resolve(resolvedData);
                   } else if (operation === 'create_category') {
+                    const trData = claudeResponse?.data;
                     const ctgries = trData.map(t => {
-                      const { name, type } = t;
+                      const { name, type: catType } = t;
                       return {
                         name: name,
                         userId: userData.id,
                         isLoanRelated: false,
-                        type: type,
+                        type: catType,
                         color:
                           colors[Math.floor(Math.random() * colors.length)],
                       };
                     });
                     await createRecord('categories', ctgries);
-                    callback(resolvedData);
-                    resolve(resolvedData);
                   } else if (operation === 'create_account') {
+                    const trData = claudeResponse?.data;
                     const accnts = trData.map(t => {
                       const { name } = t;
                       return {
@@ -492,9 +431,24 @@ export const ChatBotContextProvider = ({ children }) => {
                     });
 
                     await createRecord('accounts', accnts);
+                  }
+
+                  if (fromVoiceChat) {
+                    const resolvedData = {
+                      claudeResponse,
+                      response_text: claudeResponse?.response_text,
+                      audioData: res.audioData || null,
+                      audioMimeType: res.audioMimeType || null,
+                      audioEncoding: res.encoding || null,
+                      transcription: res.transcription,
+                    };
                     callback(resolvedData);
                     resolve(resolvedData);
                   } else {
+                    const resolvedData = {
+                      ...claudeResponse,
+                      response_text: claudeResponse?.response_text,
+                    };
                     callback(resolvedData);
                     resolve(resolvedData);
                   }
@@ -503,31 +457,71 @@ export const ChatBotContextProvider = ({ children }) => {
                 console.error('DB Query Error:', err);
                 errorCallback(err);
                 reject(
-                  'There was some error occured while reading the data. Please try again later!',
+                  'There was some error occured while reading the data. Please try again later! ' +
+                    err.toString(),
                 );
               }
             },
             errorCallback: err => {
-              const errMessage = err.message || err.toString();
-              console.log(errMessage, '--------------');
-
-              errorCallback(errMessage);
+              errorCallback(
+                'Error occured for the following query, can you please try again!',
+              );
               hideLoader();
-              showNotification('error', errMessage);
+              reject('There was some error occured  ' + err.toString());
+
+              showNotification('error', err);
             },
           },
         );
       } catch (err) {
-        errorCallback(err.toString());
         reject(err);
         showNotification('error', err.toString());
       }
     });
   };
+
+  const onFormResponseChatBot = async (
+    question,
+    data,
+    fromVoiceChat = false,
+    callback = () => {},
+    errorCallback = () => {},
+  ) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        console.log(question, data);
+
+        let jwtToken = await auth().currentUser.getIdToken();
+
+        sendRequest(
+          {
+            type: 'POST',
+            url: BACKEND_URL + '/chat-bot/form-response/',
+            data: { question, data, fromVoiceChat },
+            headers: { authorization: 'Bearer ' + jwtToken },
+          },
+          {
+            successCallback: res => {
+              const finalAnswer = res;
+              callback(finalAnswer);
+              resolve(finalAnswer);
+            },
+            errorCallback: err => {
+              errorCallback(err);
+              showNotification('error', err);
+              reject(err);
+            },
+          },
+        );
+      } catch (err) {
+        reject(err);
+        showNotification('error', err.toString());
+      }
+    });
+  };
+
   return (
-    <ChatBotContext.Provider
-      value={{ onQueryChatBot, onFormResponseChatBot, onVoiceChat }}
-    >
+    <ChatBotContext.Provider value={{ onQueryChatBot, onFormResponseChatBot }}>
       {children}
     </ChatBotContext.Provider>
   );

@@ -11,8 +11,8 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {FlexRow, MainWrapper, ToggleSwitch} from '../../../components/styles';
-import {SafeArea} from '../../../components/utility/safe-area.component';
+import { FlexRow, MainWrapper, ToggleSwitch } from '../../../components/styles';
+import { SafeArea } from '../../../components/utility/safe-area.component';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
   ManageProfileTitle,
@@ -27,12 +27,12 @@ import {
   SettingSubTitle,
   SettingTitle,
 } from '../components/settings.styles';
-import {AuthenticationContext} from '../../../services/authentication/authentication.context';
-import {Spacer} from '../../../components/spacer/spacer.component';
-import {useTheme} from 'styled-components/native';
-import {SettingsCardContent} from '../components/settings.styles';
-import {Text} from '../../../components/typography/text.component';
-import {useDispatch, useSelector} from 'react-redux';
+import { AuthenticationContext } from '../../../services/authentication/authentication.context';
+import { Spacer } from '../../../components/spacer/spacer.component';
+import { useTheme } from 'styled-components/native';
+import { SettingsCardContent } from '../components/settings.styles';
+import { Text } from '../../../components/typography/text.component';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   Alert,
   Linking,
@@ -42,33 +42,33 @@ import {
   TouchableOpacity,
   useColorScheme,
 } from 'react-native';
-import {fetchExchangeRates} from '../../../store/service-slice';
+import { fetchExchangeRates } from '../../../store/service-slice';
 import moment from 'moment';
-import {notificationActions} from '../../../store/notification-slice';
+import { notificationActions } from '../../../store/notification-slice';
 import {
   resetPinCodeInternalStates,
   deleteUserPinCode,
 } from '@haskkor/react-native-pincode';
-import {applockActions} from '../../../store/applock-slice';
-import {View} from 'react-native';
+import { applockActions } from '../../../store/applock-slice';
+import { View } from 'react-native';
 import remoteConfig from '@react-native-firebase/remote-config';
-import {Button} from 'react-native-paper';
+import { Button } from 'react-native-paper';
 import Share from 'react-native-share';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {GetCurrencySymbol} from '../../../components/symbol.currency';
+import { GetCurrencySymbol } from '../../../components/symbol.currency';
 import Clipboard from '@react-native-clipboard/clipboard';
-import {getFirebaseAccessUrl} from '../../../components/utility/helper';
-import {SettingsContext} from '../../../services/settings/settings.context';
-import {SheetDetailsContext} from '../../../services/sheetDetails/sheetDetails.context';
+import { getFirebaseAccessUrl } from '../../../components/utility/helper';
+import { SettingsContext } from '../../../services/settings/settings.context';
+import { SheetDetailsContext } from '../../../services/sheetDetails/sheetDetails.context';
 import _ from 'lodash';
 
-import {useIsFocused} from '@react-navigation/native';
-import {WatermelonDBContext} from '../../../services/watermelondb/watermelondb.context';
+import { useIsFocused } from '@react-navigation/native';
+import { WatermelonDBContext } from '../../../services/watermelondb/watermelondb.context';
 
-export const SettingsScreen = ({navigation}) => {
-  const {onLogout, userData} = useContext(AuthenticationContext);
-  const {onGetSheetsAndTransactions} = useContext(SheetDetailsContext);
-  const {deleteAllRecords} = useContext(WatermelonDBContext);
+export const SettingsScreen = ({ navigation }) => {
+  const { onLogout, userData } = useContext(AuthenticationContext);
+  const { onGetSheetsAndTransactions } = useContext(SheetDetailsContext);
+  const { deleteAllRecords } = useContext(WatermelonDBContext);
   const ACCOUNT_DELETION_URL = remoteConfig()
     .getValue('ACCOUNT_DELETION_URL')
     .asString();
@@ -129,7 +129,8 @@ export const SettingsScreen = ({navigation}) => {
       headerRight: () => (
         <Pressable
           onPress={() => navigation.goBack()}
-          style={{marginRight: 10}}>
+          style={{ marginRight: 10 }}
+        >
           <Ionicons
             name="close-circle-outline"
             size={30}
@@ -194,7 +195,7 @@ export const SettingsScreen = ({navigation}) => {
       );
       showNotification('success', 'App lock disabled successfully');
     } else {
-      dispatch(applockActions.showChoosePinLock({type: 'choose'}));
+      dispatch(applockActions.showChoosePinLock({ type: 'choose' }));
       navigation.navigate('Applock', {
         purpose: 'setpin',
       });
@@ -207,7 +208,7 @@ export const SettingsScreen = ({navigation}) => {
 
   const onRevealSecretKey = async () => {
     if (isAppLockEnabled) {
-      dispatch(applockActions.showChoosePinLock({type: 'enter'}));
+      dispatch(applockActions.showChoosePinLock({ type: 'enter' }));
       navigation.navigate('Applock', {
         purpose: 'secretKey',
       });
@@ -234,7 +235,7 @@ export const SettingsScreen = ({navigation}) => {
   };
 
   const onFetchExchangeRates = () => {
-    dispatch(fetchExchangeRates({showAlert: true, dispatch: dispatch}));
+    dispatch(fetchExchangeRates({ showAlert: true, dispatch: dispatch }));
   };
 
   const toggleSwithStyles = {
@@ -296,9 +297,9 @@ export const SettingsScreen = ({navigation}) => {
           onPress: () => console.log('No Thanks Pressed'),
           style: 'cancel',
         },
-        {text: 'Sure', onPress: openStore},
+        { text: 'Sure', onPress: openStore },
       ],
-      {cancelable: false},
+      { cancelable: false },
     );
   };
 
@@ -333,7 +334,7 @@ export const SettingsScreen = ({navigation}) => {
         'Warning : Logout Confirmation',
         'Are you sure you want to logout? All your local data will be wiped out. Please ensure you back up your data before proceeding.',
         alertOptions,
-        {cancelable: false},
+        { cancelable: false },
       );
     };
     try {
@@ -374,7 +375,7 @@ export const SettingsScreen = ({navigation}) => {
           style: 'default',
         },
       ],
-      {cancelable: false},
+      { cancelable: false },
     );
   };
   return (
@@ -384,7 +385,7 @@ export const SettingsScreen = ({navigation}) => {
           <Spacer size={'medium'} />
           {/* display profile and email */}
 
-          <SettingsCard style={{backgroundColor: theme.colors.bg.card}}>
+          <SettingsCard style={{ backgroundColor: theme.colors.bg.card }}>
             {/* Profile Card */}
             <SettingsCardContent onPress={() => navigation.navigate('Profile')}>
               <Setting justifyContent="space-between">
@@ -450,13 +451,14 @@ export const SettingsScreen = ({navigation}) => {
           </SettingsCard>
 
           <Spacer size="large">
-            <SettingsCard style={{backgroundColor: theme.colors.bg.card}}>
+            <SettingsCard style={{ backgroundColor: theme.colors.bg.card }}>
               <SettingsCardContent
                 onPress={() =>
                   navigation.navigate('BankAccounts', {
                     screen: 'BankAccountsHome',
                   })
-                }>
+                }
+              >
                 <Setting justifyContent="space-between">
                   <FlexRow>
                     <SettingIconWrapper color="#00897B">
@@ -485,7 +487,8 @@ export const SettingsScreen = ({navigation}) => {
                       screen: 'Subscriptions',
                     },
                   })
-                }>
+                }
+              >
                 <Setting justifyContent="space-between">
                   <FlexRow>
                     <SettingIconWrapper color="#F59E0B">
@@ -511,7 +514,7 @@ export const SettingsScreen = ({navigation}) => {
             </SettingsCard>
           </Spacer>
           <Spacer size={'large'}>
-            <SettingsCard style={{backgroundColor: theme.colors.bg.card}}>
+            <SettingsCard style={{ backgroundColor: theme.colors.bg.card }}>
               {/* Sync card */}
               <SettingsCardContent onPress={() => navigation.navigate('Sync')}>
                 <Setting justifyContent="space-between">
@@ -579,10 +582,12 @@ export const SettingsScreen = ({navigation}) => {
                                     paddingBottom: 10,
                                     borderRadius: 10,
                                   }}
-                                  onPress={() => setShowPicker(true)}>
+                                  onPress={() => setShowPicker(true)}
+                                >
                                   <Text
                                     fontfamily="bodySemiBold"
-                                    fontsize="14px">
+                                    fontsize="14px"
+                                  >
                                     {moment(isDailyReminderEnabled.time).format(
                                       'hh:mm A',
                                     )}
@@ -656,7 +661,8 @@ export const SettingsScreen = ({navigation}) => {
                                 time: isDailyReminderEnabled.time,
                               });
                             }
-                          }}>
+                          }}
+                        >
                           {userData?.dailyReminderEnabled
                             ? 'Update Reminder'
                             : 'Set Reminder'}
@@ -712,10 +718,11 @@ export const SettingsScreen = ({navigation}) => {
           </Spacer>
 
           <Spacer size={'xlarge'}>
-            <SettingsCard style={{backgroundColor: theme.colors.bg.card}}>
+            <SettingsCard style={{ backgroundColor: theme.colors.bg.card }}>
               {/* categories card */}
               <SettingsCardContent
-                onPress={() => navigation.navigate('Categories')}>
+                onPress={() => navigation.navigate('Categories')}
+              >
                 <Setting justifyContent="space-between">
                   <FlexRow>
                     <SettingIconWrapper color="#8c8f90">
@@ -729,7 +736,8 @@ export const SettingsScreen = ({navigation}) => {
 
               {/* Appearance card */}
               <SettingsCardContent
-                onPress={() => navigation.navigate('Appearance')}>
+                onPress={() => navigation.navigate('Appearance')}
+              >
                 <Setting justifyContent="space-between">
                   <FlexRow>
                     <SettingIconWrapper color="rgba(84,91,206,0.9)">
@@ -757,8 +765,9 @@ export const SettingsScreen = ({navigation}) => {
 
                   <Spacer position={'right'}>
                     <SettingTitle
-                      style={{fontWeight: 'bold'}}
-                      color={theme.colors.brand.primary}>
+                      style={{ fontWeight: 'bold' }}
+                      color={theme.colors.brand.primary}
+                    >
                       {userData && userData.baseCurrency
                         ? `${userData.baseCurrency} (${GetCurrencySymbol(
                             userData.baseCurrency,
@@ -788,7 +797,7 @@ export const SettingsScreen = ({navigation}) => {
           </Spacer>
 
           <Spacer size={'xlarge'}>
-            <SettingsCard style={{backgroundColor: theme.colors.bg.card}}>
+            <SettingsCard style={{ backgroundColor: theme.colors.bg.card }}>
               <SettingsCardContent onPress={onExportAllDataToPdf}>
                 <Setting justifyContent="space-between">
                   <FlexRow>
@@ -869,7 +878,7 @@ export const SettingsScreen = ({navigation}) => {
           </Spacer>
 
           <Spacer size={'xlarge'}>
-            <SettingsCard style={{backgroundColor: theme.colors.bg.card}}>
+            <SettingsCard style={{ backgroundColor: theme.colors.bg.card }}>
               <SettingsCardContent onPress={onRevealSecretKey}>
                 <Setting justifyContent="space-between">
                   <FlexRow>
@@ -932,7 +941,8 @@ export const SettingsScreen = ({navigation}) => {
 
               <SettingsCardContent
                 onPress={onClickOpenAccountDeletion}
-                padding={'15px'}>
+                padding={'15px'}
+              >
                 <>
                   <Setting justifyContent="space-between">
                     <FlexRow>
@@ -958,7 +968,7 @@ export const SettingsScreen = ({navigation}) => {
           </Spacer>
 
           <Spacer size={'large'}>
-            <SettingsCard style={{backgroundColor: theme.colors.bg.card}}>
+            <SettingsCard style={{ backgroundColor: theme.colors.bg.card }}>
               <SettingsCardContent>
                 <Setting justifyContent="space-between">
                   <FlexRow>
@@ -1028,7 +1038,8 @@ export const SettingsScreen = ({navigation}) => {
 
               <SettingsCardContent
                 onPress={() => onClickLogout()}
-                padding={'15px'}>
+                padding={'15px'}
+              >
                 <Setting justifyContent="space-between">
                   <FlexRow>
                     <SettingIconWrapper color="#8c8f90">

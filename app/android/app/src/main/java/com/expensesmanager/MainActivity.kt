@@ -1,5 +1,4 @@
 package com.webwizard.expensesmanager
-import expo.modules.ReactActivityDelegateWrapper
 
 import android.os.Bundle // added this.
 import com.facebook.react.ReactActivity
@@ -28,23 +27,32 @@ class MainActivity : ReactActivity () {
   
   
     // added for android app state
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-      val reactContext: ReactContext? = reactInstanceManager.currentReactContext
-      val params: WritableMap = Arguments.createMap()
-  
-      if (hasFocus) {
-          params.putString("event", "active")
-      } else {
-          params.putString("event", "inactive")
-      }
-  
-      if (reactContext != null) {
-          reactInstanceManager.currentReactContext!!
-              .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
-              .emit("ActivityStateChange", params)
-      }
+  override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        
+        try {
+            val reactInstanceManager = reactNativeHost?.reactInstanceManager
+            val reactContext: ReactContext? = reactInstanceManager?.currentReactContext
+            
+            // REMOVED isDestroyed check - not available in RN 0.80.2
+            if (reactContext != null) {
+                val params: WritableMap = Arguments.createMap()
+                
+                if (hasFocus) {
+                    params.putString("event", "active")
+                } else {
+                    params.putString("event", "inactive")
+                }
+                
+                reactContext
+                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter::class.java)
+                    ?.emit("ActivityStateChange", params)
+            }
+        } catch (e: Exception) {
+            // Handle gracefully - React Native might not be ready yet
+            android.util.Log.w("MainActivity", "React Native not ready for app state event", e)
+        }
     }
-
 
 
   /**
@@ -57,5 +65,5 @@ class MainActivity : ReactActivity () {
      * which allows you to enable New Architecture with a single boolean flags [fabricEnabled]
      */
     override fun createReactActivityDelegate(): ReactActivityDelegate =
-    ReactActivityDelegateWrapper(this, BuildConfig.IS_NEW_ARCHITECTURE_ENABLED, DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled))
+    DefaultReactActivityDelegate(this, mainComponentName, fabricEnabled)
 }

@@ -8,6 +8,7 @@ import {
   MD3DarkTheme,
   MD3LightTheme,
   Provider as PaperProvider,
+  Text,
 } from 'react-native-paper';
 import { AuthenticationContextProvider } from './src/services/authentication/authentication.context';
 import {
@@ -20,6 +21,7 @@ import {
   Platform,
   StatusBar,
   useColorScheme,
+  View,
 } from 'react-native';
 import { ActionSheetProvider } from '@expo/react-native-action-sheet';
 import { MenuProvider } from 'react-native-popup-menu';
@@ -42,6 +44,10 @@ import { SocketContextProvider } from './src/services/socket/socket.context';
 import { WatermelonDBContextProvider } from './src/services/watermelondb/watermelondb.context';
 import { APP_STORE_URL, PLAY_STORE_URL } from './config';
 
+import { enableScreens } from 'react-native-screens';
+
+enableScreens(true);
+
 moment.suppressDeprecationWarnings = true;
 if (Platform.OS === 'android') {
   require('intl');
@@ -51,6 +57,7 @@ LogBox.ignoreAllLogs(true);
 if (__DEV__) {
   console.warn = () => {};
 }
+
 const App = () => {
   // LogBox.ignoreLogs([
   //   'Setting a timer',
@@ -64,6 +71,8 @@ const App = () => {
   const appStatus = useSelector(state => state.service.appStatus);
 
   useEffect(() => {
+    console.log('--');
+
     let iosStateListener = null;
     let androidStateListener = null;
     if (Platform.OS === 'ios') {

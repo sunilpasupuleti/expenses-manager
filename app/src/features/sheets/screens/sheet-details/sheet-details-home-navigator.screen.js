@@ -1,16 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {useTheme} from 'styled-components/native';
+import React, { useEffect, useState } from 'react';
+import { useTheme } from 'styled-components/native';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {SheetDetailsDashboard} from '../../components/sheet-details/sheet-details-dashboard';
-import {useSelector} from 'react-redux';
-import {SheetStatsScreen} from '../sheet-stats/sheet-stats.screen';
-import {SheetTrendsScreen} from '../sheet-trends/sheet-trends.screen';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { SheetDetailsDashboard } from '../../components/sheet-details/sheet-details-dashboard';
+import { useSelector } from 'react-redux';
+import { SheetStatsScreen } from '../sheet-stats/sheet-stats.screen';
+import { SheetTrendsScreen } from '../sheet-trends/sheet-trends.screen';
 import SheetDetailsHome from './sheet-details-home.screen';
 
 const Tab = createBottomTabNavigator();
 
-export const SheetDetailsHomeNavigatorScreen = ({navigation, route}) => {
+export const SheetDetailsHomeNavigatorScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const appState = useSelector(state => state.service.appState);
   const [sheet, setSheet] = useState(route.params.sheet);
@@ -56,12 +56,13 @@ export const SheetDetailsHomeNavigatorScreen = ({navigation, route}) => {
           height: 80,
           display: appState === 'active' ? 'flex' : 'none',
         },
-      }}>
+      }}
+    >
       <Tab.Screen
         name="Dashboard"
         options={{
           title: 'Dashboard',
-          tabBarIcon: ({color, size}) => (
+          tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="dots-grid" color={color} size={30} />
           ),
         }}
@@ -70,7 +71,7 @@ export const SheetDetailsHomeNavigatorScreen = ({navigation, route}) => {
       <Tab.Screen
         options={{
           title: 'Transactions',
-          tabBarIcon: ({color, size}) => (
+          tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="cash" color={color} size={30} />
           ),
         }}
@@ -81,7 +82,7 @@ export const SheetDetailsHomeNavigatorScreen = ({navigation, route}) => {
       <Tab.Screen
         options={{
           title: 'Analytics',
-          tabBarIcon: ({color, size}) => (
+          tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="chart-pie" color={color} size={30} />
           ),
         }}
@@ -92,7 +93,7 @@ export const SheetDetailsHomeNavigatorScreen = ({navigation, route}) => {
       <Tab.Screen
         options={{
           title: 'Trends',
-          tabBarIcon: ({color, size}) => (
+          tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons
               name="trending-up"
               color={color}

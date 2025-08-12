@@ -1,9 +1,12 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import {Text} from '../../../../components/typography/text.component';
+import { Text } from '../../../../components/typography/text.component';
+import { Platform } from 'react-native';
 export const SheetName = styled(Text)`
   ${props => props.archived && `color : #aaa;`}
 `;
+
+const isIos = Platform.OS === 'ios';
 
 export const BorderLine = styled.View`
   border-bottom-color: #ccc;
@@ -72,11 +75,11 @@ export const SummaryRow = styled.View`
 
 export const ValueBox = styled.View`
   flex: 1;
-  background-color: ${({theme}) => theme.colors.bg.listSubCard};
+  background-color: ${({ theme }) => theme.colors.bg.listSubCard};
   padding: 8px 6px;
   margin: 0 4px;
   border-radius: 8px;
-  elevation: 1;
+  elevation: ${isIos ? 1 : 0};
   shadow-color: #000;
   shadow-opacity: 0.05;
   shadow-radius: 2px;
@@ -90,7 +93,7 @@ export const ValueBoxRow = styled.View`
 `;
 
 export const AvlBalanceRow = styled.View`
-  background-color: ${({theme}) => theme.colors.bg.listSubCard};
+  background-color: ${({ theme }) => theme.colors.bg.listSubCard};
   border-radius: 8px;
   padding: 8px 12px;
   margin: 0 4px;
@@ -98,7 +101,7 @@ export const AvlBalanceRow = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  elevation: 1;
+  elevation: ${isIos ? 1 : 0};
   shadow-color: #000;
   shadow-opacity: 0.05;
   shadow-radius: 2px;

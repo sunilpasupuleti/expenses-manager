@@ -3,9 +3,9 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-import React, {useContext, useEffect, useState} from 'react';
-import {Button} from 'react-native-paper';
-import {useTheme} from 'styled-components/native';
+import React, { useContext, useEffect, useState } from 'react';
+import { Button } from 'react-native-paper';
+import { useTheme } from 'styled-components/native';
 import {
   ButtonText,
   FlexRow,
@@ -14,31 +14,31 @@ import {
   ToggleSwitch,
   TouchableHighlightWithColor,
 } from '../../../../components/styles';
-import {AddSheetInput} from '../../components/add-sheet/add-sheet-input.component';
-import {GetCurrencySymbol} from '../../../../components/symbol.currency';
+import { AddSheetInput } from '../../components/add-sheet/add-sheet-input.component';
+import { GetCurrencySymbol } from '../../../../components/symbol.currency';
 import {
   AdvancedSettings,
   AdvancedSettingsContainer,
 } from '../../components/add-sheet/add-sheet.styles';
-import {SheetsContext} from '../../../../services/sheets/sheets.context';
-import {SafeArea} from '../../../../components/utility/safe-area.component';
-import {Text} from '../../../../components/typography/text.component';
-import {Spacer} from '../../../../components/spacer/spacer.component';
-import {getCurrencies} from 'react-native-localize';
-import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
+import { SheetsContext } from '../../../../services/sheets/sheets.context';
+import { SafeArea } from '../../../../components/utility/safe-area.component';
+import { Text } from '../../../../components/typography/text.component';
+import { Spacer } from '../../../../components/spacer/spacer.component';
+import { getCurrencies } from 'react-native-localize';
+import { AuthenticationContext } from '../../../../services/authentication/authentication.context';
 import _ from 'lodash';
 import {
   compoundingOptions,
   getCurrentDate,
   repaymentFrequencyOptions,
 } from '../../../../components/utility/helper';
-import {Platform, ScrollView, useColorScheme, View} from 'react-native';
+import { Platform, ScrollView, useColorScheme, View } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import {SelectList} from 'react-native-dropdown-select-list';
-import {useSelector} from 'react-redux';
+import { SelectList } from 'react-native-dropdown-select-list';
+import { useSelector } from 'react-redux';
 
-export const AddSheetScreen = ({navigation, route}) => {
+export const AddSheetScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const [disabled, setDisabled] = useState(true);
   const [sheetModel, setSheetModel] = useState(null);
@@ -63,10 +63,10 @@ export const AddSheetScreen = ({navigation, route}) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showSummary, setShowSheetSummary] = useState(true);
 
-  const {userData} = useContext(AuthenticationContext);
+  const { userData } = useContext(AuthenticationContext);
   const themeType = useColorScheme();
   const appTheme = useSelector(state => state.service.theme);
-  const {onSaveSheet, onEditSheet} = useContext(SheetsContext);
+  const { onSaveSheet, onEditSheet } = useContext(SheetsContext);
   let darkMode =
     appTheme === 'automatic'
       ? themeType === 'light'
@@ -97,7 +97,8 @@ export const AddSheetScreen = ({navigation, route}) => {
           <Button
             disabled={disabled}
             uppercase={false}
-            onPress={editMode ? onEdit : onSave}>
+            onPress={editMode ? onEdit : onSave}
+          >
             <ButtonText disabled={disabled}>Done</ButtonText>
           </Button>
         );
@@ -585,13 +586,14 @@ export const AddSheetScreen = ({navigation, route}) => {
             />
           </Spacer>
 
-          <AdvancedSettingsContainer style={{marginTop: 30}}>
+          <AdvancedSettingsContainer style={{ marginTop: 30 }}>
             <Text variantType="caption" color="#aaa" fontsize="14px">
               LOAN ACCOUNT (optional)
             </Text>
             <AdvancedSettings
-              theme={{roundness: 5}}
-              style={{backgroundColor: theme.colors.bg.card, margin: 1}}>
+              theme={{ roundness: 5 }}
+              style={{ backgroundColor: theme.colors.bg.card, margin: 1 }}
+            >
               <AdvancedSettings.Content>
                 <FlexRow justifyContent="space-between">
                   <Text>Is Loan Account?</Text>
@@ -619,7 +621,7 @@ export const AddSheetScreen = ({navigation, route}) => {
 
           {isLoanAccount && (
             <>
-              <AdvancedSettingsContainer style={{marginTop: 30}}>
+              <AdvancedSettingsContainer style={{ marginTop: 30 }}>
                 <Text variantType="caption" color="#aaa" fontsize="14px">
                   LOAN Details
                 </Text>
@@ -627,7 +629,8 @@ export const AddSheetScreen = ({navigation, route}) => {
                   <AdvancedSettings.Content
                     style={{
                       marginTop: -10,
-                    }}>
+                    }}
+                  >
                     <Spacer size="large" />
                     <AddSheetInput
                       label="Loan Amount"
@@ -651,7 +654,8 @@ export const AddSheetScreen = ({navigation, route}) => {
                       <Text>Loan Start Date</Text>
                       <TouchableHighlightWithColor
                         onPress={() => setShowDatePicker(!showDatePicker)}
-                        padding="10px">
+                        padding="10px"
+                      >
                         <Text fontfamily="bodySemiBold">
                           {moment(loanStartDate).format('YYYY-MM-DD')}
                         </Text>
@@ -696,7 +700,8 @@ export const AddSheetScreen = ({navigation, route}) => {
                             onPress={() =>
                               setShowEndDatePicker(!showEndDatePicker)
                             }
-                            padding="10px">
+                            padding="10px"
+                          >
                             <Text fontfamily="bodySemiBold">
                               {loanEndDate
                                 ? moment(loanEndDate).format('YYYY-MM-DD')
@@ -770,7 +775,7 @@ export const AddSheetScreen = ({navigation, route}) => {
                 </AdvancedSettings>
               </AdvancedSettingsContainer>
 
-              <AdvancedSettingsContainer style={{marginTop: 30}}>
+              <AdvancedSettingsContainer style={{ marginTop: 30 }}>
                 <Text variantType="caption" color="#aaa" fontsize="14px">
                   INTEREST RATES
                 </Text>
@@ -778,14 +783,15 @@ export const AddSheetScreen = ({navigation, route}) => {
                   <AdvancedSettings.Content
                     style={{
                       marginTop: -10,
-                    }}>
+                    }}
+                  >
                     <FlexRow justifyContent="space-between">
                       <Text>Interest Rate Type</Text>
                       <SelectList
                         setSelected={val => setInterestRateMode(val)}
                         data={[
-                          {key: 'yearly', value: 'Per Year (%)'},
-                          {key: 'monthly', value: 'Per Month (%)'},
+                          { key: 'yearly', value: 'Per Year (%)' },
+                          { key: 'monthly', value: 'Per Month (%)' },
                         ]}
                         save="key"
                         defaultOption={{
@@ -853,8 +859,9 @@ export const AddSheetScreen = ({navigation, route}) => {
               ADVANCED SETTINGS
             </Text>
             <AdvancedSettings
-              theme={{roundness: 5}}
-              style={{backgroundColor: theme.colors.bg.card, margin: 1}}>
+              theme={{ roundness: 5 }}
+              style={{ backgroundColor: theme.colors.bg.card, margin: 1 }}
+            >
               <AdvancedSettings.Content>
                 <FlexRow justifyContent="space-between">
                   <Text>Show Account Summary</Text>
@@ -868,12 +875,19 @@ export const AddSheetScreen = ({navigation, route}) => {
               <TouchableHighlightWithColor
                 onPress={() =>
                   !editMode
-                    ? navigation.navigate('SelectCurrency', {
-                        selectedCurrency: selectedCurrency,
-                      })
+                    ? navigation.navigate(
+                        'SelectCurrency',
+                        {
+                          selectedCurrency: selectedCurrency,
+                        },
+                        {
+                          merge: true,
+                        },
+                      )
                     : null
                 }
-                padding="15px">
+                padding="15px"
+              >
                 <FlexRow justifyContent="space-between">
                   <FlexRow>
                     <FontAwesome
@@ -882,7 +896,7 @@ export const AddSheetScreen = ({navigation, route}) => {
                       color={editMode ? '#ccc' : '#aaa'}
                     />
                     <Spacer position={'left'} size={'large'}>
-                      <Text style={editMode && {color: '#bbb'}}>
+                      <Text style={editMode && { color: '#bbb' }}>
                         Select{editMode && 'ed'} Currency
                       </Text>
                     </Spacer>
@@ -890,7 +904,8 @@ export const AddSheetScreen = ({navigation, route}) => {
                   <FlexRow>
                     <Text
                       fontfamily="bodySemiBold"
-                      style={editMode && {color: '#bbb'}}>
+                      style={editMode && { color: '#bbb' }}
+                    >
                       {selectedCurrency +
                         `  (${GetCurrencySymbol(selectedCurrency)})`}
                     </Text>

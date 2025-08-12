@@ -1,8 +1,8 @@
 /* eslint-disable react/self-closing-comp */
 /* eslint-disable react/no-unstable-nested-components */
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import React, { useEffect, useMemo, useState } from 'react';
-import { SectionList, TouchableOpacity, View } from 'react-native';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { Alert, SectionList, TouchableOpacity, View } from 'react-native';
 import { useTheme } from 'styled-components/native';
 import { FlexRow, Input } from '../../../../components/styles';
 import { Text } from '../../../../components/typography/text.component';
@@ -11,6 +11,7 @@ import { SafeArea } from '../../../../components/utility/safe-area.component';
 import moment from 'moment';
 import _ from 'lodash';
 import {
+  DeleteBar,
   SheetDetailHeader,
   SheetDetailHeaderLabel,
   SheetDetailsTotalBalance,
@@ -25,6 +26,7 @@ import {
 import { SheetDetailsInfo } from '../sheet-details/sheet-details-info.component';
 import { ObservedSheetStatsDetails } from './sheet-stats-details.observed';
 import { useIsFocused } from '@react-navigation/native';
+import { SheetDetailsContext } from '../../../../services/sheetDetails/sheetDetails.context';
 export const SheetStatsDetailsScreen = ({ navigation, route }) => {
   const [sheet, setSheet] = useState(null);
   const [category, setCategory] = useState('');
@@ -98,6 +100,9 @@ export const BaseSheetStatsDetailsScreen = ({
 }) => {
   const [amountWidth, setAmountWidth] = useState(0);
   const [totalBalance, setTotalBalance] = useState(0);
+  const { onDeleteSheetDetail } = useContext(SheetDetailsContext);
+  const [multiSelectMode, setMultiSelectMode] = useState(false);
+  const [selectedTransactions, setSelectedTransactions] = useState([]);
 
   const groupedTransactions = useMemo(() => {
     let finalIncome = 0;
@@ -129,8 +134,64 @@ export const BaseSheetStatsDetailsScreen = ({
     return finalEntries;
   }, [transactions]);
 
+  const onDeleteTransactions = () => {
+    Alert.alert(
+      'Confirm Delete',
+      `Delete ${selectedTransactions.length} transactions?`,
+      [
+        { text: 'Cancel' },
+        {
+          text: 'Delete',
+          onPress: () => {
+            selectedTransactions.forEach(id => {
+              const txn = transactions.find(t => t.id === id);
+              if (txn) onDeleteSheetDetail(sheet, txn, () => {});
+            });
+            setSelectedTransactions([]);
+            setMultiSelectMode(false);
+          },
+          style: 'destructive',
+        },
+      ],
+    );
+  };
+
   return (
     <SafeArea child={true}>
+      {multiSelectMode && (
+        <DeleteBar style={{ bottom: 50 }}>
+          <TouchableOpacity onPress={onDeleteTransactions}>
+            <Text color="red">Delete ({selectedTransactions.length})</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => {
+              // Select All if not all selected, else clear all
+              if (selectedTransactions.length < transactions.length) {
+                setSelectedTransactions(transactions.map(t => t.id));
+              } else {
+                setSelectedTransactions([]);
+              }
+            }}
+          >
+            <Text>
+              {selectedTransactions.length < transactions.length
+                ? 'Select All'
+                : 'Deselect All'}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => {
+              setSelectedTransactions([]);
+              setMultiSelectMode(false);
+            }}
+          >
+            <Text>Cancel</Text>
+          </TouchableOpacity>
+        </DeleteBar>
+      )}
+
       <>
         <View style={{ alignItems: 'center' }}>
           <View
@@ -190,6 +251,10 @@ export const BaseSheetStatsDetailsScreen = ({
             )}
             renderItem={({ item, index }) => (
               <SheetDetailsInfo
+                selectedTransactions={selectedTransactions}
+                setSelectedTransactions={setSelectedTransactions}
+                multiSelectMode={multiSelectMode}
+                setMultiSelectMode={setMultiSelectMode}
                 transaction={item}
                 sheet={sheet}
                 navigation={navigation}

@@ -1,5 +1,5 @@
-import React, {useRef, useContext, useState} from 'react';
-import {TouchableOpacity, Alert, View} from 'react-native';
+import React, { useRef, useContext, useState } from 'react';
+import { TouchableOpacity, Alert, View } from 'react-native';
 import moment from 'moment';
 import {
   Menu,
@@ -9,9 +9,10 @@ import {
 } from 'react-native-popup-menu';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Animated, {FadeInUp, FadeOutUp} from 'react-native-reanimated';
-import {SheetDetailsContext} from '../../../../services/sheetDetails/sheetDetails.context';
+import Animated, { FadeInUp, FadeOutUp } from 'react-native-reanimated';
+import { SheetDetailsContext } from '../../../../services/sheetDetails/sheetDetails.context';
 import {
+  DeleteCheckBox,
   SheetDetailAmount,
   SheetDetailCategory,
   SheetDetailCategoryColor,
@@ -19,29 +20,42 @@ import {
   SheetDetailInfoContainer,
   SheetDetailNotes,
 } from './sheet-details.styles';
-import {FlexRow} from '../../../../components/styles';
+import { FlexRow } from '../../../../components/styles';
 import {
   GetCurrencyLocalString,
   GetCurrencySymbol,
 } from '../../../../components/symbol.currency';
-import {Text} from '../../../../components/typography/text.component';
-import {Spacer} from '../../../../components/spacer/spacer.component';
+import { Text } from '../../../../components/typography/text.component';
+import { Spacer } from '../../../../components/spacer/spacer.component';
 import _ from 'lodash';
-import {getLinkedDbRecord} from '../../../../components/utility/helper';
+import { getLinkedDbRecord } from '../../../../components/utility/helper';
+import { useTheme } from 'styled-components/native';
 
 const menuOptionStyles = {
-  optionWrapper: {padding: 15, paddingTop: 10},
+  optionWrapper: { padding: 15, paddingTop: 10 },
   OptionTouchableComponent: TouchableOpacity,
 };
 
-export const SheetDetailsInfo = ({transaction, sheet, navigation, index}) => {
-  const {onDeleteSheetDetail, onDuplicateSheetDetail, onChangeSheetDetailType} =
-    useContext(SheetDetailsContext);
+export const SheetDetailsInfo = ({
+  transaction,
+  sheet,
+  navigation,
+  index,
+  multiSelectMode,
+  setMultiSelectMode,
+  selectedTransactions,
+  setSelectedTransactions,
+}) => {
+  const {
+    onDeleteSheetDetail,
+    onDuplicateSheetDetail,
+    onChangeSheetDetailType,
+  } = useContext(SheetDetailsContext);
   const menuRef = useRef(null);
-
+  const theme = useTheme();
   const [category, setCategory] = useState({});
 
-  const {type, amount, notes, showTime, time} = transaction;
+  const { type, amount, notes, showTime, time } = transaction;
 
   const getCategory = async () => {
     const cgry = await getLinkedDbRecord(transaction, 'category');
@@ -53,42 +67,57 @@ export const SheetDetailsInfo = ({transaction, sheet, navigation, index}) => {
     getCategory();
   }
   const handleDelete = () => {
-    Alert.alert(
-      'Confirm?',
-      `Delete this "${type.toUpperCase()}" transaction?`,
-      [
-        {text: 'Cancel'},
-        {
-          text: 'Delete',
-          onPress: () => onDeleteSheetDetail(sheet, transaction, () => {}),
-        },
-      ],
-    );
+    menuRef.current?.close();
+    setSelectedTransactions([transaction.id]);
+    setMultiSelectMode(true);
   };
 
   return (
     <Animated.View entering={FadeInUp}>
       <Menu
         onBackdropPress={() => menuRef.current?.close()}
-        ref={ref => (menuRef.current = ref)}>
+        ref={ref => (menuRef.current = ref)}
+      >
         <MenuTrigger
           customStyles={{
             triggerTouchable: {
-              onLongPress: () => menuRef.current?.open(),
+              onLongPress: () =>
+                multiSelectMode ? null : menuRef.current?.open(),
               onPress: () => {
-                menuRef.current?.close();
-                navigation.navigate('AddSheetDetail', {
-                  sheetDetail: transaction,
-                  sheet: sheet,
-                  edit: true,
-                });
+                if (multiSelectMode) {
+                  const alreadySelected = selectedTransactions.includes(
+                    transaction.id,
+                  );
+                  const newSelection = alreadySelected
+                    ? selectedTransactions.filter(id => id !== transaction.id)
+                    : [...selectedTransactions, transaction.id];
+                  setSelectedTransactions(newSelection);
+                } else {
+                  menuRef.current?.close();
+                  navigation.navigate('AddSheetDetail', {
+                    sheetDetail: transaction,
+                    sheet: sheet,
+                    edit: true,
+                  });
+                }
               },
               underlayColor: '#eee',
             },
             TriggerTouchableComponent: TouchableOpacity,
-          }}>
+          }}
+        >
           <SheetDetailInfoContainer>
             <SheetDetailInfo>
+              {multiSelectMode && (
+                <DeleteCheckBox
+                  checked={selectedTransactions.includes(transaction.id)}
+                >
+                  {selectedTransactions.includes(transaction.id) && (
+                    <Ionicons name="checkmark" size={16} color="white" />
+                  )}
+                </DeleteCheckBox>
+              )}
+
               <SheetDetailCategoryColor color={category?.color}>
                 {category?.icon && (
                   <MaterialCommunityIcon
@@ -102,14 +131,14 @@ export const SheetDetailsInfo = ({transaction, sheet, navigation, index}) => {
                 <SheetDetailCategory>{category?.name}</SheetDetailCategory>
 
                 {sheet?.isLoanAccount && (
-                  <SheetDetailNotes style={{marginTop: 2}}>
+                  <SheetDetailNotes style={{ marginTop: 2 }}>
                     {transaction.isEmiPayment ? 'EMI Payment' : 'Pre Payment'}
                   </SheetDetailNotes>
                 )}
 
                 {showTime || notes ? (
                   <SheetDetailNotes>
-                    {_.truncate(notes, {length: 25, omission: '...'})}
+                    {_.truncate(notes, { length: 25, omission: '...' })}
                     {showTime ? ` at ${moment(time).format('hh:mm A')}` : ''}
                   </SheetDetailNotes>
                 ) : null}
@@ -129,14 +158,16 @@ export const SheetDetailsInfo = ({transaction, sheet, navigation, index}) => {
             marginTop: 0,
             borderRadius: 10,
             minWidth: 250,
-          }}>
+          }}
+        >
           {!sheet.useReducingBalance && (
             <>
               <MenuOption
                 customStyles={menuOptionStyles}
                 onSelect={() =>
                   onChangeSheetDetailType(sheet, transaction, () => {})
-                }>
+                }
+              >
                 <FlexRow justifyContent="space-between">
                   <Text fontfamily="heading" color={'#000'}>
                     Change type to {type === 'expense' ? 'income' : 'expense'}
@@ -152,7 +183,8 @@ export const SheetDetailsInfo = ({transaction, sheet, navigation, index}) => {
                     sheetDetail: transaction,
                     sheet,
                   })
-                }>
+                }
+              >
                 <FlexRow justifyContent="space-between">
                   <Text fontfamily="heading" color={'#000'}>
                     Move {type}
@@ -165,7 +197,8 @@ export const SheetDetailsInfo = ({transaction, sheet, navigation, index}) => {
                 customStyles={menuOptionStyles}
                 onSelect={() =>
                   onDuplicateSheetDetail(sheet, transaction, () => {})
-                }>
+                }
+              >
                 <FlexRow justifyContent="space-between">
                   <Text fontfamily="heading" color={'#000'}>
                     Duplicate {type}

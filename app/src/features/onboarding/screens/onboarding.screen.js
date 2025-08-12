@@ -1,16 +1,16 @@
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/react-in-jsx-scope */
-import {Image, Platform, TouchableOpacity, View} from 'react-native';
+import { Image, Platform, TouchableOpacity, View } from 'react-native';
 import Onboarding from 'react-native-onboarding-swiper';
-import styled, {useTheme} from 'styled-components/native';
-import {useRef} from 'react';
-import {useDispatch} from 'react-redux';
+import styled, { useTheme } from 'styled-components/native';
+import { useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {setOnBoarding} from '../../../store/service-slice';
-import {FlexRow} from '../../../components/styles';
-import {Spacer} from '../../../components/spacer/spacer.component';
-import {Text} from '../../../components/typography/text.component';
+import { setOnBoarding } from '../../../store/service-slice';
+import { FlexRow } from '../../../components/styles';
+import { Spacer } from '../../../components/spacer/spacer.component';
+import { Text } from '../../../components/typography/text.component';
 
 const GetStartedButton = styled(TouchableOpacity)`
   background-color: #fff;
@@ -20,7 +20,7 @@ const GetStartedButton = styled(TouchableOpacity)`
   margin-right: 10px;
 `;
 
-export const OnBoarding = ({navigation, navigate}) => {
+export const OnBoarding = ({ navigation, navigate }) => {
   let theme = useTheme();
 
   const onBoardingRef = useRef();
@@ -32,7 +32,7 @@ export const OnBoarding = ({navigation, navigate}) => {
       backgroundColor: theme.colors.brand.primary,
       image: (
         <Image
-          style={{height: 350, width: 350, resizeMode: 'contain'}}
+          style={{ height: 350, width: 350, resizeMode: 'contain' }}
           source={require('../../../../assets/onboarding/1.png')}
         />
       ),
@@ -44,7 +44,7 @@ export const OnBoarding = ({navigation, navigate}) => {
       backgroundColor: theme.colors.brand.primary,
       image: (
         <Image
-          style={{height: 350, width: 350, resizeMode: 'contain'}}
+          style={{ height: 350, width: 350, resizeMode: 'contain' }}
           source={require('../../../../assets/onboarding/2.png')}
         />
       ),
@@ -56,7 +56,7 @@ export const OnBoarding = ({navigation, navigate}) => {
       backgroundColor: theme.colors.brand.primary,
       image: (
         <Image
-          style={{height: 350, width: 350, resizeMode: 'contain'}}
+          style={{ height: 350, width: 350, resizeMode: 'contain' }}
           source={require('../../../../assets/onboarding/3.png')}
         />
       ),
@@ -68,7 +68,7 @@ export const OnBoarding = ({navigation, navigate}) => {
       backgroundColor: theme.colors.brand.primary,
       image: (
         <Image
-          style={{height: 350, width: 350, resizeMode: 'contain'}}
+          style={{ height: 350, width: 350, resizeMode: 'contain' }}
           source={require('../../../../assets/onboarding/4.png')}
         />
       ),
@@ -80,7 +80,7 @@ export const OnBoarding = ({navigation, navigate}) => {
       backgroundColor: theme.colors.brand.primary,
       image: (
         <Image
-          style={{height: 350, width: 350, resizeMode: 'contain'}}
+          style={{ height: 350, width: 350, resizeMode: 'contain' }}
           source={require('../../../../assets/onboarding/5.png')}
         />
       ),
@@ -95,7 +95,7 @@ export const OnBoarding = ({navigation, navigate}) => {
       backgroundColor: theme.colors.brand.primary,
       image: (
         <Image
-          style={{height: 350, width: 350, resizeMode: 'contain'}}
+          style={{ height: 350, width: 350, resizeMode: 'contain' }}
           source={require('../../../../assets/onboarding/1.png')}
         />
       ),
@@ -107,7 +107,7 @@ export const OnBoarding = ({navigation, navigate}) => {
       backgroundColor: theme.colors.brand.primary,
       image: (
         <Image
-          style={{height: 350, width: 350, resizeMode: 'contain'}}
+          style={{ height: 350, width: 350, resizeMode: 'contain' }}
           source={require('../../../../assets/onboarding/2.png')}
         />
       ),
@@ -119,7 +119,7 @@ export const OnBoarding = ({navigation, navigate}) => {
       backgroundColor: theme.colors.brand.primary,
       image: (
         <Image
-          style={{height: 350, width: 350, resizeMode: 'contain'}}
+          style={{ height: 350, width: 350, resizeMode: 'contain' }}
           source={require('../../../../assets/onboarding/4.png')}
         />
       ),
@@ -131,7 +131,7 @@ export const OnBoarding = ({navigation, navigate}) => {
       backgroundColor: theme.colors.brand.primary,
       image: (
         <Image
-          style={{height: 350, width: 350, resizeMode: 'contain'}}
+          style={{ height: 350, width: 350, resizeMode: 'contain' }}
           source={require('../../../../assets/onboarding/5.png')}
         />
       ),
@@ -147,7 +147,7 @@ export const OnBoarding = ({navigation, navigate}) => {
     dispatch(setOnBoarding(true));
   };
 
-  const Next = ({isLight, ...props}) => {
+  const Next = ({ isLight, ...props }) => {
     return (
       <TouchableOpacity
         style={{
@@ -156,7 +156,8 @@ export const OnBoarding = ({navigation, navigate}) => {
           borderRadius: 50,
           marginRight: 10,
         }}
-        {...props}>
+        {...props}
+      >
         <MaterialCommunityIcons
           name={'arrow-right'}
           size={20}
@@ -166,7 +167,7 @@ export const OnBoarding = ({navigation, navigate}) => {
     );
   };
 
-  const Dot = ({selected, ...props}) => {
+  const Dot = ({ selected, ...props }) => {
     return (
       <View
         style={{
@@ -183,7 +184,7 @@ export const OnBoarding = ({navigation, navigate}) => {
     );
   };
 
-  const Done = ({isLight, ...props}) => {
+  const Done = ({ isLight, ...props }) => {
     return (
       <GetStartedButton onPress={onDone}>
         <FlexRow justifyContent="center">

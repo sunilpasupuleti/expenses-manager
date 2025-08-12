@@ -517,6 +517,12 @@ export const BankSubscriptionsScreen = ({ navigation }) => {
                             moment().startOf('day'),
                             'days',
                           );
+                          if (diffDays < 0) {
+                            const daysPast = Math.abs(diffDays);
+                            return `(${daysPast} day${
+                              daysPast === 1 ? '' : 's'
+                            } overdue)`;
+                          }
                           if (diffDays === 0) return 'today';
                           if (diffDays === 1) return 'tomorrow';
                           return `in ${diffDays} days`;
@@ -570,31 +576,32 @@ export const BankSubscriptionsScreen = ({ navigation }) => {
                 Recent 5 Payments
               </Text>
               {item.transactions && item.transactions.length > 0 ? (
-                item.transactions
+                _.orderBy(item.transactions, ['date'], ['desc'])
                   .slice(0, 5)
-                  .reverse()
-                  .map((tx, idx) => (
-                    <View
-                      key={idx}
-                      style={{
-                        flexDirection: 'row',
-                        alignItems: 'center',
-                        marginBottom: 6,
-                      }}
-                    >
-                      <Ionicons
-                        name="checkmark-circle-outline"
-                        size={18}
-                        color="#8B5CF6"
-                        style={{ marginRight: 8 }}
-                      />
-                      <Text style={{ color: '#555', fontSize: 13 }}>
-                        {moment(tx.date).format('MMM DD, YYYY')} -{' '}
-                        {GetCurrencySymbol(item.currencyCode)}
-                        {Math.abs(parseFloat(tx.amount)).toFixed(2)}
-                      </Text>
-                    </View>
-                  ))
+                  .map((tx, idx) => {
+                    return (
+                      <View
+                        key={idx}
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          marginBottom: 6,
+                        }}
+                      >
+                        <Ionicons
+                          name="checkmark-circle-outline"
+                          size={18}
+                          color="#8B5CF6"
+                          style={{ marginRight: 8 }}
+                        />
+                        <Text style={{ color: '#555', fontSize: 13 }}>
+                          {moment(tx.date).format('MMM DD, YYYY')} -{' '}
+                          {GetCurrencySymbol(item.currencyCode)}
+                          {Math.abs(parseFloat(tx.amount)).toFixed(2)}
+                        </Text>
+                      </View>
+                    );
+                  })
               ) : (
                 <Text style={{ color: '#555', fontSize: 13 }}>
                   No recent payments

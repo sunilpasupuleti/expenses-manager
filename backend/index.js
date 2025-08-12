@@ -174,6 +174,7 @@ server.listen(process.env.PORT || 8080, async () => {
    */
   const redis = await getRedis();
   global.redis = redis;
+
   /**
    * ADMIN CREATION
    */

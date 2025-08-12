@@ -1,18 +1,23 @@
-import React, {createContext, useState, useEffect} from 'react';
-import {Alert} from 'react-native';
+import React, { createContext, useState, useEffect, useContext } from 'react';
+import { Alert } from 'react-native';
 import axios from 'axios';
-import {useDispatch} from 'react-redux';
-import {loaderActions} from '../../store/loader-slice';
+import { useDispatch } from 'react-redux';
+import { loaderActions } from '../../store/loader-slice';
 import remoteConfig from '@react-native-firebase/remote-config';
 import useHttp from '../../hooks/use-http';
 import auth from '@react-native-firebase/auth';
-import {notificationActions} from '../../store/notification-slice';
+import { notificationActions } from '../../store/notification-slice';
 import moment from 'moment';
-import {GetCurrencySymbol} from '../../components/symbol.currency';
-import {hashCode, sendLocalNotification} from '../../components/utility/helper';
+import { GetCurrencySymbol } from '../../components/symbol.currency';
+import {
+  hashCode,
+  sendLocalNotification,
+} from '../../components/utility/helper';
 import PushNotification from 'react-native-push-notification';
 import plaidCategories from '../../components/utility/plaidCategories.json';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthenticationContext } from '../authentication/authentication.context';
+import { WatermelonDBContext } from '../watermelondb/watermelondb.context';
 
 const getShortDescription = detailedCategory => {
   const match = plaidCategories.find(cat => cat.detailed === detailedCategory);
@@ -34,13 +39,26 @@ export const BankAccountContext = createContext({
 });
 
 // BankAccountContext Provider
-export const BankAccountContextProvider = ({children}) => {
+export const BankAccountContextProvider = ({ children }) => {
   const PLAID_BACKEND_URL = remoteConfig()
     .getValue('PLAID_BACKEND_URL')
     .asString();
-
+  const { userData } = useContext(AuthenticationContext);
+  const { db } = useContext(WatermelonDBContext);
   const dispatch = useDispatch();
-  const {sendRequest} = useHttp();
+  const { sendRequest } = useHttp();
+
+  useEffect(() => {
+    if (userData && db) {
+      getRecurringTransactions(
+        {},
+        () => {},
+        () => {},
+        false,
+        false,
+      );
+    }
+  }, [userData, db]);
 
   const showLoader = (loaderType, backdrop = true, loaderText = null) => {
     let options = {};
@@ -53,7 +71,7 @@ export const BankAccountContextProvider = ({children}) => {
     if (loaderText) {
       options.loaderText = loaderText;
     }
-    dispatch(loaderActions.showLoader({...options}));
+    dispatch(loaderActions.showLoader({ ...options }));
   };
 
   const hideLoader = () => {
@@ -102,6 +120,125 @@ export const BankAccountContextProvider = ({children}) => {
         const nextDate = moment(predictedNextDate);
         const today = moment().startOf('day');
         const daysUntilNext = nextDate.diff(today, 'days');
+
+        // Schedule overdue notifications for missed payments
+        if (daysUntilNext < 0) {
+          next5daysSubscriptions.push(service);
+
+          const daysOverdue = Math.abs(daysUntilNext);
+
+          // Only schedule for payments overdue by 1-30 days (avoid spam for very old predictions)
+          if (daysOverdue >= 1 && daysOverdue <= 30) {
+            const currencySymbol = GetCurrencySymbol(
+              service.currencyCode || 'USD',
+            );
+            const amount =
+              Math.abs(service.averageAmount || service.lastAmount) || 0;
+
+            const shortDescription = getShortDescription(
+              service.detailedCategory,
+            );
+            const serviceName =
+              `${shortDescription} (${service.serviceName})` ||
+              service.serviceName ||
+              service.merchantName ||
+              'Unknown Service';
+
+            const isInflow = service.type === 'inflow';
+
+            const now = moment();
+            let overdueDate = moment().hour(10).minute(0).second(0);
+
+            // If current time is already past 10 AM today, schedule for tomorrow at 10 AM
+            if (now.isAfter(overdueDate)) {
+              overdueDate = overdueDate.add(1, 'day');
+            }
+
+            overdueDate = overdueDate.toDate();
+
+            const overdueTitle = isInflow
+              ? '⏰ Expected Payment Overdue'
+              : '🚨 Payment Overdue';
+
+            const overdueMessage = isInflow
+              ? `Expected payment of ${currencySymbol}${amount.toFixed(
+                  2,
+                )} from ${serviceName} is ${daysOverdue} day${
+                  daysOverdue === 1 ? '' : 's'
+                } overdue. Check your ${
+                  service.institutionName
+                } account or contact ${serviceName}.`
+              : `Your payment of ${currencySymbol}${amount.toFixed(
+                  2,
+                )} for ${serviceName} is ${daysOverdue} day${
+                  daysOverdue === 1 ? '' : 's'
+                } overdue! Please check your ${
+                  service.institutionName
+                } account.`;
+
+            const overdueNotificationId = `recurring_overdue_${
+              service.streamId || index
+            }`;
+
+            sendLocalNotification(
+              {
+                title: overdueTitle,
+                message: overdueMessage,
+                notificationId: hashCode(overdueNotificationId),
+              },
+              {
+                streamId: service.streamId,
+                type: 'recurring_overdue',
+                serviceName: serviceName,
+                isInflow: isInflow,
+                originalId: overdueNotificationId,
+                merchantLogo: service.merchantLogo,
+                daysOverdue: daysOverdue,
+              },
+              overdueDate,
+            );
+
+            // Schedule follow-up reminders for severely overdue payments (7, 14 days)
+            if (daysOverdue === 7 || daysOverdue === 14) {
+              const followUpDate = moment()
+                .hour(14) // 2 PM for follow-up
+                .minute(0)
+                .second(0)
+                .add(1, 'hour')
+                .toDate();
+
+              const followUpTitle = isInflow
+                ? '⚠️ Payment Still Missing'
+                : '🚨 Urgent: Payment Still Overdue';
+
+              const followUpMessage = isInflow
+                ? `Expected payment from ${serviceName} is now ${daysOverdue} days overdue. You may want to contact them directly.`
+                : `URGENT: Your ${serviceName} payment is ${daysOverdue} days overdue. Please take immediate action to avoid late fees.`;
+
+              const followUpNotificationId = `recurring_followup_${daysOverdue}_${
+                service.streamId || index
+              }`;
+
+              sendLocalNotification(
+                {
+                  title: followUpTitle,
+                  message: followUpMessage,
+                  notificationId: hashCode(followUpNotificationId),
+                },
+                {
+                  streamId: service.streamId,
+                  type: 'recurring_followup',
+                  serviceName: serviceName,
+                  isInflow: isInflow,
+                  originalId: followUpNotificationId,
+                  merchantLogo: service.merchantLogo,
+                  daysOverdue: daysOverdue,
+                },
+                followUpDate,
+              );
+            }
+          }
+        }
 
         // Only schedule if within next 5 days (to catch 2-day reminder)
         if (daysUntilNext >= 0 && daysUntilNext <= 5) {
@@ -410,6 +547,7 @@ export const BankAccountContextProvider = ({children}) => {
     callback = () => {},
     errorCallback = () => {},
     loader = true,
+    notify = true,
   ) => {
     try {
       if (loader) {
@@ -434,7 +572,9 @@ export const BankAccountContextProvider = ({children}) => {
           errorCallback: err => {
             hideLoader();
             errorCallback();
-            showNotification('error', err);
+            if (notify) {
+              showNotification('error', err);
+            }
           },
         },
       );
@@ -488,7 +628,8 @@ export const BankAccountContextProvider = ({children}) => {
         unlinkAccount,
         getTransactions,
         getRecurringTransactions,
-      }}>
+      }}
+    >
       {children}
     </BankAccountContext.Provider>
   );

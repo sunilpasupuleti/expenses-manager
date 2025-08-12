@@ -1,18 +1,18 @@
 /* eslint-disable react/no-unstable-nested-components */
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import React, {useContext, useEffect, useState} from 'react';
-import {ScrollView, TouchableOpacity} from 'react-native';
-import {Card} from 'react-native-paper';
-import {useTheme} from 'styled-components/native';
+import React, { useContext, useEffect, useState } from 'react';
+import { ScrollView, TouchableOpacity } from 'react-native';
+import { Card } from 'react-native-paper';
+import { useTheme } from 'styled-components/native';
 import {
   CategoryColor,
   AddNewCategoryIcon,
   CategoryItem,
   NewCategory,
 } from '../../../categories/components/categories.styles';
-import {SheetsContext} from '../../../../services/sheets/sheets.context';
-import {SafeArea} from '../../../../components/utility/safe-area.component';
-import {Text} from '../../../../components/typography/text.component';
+import { SheetsContext } from '../../../../services/sheets/sheets.context';
+import { SafeArea } from '../../../../components/utility/safe-area.component';
+import { Text } from '../../../../components/typography/text.component';
 import {
   FlexRow,
   Input,
@@ -20,17 +20,17 @@ import {
   TouchableHighlightWithColor,
 } from '../../../../components/styles';
 import _ from 'lodash';
-import {Spacer} from '../../../../components/spacer/spacer.component';
+import { Spacer } from '../../../../components/spacer/spacer.component';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import {CategoriesContext} from '../../../../services/categories/categories.context';
-import {searchKeywordRegex} from '../../../../components/utility/helper';
-import {useIsFocused} from '@react-navigation/native';
-import {View} from 'react-native';
-import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
-import {ObservedSelectCategoryScreen} from './select-category.observed';
+import { CategoriesContext } from '../../../../services/categories/categories.context';
+import { searchKeywordRegex } from '../../../../components/utility/helper';
+import { StackActions, useIsFocused } from '@react-navigation/native';
+import { View } from 'react-native';
+import { AuthenticationContext } from '../../../../services/authentication/authentication.context';
+import { ObservedSelectCategoryScreen } from './select-category.observed';
 
-export const SelectCategoryScreen = ({navigation, route}) => {
-  const {userData} = useContext(AuthenticationContext);
+export const SelectCategoryScreen = ({ navigation, route }) => {
+  const { userData } = useContext(AuthenticationContext);
   const [searchKeyword, setSearchKeyword] = useState('');
   const theme = useTheme();
   const routeIsFocused = useIsFocused();
@@ -42,7 +42,8 @@ export const SelectCategoryScreen = ({navigation, route}) => {
             <Ionicons
               name="chevron-back-outline"
               size={25}
-              color={theme.colors.brand.primary}></Ionicons>
+              color={theme.colors.brand.primary}
+            ></Ionicons>
             <Text color={theme.colors.brand.primary}>Back</Text>
           </FlexRow>
         </TouchableOpacity>
@@ -102,33 +103,54 @@ export const BaseSelectCategoryScreen = ({
 
         <ScrollView showsVerticalScrollIndicator={false}>
           <Card
-            theme={{roundness: 5}}
+            theme={{ roundness: 5 }}
             style={{
               marginBottom: 100,
               backgroundColor: theme.colors.bg.card,
               margin: 1,
-            }}>
+            }}
+          >
             {categories.map(c => {
               return (
                 <TouchableHighlightWithColor
                   key={c.id}
                   onPress={() => {
+                    console.log(route.params);
+
+                    const routes = navigation.getState().routes;
+                    const previousRouteKey = routes[routes.length - 2]?.key;
+                    console.log(previousRouteKey);
+
                     if (route.params.editMode) {
                       // send back category
                       route.params.editModeParams.category = c;
                       route.params.editModeParams.type = c.type;
-
-                      navigation.navigate('AddSheetDetail', {
-                        edit: true,
-                        sheetDetail: route.params.editModeParams,
-                        sheetDetailModel: route.params?.sheetDetailModel,
-                      });
+                      navigation.navigate(
+                        'AddSheetDetail',
+                        {
+                          edit: true,
+                          sheet: route.params.sheet,
+                          sheetDetail: route.params.editModeParams,
+                          sheetDetailModel: route.params?.sheetDetailModel,
+                        },
+                        {
+                          pop: true,
+                        },
+                      );
                     } else {
-                      navigation.navigate('AddSheetDetail', {
-                        selectedCategory: c,
-                      });
+                      navigation.navigate(
+                        'AddSheetDetail',
+                        {
+                          selectedCategory: c,
+                          sheet: route.params.sheet,
+                        },
+                        {
+                          pop: true,
+                        },
+                      );
                     }
-                  }}>
+                  }}
+                >
                   <Card.Content key={c.id}>
                     <FlexRow justifyContent="space-between">
                       <CategoryItem>
@@ -174,7 +196,8 @@ export const BaseSelectCategoryScreen = ({
                 },
               },
             })
-          }>
+          }
+        >
           <AddNewCategoryIcon
             name="add-circle-outline"
             size={25}

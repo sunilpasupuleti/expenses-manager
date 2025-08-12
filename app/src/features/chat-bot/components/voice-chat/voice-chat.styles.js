@@ -5,6 +5,8 @@ import Animated from 'react-native-reanimated';
 
 const { width, height } = Dimensions.get('window');
 
+const isIos = Platform.OS === 'ios' ? true : false;
+
 export const Container = styled.View`
   flex: 1;
   background-color: #f8f9fa;
@@ -60,7 +62,7 @@ export const ConversationContent = styled.View`
 export const WelcomeContainer = styled.View`
   align-items: center;
   justify-content: center;
-  padding-vertical: 40px;
+  padding-vertical: 10px;
   padding-horizontal: 20px;
 `;
 
@@ -100,7 +102,7 @@ export const ExampleContainer = styled.View`
   shadow-offset: 0px 2px;
   shadow-opacity: 0.08;
   shadow-radius: 12px;
-  elevation: 5;
+  elevation: ${isIos ? 5 : 0};
 `;
 
 export const ExampleTitle = styled.Text`
@@ -139,7 +141,7 @@ export const UserMessage = styled.View`
   shadow-offset: 0px 1px;
   shadow-opacity: 0.05;
   shadow-radius: 6px;
-  elevation: 3;
+  elevation: ${isIos ? 3 : 0};
 `;
 
 export const UserText = styled.Text`
@@ -179,7 +181,7 @@ export const AuraIconGradient = styled(LinearGradient).attrs({
   shadow-offset: 0px 2px;
   shadow-opacity: 0.3;
   shadow-radius: 4px;
-  elevation: 5;
+  elevation: ${isIos ? 5 : 0};
 `;
 
 export const AuraIconText = styled.Text`
@@ -197,7 +199,7 @@ export const AITextContainer = styled.View`
   shadow-offset: 0px 2px;
   shadow-opacity: 0.08;
   shadow-radius: 8px;
-  elevation: 4;
+  elevation: ${isIos ? 4 : 0};
 `;
 
 export const AIText = styled.Text`

@@ -7,13 +7,20 @@ import moment from 'moment';
 import _ from 'lodash';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Spacer } from '../../../../components/spacer/spacer.component';
-import { Pressable, SectionList, View } from 'react-native';
+import {
+  Alert,
+  Pressable,
+  SectionList,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import { SheetDetailsContext } from '../../../../services/sheetDetails/sheetDetails.context';
 import { useIsFocused } from '@react-navigation/native';
 import { Text } from '../../../../components/typography/text.component';
 import { FlexRow, Input } from '../../../../components/styles';
 import {
+  DeleteBar,
   SheetDetailHeader,
   SheetDetailHeaderLabel,
   SheetDetailsTotalBalance,
@@ -85,10 +92,13 @@ export const BaseUpcomingSheetDetails = ({
   setSearchKeyword,
   sheet,
 }) => {
-  const { onCheckUpcomingSheetDetails } = useContext(SheetDetailsContext);
+  const { onCheckUpcomingSheetDetails, onDeleteSheetDetail } =
+    useContext(SheetDetailsContext);
   const routeIsFocused = useIsFocused();
   const [amountWidth, setAmountWidth] = useState(0);
   const [totalBalance, setTotalBalance] = useState(0);
+  const [multiSelectMode, setMultiSelectMode] = useState(false);
+  const [selectedTransactions, setSelectedTransactions] = useState([]);
 
   const theme = useTheme();
 
@@ -131,8 +141,64 @@ export const BaseUpcomingSheetDetails = ({
     return finalEntries;
   }, [upcomingTransactions]);
 
+  const onDeleteTransactions = () => {
+    Alert.alert(
+      'Confirm Delete',
+      `Delete ${selectedTransactions.length} transactions?`,
+      [
+        { text: 'Cancel' },
+        {
+          text: 'Delete',
+          onPress: () => {
+            selectedTransactions.forEach(id => {
+              const txn = upcomingTransactions.find(t => t.id === id);
+              if (txn) onDeleteSheetDetail(sheet, txn, () => {});
+            });
+            setSelectedTransactions([]);
+            setMultiSelectMode(false);
+          },
+          style: 'destructive',
+        },
+      ],
+    );
+  };
+
   return (
     <SafeArea child={true}>
+      {multiSelectMode && (
+        <DeleteBar style={{ bottom: 50 }}>
+          <TouchableOpacity onPress={onDeleteTransactions}>
+            <Text color="red">Delete ({selectedTransactions.length})</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => {
+              // Select All if not all selected, else clear all
+              if (selectedTransactions.length < upcomingTransactions.length) {
+                setSelectedTransactions(upcomingTransactions.map(t => t.id));
+              } else {
+                setSelectedTransactions([]);
+              }
+            }}
+          >
+            <Text>
+              {selectedTransactions.length < upcomingTransactions.length
+                ? 'Select All'
+                : 'Deselect All'}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => {
+              setSelectedTransactions([]);
+              setMultiSelectMode(false);
+            }}
+          >
+            <Text>Cancel</Text>
+          </TouchableOpacity>
+        </DeleteBar>
+      )}
+
       <FlexRow justifyContent="center">
         <View
           onLayout={e => setAmountWidth(e.nativeEvent.layout.width)}
@@ -192,6 +258,10 @@ export const BaseUpcomingSheetDetails = ({
             )}
             renderItem={({ item, index, section }) => (
               <SheetDetailsInfo
+                selectedTransactions={selectedTransactions}
+                setSelectedTransactions={setSelectedTransactions}
+                multiSelectMode={multiSelectMode}
+                setMultiSelectMode={setMultiSelectMode}
                 transaction={item}
                 sheet={sheet}
                 navigation={navigation}

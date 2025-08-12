@@ -1,10 +1,10 @@
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import React, {useEffect, useState} from 'react';
-import {ScrollView, TouchableOpacity, View} from 'react-native';
-import {Button, Card, Divider} from 'react-native-paper';
-import {useSelector} from 'react-redux';
-import {useTheme} from 'styled-components/native';
-import {Spacer} from '../../../components/spacer/spacer.component';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, TouchableOpacity, View } from 'react-native';
+import { Button, Card, Divider } from 'react-native-paper';
+import { useSelector } from 'react-redux';
+import { useTheme } from 'styled-components/native';
+import { Spacer } from '../../../components/spacer/spacer.component';
 import {
   ButtonText,
   FlexRow,
@@ -12,11 +12,11 @@ import {
   MainWrapper,
   TouchableHighlightWithColor,
 } from '../../../components/styles';
-import {GetCurrencySymbol} from '../../../components/symbol.currency';
-import {Text} from '../../../components/typography/text.component';
-import {SafeArea} from '../../../components/utility/safe-area.component';
+import { GetCurrencySymbol } from '../../../components/symbol.currency';
+import { Text } from '../../../components/typography/text.component';
+import { SafeArea } from '../../../components/utility/safe-area.component';
 
-export const CurrenciesScreen = ({navigation, route}) => {
+export const CurrenciesScreen = ({ navigation, route }) => {
   const theme = useTheme();
   const exchangeRates = useSelector(state => state.service.exchangeRates);
   const [currencies, setCurrencies] = useState(null);
@@ -39,7 +39,8 @@ export const CurrenciesScreen = ({navigation, route}) => {
               <Ionicons
                 name="chevron-back-outline"
                 size={25}
-                color={theme.colors.brand.primary}></Ionicons>
+                color={theme.colors.brand.primary}
+              ></Ionicons>
               <Text color={theme.colors.brand.primary}>New Account</Text>
             </FlexRow>
           </TouchableOpacity>
@@ -49,16 +50,23 @@ export const CurrenciesScreen = ({navigation, route}) => {
           <Button
             uppercase={false}
             onPress={() =>
-              navigation.navigate('AddSheet', {
-                selectedCurrency: selectedCurrency,
-              })
-            }>
+              navigation.navigate(
+                'AddSheet',
+                {
+                  selectedCurrency: selectedCurrency,
+                },
+                {
+                  pop: true,
+                },
+              )
+            }
+          >
             <ButtonText>Done</ButtonText>
           </Button>
         ) : (
           <Ionicons
             onPress={() => navigation.goBack()}
-            style={{marginRight: 10}}
+            style={{ marginRight: 10 }}
             name="close-circle-outline"
             size={30}
             color={theme.colors.brand.primary}
@@ -68,7 +76,7 @@ export const CurrenciesScreen = ({navigation, route}) => {
   }, [selectedCurrency, displayMode]);
 
   useEffect(() => {
-    setCurrencies({...exchangeRates});
+    setCurrencies({ ...exchangeRates });
     if (searchKeyword !== '') {
       let filtered = {};
       Object.keys(exchangeRates).filter(key => {
@@ -95,7 +103,8 @@ export const CurrenciesScreen = ({navigation, route}) => {
       style={{
         flex: 1,
         backgroundColor: theme.colors.bg.primary,
-      }}>
+      }}
+    >
       <MainWrapper>
         <Input
           value={searchKeyword}
@@ -108,8 +117,9 @@ export const CurrenciesScreen = ({navigation, route}) => {
         {(currencies && selectedCurrency) || displayMode ? (
           <ScrollView showsVerticalScrollIndicator={false}>
             <Card
-              theme={{roundness: 10}}
-              style={{margin: 0.5, backgroundColor: theme.colors.bg.card}}>
+              theme={{ roundness: 10 }}
+              style={{ margin: 0.5, backgroundColor: theme.colors.bg.card }}
+            >
               {Object.keys(currencies).map(key => {
                 let c = currencies[key];
                 let currency = GetCurrencySymbol(key);
@@ -125,7 +135,8 @@ export const CurrenciesScreen = ({navigation, route}) => {
                       selectedCurrency === key && {
                         backgroundColor: theme.colors.brand.secondary,
                       }
-                    }>
+                    }
+                  >
                     <Card.Content>
                       {!displayMode && (
                         <FlexRow justifyContent="space-between">
@@ -136,7 +147,7 @@ export const CurrenciesScreen = ({navigation, route}) => {
 
                       {displayMode && (
                         <FlexRow justifyContent="space-between">
-                          <View style={{flexBasis: '30%'}}>
+                          <View style={{ flexBasis: '30%' }}>
                             <Text fontfamily="heading">
                               {c} {' ( '}
                               <Text fontfamily="headingSemiBold">
@@ -172,8 +183,9 @@ export const CurrenciesScreen = ({navigation, route}) => {
               flex: 1,
               alignContent: 'center',
               justifyContent: 'center',
-            }}>
-            <Text style={{textAlign: 'center'}} fontfamily="heading">
+            }}
+          >
+            <Text style={{ textAlign: 'center' }} fontfamily="heading">
               No Currency Selection available for now! Try again later or
               contact admin
             </Text>

@@ -1,11 +1,11 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import React, {useEffect, useRef, useState} from 'react';
-import {useTheme} from 'styled-components/native';
+import React, { useEffect, useRef, useState } from 'react';
+import { useTheme } from 'styled-components/native';
 import _ from 'lodash';
-import {Dimensions, ScrollView, TouchableOpacity} from 'react-native';
-import {View} from 'react-native';
+import { Dimensions, ScrollView, TouchableOpacity } from 'react-native';
+import { View } from 'react-native';
 import {
   Menu,
   MenuOptions,
@@ -13,29 +13,29 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 
-import {Text} from '../../../../components/typography/text.component';
-import {SafeArea} from '../../../../components/utility/safe-area.component';
-import {StatsInfo} from '../../components/sheet-stats/sheet-stats-info.component';
-import {Spacer} from '../../../../components/spacer/spacer.component';
-import {FlexRow} from '../../../../components/styles';
-import {StatsTitle} from '../../components/sheet-stats/sheet-stats.styles';
-import {PieChart} from 'react-native-chart-kit';
-import {useIsFocused} from '@react-navigation/native';
-import {TabsSwitcher} from '../../../../components/tabs-switcher/tabs-switcher.component';
-import {ObservedSheetStats} from './sheet-stats.observed';
-import {getLinkedDbRecord} from '../../../../components/utility/helper';
+import { Text } from '../../../../components/typography/text.component';
+import { SafeArea } from '../../../../components/utility/safe-area.component';
+import { StatsInfo } from '../../components/sheet-stats/sheet-stats-info.component';
+import { Spacer } from '../../../../components/spacer/spacer.component';
+import { FlexRow } from '../../../../components/styles';
+import { StatsTitle } from '../../components/sheet-stats/sheet-stats.styles';
+import { PieChart } from 'react-native-chart-kit';
+import { useIsFocused } from '@react-navigation/native';
+import { TabsSwitcher } from '../../../../components/tabs-switcher/tabs-switcher.component';
+import { ObservedSheetStats } from './sheet-stats.observed';
+import { getLinkedDbRecord } from '../../../../components/utility/helper';
 const menuOptions = [
-  {key: 'daily', value: 'Daily'},
-  {key: 'weekly', value: 'Weekly'},
-  {key: 'lastweek', value: 'Last Week'},
-  {key: 'monthly', value: 'Monthly'},
-  {key: 'yearly', value: 'Yearly'},
-  {key: 'allitems', value: 'All items'},
+  { key: 'daily', value: 'Daily' },
+  { key: 'weekly', value: 'Weekly' },
+  { key: 'lastweek', value: 'Last Week' },
+  { key: 'monthly', value: 'Monthly' },
+  { key: 'yearly', value: 'Yearly' },
+  { key: 'allitems', value: 'All items' },
 ];
 
-export const SheetStatsScreen = ({navigation, route, sheet}) => {
+export const SheetStatsScreen = ({ navigation, route, sheet }) => {
   const [activeType, setActiveType] = useState('expense');
-  const [report, setReport] = useState({key: 'monthly', value: 'Monthly'});
+  const [report, setReport] = useState({ key: 'monthly', value: 'Monthly' });
 
   if (!sheet) return null;
 
@@ -69,10 +69,11 @@ export const BaseSheetStatsScreen = ({
   const [sheetDetails, setSheetDetails] = useState({});
   const [chartData, setChartData] = useState(null);
   const routeIsFocused = useIsFocused();
+  const hasAutoFallbackRun = useRef(false);
 
   let menuRef = useRef();
   const menuOptionStyles = {
-    optionWrapper: {padding: 15, paddingTop: 10},
+    optionWrapper: { padding: 15, paddingTop: 10 },
     OptionTouchableComponent: TouchableOpacity,
   };
 
@@ -83,7 +84,31 @@ export const BaseSheetStatsScreen = ({
   }, [report, activeType, routeIsFocused]);
 
   useEffect(() => {
-    if (!lastTransactions) return;
+    if (
+      lastTransactions.length === 0 &&
+      report.key !== 'allitems' &&
+      !hasAutoFallbackRun.current
+    ) {
+      const fallbackOrder = [
+        'weekly',
+        'lastweek',
+        'daily',
+        'yearly',
+        'allitems',
+      ];
+      const currentIndex = fallbackOrder.indexOf(report.key);
+      const nextKey = fallbackOrder[currentIndex + 1]; // move forward in order
+
+      // Start from next fallback option
+
+      if (nextKey) {
+        const nextLabel =
+          menuOptions.find(opt => opt.key === nextKey)?.value || nextKey;
+
+        setReport({ key: nextKey, value: nextLabel });
+        return; // stop processing until fallback loads
+      }
+    }
 
     const processTransactions = async () => {
       const grouped = _.groupBy(lastTransactions, t => t.category?.id);
@@ -132,16 +157,18 @@ export const BaseSheetStatsScreen = ({
             <Ionicons
               name="chevron-back-outline"
               size={25}
-              color={theme.colors.brand.primary}></Ionicons>
+              color={theme.colors.brand.primary}
+            ></Ionicons>
             <Text color={theme.colors.brand.primary}>Back</Text>
           </FlexRow>
         </TouchableOpacity>
       ),
       headerRight: () => (
         <Menu
-          style={{marginRight: 10}}
+          style={{ marginRight: 10 }}
           onBackdropPress={() => menuRef.current.close()}
-          ref={element => (menuRef.current = element)}>
+          ref={element => (menuRef.current = element)}
+        >
           <MenuTrigger
             customStyles={{
               triggerTouchable: {
@@ -151,7 +178,8 @@ export const BaseSheetStatsScreen = ({
                 },
               },
               TriggerTouchableComponent: TouchableOpacity,
-            }}>
+            }}
+          >
             <Ionicons
               name="calendar-outline"
               size={25}
@@ -165,14 +193,16 @@ export const BaseSheetStatsScreen = ({
               marginTop: 35,
               borderRadius: 10,
               minWidth: 250,
-            }}>
+            }}
+          >
             {menuOptions.map(o => (
               <MenuOption
                 key={o.key}
                 customStyles={menuOptionStyles}
                 onSelect={() => {
                   onSetReport(o);
-                }}>
+                }}
+              >
                 <FlexRow justifyContent="space-between">
                   <Text color="#2f2f2f" fontfamily="heading">
                     {o.value}
@@ -217,6 +247,8 @@ export const BaseSheetStatsScreen = ({
   };
 
   const onSetReport = rep => {
+    hasAutoFallbackRun.current = true;
+
     setReport(rep);
   };
 
@@ -225,18 +257,19 @@ export const BaseSheetStatsScreen = ({
       <ScrollView
         showsVerticalScrollIndicator={false}
         bounces={true}
-        nestedScrollEnabled={true}>
+        nestedScrollEnabled={true}
+      >
         <Spacer size="xlarge">
           <Spacer position="bottom" size="xlarge">
             <StatsTitle>
               <Text color="#fff">{report.value}</Text>
             </StatsTitle>
             {!sheet.isLoanAccount && (
-              <View style={{marginLeft: 10, marginRight: 10, marginTop: 20}}>
+              <View style={{ marginLeft: 10, marginRight: 10, marginTop: 20 }}>
                 <TabsSwitcher
                   tabs={[
-                    {key: 'expense', label: 'Expense'},
-                    {key: 'income', label: 'Income'},
+                    { key: 'expense', label: 'Expense' },
+                    { key: 'income', label: 'Income' },
                   ]}
                   setActiveKey={onSetActiveType}
                   activeKey={activeType}
@@ -250,7 +283,8 @@ export const BaseSheetStatsScreen = ({
                   marginTop: 200,
                   alignItems: 'center',
                   justifyContent: 'center',
-                }}>
+                }}
+              >
                 <Text>No Data Found for Analysis.</Text>
               </View>
             )}
@@ -262,7 +296,8 @@ export const BaseSheetStatsScreen = ({
                     style={{
                       position: 'relative',
                       height: 270,
-                    }}>
+                    }}
+                  >
                     <PieChart
                       data={chartData}
                       width={Dimensions.get('window').width}

@@ -151,6 +151,7 @@ async function detectInactivePlaidUsers() {
           .utc(tokenObj.lastUsedAt || "2000-01-01")
           .startOf("day");
         const daysDiff = now.diff(lastUsed, "days");
+        console.log(lastUsed, daysDiff);
 
         try {
           const { data } = await plaidClient.accountsGet({
@@ -186,8 +187,7 @@ async function detectInactivePlaidUsers() {
       const maxDays = Math.max(
         ...plaid.accessTokens.map((t) =>
           now.diff(moment.utc(t.lastUsedAt || "2000-01-01"), "days")
-        ),
-        UNLINK_DAYS
+        )
       );
 
       if (unlinkInstitutions.size)

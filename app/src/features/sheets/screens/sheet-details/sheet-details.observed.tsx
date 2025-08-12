@@ -1,10 +1,10 @@
-import {Database, Q} from '@nozbe/watermelondb';
+import { Database, Q } from '@nozbe/watermelondb';
 import {
   compose,
   withDatabase,
   withObservables,
 } from '@nozbe/watermelondb/react';
-import {SheetDetailsScreen} from './sheet-details.screen';
+import { SheetDetailsScreen } from './sheet-details.screen';
 
 type EnhanceProps = {
   database: Database;
@@ -22,7 +22,7 @@ type EnhanceProps = {
 
 const enhance = withObservables<EnhanceProps, {}>(
   ['accountId', 'searchKeyword', 'filterParams'],
-  ({database, accountId, searchKeyword, filterParams}) => {
+  ({ database, accountId, searchKeyword, filterParams }) => {
     const conditions: Q.Clause[] = [Q.where('accountId', accountId)];
 
     if (searchKeyword?.trim()) {
@@ -73,7 +73,7 @@ const enhance = withObservables<EnhanceProps, {}>(
       )
       .observeWithColumns(['type', 'category_id', 'date', 'time', 'upcoming']);
 
-    return {transactions, upcomingTransactions};
+    return { transactions, upcomingTransactions };
   },
 );
 

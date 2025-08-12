@@ -1,13 +1,19 @@
-import {createStackNavigator} from '@react-navigation/stack';
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+  TransitionPresets,
+  TransitionSpecs,
+} from '@react-navigation/stack';
 import React from 'react';
-import {useTheme} from 'styled-components/native';
-import {colors} from '../theme/colors';
-import {useSelector} from 'react-redux';
-import {BankAccountsScreen} from '../../features/bank-accounts/screens/bank-accounts.screen';
-import {BankDetailsScreen} from '../../features/bank-accounts/screens/bank-details/bank-details.screen';
-import {BankBalanceScreen} from '../../features/bank-accounts/screens/bank-details/bank-balance.screen';
-import {BankTransactionsScreen} from '../../features/bank-accounts/screens/bank-transactions/bank-transactions.screen';
-import {BankAccountsHome} from '../../features/bank-accounts/screens/bank-accounts-home.screen';
+import { useTheme } from 'styled-components/native';
+import { colors } from '../theme/colors';
+import { useSelector } from 'react-redux';
+import { BankAccountsScreen } from '../../features/bank-accounts/screens/bank-accounts.screen';
+import { BankDetailsScreen } from '../../features/bank-accounts/screens/bank-details/bank-details.screen';
+import { BankBalanceScreen } from '../../features/bank-accounts/screens/bank-details/bank-balance.screen';
+import { BankTransactionsScreen } from '../../features/bank-accounts/screens/bank-transactions/bank-transactions.screen';
+import { BankAccountsHome } from '../../features/bank-accounts/screens/bank-accounts-home.screen';
+import { ModalPresets } from './app.navigator';
 
 const BankAccountStack = createStackNavigator();
 
@@ -29,12 +35,10 @@ export const BankAccountNavigator = () => {
         //   backgroundColor: theme.colors.ui.body,
         // },
         headerTintColor: theme.colors.headerTintColor,
-      }}>
+      }}
+    >
       <BankAccountStack.Screen
         name="BankAccountsHome"
-        options={{
-          headerShown: false,
-        }}
         component={BankAccountsHome}
       />
       <BankAccountStack.Screen

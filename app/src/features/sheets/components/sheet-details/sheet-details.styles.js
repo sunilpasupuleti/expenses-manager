@@ -1,12 +1,14 @@
 import React from 'react';
-import {ActivityIndicator} from 'react-native-paper';
+import { ActivityIndicator } from 'react-native-paper';
 import styled from 'styled-components/native';
-import {Text} from '../../../../components/typography/text.component';
-import {colors} from '../../../../infrastructure/theme/colors';
+import { Text } from '../../../../components/typography/text.component';
+import { colors } from '../../../../infrastructure/theme/colors';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as Animatable from 'react-native-animatable';
-import {Input} from '../../../../components/styles';
+import { Input } from '../../../../components/styles';
+import { Platform } from 'react-native';
 
+const isIos = Platform.OS === 'ios';
 export const FilterIconContainer = styled.View`
   position: absolute;
   top: 20px;
@@ -19,7 +21,7 @@ export const SheetDetailsTotalBalance = styled(Text)`
 `;
 
 export const SheetDetailHeader = styled.View`
-  background-color: ${({theme}) => theme.colors.bg.sectionListCard};
+  background-color: ${({ theme }) => theme.colors.bg.sectionListCard};
   border-radius: 8px;
   flex-direction: row;
   justify-content: space-between;
@@ -32,13 +34,13 @@ export const SheetDetailHeaderLabel = styled(Text).attrs({
 })`
   padding: 10px;
   font-weight: bold;
-  color: ${({theme}) => theme.colors.brand.primary};
+  color: ${({ theme }) => theme.colors.brand.primary};
 `;
 
 export const SheetDetailsUnderline = styled.View`
-  border-bottom-color: ${({theme}) => theme.colors.brand.primary};
+  border-bottom-color: ${({ theme }) => theme.colors.brand.primary};
   border-bottom-width: 5px;
-  width: ${({width}) => `${width}px`};
+  width: ${({ width }) => `${width}px`};
   align-self: center;
   padding-top: 5px;
   margin-left: 10px;
@@ -86,12 +88,12 @@ export const SheetDetailDate = styled(Text).attrs({
   fontfamily: 'bodyBold',
 })`
   font-size: 20px;
-  color: ${({theme}) => theme.colors.brand.primary};
+  color: ${({ theme }) => theme.colors.brand.primary};
 `;
 
 export const SheetDetailDateAmount = styled.View`
-  color: ${({theme}) => theme.colors.brand.primary};
-  background-color: ${({theme}) => theme.colors.brand.secondary};
+  color: ${({ theme }) => theme.colors.brand.primary};
+  background-color: ${({ theme }) => theme.colors.brand.secondary};
   padding: 2px 10px 2px 10px;
   border-radius: 6px;
 `;
@@ -140,11 +142,38 @@ export const SheetDetailInfo = styled.View`
   gap: 6px;
 `;
 
+export const DeleteCheckBox = styled.View`
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  border-width: 2px;
+  margin-right: 10px;
+  justify-content: center;
+  align-items: center;
+  background-color: ${({ theme, checked }) =>
+    checked ? theme.colors.brand.primary : 'transparent'};
+  border-color: ${({ theme, checked }) =>
+    checked ? theme.colors.brand.primary : '#999'};
+`;
+
+export const DeleteBar = styled.View`
+  position: absolute;
+  bottom: 0px;
+  width: 100%;
+  background-color: ${({ theme }) => theme.colors.bg.card};
+  border-top-width: 1px;
+  padding: 20px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 999;
+`;
+
 export const BottomIconsContainer = styled.View`
   position: absolute;
   width: 100%;
   bottom: 0%;
-  background-color: ${({theme}) => theme.colors.bg.primary};
+  background-color: ${({ theme }) => theme.colors.bg.primary};
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -153,7 +182,7 @@ export const BottomIconsContainer = styled.View`
 `;
 
 export const SheetDetailsAddIcon = styled.View`
-  background-color: ${({theme}) => theme.colors.brand.primary};
+  background-color: ${({ theme }) => theme.colors.brand.primary};
   border-radius: 50px;
   padding: 12px;
 `;
@@ -165,7 +194,7 @@ export const DashboardAddButton = styled.View`
   width: 60px;
   height: 60px;
   border-radius: 30px;
-  background-color: ${({theme}) => theme.colors.brand.primary};
+  background-color: ${({ theme }) => theme.colors.brand.primary};
   align-items: center;
   justify-content: center;
   elevation: 8;

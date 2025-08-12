@@ -1,11 +1,11 @@
-import {Database, Q} from '@nozbe/watermelondb';
+import { Database, Q } from '@nozbe/watermelondb';
 import {
   compose,
   withDatabase,
   withObservables,
 } from '@nozbe/watermelondb/react';
 import moment from 'moment';
-import {BaseSheetStatsScreen} from './sheet-stats.screen';
+import { BaseSheetStatsScreen } from './sheet-stats.screen';
 
 type EnhanceProps = {
   database: Database;
@@ -16,7 +16,7 @@ type EnhanceProps = {
 
 const enhance = withObservables<EnhanceProps, {}>(
   ['accountId', 'activeType', 'reportKey'],
-  ({database, accountId, activeType, reportKey}) => {
+  ({ database, accountId, activeType, reportKey }) => {
     const baseConditions: Q.Clause[] = [
       Q.where('accountId', accountId),
       Q.where('upcoming', false),
@@ -91,7 +91,7 @@ const enhance = withObservables<EnhanceProps, {}>(
     const lastTransactions = database
       .get('transactions')
       .query(...queries, Q.sortBy('date', Q.desc))
-      .observeWithColumns(['amount', 'date']);
+      .observeWithColumns(['amount', 'date', 'categoryId']);
 
     return {
       lastTransactions,

@@ -6,10 +6,6 @@ const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
  * @type {import('@react-native/metro-config').MetroConfig}
  */
 
-const config = {};
-
-// module.exports = mergeConfig(getDefaultConfig(__dirname), config);
-
 // added
 module.exports = function (baseConfig) {
   const defaultConfig = mergeConfig(baseConfig, getDefaultConfig(__dirname));
@@ -20,7 +16,8 @@ module.exports = function (baseConfig) {
   return mergeConfig(defaultConfig, {
     resolver: {
       server: {
-        host: '192.168.40.73',
+        host: '10.0.0.47',
+        port: 8081,
       },
       assetExts: assetExts,
       sourceExts: sourceExts,

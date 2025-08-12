@@ -1,17 +1,25 @@
 const { database } = require("firebase-admin");
 const _ = require("lodash");
-const { sendResponse, httpCodes } = require("../../helpers/utility");
+const {
+  sendResponse,
+  httpCodes,
+  deleteFile,
+} = require("../../helpers/utility");
 
 module.exports = {
   async validatequeryChatBot(req, res, next) {
     try {
-      const { query } = req.body;
-      if (!query) {
+      const { query, fromVoiceChat } = req.body;
+      if (!query && !fromVoiceChat) {
         throw "No Query Found";
       }
 
       next();
     } catch (err) {
+      const file = req?.file?.path;
+      console.log(file);
+
+      deleteFile(file);
       return sendResponse(res, httpCodes.BAD_REQUEST, {
         message: err.toString(),
       });

@@ -1,11 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useState} from 'react';
-import {AccountNavigator} from './account.navigator';
-import {AppNavigator} from './app.navigator';
-import {Loader} from '../../components/utility/Loader';
-import {navigate, navigationRef} from './rootnavigation';
-import {useSelector} from 'react-redux';
-import {AppLockScreen} from '../../features/applock/screens/applock.screen';
+import React, { useEffect, useState } from 'react';
+import { AccountNavigator } from './account.navigator';
+import { AppNavigator } from './app.navigator';
+import { Loader } from '../../components/utility/Loader';
+import { navigate, navigationRef } from './rootnavigation';
+import { useSelector } from 'react-redux';
+import { AppLockScreen } from '../../features/applock/screens/applock.screen';
 import {
   NavigationContainer,
   DarkTheme as NavigationDarkTheme,
@@ -17,17 +17,17 @@ import {
   adaptNavigationTheme,
 } from 'react-native-paper';
 import merge from 'deepmerge';
-import {Linking, useColorScheme} from 'react-native';
-import {OnBoarding} from '../../features/onboarding/screens/onboarding.screen';
-import {Notification} from '../../components/utility/Notification';
+import { Linking, useColorScheme } from 'react-native';
+import { OnBoarding } from '../../features/onboarding/screens/onboarding.screen';
+import { Notification } from '../../components/utility/Notification';
 
 export const Navigation = () => {
-  const {enabled: isAppLockEnabled, appAuthStatus} = useSelector(
+  const { enabled: isAppLockEnabled, appAuthStatus } = useSelector(
     state => state.applock,
   );
   const appStatus = useSelector(state => state.service.appStatus);
   const appTheme = useSelector(state => state.service.theme);
-  const {LightTheme, DarkTheme} = adaptNavigationTheme({
+  const { LightTheme, DarkTheme } = adaptNavigationTheme({
     reactNavigationLight: NavigationDefaultTheme,
     reactNavigationDark: NavigationDarkTheme,
   });
@@ -49,7 +49,7 @@ export const Navigation = () => {
     });
 
     // Foreground app
-    const subscription = Linking.addEventListener('url', ({url}) => {
+    const subscription = Linking.addEventListener('url', ({ url }) => {
       handleRedirect(url);
     });
 
@@ -102,7 +102,8 @@ export const Navigation = () => {
           : appTheme === 'light'
           ? CombinedLightTheme
           : CombinedDarkTheme
-      }>
+      }
+    >
       {!appStatus.onBoarded ? (
         <OnBoarding navigation={navigationRef} navigate={navigate} />
       ) : isAppLockEnabled && !appAuthStatus ? (

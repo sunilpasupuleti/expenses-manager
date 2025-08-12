@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const moment = require("moment");
 const storage = require("firebase-admin/storage");
 const FIREBASE_STORAGE_URL = process.env.FIREBASE_STORAGE_URL;
+const fs = require("fs").promises;
 
 module.exports = {
   httpCodes: { ...httpstatus.StatusCodes },
@@ -21,6 +22,7 @@ module.exports = {
   firebaseRemoveFiles,
   formatDate,
   getCurrentDate,
+  deleteFile,
   adminRole: "admin",
 };
 
@@ -34,6 +36,20 @@ function getJwt(data, expiry = "1h") {
     expiresIn: expiry,
   });
   return token;
+}
+
+// Delete specific file
+function deleteFile(filePath) {
+  return new Promise(async (resolve, reject) => {
+    try {
+      await fs.unlink(filePath);
+      console.log("🗑️ File deleted:", filePath);
+      resolve(true);
+    } catch (error) {
+      console.log("Delete file error:", error.message);
+      resolve(false); // Don't reject, just resolve false
+    }
+  });
 }
 
 function cryptoEncrypt(data) {

@@ -61,6 +61,7 @@ const ChatBotScreen = ({ navigation }) => {
   const [isTyping, setIsTyping] = useState(false);
   const [inputText, setInputText] = useState('');
   const [isOnline, setIsOnline] = useState(true);
+  const [queryResponse, setQueryResponse] = useState({});
   const { userData } = useContext(AuthenticationContext);
   const { onQueryChatBot } = useContext(ChatBotContext);
   const keyboardAwareRef = useRef(null);
@@ -91,8 +92,7 @@ const ChatBotScreen = ({ navigation }) => {
   };
 
   const clearChatHistory = async () => {
-    console.log('clicking');
-
+    setQueryResponse({});
     try {
       await AsyncStorage.removeItem(CHAT_HISTORY_KEY);
       setMessages([]);
@@ -196,19 +196,22 @@ const ChatBotScreen = ({ navigation }) => {
     }, 300);
   };
 
-  const onSend = useCallback((newMessages = []) => {
-    setMessages(prev => GiftedChat.append(prev, newMessages));
-    setInputText('');
-    setIsTyping(true);
-    const botResponse = generateBotResponse(newMessages[0].text);
-    setMessages(prev => GiftedChat.append(prev, [botResponse]));
+  const onSend = useCallback(
+    (newMessages = []) => {
+      setMessages(prev => GiftedChat.append(prev, newMessages));
+      setInputText('');
+      setIsTyping(true);
+      const botResponse = generateBotResponse(newMessages[0].text);
+      setMessages(prev => GiftedChat.append(prev, [botResponse]));
 
-    setTimeout(() => {
-      if (keyboardAwareRef.current) {
-        keyboardAwareRef.current.scrollToEnd({ animated: true });
-      }
-    }, 100);
-  }, []);
+      setTimeout(() => {
+        if (keyboardAwareRef.current) {
+          keyboardAwareRef.current.scrollToEnd({ animated: true });
+        }
+      }, 100);
+    },
+    [queryResponse],
+  );
 
   const generateBotResponse = userMessage => {
     setIsTyping(true);
@@ -228,6 +231,9 @@ const ChatBotScreen = ({ navigation }) => {
     // Call the backend-based AI logic
     onQueryChatBot(
       userMessage,
+      queryResponse?.operation === 'incomplete_info' ? queryResponse : null,
+      false,
+      null,
       data => {
         if (data.formatting) {
           const formattingMessage = {
@@ -243,31 +249,38 @@ const ChatBotScreen = ({ navigation }) => {
           setMessages(prev => GiftedChat.append(prev, [formattingMessage]));
           //   setIsTyping(true); // ✅ Show typing indicator while formatting
           return;
+        } else {
+          const qResponse = {
+            ...data,
+            userMessage,
+          };
+          setQueryResponse(qResponse);
+
+          // 📝 Once records are fetched, replace temp response with real data
+          const aiMessage = {
+            _id: Math.round(Math.random() * 1000000),
+            text: data.response_text,
+            html: data.html,
+            createdAt: new Date(),
+            user: {
+              _id: 2,
+              name: 'Aura AI Assistant',
+              avatar: Image.resolveAssetSource(botImage).uri,
+            },
+          };
+          setMessages(prev => GiftedChat.append(prev, [aiMessage]));
+          setIsTyping(false);
+          Vibration.vibrate(50);
+
+          setTimeout(() => {
+            if (keyboardAwareRef.current) {
+              keyboardAwareRef.current.scrollToEnd({ animated: true });
+            }
+          }, 100);
         }
-
-        // 📝 Once records are fetched, replace temp response with real data
-        const aiMessage = {
-          _id: Math.round(Math.random() * 1000000),
-          text: data.text,
-          html: data.html,
-          createdAt: new Date(),
-          user: {
-            _id: 2,
-            name: 'Aura AI Assistant',
-            avatar: Image.resolveAssetSource(botImage).uri,
-          },
-        };
-        setMessages(prev => GiftedChat.append(prev, [aiMessage]));
-        setIsTyping(false);
-        Vibration.vibrate(50);
-
-        setTimeout(() => {
-          if (keyboardAwareRef.current) {
-            keyboardAwareRef.current.scrollToEnd({ animated: true });
-          }
-        }, 100);
       },
       err => {
+        setQueryResponse(null);
         // Handle error with a fallback AI message
         const errorMessage = {
           _id: Math.round(Math.random() * 1000000),
@@ -301,7 +314,6 @@ const ChatBotScreen = ({ navigation }) => {
         from={{ opacity: 0, translateY: 20 }}
         animate={{ opacity: 1, translateY: 0 }}
         exit={{ opacity: 0, translateY: -20 }}
-        transition={{ type: 'spring', damping: 15 }}
         style={{
           backgroundColor: 'rgba(255,255,255,0.05)', // very subtle transparent bg
           paddingVertical: 8,
@@ -630,7 +642,7 @@ const ChatBotScreen = ({ navigation }) => {
             maxHeight: 120,
           }}
           multiline
-          maxInputLength={500}
+          maxInputLength={5000}
           timeTextStyle={{
             left: { color: '#999' },
             right: { color: '#999' },
@@ -647,7 +659,6 @@ const ChatBotScreen = ({ navigation }) => {
             scale: messages.length > 0 ? 1 : 0.8,
             rotate: messages.length > 0 ? '0deg' : '180deg',
           }}
-          transition={{ type: 'spring', damping: 15 }}
         >
           <FloatingActionButton>
             <Icon

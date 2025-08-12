@@ -1,29 +1,45 @@
-import React, {useCallback} from 'react';
+import React, { useCallback } from 'react';
 
-import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
-import {Dimensions} from 'react-native';
-import {SheetsContextProvider} from '../../services/sheets/sheets.context';
-import {SyncContextProvider} from '../../services/sync/sync.context';
-import {SettingsNavigator} from './settings.navigator';
-import {SheetsNavigator} from './sheets.navigator';
-import {AppLockScreen} from '../../features/applock/screens/applock.screen';
-import {ProfileContextProvider} from '../../services/profile/profile.context';
-import {SmsTransactions} from '../../components/utility/SmsTransactions';
-import {SelectBaseCurrency} from '../../components/utility/SelectBaseCurrency';
-import {SettingsContextProvider} from '../../services/settings/settings.context';
-import {AvoidSoftInput} from 'react-native-avoid-softinput';
-import {useFocusEffect} from '@react-navigation/native';
-import {useTheme} from 'styled-components/native';
-import {CategoriesContextProvider} from '../../services/categories/categories.context';
-import {SheetDetailsContextProvider} from '../../services/sheetDetails/sheetDetails.context';
-import {BankAccountContextProvider} from '../../services/bank-account/bank-account.context';
-import {BankAccountNavigator} from './bank-account.navigator';
-import {PlaidOAuthRedirectScreen} from '../../features/bank-accounts/components/plaid-oauth-redirect.screen';
-import {ChatBotContextProvider} from '../../services/chat-bot/chat-bot.context';
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+  TransitionPresets,
+  TransitionSpecs,
+} from '@react-navigation/stack';
+import { Dimensions, Platform } from 'react-native';
+import { SheetsContextProvider } from '../../services/sheets/sheets.context';
+import { SyncContextProvider } from '../../services/sync/sync.context';
+import { SettingsNavigator } from './settings.navigator';
+import { SheetsNavigator } from './sheets.navigator';
+import { AppLockScreen } from '../../features/applock/screens/applock.screen';
+import { ProfileContextProvider } from '../../services/profile/profile.context';
+import { SmsTransactions } from '../../components/utility/SmsTransactions';
+import { SelectBaseCurrency } from '../../components/utility/SelectBaseCurrency';
+import { SettingsContextProvider } from '../../services/settings/settings.context';
+import { AvoidSoftInput } from 'react-native-avoid-softinput';
+import { useFocusEffect } from '@react-navigation/native';
+import { useTheme } from 'styled-components/native';
+import { CategoriesContextProvider } from '../../services/categories/categories.context';
+import { SheetDetailsContextProvider } from '../../services/sheetDetails/sheetDetails.context';
+import { BankAccountContextProvider } from '../../services/bank-account/bank-account.context';
+import { BankAccountNavigator } from './bank-account.navigator';
+import { PlaidOAuthRedirectScreen } from '../../features/bank-accounts/components/plaid-oauth-redirect.screen';
+import { ChatBotContextProvider } from '../../services/chat-bot/chat-bot.context';
 import ChatBotScreen from '../../features/chat-bot/screens/chat-bot.screen';
 import VoiceChatScreen from '../../features/chat-bot/screens/voice-chat/voice-chat.screen';
 
-const Stack = createStackNavigator();
+export const Stack = createStackNavigator();
+
+export const ModalPresets = Platform.select({
+  ios: {
+    presentation: 'modal',
+    ...TransitionPresets.ModalPresentationIOS,
+  },
+  android: {
+    presentation: 'card',
+    ...TransitionPresets.ModalSlideFromBottomIOS,
+  },
+});
 
 export const AppNavigator = () => {
   const theme = useTheme();
@@ -58,7 +74,8 @@ export const AppNavigator = () => {
                       <Stack.Navigator
                         screenOptions={{
                           headerShown: false,
-                        }}>
+                        }}
+                      >
                         <Stack.Screen
                           name="Sheets"
                           component={SheetsNavigator}
@@ -71,29 +88,47 @@ export const AppNavigator = () => {
                         />
                         <Stack.Screen
                           name="ChatBot"
+                          options={{
+                            cardStyleInterpolator:
+                              CardStyleInterpolators.forHorizontalIOS,
+                            presentation: 'transparentModal',
+                            transitionSpec: {
+                              open: TransitionSpecs.TransitionIOSSpec,
+                              close: TransitionSpecs.TransitionIOSSpec,
+                            },
+                          }}
                           component={ChatBotScreen}
                         />
                         <Stack.Screen
                           name="VoiceChat"
+                          options={{
+                            cardStyleInterpolator:
+                              CardStyleInterpolators.forHorizontalIOS,
+                            presentation: 'transparentModal',
+                            transitionSpec: {
+                              open: TransitionSpecs.TransitionIOSSpec,
+                              close: TransitionSpecs.TransitionIOSSpec,
+                            },
+                          }}
                           component={VoiceChatScreen}
                         />
 
                         <Stack.Screen
                           options={{
-                            headerMode: 'screen',
                             gestureResponseDistance:
                               Dimensions.get('window').height - 200,
-                            ...TransitionPresets.ModalPresentationIOS,
+                            headerMode: 'screen',
+                            ...ModalPresets,
                           }}
                           name="Settings"
                           component={SettingsNavigator}
                         />
 
                         <Stack.Screen
-                          options={{headerShown: false, headerMode: 'screen'}}
                           name="BankAccounts"
                           component={BankAccountNavigator}
                         />
+
                         <Stack.Screen
                           name="Applock"
                           component={AppLockScreen}
