@@ -71,6 +71,8 @@ export const Navigation = () => {
           screens: {
             Sheets: 'Sheets',
             BankAccounts: 'BankAccounts',
+            VoiceChat: 'VoiceChat',
+            ChatBot: 'ChatBot',
             PlaidOAuthRedirect: 'plaid-oauth-redirect.html',
             Settings: {
               path: 'Settings',

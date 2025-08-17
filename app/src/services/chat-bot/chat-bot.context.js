@@ -371,19 +371,23 @@ export const ChatBotContextProvider = ({ children }) => {
                           showTime,
                           type: txnType,
                         } = tx;
-                        return {
+                        let data = {
                           amount: amount,
                           accountId: accountId,
                           categoryId: categoryId,
                           notes: notes,
                           date: date,
-                          time: time,
                           showTime: showTime,
                           isEmiPayment: false,
                           emiDate: null,
                           type: txnType,
                         };
+                        if (showTime) {
+                          data.time = time;
+                        }
+                        return data;
                       });
+                    console.log(transactions);
 
                     await createRecord('transactions', transactions);
                     try {
