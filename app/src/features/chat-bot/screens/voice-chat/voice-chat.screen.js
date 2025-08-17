@@ -1,5 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useState, useEffect, useRef, useContext } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+  useCallback,
+} from 'react';
 import AudioRecorderPlayer, {
   AudioEncoderAndroidType,
   AudioSourceAndroidType,
@@ -75,6 +81,7 @@ import {
 } from 'react-native-reanimated';
 import RNFS from 'react-native-fs';
 import Sound from 'react-native-sound';
+import { useFocusEffect } from '@react-navigation/native';
 
 const VOICE_CHAT_HISTORY_KEY = '@expenses-manager-voice-chat-history';
 
@@ -222,6 +229,30 @@ const VoiceChatScreen = ({ navigation }) => {
     }
   }, [conversationHistory]);
 
+  useFocusEffect(
+    useCallback(() => {
+      // on focus: nothing special
+      return () => {
+        // on blur/unfocus: force stop
+        safeStopAll();
+      };
+    }, []),
+  );
+
+  const safeStopAll = async () => {
+    try {
+      await audioRecorderPlayer.stopRecorder();
+    } catch {}
+    try {
+      audioRecorderPlayer.removeRecordBackListener();
+    } catch {}
+    try {
+      audioRecorderPlayer.removePlayBackListener();
+    } catch {}
+    setIsRecording(false);
+    setIsSpeaking(false);
+  };
+
   const requestMicrophonePermission = async () => {
     try {
       let permission;
@@ -284,6 +315,9 @@ const VoiceChatScreen = ({ navigation }) => {
           return;
         }
       }
+
+      await safeStopAll();
+      await new Promise(r => setTimeout(r, 120));
 
       if (currentSound) {
         currentSound.stop();
@@ -393,7 +427,6 @@ const VoiceChatScreen = ({ navigation }) => {
             audioData,
             audioMimeType,
             playOnlyAudio,
-            playAudioFileName,
           } = res;
 
           const qResponse = {
@@ -401,13 +434,17 @@ const VoiceChatScreen = ({ navigation }) => {
             userMessage: transcription,
           };
           setQueryResponse(qResponse);
+          console.log(res);
 
-          if (playOnlyAudio && playAudioFileName) {
-            playAudio(
-              playAudioFileName === 'analyze' ? 'analyze.wav' : 'processed.wav',
-              'audio/mpeg',
-              false,
-            );
+          if (playOnlyAudio) {
+            const audioNames = [
+              'analyze_1.wav',
+              'analyze_2.wav',
+              'analyze_3.wav',
+            ];
+            const playAudioFileName =
+              audioNames[Math.floor(Math.random() * audioNames.length)];
+            playAudio(playAudioFileName, 'audio/mpeg', false);
             return;
           }
 
@@ -468,13 +505,7 @@ const VoiceChatScreen = ({ navigation }) => {
     const tempFilePath = `${tempDir}temp_tts_${Date.now()}.${fileExtension}`;
 
     try {
-      // Stop any current audio
-      if (currentSound) {
-        currentSound.stop();
-
-        currentSound.release();
-      }
-      setTimeout(async () => {
+      const playFinalAudio = async () => {
         if (base64) {
           // Create temporary file from base64
           await RNFS.writeFile(tempFilePath, audioData, 'base64');
@@ -527,7 +558,17 @@ const VoiceChatScreen = ({ navigation }) => {
             },
           );
         }
-      }, 2000);
+      };
+      // Stop any current audio
+      if (currentSound) {
+        currentSound.stop(() => {
+          playFinalAudio();
+        });
+
+        currentSound.release();
+      } else {
+        playFinalAudio();
+      }
     } catch (error) {
       console.error('Audio playback error:', error);
       cleanUpFile(tempFilePath);
@@ -763,6 +804,7 @@ const VoiceChatScreen = ({ navigation }) => {
             <TouchableOpacity
               onPress={() => {
                 stopSpeaking();
+                safeStopAll();
                 navigation.goBack();
               }}
               style={{

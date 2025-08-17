@@ -155,7 +155,7 @@ export const BankAccountContextProvider = ({ children }) => {
             }
 
             overdueDate = overdueDate.toDate();
-
+            ``;
             const overdueTitle = isInflow
               ? '⏰ Expected Payment Overdue'
               : '🚨 Payment Overdue';

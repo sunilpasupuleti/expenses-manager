@@ -16,7 +16,7 @@ import { SheetsContext } from '../sheets/sheets.context';
 import { Platform } from 'react-native';
 import RNFS from 'react-native-fs';
 import { getFileExtension, getMimeType } from '../../components/utility/helper';
-import { BACKEND_URL } from '../../../config';
+// import { BACKEND_URL } from '../../../config';
 
 const colors = [
   '#ff3a30',
@@ -64,7 +64,7 @@ export const ChatBotContextProvider = ({ children }) => {
   const { sendRequest } = useHttp();
   const { db, createRecord, findRecordById } = useContext(WatermelonDBContext);
   const dispatch = useDispatch();
-  // const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
+  const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
 
   const showLoader = (loaderType, backdrop = true, loaderText = '') => {
     let options = {};
@@ -259,7 +259,7 @@ export const ChatBotContextProvider = ({ children }) => {
         sendRequest(
           {
             type: 'POST',
-            url: BACKEND_URL + '/chat-bot/test/',
+            url: BACKEND_URL + '/chat-bot/query/',
             data: fromVoiceChat ? formData : reqData,
             headers: headers,
           },
@@ -307,6 +307,10 @@ export const ChatBotContextProvider = ({ children }) => {
                       callback({
                         html: null,
                         formatting: true,
+                      });
+                    } else {
+                      callback({
+                        playOnlyAudio: true,
                       });
                     }
 

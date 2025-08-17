@@ -687,6 +687,8 @@ module.exports = {
           // 🔁 Process inflow and outflow streams
           processStreams(inflow_streams, true);
           processStreams(outflow_streams, false);
+
+          await logPlaidUsage(uid, TRANSACTIONS, {}, decryptedAccessToken);
         } catch (institutionError) {
           console.warn(
             `⚠️ Skipping institution due to error:`,

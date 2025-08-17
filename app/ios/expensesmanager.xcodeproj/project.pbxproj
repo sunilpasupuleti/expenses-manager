@@ -35,8 +35,9 @@
 		D630F2682A36EEEC008B81E1 /* RNReactNativeHapticFeedback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D630F2672A36EEEC008B81E1 /* RNReactNativeHapticFeedback.framework */; settings = {ATTRIBUTES = (Required, ); }; };
 		D6610FB42D08B8CA00F67B99 /* main.jsbundle in CopyFiles */ = {isa = PBXBuildFile; fileRef = D61BAEF62BE152B500614EAA /* main.jsbundle */; };
 		D668738D2A40B7AF000E22A1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D668738C2A40B7AF000E22A1 /* GoogleService-Info.plist */; };
-		D6BB8ECD2E42D74B009E0C2E /* analyze.wav in Resources */ = {isa = PBXBuildFile; fileRef = D6BB8ECB2E42D74B009E0C2E /* analyze.wav */; };
-		D6BB8ECE2E42D74B009E0C2E /* processed.wav in Resources */ = {isa = PBXBuildFile; fileRef = D6BB8ECC2E42D74B009E0C2E /* processed.wav */; };
+		D6BB8ED22E4B8C2E009E0C2E /* analyze_1.wav in Resources */ = {isa = PBXBuildFile; fileRef = D6BB8ECF2E4B8C2E009E0C2E /* analyze_1.wav */; };
+		D6BB8ED32E4B8C2E009E0C2E /* analyze_3.wav in Resources */ = {isa = PBXBuildFile; fileRef = D6BB8ED12E4B8C2E009E0C2E /* analyze_3.wav */; };
+		D6BB8ED42E4B8C2E009E0C2E /* analyze_2.wav in Resources */ = {isa = PBXBuildFile; fileRef = D6BB8ED02E4B8C2E009E0C2E /* analyze_2.wav */; };
 		D6C6D9212A59ADEF00BAC333 /* notification_primary.wav in Resources */ = {isa = PBXBuildFile; fileRef = D6C6D9202A59ADEF00BAC333 /* notification_primary.wav */; };
 		D6C6D9232A59BBF900BAC333 /* notification_secondary.wav in Resources */ = {isa = PBXBuildFile; fileRef = D6C6D9222A59BBF900BAC333 /* notification_secondary.wav */; };
 		DFA0EE43E3214D4F9267624C /* FontAwesome6_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 065CDD8281DA4DB2B153F4C8 /* FontAwesome6_Brands.ttf */; };
@@ -133,8 +134,9 @@
 		D66D6E522A4027B900E3B538 /* expensesmanager.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = expensesmanager.entitlements; path = expensesmanager/expensesmanager.entitlements; sourceTree = "<group>"; };
 		D6B09E652A9823EC00A9EBBC /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		D6B09E672A9823EC00A9EBBC /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		D6BB8ECB2E42D74B009E0C2E /* analyze.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = analyze.wav; sourceTree = "<group>"; };
-		D6BB8ECC2E42D74B009E0C2E /* processed.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = processed.wav; sourceTree = "<group>"; };
+		D6BB8ECF2E4B8C2E009E0C2E /* analyze_1.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = analyze_1.wav; sourceTree = "<group>"; };
+		D6BB8ED02E4B8C2E009E0C2E /* analyze_2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = analyze_2.wav; sourceTree = "<group>"; };
+		D6BB8ED12E4B8C2E009E0C2E /* analyze_3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = analyze_3.wav; sourceTree = "<group>"; };
 		D6C6D91F2A598B7D00BAC333 /* OneSignalNotificationServiceExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = OneSignalNotificationServiceExtension.entitlements; sourceTree = "<group>"; };
 		D6C6D9202A59ADEF00BAC333 /* notification_primary.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = notification_primary.wav; path = ../assets/notification_primary.wav; sourceTree = "<group>"; };
 		D6C6D9222A59BBF900BAC333 /* notification_secondary.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; name = notification_secondary.wav; path = ../assets/notification_secondary.wav; sourceTree = "<group>"; };
@@ -220,8 +222,9 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
-				D6BB8ECB2E42D74B009E0C2E /* analyze.wav */,
-				D6BB8ECC2E42D74B009E0C2E /* processed.wav */,
+				D6BB8ECF2E4B8C2E009E0C2E /* analyze_1.wav */,
+				D6BB8ED02E4B8C2E009E0C2E /* analyze_2.wav */,
+				D6BB8ED12E4B8C2E009E0C2E /* analyze_3.wav */,
 				D6239EED2BE03261003DABAA /* assets */,
 				D6C7D42B2A62FFC400F10475 /* File.swift */,
 				D6C6D9222A59BBF900BAC333 /* notification_secondary.wav */,
@@ -420,6 +423,9 @@
 				D61BAEF72BE152B500614EAA /* main.jsbundle in Resources */,
 				97839845701A46E8804CB99B /* FontAwesome5_Brands.ttf in Resources */,
 				ECC45CAD30214A68A219633E /* FontAwesome5_Regular.ttf in Resources */,
+				D6BB8ED22E4B8C2E009E0C2E /* analyze_1.wav in Resources */,
+				D6BB8ED32E4B8C2E009E0C2E /* analyze_3.wav in Resources */,
+				D6BB8ED42E4B8C2E009E0C2E /* analyze_2.wav in Resources */,
 				022359D20886487DBAC86CA8 /* FontAwesome5_Solid.ttf in Resources */,
 				DFA0EE43E3214D4F9267624C /* FontAwesome6_Brands.ttf in Resources */,
 				206A840B205141F1B28B95BB /* FontAwesome6_Regular.ttf in Resources */,
@@ -430,8 +436,6 @@
 				2668CACB34164325BCD446DD /* MaterialCommunityIcons.ttf in Resources */,
 				70EFF3668FA446EB851E9331 /* MaterialIcons.ttf in Resources */,
 				341AAE5A75A94DE7B87B84CB /* Octicons.ttf in Resources */,
-				D6BB8ECD2E42D74B009E0C2E /* analyze.wav in Resources */,
-				D6BB8ECE2E42D74B009E0C2E /* processed.wav in Resources */,
 				0F19A711B83F4BF2A56F5D28 /* SimpleLineIcons.ttf in Resources */,
 				62FB03F493EB4F989EC7B6DC /* Zocial.ttf in Resources */,
 				B6F947C7922F9D37332B02EE /* PrivacyInfo.xcprivacy in Resources */,

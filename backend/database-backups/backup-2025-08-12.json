@@ -1048,7 +1048,7 @@
       "displayName": "EZONE CONSTANTINE",
       "email": "rtx4wqw2cw@privaterelay.appleid.com",
       "fcmToken": "d6EQPRQWxUKFt68JeclbLR:APA91bGyMokxVfngSkRKCENFOla0gzAa-rLKcyRbuHEnTmk-lj9F1sIirS5pXVe0O4jZYTu1rkvPeml0weL4ks9qHGXHYGWPGpqzHCuc1P2O8_rOCGUHrM8",
-      "lastLogin": "2025-08-04 13:30:35",
+      "lastLogin": "2025-08-12 14:55:20",
       "lastSynced": "2025-08-03 22:14:56",
       "model": "iPhone 16 Pro",
       "photoURL": "users/0INBEXwOQqR2KqhVFkVs9L07rr32/profile.png",
@@ -1171,45 +1171,45 @@
       "active": true,
       "autoFetchTransactions": false,
       "backups": {
-        "-OWRaapL3625I7YAC2Up": {
-          "date": "2025-07-30T18:31:06.521Z",
-          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1753900265999.json"
+        "-OX9xHJzVqVOvsgL4pkz": {
+          "date": "2025-08-08T18:32:43.013Z",
+          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1754677961951.json"
         },
-        "-OWRabyUA_RFg8UNPF7A": {
-          "date": "2025-07-30T18:31:06.521Z",
-          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1753900265999.json"
+        "-OX9xIYlktv3onpH6Xjr": {
+          "date": "2025-08-08T18:32:43.013Z",
+          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1754677961951.json"
         },
-        "-OWWk9uPCC5hz20dEm_v": {
-          "date": "2025-07-31T18:31:07.501Z",
-          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1753986666859.json"
+        "-OXF5pjPpz3Ya30MziDs": {
+          "date": "2025-08-09T18:32:41.706Z",
+          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1754764361055.json"
         },
-        "-OWWkAwn--73sKsKxigr": {
-          "date": "2025-07-31T18:31:07.501Z",
-          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1753986666859.json"
+        "-OXF5rFWUT-OD87n8FZr": {
+          "date": "2025-08-09T18:32:41.706Z",
+          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1754764361055.json"
         },
-        "-OWWkCMOJQTXL1UlMvD2": {
-          "date": "2025-07-31T18:31:07.501Z",
-          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1753986666859.json"
+        "-OXF5sZQrrT-yWWAFLGG": {
+          "date": "2025-08-09T18:32:41.706Z",
+          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1754764361055.json"
         },
-        "-OWWkCrssXr-EipFyySL": {
-          "date": "2025-07-31T18:31:07.501Z",
-          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1753986666859.json"
+        "-OXF5t-D1P_F51vE_uDI": {
+          "date": "2025-08-09T18:32:41.706Z",
+          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1754764361055.json"
         },
-        "-OWg3RSk-NFZiDUY7DdV": {
-          "date": "2025-08-02T18:35:53.112Z",
-          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1754159752553.json"
+        "-OXKF36PUkqe9P3dSAkU": {
+          "date": "2025-08-10T18:31:07.118Z",
+          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1754850666382.json"
         },
-        "-OWg3TKDyOaBbVH6dGsn": {
-          "date": "2025-08-02T18:35:53.112Z",
-          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1754159752553.json"
+        "-OXKF3wgaqjP1NsN4Px3": {
+          "date": "2025-08-10T18:31:07.118Z",
+          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1754850666382.json"
         },
-        "-OWg3VB9cXmjBov55Z6K": {
-          "date": "2025-08-02T18:35:53.112Z",
-          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1754159752553.json"
+        "-OXKF5pQsYm_7w-IIQ0r": {
+          "date": "2025-08-10T18:31:07.118Z",
+          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1754850666382.json"
         },
-        "-OWg3WS5_fJUlRckm0gf": {
-          "date": "2025-08-02T18:35:53.112Z",
-          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1754159752553.json"
+        "-OXKF6yxP2DopSYjWU3p": {
+          "date": "2025-08-10T18:31:07.118Z",
+          "path": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/backups/transactions-1754850666382.json"
         }
       },
       "baseCurrency": "INR",
@@ -1221,9 +1221,9 @@
       "displayName": "Vishal Sharma",
       "email": "vishalsharma735@yahoo.in",
       "fcmToken": "fcQTed4PQa6PYr4c6lJz1T:APA91bGdFA7sTqiTE0qfHQ-ILkCod74JIYfR5gZKHyvvcZWdh3J-2JZ0Mdt_4whndmF0402m-rICIDXkT_x6RQ3oWZjCcrp0hPNQLnkQLTfR826dxWiU-ZQ",
-      "lastDailyBackup": "2025-08-02T18:35:53.112Z",
-      "lastLogin": "2025-08-02 10:20:26",
-      "lastSynced": "2025-08-02 18:36:21",
+      "lastDailyBackup": "2025-08-10T18:31:07.118Z",
+      "lastLogin": "2025-08-11 23:22:37",
+      "lastSynced": "2025-08-10 18:31:28",
       "model": "CPH2487",
       "photoURL": "users/25f2jp9W9MOFPwUACAIyhvtaixF2/profile.jpeg",
       "plaid": {
@@ -1268,7 +1268,7 @@
       "displayName": "Sangam Ramulu",
       "email": "ramulusangam47@gmail.com",
       "fcmToken": "cv98yrtYRWO0th2VT0gfSz:APA91bHbyVXZObiBYtNFLHoU_xLNvZJuf98twBtrcgoo-M8u8hb85RxSaWbBJZsslEMdJwyOlW7JHNlJkywoZQHmkGDTzlwyRM_vXTb20d2hFeHETU7bEJo",
-      "lastLogin": "2025-07-30 09:25:04",
+      "lastLogin": "2025-08-08 19:22:32",
       "lastSynced": "",
       "model": "V2420",
       "photoURL": "https://lh3.googleusercontent.com/a/ACg8ocKTfjb1oQfU8D4i9T_JIbpE2IppYD8FxyTLkbAfP3r52uy-8w=s96-c",
@@ -1415,7 +1415,7 @@
       "displayName": "Rashi Singh",
       "email": "rashi23502@gmail.com",
       "fcmToken": "eTamADsERyendPJ0_ddb05:APA91bFnKWqFnTIaBEapf9s120OvXqWUlBQZ1Te8STulVLhrWCBw_3WTfe6uoWhnHAchhJ4--eLfC6cvYnTQipVNwKwNBh_ilFRxAnAEQDG0dMLPK27CzK4",
-      "lastLogin": "2025-08-02 00:00:31",
+      "lastLogin": "2025-08-06 11:14:41",
       "lastSynced": "",
       "model": "SM-M315F",
       "photoURL": "https://lh3.googleusercontent.com/a/ACg8ocIa_K3V6dDOKM0ceQpz5aIq0lfF2AliKn8LuaOAVAIyxNQddjqI=s96-c",
@@ -1611,7 +1611,7 @@
       "displayName": "Swetha",
       "email": "swethavijayakumar0@gmail.com",
       "fcmToken": "e1xUEMd5TKenj5WgxnUa_v:APA91bFin-jnjz4e57Ch-LhwvIQUv8Thk-2XPmXZR4NnaWGpVc4osu0ZGpho5kwjJ74BJWsQTduw1QGRppTi5qJ5d5c85pWrvzCaCtCAQ64ZjWYxZ7QMzFA",
-      "lastLogin": "2025-08-04 12:10:48",
+      "lastLogin": "2025-08-12 10:04:40",
       "lastSynced": "",
       "model": "IV2201",
       "phoneNumber": "+919360557682",
@@ -1702,7 +1702,7 @@
       "dailyReminderEnabled": false,
       "email": "kissordhakal999@gmail.com",
       "fcmToken": "fu4K8gIWkEVyjr7DKxh6Cq:APA91bHcr0R1H-s9i-1nxZgn4yc7bzx3Cjde6sw0YuTGuSBNV2BI3EqcTChAmyXKrgeQcN6E0W9tRaDfWpKmp7gNCPMX7n2rp4t4y-HOSLosPCp0tpT3CI26dImp6onhD7ed1HOoTBfB",
-      "lastLogin": "2025-08-02 20:55:51",
+      "lastLogin": "2025-08-11 22:04:00",
       "lastSynced": "",
       "model": "iPhone 14 Pro Max",
       "platform": "ios",
@@ -1962,34 +1962,6 @@
       "active": true,
       "autoFetchTransactions": false,
       "backups": {
-        "-OW1qcBz6re2powckPGn": {
-          "date": "2025-07-25T18:31:08.225Z",
-          "path": "users/CQaLoaybS8WTUkQyXcJbeaFt7t63/backups/transactions-1753468268191.json"
-        },
-        "-OW7-CgU-G4f07u7Dn0T": {
-          "date": "2025-07-26T18:31:07.239Z",
-          "path": "users/CQaLoaybS8WTUkQyXcJbeaFt7t63/backups/transactions-1753554667211.json"
-        },
-        "-OWC8nklMvScn0RGj017": {
-          "date": "2025-07-27T18:31:08.140Z",
-          "path": "users/CQaLoaybS8WTUkQyXcJbeaFt7t63/backups/transactions-1753641068107.json"
-        },
-        "-OWHIOb-ou33QTHZHyid": {
-          "date": "2025-07-28T18:31:07.727Z",
-          "path": "users/CQaLoaybS8WTUkQyXcJbeaFt7t63/backups/transactions-1753727467715.json"
-        },
-        "-OWMRyzrCfOXLmJP3Y6E": {
-          "date": "2025-07-29T18:31:07.172Z",
-          "path": "users/CQaLoaybS8WTUkQyXcJbeaFt7t63/backups/transactions-1753813867143.json"
-        },
-        "-OWRaZiHADliAvdbHUkr": {
-          "date": "2025-07-30T18:31:07.315Z",
-          "path": "users/CQaLoaybS8WTUkQyXcJbeaFt7t63/backups/transactions-1753900267297.json"
-        },
-        "-OWWkDAymuunsMvfhtM6": {
-          "date": "2025-07-31T18:31:22.645Z",
-          "path": "users/CQaLoaybS8WTUkQyXcJbeaFt7t63/backups/transactions-1753986682591.json"
-        },
         "-OWatkM_r1OJ4Vr3vaIW": {
           "date": "2025-08-01T18:31:08.191Z",
           "path": "users/CQaLoaybS8WTUkQyXcJbeaFt7t63/backups/transactions-1754073068156.json"
@@ -2001,6 +1973,34 @@
         "-OWlBvpnHx0yJ-xzOgHL": {
           "date": "2025-08-03T18:31:06.976Z",
           "path": "users/CQaLoaybS8WTUkQyXcJbeaFt7t63/backups/transactions-1754245866913.json"
+        },
+        "-OWqLXBjDKx_YkXNVUxr": {
+          "date": "2025-08-04T18:31:08.362Z",
+          "path": "users/CQaLoaybS8WTUkQyXcJbeaFt7t63/backups/transactions-1754332268329.json"
+        },
+        "-OWvV6giKJ9FUgLzPX7R": {
+          "date": "2025-08-05T18:31:08.194Z",
+          "path": "users/CQaLoaybS8WTUkQyXcJbeaFt7t63/backups/transactions-1754418668181.json"
+        },
+        "-OX-dhB_843sMK2TKmfm": {
+          "date": "2025-08-06T18:31:07.804Z",
+          "path": "users/CQaLoaybS8WTUkQyXcJbeaFt7t63/backups/transactions-1754505067740.json"
+        },
+        "-OX4nHrfPr3i83xaS-KH": {
+          "date": "2025-08-07T18:31:07.166Z",
+          "path": "users/CQaLoaybS8WTUkQyXcJbeaFt7t63/backups/transactions-1754591467145.json"
+        },
+        "-OX9wtskU0t_j9evsmpU": {
+          "date": "2025-08-08T18:31:12.419Z",
+          "path": "users/CQaLoaybS8WTUkQyXcJbeaFt7t63/backups/transactions-1754677872356.json"
+        },
+        "-OXKF3D3tHGnvKjevNl8": {
+          "date": "2025-08-10T18:31:07.301Z",
+          "path": "users/CQaLoaybS8WTUkQyXcJbeaFt7t63/backups/transactions-1754850667221.json"
+        },
+        "-OXPOdp_vdrI9RqDwGlf": {
+          "date": "2025-08-11T18:31:06.999Z",
+          "path": "users/CQaLoaybS8WTUkQyXcJbeaFt7t63/backups/transactions-1754937066943.json"
         }
       },
       "baseCurrency": "INR",
@@ -2011,9 +2011,9 @@
       "displayName": "RAYAPUDI NAGA GANESH MANIKANTA",
       "email": "manikantarayapudi86@gmail.com",
       "fcmToken": "fJLHoCmZRiqpjv4GdgtIBC:APA91bG5Q0oqkw4DIeYP2fpTJD8UFPDm2NNSsK-Znucrf7lfWo2D4H8dpMH9Gj45pKArlkYgWyNK7fzakTjK5g1gx_VLHa5NTL57ztoy7Slkox_Qs1nnHGY",
-      "lastDailyBackup": "2025-08-03T18:31:06.976Z",
+      "lastDailyBackup": "2025-08-11T18:31:06.999Z",
       "lastLogin": "2025-07-04 21:04:17",
-      "lastSynced": "2025-08-03 18:31:12",
+      "lastSynced": "2025-08-11 18:31:12",
       "model": "M2103K19PI",
       "photoURL": "https://lh3.googleusercontent.com/a/AAcHTteCz5pAjx6ocInnteEWbkBPTyEgT7OJe6XQR0DEau3uUDs=s96-c",
       "plaid": {
@@ -2033,6 +2033,25 @@
       "providerId": "google.com",
       "timeZone": "Asia/Kolkata",
       "uid": "CQaLoaybS8WTUkQyXcJbeaFt7t63"
+    },
+    "D3FJ2E8j5sU9KbokUWMGMDfLvAj2": {
+      "active": true,
+      "autoFetchTransactions": false,
+      "baseCurrency": "ANG",
+      "brand": "Infinix",
+      "dailyBackupEnabled": false,
+      "dailyReminderEnabled": false,
+      "displayName": "Kousar Bhai",
+      "email": "kousarbhai930492@gmail.com",
+      "fcmToken": "c7fgE0WWRvC3cEq0zfqPa4:APA91bHbG0plvG5DhL5lY6kJpE6zzV5fU9q-emEGdra-xXdXXVw1V15OPjznTowr5vo8v6kMg-yrhzhbpCaNMWLHqWjOw8UWOLS172ScShChnPM77ME3nZI",
+      "lastLogin": "2025-08-11 16:32:13",
+      "lastSynced": "",
+      "model": "Infinix X669C",
+      "photoURL": "https://lh3.googleusercontent.com/a/ACg8ocIkGpUZOodUjUKB2s8rV2WGzEU1TsFjUjhGWjnSokTK8ctfgA=s96-c",
+      "platform": "android",
+      "providerId": "google.com",
+      "timeZone": "Asia/Kolkata",
+      "uid": "D3FJ2E8j5sU9KbokUWMGMDfLvAj2"
     },
     "DC7suyXeIPSvwSfrW7r7tzzJaZS2": {
       "active": 1,
@@ -2084,6 +2103,22 @@
       "providerId": "google.com",
       "timeZone": "Asia/Kolkata",
       "uid": "DLSBsZlRB0hik6p2fdhVxDzI0xu1"
+    },
+    "E5qNuZgkXjfi5BYbCn64CpOMzsn1": {
+      "active": true,
+      "baseCurrency": "INR",
+      "brand": "realme",
+      "displayName": "Veeramuthu.l Lakshmanan",
+      "email": "vlsmuthu@gmail.com",
+      "fcmToken": "csiDNSSgROaI6SFoQ4SqUb:APA91bHdsRRpB2zmR5dLXvF4s79HQa6l7RMKGkyfdQlyGWAIOA7VG5F01x1KYqL904XnTJ0mnq-tQuIwq04aSVHnczIlk7j4EAqTfiRuSHlSO5XlPO2n4-0",
+      "lastLogin": "2025-08-09 23:33:37",
+      "lastSynced": "",
+      "model": "RMX3686",
+      "photoURL": "https://lh3.googleusercontent.com/a/ACg8ocKqnywbtkbikFlZWv8pS7hm-QDHXieFVyySVO5E2cvm9E6auUx5=s96-c",
+      "platform": "android",
+      "providerId": "google.com",
+      "timeZone": "Asia/Kolkata",
+      "uid": "E5qNuZgkXjfi5BYbCn64CpOMzsn1"
     },
     "EBJu2AVNHIVprlwcwOcNohdGAej1": {
       "active": true,
@@ -2300,7 +2335,7 @@
       "dailyReminderEnabled": false,
       "email": "vkgn6kz684@privaterelay.appleid.com",
       "fcmToken": "cpTNOgkwA0e7p9oqsoOtzJ:APA91bHRtsJsphLWqoQ2YuJS9m_BJpH0mF51eIVACoeDcn3pMosKX4I-RaSbyBDLjqIjR_XoDCClBQiJcBYu6__9uyeb_GtAm66W7ms0LYkYLpXFVeew7VQ",
-      "lastLogin": "2025-07-30 17:16:48",
+      "lastLogin": "2025-08-05 04:34:04",
       "lastSynced": "",
       "model": "iPhone 16 Pro Max",
       "platform": "ios",
@@ -2490,6 +2525,22 @@
       "timeZone": "Asia/Kolkata",
       "uid": "KNqnhG4KkCWQf5fwa52xZLXZxlh2"
     },
+    "KiV86bguIwcMsQ6LPYD3CsrUj822": {
+      "active": true,
+      "baseCurrency": "MYR",
+      "brand": "Apple",
+      "displayName": "Dhia Safiya",
+      "email": "dhiasfy1806@gmail.com",
+      "fcmToken": "cKgufL1pRExrsLvlF6yPcG:APA91bEQwDhfmOHDHn2LI3wWsFqKpzGVeVwT4-WpDNTTkZYihE-gx1jO2Yvgznbb3XfuhNnygLsTsWTnIJAimmOaL3Nn9ZZToj6ETixL7inOR44THocHpxQ",
+      "lastLogin": "2025-08-11 22:14:00",
+      "lastSynced": "",
+      "model": "iPhone 12 Pro Max",
+      "photoURL": "https://lh3.googleusercontent.com/a/ACg8ocLGLOfqTd0OSXtjHVzYfhcLq86CxaDelauALn-M2ODmALdX4A=s96-c",
+      "platform": "ios",
+      "providerId": "google.com",
+      "timeZone": "Asia/Kuala_Lumpur",
+      "uid": "KiV86bguIwcMsQ6LPYD3CsrUj822"
+    },
     "KuZKLCzyXRdJpJXZ6NqMnXxtghs2": {
       "active": true,
       "autoFetchTransactions": false,
@@ -2580,7 +2631,7 @@
       "dailyReminderEnabled": false,
       "email": "guper.alejandro@gmail.com",
       "fcmToken": "dgJCqhOgJkhPmk3vRq1tAh:APA91bGJ_-zljuKTXYeZ1DOoVV2-_Z6NxX4rTHkGzAfAV2BxOAcaMaDhWgreGpKOa4S_oKPZ4_oKaCkeFwdmE9-LgmeiUSfTVhbgIUfVchCAjawflXj7K5w",
-      "lastLogin": "2025-07-31 12:42:38",
+      "lastLogin": "2025-08-05 19:21:17",
       "lastSynced": "",
       "model": "iPhone 16",
       "platform": "ios",
@@ -2630,10 +2681,6 @@
           "date": "2025-07-08T23:49:16.692Z",
           "path": "users/MKMjLi7OzsTeClTTLNqHMFuKgvs2/backups/transactions-1752018555810.json"
         },
-        "-OUgRUAKYtu3xib50fA9": {
-          "date": "2025-07-08T23:49:16.692Z",
-          "path": "users/MKMjLi7OzsTeClTTLNqHMFuKgvs2/backups/transactions-1752018555810.json"
-        },
         "-OV5G4UhyuA2DQ38-sIQ": {
           "date": "2025-07-14T00:09:49.709Z",
           "path": "users/MKMjLi7OzsTeClTTLNqHMFuKgvs2/backups/transactions-1752451789123.json"
@@ -2665,6 +2712,10 @@
         "-OWlBxmZC2z1W2gCSC0R": {
           "date": "2025-08-03T18:31:13.181Z",
           "path": "users/MKMjLi7OzsTeClTTLNqHMFuKgvs2/backups/transactions-1754245873048.json"
+        },
+        "-OXDNrtwgPSmE2I324gR": {
+          "date": "2025-08-09T10:32:12.036Z",
+          "path": "users/MKMjLi7OzsTeClTTLNqHMFuKgvs2/backups/2025-08-09T10:32:12.036Z.json"
         }
       },
       "baseCurrency": "INR",
@@ -2675,8 +2726,8 @@
       "dataRecovered": 1,
       "fcmToken": "e4TYzYX4Tj6w47csnLiBFK:APA91bFmrISqKBTrVrEfSaHZnIXNBn_cf4oA_N7uSZtZ-0urMWac5nbjbKeMCZ-mz9egNOfH6xJoaaeLvnsps5r6Hhlmtt6EjLP2eHOxHLE5LzJb5sw3Ozc",
       "lastDailyBackup": "2025-08-03T18:31:13.181Z",
-      "lastLogin": "2025-07-29 14:05:21",
-      "lastSynced": "2025-08-03 18:31:20",
+      "lastLogin": "2025-08-09 16:01:38",
+      "lastSynced": "2025-08-09 16:02:19",
       "model": "moto g85 5G",
       "phoneNumber": "+919413008003",
       "platform": "android",
@@ -2976,7 +3027,7 @@
       "dailyReminderEnabled": false,
       "email": "cgneo@me.com",
       "fcmToken": "cab7sybB80BSshoWHMwpwW:APA91bG63jkzsZUm3xXOGIEEgonrK6VbzeViJfAcL3YXbaKFJRZe6nSRUIUs96biB5BQygUOiF24q33Qy0cHd5ludOIiytvaOdnF2tWZquu39bbkw8prNKE",
-      "lastLogin": "2025-08-03 21:14:39",
+      "lastLogin": "2025-08-11 18:39:24",
       "lastSynced": "",
       "model": "iPhone 14 Pro Max",
       "platform": "ios",
@@ -3070,26 +3121,6 @@
       "active": true,
       "autoFetchTransactions": true,
       "backups": {
-        "-OWJDvJyrKT7FpP8ip46": {
-          "date": "2025-07-29T03:30:53.970Z",
-          "path": "users/QIdrC1z4NFdnuhawIZu52aA784R2/backups/2025-07-29T03:30:53.970Z.json"
-        },
-        "-OWJVPpyiNKSKOPDqGOu": {
-          "date": "2025-07-29T04:47:16.173Z",
-          "path": "users/QIdrC1z4NFdnuhawIZu52aA784R2/backups/transactions-1753764436119.json"
-        },
-        "-OWJqX5HkN5_xH48uCgA": {
-          "date": "2025-07-29T06:23:55.961Z",
-          "path": "users/QIdrC1z4NFdnuhawIZu52aA784R2/backups/2025-07-29T06:23:55.961Z.json"
-        },
-        "-OWYhcSil-hTAHAtQtGw": {
-          "date": "2025-08-01T03:39:20.969Z",
-          "path": "users/QIdrC1z4NFdnuhawIZu52aA784R2/backups/2025-08-01T03:39:20.969Z.json"
-        },
-        "-OWcwCwmkk_xSR-O1OMP": {
-          "date": "2025-08-02T04:01:07.152Z",
-          "path": "users/QIdrC1z4NFdnuhawIZu52aA784R2/backups/transactions-1754107267128.json"
-        },
         "-OWhHzcn-7BZG0JB5cJc": {
           "date": "2025-08-03T00:19:10.755Z",
           "path": "users/QIdrC1z4NFdnuhawIZu52aA784R2/backups/2025-08-03T00:19:10.755Z.json"
@@ -3109,20 +3140,40 @@
         "-OWnENrq0_fx1-8Uv9K-": {
           "date": "2025-08-04T04:00:56.358Z",
           "path": "users/QIdrC1z4NFdnuhawIZu52aA784R2/backups/transactions-1754280056327.json"
+        },
+        "-OWsNz6P0v7w_VBOaMZD": {
+          "date": "2025-08-05T04:00:56.383Z",
+          "path": "users/QIdrC1z4NFdnuhawIZu52aA784R2/backups/transactions-1754366456336.json"
+        },
+        "-OWxXZm-eDowt_WXmoI1": {
+          "date": "2025-08-06T04:01:07.692Z",
+          "path": "users/QIdrC1z4NFdnuhawIZu52aA784R2/backups/transactions-1754452867668.json"
+        },
+        "-OWxY30SB3TxZ4lP68aH": {
+          "date": "2025-08-06T04:03:14.658Z",
+          "path": "users/QIdrC1z4NFdnuhawIZu52aA784R2/backups/transactions-1754452994478.json"
+        },
+        "-OX1g9KZs2IDrh3a0C93": {
+          "date": "2025-08-07T04:01:05.717Z",
+          "path": "users/QIdrC1z4NFdnuhawIZu52aA784R2/backups/transactions-1754539265693.json"
+        },
+        "-OX6pkF5KIveuIhF42Zp": {
+          "date": "2025-08-08T04:01:05.331Z",
+          "path": "users/QIdrC1z4NFdnuhawIZu52aA784R2/backups/transactions-1754625665296.json"
         }
       },
       "baseCurrency": "CAD",
-      "brand": "google",
+      "brand": "Apple",
       "dailyBackupEnabled": true,
       "dailyReminderEnabled": true,
       "dailyReminderTime": "12:32",
       "displayName": "Sunil Kumar Pasupuleti",
       "email": "sunil.pandvd22@gmail.com",
-      "fcmToken": "ddPwZ2NnTA2_OoKLHWNEfX:APA91bEXrPG6bZF1aPUH15N5e5qNG7sft0Jyt5hH-5TevkfuC75DCECSl-UF6zwnDTE-HMPQDFZwiiRHfGwmrqyAtdP2npsyVaa9VrC2TL-FAqN2GTXZCRA",
-      "lastDailyBackup": "2025-08-04T04:00:56.358Z",
-      "lastLogin": "2025-08-04 01:09:44",
-      "lastSynced": "2025-08-04 04:01:10",
-      "model": "sdk_gphone64_arm64",
+      "fcmToken": "eBp_ih1lfkLsqPapYIWoqI:APA91bHNul021OvRLo4-cKtbXfy5JTpf_F1_m1HlM1JuVj2EFpr4K9ap_0iv3CifICiN9ZxKqenKwTScc4DdpnTkfDBF9D0-rsZ6z-PLszs_ts1k1OYX3w0",
+      "lastDailyBackup": "2025-08-08T04:01:05.331Z",
+      "lastLogin": "2025-08-12 02:11:05",
+      "lastSynced": "2025-08-08 04:01:12",
+      "model": "iPhone 16 Pro",
       "photoURL": "users/QIdrC1z4NFdnuhawIZu52aA784R2/profile.jpg",
       "plaid": {
         "accessTokens": [
@@ -3225,7 +3276,7 @@
         ],
         "userToken": "U2FsdGVkX18VRa0jwUqKBcQpIbK6/8rjliJn189YrvV+py9NTVIZtUjlt2gJK0XWbJGtcHqXDrPvaCI6NFHlBi8IsbK7hoOiwC+BUfQpMSI="
       },
-      "platform": "android",
+      "platform": "ios",
       "providerId": "google.com",
       "timeZone": "America/Toronto",
       "uid": "QIdrC1z4NFdnuhawIZu52aA784R2",
@@ -3307,13 +3358,16 @@
       "uid": "QwQ3qAKOmTT3VEFaJOxZtFrGBi32"
     },
     "RCKW1NwiP2eqfcBgQIUM9m7Rsr62": {
-      "active": 1,
+      "active": true,
+      "autoFetchTransactions": false,
       "baseCurrency": "INR",
       "brand": "Apple",
+      "dailyBackupEnabled": false,
+      "dailyReminderEnabled": false,
       "dataRecovered": 1,
       "email": "k6y8kyxnj5@privaterelay.appleid.com",
       "fcmToken": "f89h6iSiCEV4r9GxNDMTvM:APA91bG4O60xhFavdbQgrPQrk5pUv8mDiCmOVTLakxmQ2FHiwEIon11c-nsPAiB4sraOVOMfhR2-Qm-ev5ygjEy2ApqgRN2JEwbelfT0GnvsD_g9zfWEX_Fer1SXFjTbUoXmeV16bkPB",
-      "lastLogin": "2024-12-20 15:55:40",
+      "lastLogin": "2025-08-08 19:19:06",
       "lastSynced": "",
       "model": "iPhone 15",
       "platform": "ios",
@@ -3683,22 +3737,6 @@
       "active": true,
       "autoFetchTransactions": false,
       "backups": {
-        "-OVi8cUCdyCxodgN0Ujb": {
-          "date": "2025-07-21T18:02:08.510Z",
-          "path": "users/YA9aWwUpmXVMnPSlH19WzdnQ3Z12/backups/transactions-1753120928462.json"
-        },
-        "-OVxaTxidXxfMLRm5mR8": {
-          "date": "2025-07-24T18:02:29.651Z",
-          "path": "users/YA9aWwUpmXVMnPSlH19WzdnQ3Z12/backups/transactions-1753380149593.json"
-        },
-        "-OW1jkjq26pJiYP_fAl4": {
-          "date": "2025-07-25T18:01:08.035Z",
-          "path": "users/YA9aWwUpmXVMnPSlH19WzdnQ3Z12/backups/transactions-1753466468008.json"
-        },
-        "-OW6vm0HO4cI3Cf82_3k": {
-          "date": "2025-07-26T18:11:44.486Z",
-          "path": "users/YA9aWwUpmXVMnPSlH19WzdnQ3Z12/backups/transactions-1753553504399.json"
-        },
         "-OWC1w3MjNAQb9r-TSng": {
           "date": "2025-07-27T18:01:06.230Z",
           "path": "users/YA9aWwUpmXVMnPSlH19WzdnQ3Z12/backups/transactions-1753639266141.json"
@@ -3722,6 +3760,22 @@
         "-OWmWcxBk2UvSrNdiRoq": {
           "date": "2025-08-04T00:41:12.020Z",
           "path": "users/YA9aWwUpmXVMnPSlH19WzdnQ3Z12/backups/transactions-1754268071788.json"
+        },
+        "-OWryKdNcSq3npEmdVo5": {
+          "date": "2025-08-05T02:04:40.446Z",
+          "path": "users/YA9aWwUpmXVMnPSlH19WzdnQ3Z12/backups/transactions-1754359480365.json"
+        },
+        "-OWxXisNdIVZg8DN0QFe": {
+          "date": "2025-08-06T04:01:46.043Z",
+          "path": "users/YA9aWwUpmXVMnPSlH19WzdnQ3Z12/backups/transactions-1754452905910.json"
+        },
+        "-OXGcnJw7hHlmVcpWYK6": {
+          "date": "2025-08-10T01:40:41.160Z",
+          "path": "users/YA9aWwUpmXVMnPSlH19WzdnQ3Z12/backups/transactions-1754790041030.json"
+        },
+        "-OXK8BknBTpIwPsNTNOo": {
+          "date": "2025-08-10T18:01:07.197Z",
+          "path": "users/YA9aWwUpmXVMnPSlH19WzdnQ3Z12/backups/transactions-1754848867089.json"
         }
       },
       "baseCurrency": "BDT",
@@ -3731,9 +3785,9 @@
       "displayName": "Alpha",
       "email": "bm1469956@gmail.com",
       "fcmToken": "dbUMaUttSjWqRIBex9bJhX:APA91bEl12k25zkDFbTyhuaphWew0xU5pUi-58F9tz4-M3gbypUkoRxaWKuEVRGeNziSvclGHKam4dSseZnMDkjZ2QrPE6ymZuJmlTE-NK1z78AEDM7jNGU",
-      "lastDailyBackup": "2025-08-04T00:41:12.020Z",
+      "lastDailyBackup": "2025-08-10T18:01:07.197Z",
       "lastLogin": "2025-07-25 20:41:33",
-      "lastSynced": "2025-08-04 00:41:17",
+      "lastSynced": "2025-08-10 18:01:13",
       "model": "RMX3388",
       "photoURL": "https://lh3.googleusercontent.com/a/ACg8ocL5mD6CM9vt7HEq3enmhECISCBn49VKVA4Gq-J-GONNAtSmzSj4=s96-c",
       "platform": "android",
@@ -3808,7 +3862,7 @@
       "dailyBackupEnabled": false,
       "dailyReminderEnabled": false,
       "fcmToken": "epHgb8U8SaKubk87ieTp-h:APA91bGL6iHqPmfKABQpALQLKVp8s_RV7PoNTcqXN0Wlk3yoKFqgl3ZpgRV1VRFjmeg0T4hFRJ90Hwg2c_Dwils29Ns7YBuD7OACV33y1YEGfJjj3Hh3QG9aV2i_HGPKCTGhK1tqvTsS",
-      "lastLogin": "2025-08-04 08:36:20",
+      "lastLogin": "2025-08-10 20:33:06",
       "lastSynced": "",
       "model": "2201116SI",
       "phoneNumber": "+919818331487",
@@ -3988,12 +4042,15 @@
       "uid": "b4LhFeZULeXcXHexcav1CnMwWh62"
     },
     "bGyhlAGiGuXzaZabvPZxGu27ZDq2": {
-      "active": 1,
+      "active": true,
+      "autoFetchTransactions": false,
       "baseCurrency": "EUR",
       "brand": "Apple",
+      "dailyBackupEnabled": false,
+      "dailyReminderEnabled": false,
       "email": "vnzla.genstef@hotmail.com",
       "fcmToken": "cAsbdMTbsUrxqVLD9UvDOo:APA91bG2fioDpOlMdrflEkNBMEeTt-lBlOM-whM5ACbXzQnBAeZy4783aLWg1k80ZSnBwct8I782WFwkWASRMuo5NhLX3cT0EHnRcwOgdD1h7pN9cd0wBeU",
-      "lastLogin": "2025-05-12 21:24:48",
+      "lastLogin": "2025-08-04 13:15:10",
       "lastSynced": "",
       "model": "iPhone 11 Pro",
       "platform": "ios",
@@ -4377,6 +4434,10 @@
         "-OKj5Vazi3ceYZrGvxdQ": {
           "date": "2025-03-07T05:35:30.673Z",
           "path": "users/hRIAu7sWCaSm4F24VYGGnIuQE302/backups/2025-03-07T05:35:30.673Z.db"
+        },
+        "-OXJQ-aYgLs6bhKCcbkl": {
+          "date": "2025-08-10T14:39:23.505Z",
+          "path": "users/hRIAu7sWCaSm4F24VYGGnIuQE302/backups/2025-08-10T14:39:23.505Z.json"
         }
       },
       "baseCurrency": "CAD",
@@ -4385,8 +4446,8 @@
       "dailyReminderEnabled": false,
       "dataRecovered": 1,
       "fcmToken": "eQChfHdWe0PLktUXgsf5Xf:APA91bG9Sttmd2F0Dz1ZM60H01uwqdGc4F9KFUvR016AHOPJay6skvGncSYqKbsoFq44H_Dq05BDQPIdLaW2pGBNdTnC1WyQ-Vh9nValJwjdUTTyc6XloCk",
-      "lastLogin": "2025-08-04 00:01:05",
-      "lastSynced": "2025-03-07 00:35:32",
+      "lastLogin": "2025-08-12 00:01:04",
+      "lastSynced": "2025-08-10 10:39:24",
       "model": "iPhone 15",
       "phoneNumber": "+918019948488",
       "platform": "ios",
@@ -4472,6 +4533,22 @@
       "providerId": "phone",
       "timeZone": "Asia/Kolkata",
       "uid": "j9GfyMkzggMlD3M3aBXZupURX1Z2"
+    },
+    "jCZ5wWwZGoVhVGcggRCCwZsN10q1": {
+      "active": true,
+      "baseCurrency": "INR",
+      "brand": "realme",
+      "displayName": "Manukumar Kumar",
+      "email": "manukumark363@gmail.com",
+      "fcmToken": "e7RlZ-YoSQqUgcsLGauxcS:APA91bG6PiwcVaBMUxxaI6-ce-pmuoouCSZOUS9XWkpGEluFpgDaWZMXOYFkZXPbS1Wx4g_q23MnTtYrlJI6o6XbknYMkveE5csIW6ovzWQ2PnzYj0AwqUc",
+      "lastLogin": "2025-08-11 16:41:56",
+      "lastSynced": "",
+      "model": "RMX3261",
+      "photoURL": "https://lh3.googleusercontent.com/a/ACg8ocLZ1GUgNpp5lnV95kAp3Ok5P5XCFDXfyGKSnmutCs21Em5ziw=s96-c",
+      "platform": "android",
+      "providerId": "google.com",
+      "timeZone": "Asia/Kolkata",
+      "uid": "jCZ5wWwZGoVhVGcggRCCwZsN10q1"
     },
     "kAq52rlHCqV7G8nGTyTCyeVUiCn1": {
       "active": 1,
@@ -4576,10 +4653,6 @@
       "active": true,
       "autoFetchTransactions": false,
       "backups": {
-        "-OPC6kY1DWuYvvMo4kD-": {
-          "date": "2025-05-01T18:32:15.237Z",
-          "path": "users/l6b0RPLdZjPlXn58qjFMGI5Z82x1/backups/2025-05-01T18:32:15.237Z.db"
-        },
         "-OQtGDPPTalISXJfwryX": {
           "date": "2025-05-22T18:32:37.674Z",
           "path": "users/l6b0RPLdZjPlXn58qjFMGI5Z82x1/backups/2025-05-22T18:32:37.674Z.db"
@@ -4615,6 +4688,10 @@
         "-OW7-Cx3HLq_lthbyfD2": {
           "date": "2025-07-26T18:31:07.324Z",
           "path": "users/l6b0RPLdZjPlXn58qjFMGI5Z82x1/backups/transactions-1753554667220.json"
+        },
+        "-OX-dgx8KFNbZPQ3oqBl": {
+          "date": "2025-08-06T18:31:06.579Z",
+          "path": "users/l6b0RPLdZjPlXn58qjFMGI5Z82x1/backups/transactions-1754505066495.json"
         }
       },
       "baseCurrency": "INR",
@@ -4624,9 +4701,9 @@
       "dailyReminderTime": "09:43",
       "email": "bhaskar.cheerup@gmail.com",
       "fcmToken": "egETZpP4TyqmCytI6d3Jts:APA91bGf6RmfVC7Qpez85z8mkjrR3HiLdQhSkW9wRk1JKJDHpP4tzKLSzWX5bb9BxdpR4ZlMjTBcIfEvcNO9Zt5O8ak_tYbWIgTRxN0sZPNJAqhp2dQCyAe9kTND-VHZ6pWiqyutZGjv",
-      "lastDailyBackup": "2025-07-26T18:31:07.324Z",
+      "lastDailyBackup": "2025-08-06T18:31:06.579Z",
       "lastLogin": "2025-07-10 08:26:44",
-      "lastSynced": "2025-07-26 18:31:13",
+      "lastSynced": "2025-08-06 18:31:12",
       "model": "V2231",
       "platform": "android",
       "providerId": "password",
@@ -5494,7 +5571,7 @@
       "displayName": "Muhammad Inuwa Musa",
       "email": "muhammadinuwam4@gmail.com",
       "fcmToken": "dwCTNKEDF0itg3FJ5oXme4:APA91bH4vjNszSq0kDFD9gX7Vc7qqr8_16oYQslIfLLRdGc9jhYIlKsyGLbVAfxd0LYX-tErIXNwABiEErW4BM-KCSwQ-ZSkAopb4xXrFP3ovR8vcdSJMps",
-      "lastLogin": "2025-08-03 12:34:50",
+      "lastLogin": "2025-08-12 05:47:29",
       "lastSynced": "2025-06-19 08:34:42",
       "model": "iPhone 15 Pro",
       "photoURL": "https://lh3.googleusercontent.com/a/ACg8ocIi4hKRpDCqP3guvKfyUkecIiPIo8I4rUUSefwcxel1jHGhjck=s96-c",
@@ -5599,24 +5676,8 @@
     },
     "yn9ntKZAw9XAShlmMOswEyftvsD3": {
       "active": true,
-      "autoFetchTransactions": false,
+      "autoFetchTransactions": true,
       "backups": {
-        "-OTwxm6_Tv7y2kPZLjTw": {
-          "date": "2025-06-29T18:33:16.066Z",
-          "path": "users/yn9ntKZAw9XAShlmMOswEyftvsD3/backups/transactions-1751221992941.json"
-        },
-        "-OUzu0XMV6Kvjj_V1OMG": {
-          "date": "2025-07-12T18:31:11.296Z",
-          "path": "users/yn9ntKZAw9XAShlmMOswEyftvsD3/backups/transactions-1752345068867.json"
-        },
-        "-OVELkK7w4E5LuUDsTro": {
-          "date": "2025-07-15T18:31:13.368Z",
-          "path": "users/yn9ntKZAw9XAShlmMOswEyftvsD3/backups/transactions-1752604272562.json"
-        },
-        "-OVJW6_XsLzzfOJroDIS": {
-          "date": "2025-07-16T18:34:37.255Z",
-          "path": "users/yn9ntKZAw9XAShlmMOswEyftvsD3/backups/transactions-1752690875426.json"
-        },
         "-OVYxU0LvGOrUBRADcC-": {
           "date": "2025-07-19T18:32:48.717Z",
           "path": "users/yn9ntKZAw9XAShlmMOswEyftvsD3/backups/transactions-1752949967864.json"
@@ -5640,6 +5701,22 @@
         "-OWatnE1ULj9DlfeOs5G": {
           "date": "2025-08-01T18:31:18.888Z",
           "path": "users/yn9ntKZAw9XAShlmMOswEyftvsD3/backups/transactions-1754073078049.json"
+        },
+        "-OWvV9cAD-jj4dph1H0n": {
+          "date": "2025-08-05T18:31:16.628Z",
+          "path": "users/yn9ntKZAw9XAShlmMOswEyftvsD3/backups/transactions-1754418674040.json"
+        },
+        "-OX4nJQ-y3SDZBqz61H3": {
+          "date": "2025-08-07T18:31:09.649Z",
+          "path": "users/yn9ntKZAw9XAShlmMOswEyftvsD3/backups/transactions-1754591467130.json"
+        },
+        "-OX9wuCcw4LlxXu-n3x-": {
+          "date": "2025-08-08T18:31:09.586Z",
+          "path": "users/yn9ntKZAw9XAShlmMOswEyftvsD3/backups/transactions-1754677867039.json"
+        },
+        "-OXF5UYt9zgGMkpS-wSk": {
+          "date": "2025-08-09T18:31:09.526Z",
+          "path": "users/yn9ntKZAw9XAShlmMOswEyftvsD3/backups/transactions-1754764267076.json"
         }
       },
       "baseCurrency": "INR",
@@ -5649,9 +5726,9 @@
       "displayName": "Dushyant Waghmare",
       "email": "dwdushantwaghmare@gmail.com",
       "fcmToken": "feT2pl2RQWSfgsfcrFlGlB:APA91bHiH3Wk_mUhT2RBo98jUyQoQlwkzwY_ql1mY0NJWyqFfrx4Lm3KUrIc7A4aKcwMAsNqbNfHyVc0G_9WdkKKmYEPkHaJVByog4IrSGoNwn1fmYP_k6aDPParCVzoz_AXn3h8SbbC",
-      "lastDailyBackup": "2025-08-01T18:31:18.888Z",
-      "lastLogin": "2025-08-04 07:28:26",
-      "lastSynced": "2025-08-01 18:31:24",
+      "lastDailyBackup": "2025-08-09T18:31:09.526Z",
+      "lastLogin": "2025-08-11 18:56:46",
+      "lastSynced": "2025-08-09 18:31:17",
       "model": "V2025",
       "photoURL": "https://lh3.googleusercontent.com/a/AAcHTtftuaRmAgE5FwpIQzb315Ihtx36Wgxxt_dp37pXww=s96-c",
       "plaid": {
@@ -5716,7 +5793,7 @@
       "displayName": "Anurag Choudhary",
       "email": "anuragchoudhary.futurooscope@gmail.com",
       "fcmToken": "crbEiEMyTO-pf6CQXiNMY8:APA91bFfOEqDey_FgqYC9sLZ4XY8ZoAo2MjjoVb-kfVNXweApe0SAMIiYv2KAImPAl_KCbUI2ZZHPJEeHY6gHuJu_yVy7kAQxjHWYfU9LcP_1gsOeopaEiM",
-      "lastLogin": "2025-07-29 14:00:41",
+      "lastLogin": "2025-08-11 04:30:04",
       "lastSynced": "",
       "model": "M2012K11AI",
       "photoURL": "https://lh3.googleusercontent.com/a/ACg8ocKNsY4qdJq1_EEObFCxaj0D0PlqioKY-GRPTHvnXc_Qz2BHqEx1=s96-c",
