@@ -1,7 +1,7 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Alert, AppState, Platform} from 'react-native';
-import {loaderActions} from './loader-slice';
+import { Alert, AppState, Platform } from 'react-native';
+import { loaderActions } from './loader-slice';
 import remoteConfig from '@react-native-firebase/remote-config';
 import {
   ACCOUNT_DELETION_URL,
@@ -46,9 +46,9 @@ export const fetchTheme = createAsyncThunk('service/fetchTheme', async () => {
 
 export const fetchExchangeRates = createAsyncThunk(
   'service/fetchExchangeRates',
-  async ({showAlert = false, BASE_CURRENCY = 'INR', dispatch = null}) => {
+  async ({ showAlert = false, BASE_CURRENCY = 'INR', dispatch = null }) => {
     if (dispatch) {
-      dispatch(loaderActions.showLoader({backdrop: true}));
+      dispatch(loaderActions.showLoader({ backdrop: true }));
     }
     let url = 'https://open.er-api.com/v6/latest/' + BASE_CURRENCY;
     let response = await fetch(url, {
@@ -84,7 +84,7 @@ export const fetchExchangeRates = createAsyncThunk(
 
 export const setTheme = createAsyncThunk(
   'service/setTheme',
-  async ({theme}) => {
+  async ({ theme }) => {
     await AsyncStorage.setItem(
       `@expenses-manager-theme`,
       JSON.stringify(theme),
@@ -106,7 +106,7 @@ export const setOnBoarding = createAsyncThunk(
 
 export const setAppState = createAsyncThunk(
   'service/setAppState',
-  async ({state}) => {
+  async ({ state }) => {
     return state;
   },
 );
@@ -145,7 +145,7 @@ export const loadAppStatus = createAsyncThunk(
         PRIVACY_POLICY_URL: PRIVACY_POLICY_URL,
       })
       .then(async () => {
-        // await remoteConfig().activate();
+        await remoteConfig().activate();
       })
       .then(fetchedRemotely => {
         if (fetchedRemotely) {
