@@ -1,19 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useContext} from 'react';
-import {createContext, useEffect, useState} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {serviceActions} from '../../store/service-slice';
+import React, { useContext } from 'react';
+import { createContext, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { serviceActions } from '../../store/service-slice';
 import auth from '@react-native-firebase/auth';
-import {notificationActions} from '../../store/notification-slice';
+import { notificationActions } from '../../store/notification-slice';
 import messaging from '@react-native-firebase/messaging';
-import {loaderActions} from '../../store/loader-slice';
+import { loaderActions } from '../../store/loader-slice';
 import remoteConfig from '@react-native-firebase/remote-config';
 import {
   GoogleSignin,
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import useHttp from '../../hooks/use-http';
-import {Alert, PermissionsAndroid, Platform} from 'react-native';
+import { Alert, Linking, PermissionsAndroid, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   resetPinCodeInternalStates,
@@ -21,10 +21,10 @@ import {
 } from '@haskkor/react-native-pincode';
 import NetInfo from '@react-native-community/netinfo';
 import appleAuth from '@invertase/react-native-apple-authentication';
-import {OneSignal} from 'react-native-onesignal';
+import { OneSignal } from 'react-native-onesignal';
 import moment from 'moment';
 import InAppReview from 'react-native-in-app-review';
-import {getCurrencies, getLocales, getTimeZone} from 'react-native-localize';
+import { getCurrencies, getLocales, getTimeZone } from 'react-native-localize';
 import DeviceInfo from 'react-native-device-info';
 import database from '@react-native-firebase/database';
 import {
@@ -32,10 +32,18 @@ import {
   getCurrentDate,
 } from '../../components/utility/helper';
 import defaultCategories from '../../components/utility/defaultCategories.json';
-import {SocketContext} from '../socket/socket.context';
+import { SocketContext } from '../socket/socket.context';
 import * as Sentry from '@sentry/react-native';
-import {WatermelonDBContext} from '../watermelondb/watermelondb.context';
+import { WatermelonDBContext } from '../watermelondb/watermelondb.context';
 import PushNotification from 'react-native-push-notification';
+import {
+  check,
+  checkNotifications,
+  PERMISSIONS,
+  request,
+  requestNotifications,
+  RESULTS,
+} from 'react-native-permissions';
 
 GoogleSignin.configure({
   webClientId: remoteConfig().getValue('WEB_CLIENT_ID').asString(),
@@ -62,17 +70,17 @@ export const AuthenticationContext = createContext({
 
 let authStateTriggered = false;
 
-export const AuthenticationContextProvider = ({children}) => {
+export const AuthenticationContextProvider = ({ children }) => {
   const [userData, setUserData] = useState(null);
-  const {createRecord, deleteAllRecords, db, findRecordById} =
+  const { createRecord, deleteAllRecords, db, findRecordById } =
     useContext(WatermelonDBContext);
-  const {initializeWebSocket, initializePlaidWebSocket} =
+  const { initializeWebSocket, initializePlaidWebSocket } =
     useContext(SocketContext);
   const [userAdditionalDetails, setUserAdditionalDetails] = useState(null);
   const [userDetailsFirebase, setUserDetailsFirebase] = useState(null);
   const BACKEND_URL = remoteConfig().getValue('BACKEND_URL').asString();
   const dispatch = useDispatch();
-  const {sendRequest} = useHttp();
+  const { sendRequest } = useHttp();
 
   const appUpdateNeeded = useSelector(state => state.service.appUpdateNeeded);
 
@@ -92,7 +100,7 @@ export const AuthenticationContextProvider = ({children}) => {
       checkSmsReadPermission();
       checkSmsReceivePermission();
     }
-
+    checkNotificationPermission();
     checkFirstLaunch();
   }, []);
 
@@ -167,9 +175,7 @@ export const AuthenticationContextProvider = ({children}) => {
 
   useEffect(() => {
     if (userData) {
-      checkNotificationPermission();
-
-      dispatch(serviceActions.setAppStatus({authenticated: true}));
+      dispatch(serviceActions.setAppStatus({ authenticated: true }));
     }
   }, [userData]);
 
@@ -184,7 +190,7 @@ export const AuthenticationContextProvider = ({children}) => {
     if (loaderText) {
       options.loaderText = loaderText;
     }
-    dispatch(loaderActions.showLoader({...options}));
+    dispatch(loaderActions.showLoader({ ...options }));
   };
 
   const hideLoader = () => {
@@ -213,8 +219,61 @@ export const AuthenticationContextProvider = ({children}) => {
   };
 
   const checkNotificationPermission = async () => {
-    const granted = await PermissionsAndroid.request(
-      PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS,
+    try {
+      const { status } = await checkNotifications();
+      console.log(status);
+
+      if (status === RESULTS.GRANTED) {
+        console.log('✅ Permission already granted');
+        return true;
+      }
+
+      if (
+        status === RESULTS.DENIED ||
+        status === RESULTS.UNAVAILABLE ||
+        status === RESULTS.BLOCKED
+      ) {
+        const { status: newStatus } = await requestNotifications([
+          'alert',
+          'sound',
+          'badge',
+        ]);
+
+        if (newStatus === RESULTS.GRANTED) {
+          console.log('✅ Permission granted after request');
+          return true;
+        } else if (newStatus === RESULTS.BLOCKED) {
+          showBlockedAlert();
+          return false;
+        } else {
+          console.warn('❌ Permission denied');
+          return false;
+        }
+      }
+
+      return false;
+    } catch (error) {
+      console.error('Error checking permission:', error);
+      return false;
+    }
+  };
+
+  const showBlockedAlert = () => {
+    Alert.alert(
+      'Notifications Disabled',
+      'You have turned off notifications for this app. Please enable them in Settings.',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Open Settings',
+          onPress: () => {
+            Linking.openSettings().catch(() =>
+              Alert.alert('Unable to open settings'),
+            );
+          },
+        },
+      ],
+      { cancelable: true },
     );
   };
 
@@ -345,7 +404,7 @@ export const AuthenticationContextProvider = ({children}) => {
         return;
       }
 
-      const {idToken} = signInResponse?.data;
+      const { idToken } = signInResponse?.data;
 
       if (!idToken) {
         throw 'Unable to get the Id token';
@@ -389,7 +448,7 @@ export const AuthenticationContextProvider = ({children}) => {
       if (!appleAuthRequestResponse.identityToken) {
         throw new Error('Apple SIgn-In Failed - no identity token returned');
       }
-      const {identityToken, nonce} = appleAuthRequestResponse;
+      const { identityToken, nonce } = appleAuthRequestResponse;
       const appleCredentials = auth.AppleAuthProvider.credential(
         identityToken,
         nonce,
@@ -421,7 +480,7 @@ export const AuthenticationContextProvider = ({children}) => {
   const onSignInWithEmail = async (email, password) => {
     try {
       let result = await auth().signInWithEmailAndPassword(email, password);
-      return {status: true};
+      return { status: true };
     } catch (e) {
       console.log(e, 'error with sign in with email and password');
       let error = '';
@@ -439,14 +498,14 @@ export const AuthenticationContextProvider = ({children}) => {
           error = 'Password is incorrect';
           break;
       }
-      return {status: false, message: error};
+      return { status: false, message: error };
     }
   };
 
   const onSignUpWithEmail = async (email, password) => {
     try {
       let result = await auth().createUserWithEmailAndPassword(email, password);
-      return {status: true};
+      return { status: true };
     } catch (e) {
       console.log(e, 'error with sign in with email and password');
       let error = '';
@@ -460,7 +519,7 @@ export const AuthenticationContextProvider = ({children}) => {
           error = 'Password is not strong enough';
           break;
       }
-      return {status: false, message: error};
+      return { status: false, message: error };
     }
   };
 
@@ -483,7 +542,7 @@ export const AuthenticationContextProvider = ({children}) => {
           error = 'There is no user with the email-address you have provided.';
           break;
       }
-      return {status: false, message: error};
+      return { status: false, message: error };
     }
   };
 
@@ -519,7 +578,7 @@ export const AuthenticationContextProvider = ({children}) => {
         },
       );
     } catch (e) {
-      return {status: false, message: e};
+      return { status: false, message: e };
     }
   };
 
@@ -609,7 +668,7 @@ export const AuthenticationContextProvider = ({children}) => {
           transformedData.lastSynced = lastSynced || '';
         } else {
           let providerId = currentUser.providerData[0].providerId;
-          const {displayName, email, photoURL, phoneNumber} = currentUser;
+          const { displayName, email, photoURL, phoneNumber } = currentUser;
           transformedData.displayName = displayName;
           transformedData.email = email;
           transformedData.photoURL = photoURL;
@@ -666,7 +725,7 @@ export const AuthenticationContextProvider = ({children}) => {
 
         if (!existingCategories?.length) {
           let formattedCategories = defaultCategories.map(category => {
-            const {name, type, color, icon, isDefault} = category;
+            const { name, type, color, icon, isDefault } = category;
             return {
               name,
               type,
@@ -734,7 +793,7 @@ export const AuthenticationContextProvider = ({children}) => {
       setUserData(null);
       setUserAdditionalDetails(null);
       messaging().deleteToken();
-      dispatch(serviceActions.setAppStatus({authenticated: false}));
+      dispatch(serviceActions.setAppStatus({ authenticated: false }));
     };
     OneSignal.logout();
     OneSignal.User.removeTags(['uid', 'email', 'dailyUpdateUid']);
@@ -750,7 +809,7 @@ export const AuthenticationContextProvider = ({children}) => {
         .catch(err => {
           console.log(err, 'no user');
           dispatch(
-            notificationActions.showToast({status: 'error', message: err}),
+            notificationActions.showToast({ status: 'error', message: err }),
           );
         });
       // destroy the daily reminder notification and daily backup notification
@@ -808,7 +867,8 @@ export const AuthenticationContextProvider = ({children}) => {
         userDetailsFirebase,
         userAdditionalDetails,
         onGetUserDetails,
-      }}>
+      }}
+    >
       {children}
     </AuthenticationContext.Provider>
   );

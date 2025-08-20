@@ -71,37 +71,23 @@ const App = () => {
   const appStatus = useSelector(state => state.service.appStatus);
 
   useEffect(() => {
-    console.log('--');
+    // checkAppUpdateNeeded();
+    let stateListener = AppState.addEventListener('change', nextAppState => {
+      if (nextAppState === 'active') {
+        checkAppUpdateNeeded();
+      }
+      if (nextAppState) {
+        dispatch(setAppState(nextAppState));
+      }
+    });
 
-    let iosStateListener = null;
-    let androidStateListener = null;
-    if (Platform.OS === 'ios') {
-      iosStateListener = AppState.addEventListener('change', nextAppState => {
-        if (nextAppState === 'active') {
-          checkAppUpdateNeeded();
-        }
-        dispatch(setAppState({ state: nextAppState }));
-      });
-    }
-    if (Platform.OS === 'android') {
-      androidStateListener = DeviceEventEmitter.addListener(
-        'ActivityStateChange',
-        e => {
-          if (e.event === 'active') {
-            checkAppUpdateNeeded();
-          }
-          dispatch(setAppState({ state: e.event }));
-        },
-      );
-    }
     //  call all slices
     dispatch(fetchAppLock());
     dispatch(fetchTheme());
     dispatch(loadAppStatus());
     dispatch(fetchExchangeRates({}));
     return () => {
-      iosStateListener?.remove();
-      androidStateListener?.remove();
+      stateListener?.remove();
     };
   }, []);
 
@@ -120,29 +106,33 @@ const App = () => {
       );
 
       let updateNeeded = await VersionCheck.needUpdate();
-
       if (updateNeeded && updateNeeded.isNeeded) {
-        // dispatch(setAppUpdateNeeded(true));
+        dispatch(setAppUpdateNeeded(true));
         Alert.alert(
           `Plese Update the app from ${currentVersion} to ${latestVersion} `,
           'You will have to update your app to the latest version to continue using.',
           [
             {
               text: 'Update',
-              onPress: () => {
-                Linking.openURL(updateNeeded.storeUrl)
-                  .then(() => {
-                    BackHandler.exitApp();
-                    // RNExitApp.exitApp();
-                  })
-                  .catch(err => {
-                    if (Platform.OS === 'ios') {
-                      Linking.openURL(APP_STORE_URL);
-                    } else if (Platform.OS === 'android') {
-                      Linking.openURL(PLAY_STORE_URL);
-                    } else {
-                    }
-                  });
+              onPress: async () => {
+                try {
+                  const url =
+                    updateNeeded?.storeUrl ||
+                    (Platform.OS === 'ios' ? APP_STORE_URL : PLAY_STORE_URL);
+                  const supported = await Linking.canOpenURL(url);
+
+                  if (supported) {
+                    await Linking.openURL(url);
+                    // Optional: Delay before exiting (only if really needed)
+                    setTimeout(() => {
+                      BackHandler.exitApp();
+                    }, 1000); // Wait 1 second for browser to load
+                  } else {
+                    Alert.alert('Unable to open store URL.');
+                  }
+                } catch (err) {
+                  console.error('Error opening update URL:', err);
+                }
               },
               style: 'cancel',
             },

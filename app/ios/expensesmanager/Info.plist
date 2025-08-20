@@ -55,6 +55,8 @@
 	<string>35</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
+	    <string>itms-apps</string>
+  		<string>https</string>
 		<string>whatsapp</string>
 		<string>mailto</string>
 		<string>instagram</string>

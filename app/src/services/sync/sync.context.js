@@ -2,11 +2,11 @@
 /* eslint-disable quotes */
 /* eslint-disable react-hooks/exhaustive-deps */
 import React from 'react';
-import {createContext, useContext, useEffect} from 'react';
-import {useDispatch} from 'react-redux';
-import {loaderActions} from '../../store/loader-slice';
-import {notificationActions} from '../../store/notification-slice';
-import {AuthenticationContext} from '../authentication/authentication.context';
+import { createContext, useContext, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { loaderActions } from '../../store/loader-slice';
+import { notificationActions } from '../../store/notification-slice';
+import { AuthenticationContext } from '../authentication/authentication.context';
 import database from '@react-native-firebase/database';
 import storage from '@react-native-firebase/storage';
 import remoteConfig from '@react-native-firebase/remote-config';
@@ -16,8 +16,8 @@ import {
   readDir,
   unlink,
 } from 'react-native-cloud-store';
-import {SheetDetailsContext} from '../sheetDetails/sheetDetails.context';
-import {SQLiteContext} from '../sqlite/sqlite.context';
+import { SheetDetailsContext } from '../sheetDetails/sheetDetails.context';
+import { SQLiteContext } from '../sqlite/sqlite.context';
 import {
   firebaseRemoveFile,
   firebaseRemoveFiles,
@@ -28,22 +28,22 @@ import {
   getLinkedDbRecord,
 } from '../../components/utility/helper';
 import _ from 'lodash';
-import {Alert, Platform} from 'react-native';
+import { Alert, Platform } from 'react-native';
 import RNFS from 'react-native-fs';
 import RNFetchBlob from 'rn-fetch-blob';
-import {getTimeZone} from 'react-native-localize';
+import { getTimeZone } from 'react-native-localize';
 import momentTz from 'moment-timezone';
-import {navigate} from '../../infrastructure/navigation/rootnavigation';
+import { navigate } from '../../infrastructure/navigation/rootnavigation';
 import {
   useNetInfo,
   fetch as netInfoFetch,
 } from '@react-native-community/netinfo';
 
-import {WatermelonDBContext} from '../watermelondb/watermelondb.context';
+import { WatermelonDBContext } from '../watermelondb/watermelondb.context';
 import Aes from 'react-native-aes-crypto';
-import {Q} from '@nozbe/watermelondb';
+import { Q } from '@nozbe/watermelondb';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {SheetsContext} from '../sheets/sheets.context';
+import { SheetsContext } from '../sheets/sheets.context';
 
 export const SyncContext = createContext({
   backUpData: () => null,
@@ -55,10 +55,10 @@ export const SyncContext = createContext({
   onDeleteBackupFromiCloud: () => null,
 });
 
-export const SyncContextProvider = ({children}) => {
-  const {userData} = useContext(AuthenticationContext);
-  const {onGetSheetsAndTransactions} = useContext(SheetDetailsContext);
-  const {onUpdateSheet} = useContext(SheetsContext);
+export const SyncContextProvider = ({ children }) => {
+  const { userData } = useContext(AuthenticationContext);
+  const { onGetSheetsAndTransactions } = useContext(SheetDetailsContext);
+  const { onUpdateSheet } = useContext(SheetsContext);
 
   const {
     initializeDB,
@@ -66,9 +66,9 @@ export const SyncContextProvider = ({children}) => {
     restoreDbFromBackup,
     db: sqliteDb,
   } = useContext(SQLiteContext);
-  const {db, deleteAllRecords} = useContext(WatermelonDBContext);
+  const { db, deleteAllRecords } = useContext(WatermelonDBContext);
   const dispatch = useDispatch();
-  const {isConnected} = useNetInfo();
+  const { isConnected } = useNetInfo();
 
   useEffect(() => {
     if (userData && db) {
@@ -111,7 +111,7 @@ export const SyncContextProvider = ({children}) => {
 
   const onBackUpDatabase = async () => {
     try {
-      const {uid} = userData;
+      const { uid } = userData;
       const accountsCollection = await db.get('accounts');
       const accounts = await accountsCollection
         .query(Q.where('userId', userData.id))
@@ -128,12 +128,12 @@ export const SyncContextProvider = ({children}) => {
       const accountsWithTransactions = await Promise.all(
         accounts.map(async account => {
           const transactions = await getLinkedDbRecord(account, 'transactions');
-          const sanitizedAccount = {...account._raw};
+          const sanitizedAccount = { ...account._raw };
           delete sanitizedAccount._status;
           delete sanitizedAccount._changed;
 
-          const sanitizedTransactions = transactions.map(({_raw}) => {
-            const {accountId, ...rest} = _raw;
+          const sanitizedTransactions = transactions.map(({ _raw }) => {
+            const { accountId, ...rest } = _raw;
             delete rest._status;
             delete rest._changed;
             return rest;
@@ -146,8 +146,8 @@ export const SyncContextProvider = ({children}) => {
         }),
       );
 
-      const sanitizedCategories = categories.map(({_raw}) => {
-        const {userId, ...rest} = _raw;
+      const sanitizedCategories = categories.map(({ _raw }) => {
+        const { userId, ...rest } = _raw;
         delete rest._status;
         delete rest._changed;
         return rest;
@@ -167,7 +167,7 @@ export const SyncContextProvider = ({children}) => {
       const iv = await Aes.randomKey(16);
       const cipher = await Aes.encrypt(jsonString, key, iv, 'aes-256-cbc');
 
-      const encryptedPayload = JSON.stringify({cipher, iv});
+      const encryptedPayload = JSON.stringify({ cipher, iv });
 
       const fileName = `transactions-${Date.now()}.json`;
       const path =
@@ -186,14 +186,14 @@ export const SyncContextProvider = ({children}) => {
   const restoreEncryptedJsonBackup = async (filePath, uid, userId) => {
     try {
       const encryptedString = await RNFS.readFile(filePath, 'utf8');
-      const {cipher, iv} = JSON.parse(encryptedString);
+      const { cipher, iv } = JSON.parse(encryptedString);
 
       const salt = uid.slice(0, 8);
       const key = await Aes.pbkdf2(uid, salt, 5000, 256, 'sha256');
       const decrypted = await Aes.decrypt(cipher, key, iv, 'aes-256-cbc');
       const parsedData = JSON.parse(decrypted);
 
-      const {accounts = [], categories = []} = parsedData;
+      const { accounts = [], categories = [] } = parsedData;
       if (accounts.length === 0 || categories.length === 0) {
         throw 'Parsed backup is empty or corrupted';
       }
@@ -219,7 +219,7 @@ export const SyncContextProvider = ({children}) => {
         }
 
         for (const a of accounts) {
-          const {transactions = [], ...accountData} = a;
+          const { transactions = [], ...accountData } = a;
           let totalIncome = 0;
           let totalExpense = 0;
 
@@ -296,7 +296,7 @@ export const SyncContextProvider = ({children}) => {
           throw 'Check your internet connection & try again';
         }
         showLoader('backup', true);
-        let {uid} = userData;
+        let { uid } = userData;
         let transactions = await onGetSheetsAndTransactions();
         if (transactions.length === 0) {
           throw {
@@ -371,7 +371,7 @@ export const SyncContextProvider = ({children}) => {
 
   const onInitialRestoreCheck = async () => {
     try {
-      const {uid, id} = userData;
+      const { uid, id } = userData;
       const accountsCollection = await db.get('accounts');
       const accounts = await accountsCollection
         .query(Q.where('userId', id))
@@ -395,16 +395,12 @@ export const SyncContextProvider = ({children}) => {
             {
               text: 'Restore',
               onPress: async () => {
-                await navigate('Settings', {
-                  screen: 'Sync',
-                });
                 await restoreData(null, false);
-                await navigate('Sheets');
               },
               style: 'default',
             },
           ],
-          {cancelable: false},
+          { cancelable: false },
         );
       }
     } catch (e) {}
@@ -487,7 +483,7 @@ export const SyncContextProvider = ({children}) => {
             const linkedTransactions = transactions.filter(
               t => t.accountId === a.id,
             );
-            const {id, ...accountData} = a;
+            const { id, ...accountData } = a;
 
             const totalIncome = linkedTransactions
               .filter(t => t.type === 'income' && !t.upcoming)
@@ -542,7 +538,7 @@ export const SyncContextProvider = ({children}) => {
           }
 
           showLoader('restore', true);
-          const {uid} = userData;
+          const { uid } = userData;
           let pathRef = `users/${uid}/backups/`;
 
           if (backup) {
@@ -631,7 +627,7 @@ export const SyncContextProvider = ({children}) => {
             style: 'default',
           },
         ],
-        {cancelable: false},
+        { cancelable: false },
       );
     } else {
       await onRestore();
@@ -644,7 +640,7 @@ export const SyncContextProvider = ({children}) => {
         if (!isConnected) {
           throw 'Check your internet connection & try again';
         }
-        const {uid} = userData;
+        const { uid } = userData;
         showLoader('restore', true);
         let snapshot = await database()
           .ref(`/users/${uid}/backups`)
@@ -691,7 +687,7 @@ export const SyncContextProvider = ({children}) => {
           };
         }
         if ((await isICloudAvailable()) && defaultICloudContainerPath) {
-          const {uid} = userData;
+          const { uid } = userData;
           const fileUrl = await onBackUpDatabase();
           const currentDate = new Date().toISOString();
           const fileName = `transactions-${currentDate}.json`;
@@ -727,7 +723,7 @@ export const SyncContextProvider = ({children}) => {
       try {
         showLoader('restore', true);
         if ((await isICloudAvailable()) && defaultICloudContainerPath) {
-          const {path} = backup;
+          const { path } = backup;
           const basePath = RNFS.DocumentDirectoryPath;
           if (await RNFS.exists(path)) {
             const extension = path.split('.').pop();
@@ -770,7 +766,7 @@ export const SyncContextProvider = ({children}) => {
           style: 'default',
         },
       ],
-      {cancelable: false},
+      { cancelable: false },
     );
   };
 
@@ -874,7 +870,8 @@ export const SyncContextProvider = ({children}) => {
         onGetRestoresFromiCloud,
         onRestoreFromiCloud,
         onDeleteBackupFromiCloud,
-      }}>
+      }}
+    >
       {children}
     </SyncContext.Provider>
   );

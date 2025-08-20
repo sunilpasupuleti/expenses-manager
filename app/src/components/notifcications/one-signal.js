@@ -1,5 +1,5 @@
-import {OneSignal, LogLevel} from 'react-native-onesignal';
-import {Linking} from 'react-native';
+import { OneSignal, LogLevel } from 'react-native-onesignal';
+import { Linking } from 'react-native';
 import remoteConfig from '@react-native-firebase/remote-config';
 
 OneSignal.Debug.setLogLevel(LogLevel.Verbose);
@@ -11,8 +11,8 @@ const initializeOneSignal = async () => {
 
   try {
     console.log(ONE_SIGNAL_APP_ID, 'One signal Id ----');
-    OneSignal.initialize(ONE_SIGNAL_APP_ID);
-    OneSignal.Notifications.requestPermission(true);
+    await OneSignal.initialize(ONE_SIGNAL_APP_ID);
+    // await OneSignal.Notifications.requestPermission(true);
   } catch (e) {
     console.log(e, 'error in one signal');
   }
