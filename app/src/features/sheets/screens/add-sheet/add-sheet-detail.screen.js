@@ -1054,52 +1054,54 @@ export const AddSheetDetailScreen = ({ navigation, route }) => {
               </>
             )}
             {/* image */}
-            <Card.Content>
-              {!selectedImage?.url && (
-                <TouchableOpacity onPress={onAddImage}>
-                  <FlexRow justifyContent="space-between">
-                    <Text>Add Image</Text>
+            {!userData.isGuest && (
+              <Card.Content>
+                {!selectedImage?.url && (
+                  <TouchableOpacity onPress={onAddImage}>
+                    <FlexRow justifyContent="space-between">
+                      <Text>Add Image</Text>
 
-                    <FontAwesome
-                      name="photo"
-                      size={20}
-                      color={theme.colors.brand.primary}
-                    />
-                  </FlexRow>
-                </TouchableOpacity>
-              )}
-
-              {selectedImage?.url && (
-                <FlexRow justifyContent="space-between">
-                  <TouchableOpacity
-                    onPress={() => {
-                      onAddImage();
-                    }}
-                  >
-                    <Text>Change Image</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity onPress={() => setOpen(true)}>
-                    <SheetDetailAvatarWrapper>
-                      <Avatar.Image
-                        onLoadStart={() => setAvatarLoading(true)}
-                        onLoad={() => setAvatarLoading(false)}
-                        size={70}
-                        source={{
-                          uri: selectedImage?.url,
-                        }}
+                      <FontAwesome
+                        name="photo"
+                        size={20}
+                        color={theme.colors.brand.primary}
                       />
-                      {avatarLoading && (
-                        <SheetDetailAvatarActivityIndicator
-                          color={theme.colors.brand.primary}
-                          animating
-                        />
-                      )}
-                    </SheetDetailAvatarWrapper>
+                    </FlexRow>
                   </TouchableOpacity>
-                </FlexRow>
-              )}
-            </Card.Content>
+                )}
+
+                {selectedImage?.url && (
+                  <FlexRow justifyContent="space-between">
+                    <TouchableOpacity
+                      onPress={() => {
+                        onAddImage();
+                      }}
+                    >
+                      <Text>Change Image</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => setOpen(true)}>
+                      <SheetDetailAvatarWrapper>
+                        <Avatar.Image
+                          onLoadStart={() => setAvatarLoading(true)}
+                          onLoad={() => setAvatarLoading(false)}
+                          size={70}
+                          source={{
+                            uri: selectedImage?.url,
+                          }}
+                        />
+                        {avatarLoading && (
+                          <SheetDetailAvatarActivityIndicator
+                            color={theme.colors.brand.primary}
+                            animating
+                          />
+                        )}
+                      </SheetDetailAvatarWrapper>
+                    </TouchableOpacity>
+                  </FlexRow>
+                )}
+              </Card.Content>
+            )}
             <Spacer position={'bottom'} size="large" />
           </Card>
 

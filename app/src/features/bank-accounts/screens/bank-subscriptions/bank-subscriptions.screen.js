@@ -386,7 +386,7 @@ export const BankSubscriptionsScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    if (routeIsFocused && appState === 'active') {
+    if (routeIsFocused) {
       onGetRecurringTransactions();
     }
   }, [routeIsFocused]);

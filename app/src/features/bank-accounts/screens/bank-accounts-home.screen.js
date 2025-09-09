@@ -51,7 +51,8 @@ export const BankAccountsHome = ({ navigation, route }) => {
           // backgroundColor: theme.colors.bg.primary,
           paddingBottom: 25,
           height: 80,
-          display: appState === 'active' ? 'flex' : 'none',
+          // display: appState === 'active' ? 'flex' : 'none',
+          display: 'flex',
         },
         headerLeft: () => (
           <TouchableOpacity onPress={() => navigation.goBack()}>

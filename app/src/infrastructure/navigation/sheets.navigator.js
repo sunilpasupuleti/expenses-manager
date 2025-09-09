@@ -4,7 +4,7 @@ import {
   createStackNavigator,
   TransitionSpecs,
 } from '@react-navigation/stack';
-import { Dimensions } from 'react-native';
+import { Dimensions, Platform } from 'react-native';
 import { useTheme } from 'styled-components/native';
 import { CurrenciesScreen } from '../../features/currencies/screens/currencies.screen';
 import { SheetStatsDetailsScreen } from '../../features/sheets/components/sheet-stats/sheet-stats-details.screen';
@@ -62,7 +62,7 @@ export const SheetsNavigator = () => {
           headerMode: 'screen',
           ...(Platform.OS === 'android'
             ? {
-                gestureEnabled: true,
+                gestureEnabled: false,
                 cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
                 presentation: 'transparentModal',
                 transitionSpec: {

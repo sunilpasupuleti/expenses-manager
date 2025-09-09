@@ -1,16 +1,16 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/no-unstable-nested-components */
 /* eslint-disable react/self-closing-comp */
-import React, {useContext, useEffect, useRef, useState} from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 
-import {useIsFocused} from '@react-navigation/native';
-import {AuthenticationContext} from '../../../../services/authentication/authentication.context';
-import {ObservedSheetDetails} from './sheet-details.observed';
-import {FlexRow} from '../../../../components/styles';
-import {TouchableOpacity} from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
+import { AuthenticationContext } from '../../../../services/authentication/authentication.context';
+import { ObservedSheetDetails } from './sheet-details.observed';
+import { FlexRow } from '../../../../components/styles';
+import { TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {Text} from '../../../../components/typography/text.component';
-import {useTheme} from 'styled-components/native';
+import { Text } from '../../../../components/typography/text.component';
+import { useTheme } from 'styled-components/native';
 import {
   Menu,
   MenuOptions,
@@ -18,19 +18,19 @@ import {
   MenuTrigger,
 } from 'react-native-popup-menu';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import {fetchExchangeRates} from '../../../../store/service-slice';
-import {Spacer} from '../../../../components/spacer/spacer.component';
+import { fetchExchangeRates } from '../../../../store/service-slice';
+import { Spacer } from '../../../../components/spacer/spacer.component';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 const menuOptionStyles = {
-  optionWrapper: {padding: 15, paddingTop: 10},
+  optionWrapper: { padding: 15, paddingTop: 10 },
   OptionTouchableComponent: TouchableOpacity,
 };
 
-const SheetDetailsHome = ({navigation, route, sheet}) => {
-  const {userData} = useContext(AuthenticationContext);
+const SheetDetailsHome = ({ navigation, route, sheet }) => {
+  const { userData } = useContext(AuthenticationContext);
   const [searchKeyword, setSearchKeyword] = useState('');
   const routeIsFocused = useIsFocused();
   const [filterParams, setFilterParams] = useState({
@@ -69,22 +69,26 @@ const SheetDetailsHome = ({navigation, route, sheet}) => {
         sheet?.name?.length > 25
           ? sheet.name.substring(0, 25) + '...'
           : sheet.name,
+      headerTitleAlign: 'center',
+
       headerLeft: () => (
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <FlexRow>
             <Ionicons
               name="chevron-back-outline"
               size={25}
-              color={theme.colors.brand.primary}></Ionicons>
+              color={theme.colors.brand.primary}
+            ></Ionicons>
             <Text color={theme.colors.brand.primary}>Back</Text>
           </FlexRow>
         </TouchableOpacity>
       ),
       headerRight: () => (
         <Menu
-          style={{marginRight: 20}}
+          style={{ marginRight: 20 }}
           onBackdropPress={() => menuRef.current.close()}
-          ref={element => (menuRef.current = element)}>
+          ref={element => (menuRef.current = element)}
+        >
           <MenuTrigger
             customStyles={{
               triggerTouchable: {
@@ -94,7 +98,8 @@ const SheetDetailsHome = ({navigation, route, sheet}) => {
                 },
               },
               TriggerTouchableComponent: TouchableOpacity,
-            }}>
+            }}
+          >
             <MaterialCommunityIcons
               name="dots-horizontal-circle-outline"
               size={25}
@@ -107,19 +112,21 @@ const SheetDetailsHome = ({navigation, route, sheet}) => {
               marginTop: 35,
               borderRadius: 10,
               minWidth: 250,
-            }}>
+            }}
+          >
             <MenuOption
               customStyles={menuOptionStyles}
               onSelect={() => {
                 navigation.navigate('SheetStats');
                 menuRef.current.close();
-              }}>
+              }}
+            >
               <FlexRow justifyContent="space-between">
                 <Text color="#2f2f2f" fontfamily="heading">
                   Analytics
                 </Text>
                 <Ionicons
-                  style={{paddingBottom: 8}}
+                  style={{ paddingBottom: 8 }}
                   name="pie-chart-outline"
                   size={20}
                   color={'#000'}
@@ -130,14 +137,15 @@ const SheetDetailsHome = ({navigation, route, sheet}) => {
               customStyles={menuOptionStyles}
               onSelect={() => {
                 menuRef.current.close();
-                navigation.navigate('SheetTrends', {sheet: sheet});
-              }}>
+                navigation.navigate('SheetTrends', { sheet: sheet });
+              }}
+            >
               <FlexRow justifyContent="space-between">
                 <Text color="#2f2f2f" fontfamily="heading">
                   Trends
                 </Text>
                 <Ionicons
-                  style={{paddingBottom: 8}}
+                  style={{ paddingBottom: 8 }}
                   name="trending-up-outline"
                   size={20}
                   color={'#000'}
@@ -159,13 +167,14 @@ const SheetDetailsHome = ({navigation, route, sheet}) => {
                   }),
                 );
                 menuRef.current.close();
-              }}>
+              }}
+            >
               <FlexRow justifyContent="space-between">
                 <Text color="#2f2f2f" fontfamily="heading">
                   Curreny Rates
                 </Text>
                 <FontAwesome
-                  style={{paddingBottom: 8}}
+                  style={{ paddingBottom: 8 }}
                   name="money"
                   size={20}
                   color={'#000'}
@@ -182,13 +191,14 @@ const SheetDetailsHome = ({navigation, route, sheet}) => {
                     sheet: sheet,
                   });
                   // onClickExportData();
-                }}>
+                }}
+              >
                 <FlexRow justifyContent="space-between">
                   <Text color="#2f2f2f" fontfamily="heading">
                     Export Account
                   </Text>
                   <FontAwesome5
-                    style={{paddingBottom: 8}}
+                    style={{ paddingBottom: 8 }}
                     name="file-export"
                     size={18}
                     color={theme.colors.brand.primary}

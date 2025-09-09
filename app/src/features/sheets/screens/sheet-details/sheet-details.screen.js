@@ -61,6 +61,7 @@ import noTransactions from '../../../../../assets/lottie/no_transactions.json';
 import { SheetDetailsContext } from '../../../../services/sheetDetails/sheetDetails.context';
 import { Divider } from 'react-native-paper';
 import { SheetDetailsInfo } from '../../components/sheet-details/sheet-details-info.component';
+import { AuthenticationContext } from '../../../../services/authentication/authentication.context';
 
 export const SheetDetailsScreen = ({
   navigation,
@@ -75,7 +76,7 @@ export const SheetDetailsScreen = ({
   const [refreshing, setRefreshing] = useState(false);
   const [multiSelectMode, setMultiSelectMode] = useState(false);
   const [selectedTransactions, setSelectedTransactions] = useState([]);
-
+  const { userData } = useContext(AuthenticationContext);
   const [totalBalance, setTotalBalance] = useState(0);
 
   const theme = useTheme();
@@ -402,7 +403,7 @@ export const SheetDetailsScreen = ({
 
         <BottomIconsContainer>
           {/*  for camera option */}
-          {!sheet.isLoanAccount ? (
+          {!sheet.isLoanAccount && !userData.isGuest ? (
             <Menu
               onBackdropPress={() => cameraRef.current.close()}
               ref={element => (cameraRef.current = element)}

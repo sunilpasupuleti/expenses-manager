@@ -22,6 +22,7 @@ import {
   PLAID_BACKEND_URL,
   SENTRY_DSN,
   DB_NAME,
+  ALLOW_GUEST_LOGIN,
 } from '../../config';
 import initializeOneSignal from '../components/notifcications/one-signal';
 import initializePushNotification from '../components/notifcications/push-notification';
@@ -106,7 +107,7 @@ export const setOnBoarding = createAsyncThunk(
 
 export const setAppState = createAsyncThunk(
   'service/setAppState',
-  async ({ state }) => {
+  async state => {
     return state;
   },
 );
@@ -126,6 +127,7 @@ export const loadAppStatus = createAsyncThunk(
     await remoteConfig()
       .setDefaults({
         BACKEND_URL: BACKEND_URL,
+        ALLOW_GUEST_LOGIN: ALLOW_GUEST_LOGIN,
         WEB_CLIENT_ID: WEB_CLIENT_ID,
         GOOGLE_API_KEY: GOOGLE_API_KEY,
         ONE_SIGNAL_APP_ID: ONESIGNAL_APP_ID,

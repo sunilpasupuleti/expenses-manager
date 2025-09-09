@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { View, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
-import { BlurView } from '@react-native-community/blur';
 import LinearGradient from 'react-native-linear-gradient';
 import { Pagination } from 'react-native-reanimated-carousel';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -23,8 +22,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { WatermelonDBContext } from '../../../services/watermelondb/watermelondb.context';
 import { Q } from '@nozbe/watermelondb';
-
-const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
 
 const { width, height } = Dimensions.get('window');
 const STORAGE_KEY = '@expenses-manager-recap';
@@ -269,10 +266,8 @@ export const DailyStoryCard = ({ forceShowRecap, setForceShowRecap }) => {
     return null;
   return (
     <View style={styles.overlay}>
-      <AnimatedBlurView
-        style={styles.absolute}
-        blurType="dark"
-        animatedProps={animatedBlurProps}
+      <Animated.View
+        style={[styles.absolute, { backgroundColor: 'rgba(0,0,0,0.7)' }]}
       />
       <GestureDetector gesture={dragGesture}>
         <Animated.View

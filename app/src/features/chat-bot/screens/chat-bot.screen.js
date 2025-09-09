@@ -424,10 +424,7 @@ const ChatBotScreen = ({ navigation }) => {
     const disabled = isTyping;
 
     return (
-      <MotiView
-        animate={{ scale: !disabled ? 1.1 : 0.9 }}
-        transition={{ type: 'spring', damping: 15, mass: 1 }}
-      >
+      <MotiView animate={{ scale: !disabled ? 1.1 : 0.9 }}>
         <CustomSend {...props} disabled={disabled} style={{}}>
           {hasText ? (
             <Icon
@@ -569,7 +566,6 @@ const ChatBotScreen = ({ navigation }) => {
           <MotiView
             from={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ type: 'spring', damping: 10, delay: 200 }}
             style={{
               flexDirection: 'row',
               alignItems: 'center',

@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import {
   Image,
   Linking,
@@ -7,8 +7,8 @@ import {
   View,
   useColorScheme,
 } from 'react-native';
-import {Spacer} from '../../../components/spacer/spacer.component';
-import {AuthenticationContext} from '../../../services/authentication/authentication.context';
+import { Spacer } from '../../../components/spacer/spacer.component';
+import { AuthenticationContext } from '../../../services/authentication/authentication.context';
 import {
   AccountContainer,
   AuthButton,
@@ -20,20 +20,25 @@ import {
 } from '../components/account.styles';
 import * as Animatable from 'react-native-animatable';
 import remoteConfig from '@react-native-firebase/remote-config';
-import {Text} from '../../../components/typography/text.component';
-import {Button} from 'react-native-paper';
-import {SafeArea} from '../../../components/utility/safe-area.component';
-import {ErrorMessage, SuccessMessage} from '../../../components/styles';
-import {useTheme} from 'styled-components/native';
-import {AppleButton} from '@invertase/react-native-apple-authentication';
-import {useSelector} from 'react-redux';
+import { Text } from '../../../components/typography/text.component';
+import { Button } from 'react-native-paper';
+import { SafeArea } from '../../../components/utility/safe-area.component';
+import { ErrorMessage, SuccessMessage } from '../../../components/styles';
+import { useTheme } from 'styled-components/native';
+import { AppleButton } from '@invertase/react-native-apple-authentication';
+import { useSelector } from 'react-redux';
 
-export const AccountScreen = ({navigation}) => {
+export const AccountScreen = ({ navigation }) => {
   const PRIVACY_POLICY_URL = remoteConfig()
     .getValue('PRIVACY_POLICY_URL')
     .asString();
-  const [email, setEmail] = useState({value: null, error: false});
-  const [password, setPassword] = useState({value: null, error: false});
+  const ALLOW_GUEST_LOGIN = remoteConfig()
+    .getValue('ALLOW_GUEST_LOGIN')
+    .asBoolean();
+  console.log(ALLOW_GUEST_LOGIN, typeof ALLOW_GUEST_LOGIN);
+
+  const [email, setEmail] = useState({ value: null, error: false });
+  const [password, setPassword] = useState({ value: null, error: false });
   const [confirmPassword, setConfirmPassword] = useState({
     value: null,
     error: false,
@@ -50,6 +55,7 @@ export const AccountScreen = ({navigation}) => {
   const theme = useTheme();
   const {
     onGoogleAuthentication,
+    onAnonymousAuthentication,
     onSignInWithEmail,
     onResetPassword,
     onSignUpWithEmail,
@@ -80,12 +86,12 @@ export const AccountScreen = ({navigation}) => {
         return;
       } else {
         if (password.value.length < 6) {
-          setError({message: 'Password must be minimum 6 characters long'});
+          setError({ message: 'Password must be minimum 6 characters long' });
           return;
         }
 
         if (password.value !== confirmPassword.value) {
-          setError({message: 'Passwords do not match'});
+          setError({ message: 'Passwords do not match' });
           return;
         }
       }
@@ -124,8 +130,8 @@ export const AccountScreen = ({navigation}) => {
   };
 
   const onResetAllValues = () => {
-    setEmail({value: null, error: false});
-    setPassword({value: null, error: false});
+    setEmail({ value: null, error: false });
+    setPassword({ value: null, error: false });
     setShowPassword(true);
     setError(null);
     setShowLoader(false);
@@ -147,9 +153,9 @@ export const AccountScreen = ({navigation}) => {
     if (email.value === '') showEmailError = true;
     if (password.value === '') showPasswordError = true;
     if (confirmPassword.value === '') showConfirmPasswordError = true;
-    setEmail(p => ({...p, error: showEmailError}));
-    setPassword(p => ({...p, error: showPasswordError}));
-    setConfirmPassword(p => ({...p, error: showConfirmPasswordError}));
+    setEmail(p => ({ ...p, error: showEmailError }));
+    setPassword(p => ({ ...p, error: showPasswordError }));
+    setConfirmPassword(p => ({ ...p, error: showConfirmPasswordError }));
   }, [email.value, password.value, confirmPassword.value]);
 
   return (
@@ -161,7 +167,8 @@ export const AccountScreen = ({navigation}) => {
         style={{
           justifyContent: 'center',
           alignItems: 'center',
-        }}>
+        }}
+      >
         <Animatable.Image
           animation={'slideInRight'}
           style={{
@@ -176,7 +183,8 @@ export const AccountScreen = ({navigation}) => {
         <Text
           fontfamily="bodyBold"
           color={theme.colors.text.primary}
-          fontsize="25px">
+          fontsize="25px"
+        >
           Expenses Aura
         </Text>
       </Animatable.View>
@@ -191,10 +199,10 @@ export const AccountScreen = ({navigation}) => {
           )}
 
           <LoginInput
-            theme={{roundness: 10}}
+            theme={{ roundness: 10 }}
             mode="outlined"
             returnKeyType="done"
-            onChangeText={n => setEmail(p => ({...p, value: n.trim()}))}
+            onChangeText={n => setEmail(p => ({ ...p, value: n.trim() }))}
             value={email.value}
             placeholder="Email"
             keyboardType="email-address"
@@ -203,7 +211,7 @@ export const AccountScreen = ({navigation}) => {
                 <LoginInput.Icon
                   icon="close-circle"
                   iconColor="#bbb"
-                  onPress={() => setEmail(p => ({...p, value: ''}))}
+                  onPress={() => setEmail(p => ({ ...p, value: '' }))}
                 />
               )
             }
@@ -219,10 +227,12 @@ export const AccountScreen = ({navigation}) => {
               <Spacer size={'medium'} />
               <LoginInput
                 secureTextEntry={showPassword}
-                theme={{roundness: 10}}
+                theme={{ roundness: 10 }}
                 mode="outlined"
                 returnKeyType="done"
-                onChangeText={n => setPassword(p => ({...p, value: n.trim()}))}
+                onChangeText={n =>
+                  setPassword(p => ({ ...p, value: n.trim() }))
+                }
                 value={password.value}
                 placeholder="Password"
                 keyboardType="default"
@@ -248,11 +258,11 @@ export const AccountScreen = ({navigation}) => {
                 <Spacer size={'medium'}>
                   <LoginInput
                     secureTextEntry={true}
-                    theme={{roundness: 10}}
+                    theme={{ roundness: 10 }}
                     mode="outlined"
                     returnKeyType="done"
                     onChangeText={n =>
-                      setConfirmPassword(p => ({...p, value: n.trim()}))
+                      setConfirmPassword(p => ({ ...p, value: n.trim() }))
                     }
                     value={confirmPassword.value}
                     placeholder="Confirm Password"
@@ -263,7 +273,7 @@ export const AccountScreen = ({navigation}) => {
                           icon="close-circle"
                           iconColor="#bbb"
                           onPress={() =>
-                            setConfirmPassword(p => ({...p, value: ''}))
+                            setConfirmPassword(p => ({ ...p, value: '' }))
                           }
                         />
                       )
@@ -291,14 +301,15 @@ export const AccountScreen = ({navigation}) => {
           <Spacer size={'large'} />
 
           <Button
-            theme={{roundness: 10}}
+            theme={{ roundness: 10 }}
             mode="contained"
-            style={{height: 40}}
+            style={{ height: 40 }}
             textColor="#fff"
             onPress={onClickSubmit}
             loading={showLoader}
             icon="location-exit"
-            disabled={showLoader}>
+            disabled={showLoader}
+          >
             {mode === 'signin'
               ? 'SIGN IN'
               : mode === 'signup'
@@ -306,11 +317,23 @@ export const AccountScreen = ({navigation}) => {
               : 'SEND PASSWORD RESET LINK'}
           </Button>
           {mode === 'signin' && (
-            <Spacer size={'xlarge'}>
-              <TouchableOpacity onPress={() => onChangeMode('passwordreset')}>
-                <Hyperlink>Forgot Password?</Hyperlink>
-              </TouchableOpacity>
-            </Spacer>
+            <>
+              <Spacer size={'large'}>
+                <TouchableOpacity onPress={() => onChangeMode('passwordreset')}>
+                  <Hyperlink>Forgot Password?</Hyperlink>
+                </TouchableOpacity>
+              </Spacer>
+
+              {ALLOW_GUEST_LOGIN && (
+                <Spacer size={'medium'}>
+                  <TouchableOpacity onPress={onAnonymousAuthentication}>
+                    <Hyperlink underline={true}>
+                      Continue as a Guest Without Account
+                    </Hyperlink>
+                  </TouchableOpacity>
+                </Spacer>
+              )}
+            </>
           )}
 
           {mode === 'passwordreset' && (
@@ -319,7 +342,8 @@ export const AccountScreen = ({navigation}) => {
                 onPress={() => {
                   onChangeMode('signin');
                   setSuccess(null);
-                }}>
+                }}
+              >
                 <Hyperlink>Go back to Login Screen.</Hyperlink>
               </TouchableOpacity>
             </Spacer>

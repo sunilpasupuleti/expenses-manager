@@ -1,8 +1,8 @@
 import React from 'react';
-import {Button, TextInput} from 'react-native-paper';
+import { Button, TextInput } from 'react-native-paper';
 import styled from 'styled-components/native';
-import {Text} from '../../../components/typography/text.component';
-import {colors} from '../../../infrastructure/theme/colors';
+import { Text } from '../../../components/typography/text.component';
+import { colors } from '../../../infrastructure/theme/colors';
 
 export const AccountBackground = styled.ImageBackground.attrs({
   source: require('../../../../assets/expenses.jpg'),
@@ -18,7 +18,7 @@ export const Title = styled(Text)`
 
 export const AccountContainer = styled.ScrollView`
   padding: ${props => props.theme.space[4]};
-  margin-top: 20px;
+  margin-top: 10px;
   flex: 1;
 `;
 
@@ -72,6 +72,7 @@ export const Hyperlink = styled(Text).attrs({
   fontfamily: 'heading',
 })`
   color: #3a62b6;
+  ${props => props.underline && 'text-decoration-line: underline;'}
   text-align: center;
 `;
 

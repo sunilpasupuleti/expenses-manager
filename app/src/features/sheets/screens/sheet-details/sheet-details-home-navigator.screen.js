@@ -48,13 +48,14 @@ export const SheetDetailsHomeNavigatorScreen = ({ navigation, route }) => {
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
+
         lazy: true,
         tabBarActiveTintColor: theme.colors.brand.primary,
         tabBarStyle: {
           backgroundColor: theme.colors.bg.primary,
           paddingBottom: 30,
           height: 80,
-          display: appState === 'active' ? 'flex' : 'none',
+          display: 'flex',
         },
       }}
     >

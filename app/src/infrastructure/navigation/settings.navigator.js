@@ -21,7 +21,7 @@ export const SettingsNavigator = () => {
 
   const appState = useSelector(state => state.service.appState);
 
-  let headerShown = appState === 'active' ? true : false;
+  let headerShown = true;
 
   return (
     <SettingsStack.Navigator

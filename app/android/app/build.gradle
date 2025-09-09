@@ -91,8 +91,8 @@ android {
         applicationId "com.webwizard.expensesmanager"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 34
-        versionName "3.1.7"
+        versionCode 37
+        versionName "3.1.10"
     }
 
     signingConfigs {

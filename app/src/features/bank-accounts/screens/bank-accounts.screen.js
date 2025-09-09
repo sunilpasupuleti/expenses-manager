@@ -342,7 +342,7 @@ export const BankAccountsScreen = ({ navigation, route }) => {
   }, [updateAccountMode]);
 
   useEffect(() => {
-    if (routeIsFocused && appState === 'active') onGetLinkedAccounts();
+    if (routeIsFocused) onGetLinkedAccounts();
     return () => clearTimeout(timeoutRef.current);
   }, [routeIsFocused]);
 

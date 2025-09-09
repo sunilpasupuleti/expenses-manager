@@ -53,6 +53,7 @@ export const AuthenticationContext = createContext({
   userAdditionalDetails: null,
   userDetailsFirebase: null,
   onGoogleAuthentication: () => null,
+  onAnonymousAuthentication: () => null,
   onAppleAuthentication: () => null,
   onSignInWithEmail: () => null,
   onSignUpWithEmail: () => null,
@@ -438,6 +439,36 @@ export const AuthenticationContextProvider = ({ children }) => {
     }
   };
 
+  const onAnonymousAuthentication = async () => {
+    showLoader();
+
+    try {
+      const res = await auth().signInAnonymously();
+
+      if (!res || !res.user) {
+        throw 'Failed to sign in anonymously';
+      }
+
+      console.log('✅ Anonymous sign-in successful:', res.user.uid);
+    } catch (error) {
+      console.log(error);
+
+      let errorMessage = 'Error signing in anonymously';
+
+      if (error.code === 'auth/operation-not-allowed') {
+        errorMessage =
+          'Guest sign-in is not enabled in Firebase. Please check your Firebase console.';
+      } else {
+        errorMessage = error.message || error.toString();
+      }
+
+      console.error('❌ Anonymous Sign-in Error:', errorMessage);
+      Alert.alert('Authentication Error', errorMessage);
+    } finally {
+      hideLoader();
+    }
+  };
+
   const onAppleAuthentication = async () => {
     showLoader();
     try {
@@ -586,8 +617,9 @@ export const AuthenticationContextProvider = ({ children }) => {
     return new Promise(async (resolve, reject) => {
       try {
         let currentUser = await auth().currentUser;
-        const uid = currentUser.uid;
 
+        const uid = currentUser.uid;
+        const isGuestLogin = currentUser.isAnonymous || false;
         const accountDeletionRequest = (
           await database().ref(`/accountDeletions/${uid}`).once('value')
         ).val();
@@ -610,6 +642,7 @@ export const AuthenticationContextProvider = ({ children }) => {
           email: null,
           photoURL: null,
           providerId: null,
+          isGuest: isGuestLogin,
           uid: null,
           fcmToken: token,
           phoneNumber: null,
@@ -667,9 +700,10 @@ export const AuthenticationContextProvider = ({ children }) => {
           transformedData.dailyReminderTime = dailyReminderTime;
           transformedData.lastSynced = lastSynced || '';
         } else {
-          let providerId = currentUser.providerData[0].providerId;
+          let providerId =
+            currentUser.providerData[0]?.providerId || currentUser.providerId;
           const { displayName, email, photoURL, phoneNumber } = currentUser;
-          transformedData.displayName = displayName;
+          transformedData.displayName = displayName || 'User';
           transformedData.email = email;
           transformedData.photoURL = photoURL;
           transformedData.providerId = providerId;
@@ -739,9 +773,11 @@ export const AuthenticationContextProvider = ({ children }) => {
           await createRecord('categories', formattedCategories);
         }
 
-        await database()
-          .ref('/users/' + transformedData.uid)
-          .update(transformedData);
+        if (!isGuestLogin) {
+          await database()
+            .ref('/users/' + transformedData.uid)
+            .update(transformedData);
+        }
 
         setUserData(user);
         setUserAdditionalDetails(user);
@@ -754,14 +790,16 @@ export const AuthenticationContextProvider = ({ children }) => {
         await AsyncStorage.setItem('@expenses-manager-uid', uid);
         await AsyncStorage.removeItem('@expenses-manager-data');
 
-        sendRequest({
-          type: 'POST',
-          url: BACKEND_URL + '/notification/enable-notifications/',
-          data: {},
-          headers: {
-            authorization: 'Bearer ' + jwtToken,
-          },
-        });
+        if (!isGuestLogin) {
+          sendRequest({
+            type: 'POST',
+            url: BACKEND_URL + '/notification/enable-notifications/',
+            data: {},
+            headers: {
+              authorization: 'Bearer ' + jwtToken,
+            },
+          });
+        }
       } catch (err) {
         console.log(err);
         hideLoader();
@@ -852,6 +890,7 @@ export const AuthenticationContextProvider = ({ children }) => {
     <AuthenticationContext.Provider
       value={{
         onGoogleAuthentication,
+        onAnonymousAuthentication,
         onAppleAuthentication,
         userData,
         onLogout,

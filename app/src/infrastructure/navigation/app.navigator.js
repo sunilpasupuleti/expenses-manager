@@ -33,10 +33,10 @@ export const Stack = createStackNavigator();
 export const ModalPresets = Platform.select({
   ios: {
     presentation: 'modal',
-    ...TransitionPresets.ModalPresentationIOS,
+    ...TransitionPresets.ModalSlideFromBottomIOS,
   },
   android: {
-    presentation: 'card',
+    presentation: 'modal',
     ...TransitionPresets.ModalSlideFromBottomIOS,
   },
 });
@@ -126,6 +126,12 @@ export const AppNavigator = () => {
 
                         <Stack.Screen
                           name="BankAccounts"
+                          options={{
+                            gestureResponseDistance:
+                              Dimensions.get('window').height - 200,
+                            headerMode: 'screen',
+                            ...ModalPresets,
+                          }}
                           component={BankAccountNavigator}
                         />
 

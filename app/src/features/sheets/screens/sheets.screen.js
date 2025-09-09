@@ -179,7 +179,9 @@ export const SheetsScreen = ({
   ];
 
   const theme = useTheme();
-  const { userAdditionalDetails, userData } = useContext(AuthenticationContext);
+  const { userAdditionalDetails, userData, onLogout } = useContext(
+    AuthenticationContext,
+  );
   const [showSearch, setShowSearch] = useState(false);
   const [upcomingSubscriptions, setUpcomingSubscriptions] = useState([]);
   const [forceShowRecap, setForceShowRecap] = useState(false);
@@ -437,77 +439,97 @@ export const SheetsScreen = ({
         >
           <View></View>
           <NavigationBar>
-            <NavIconButton
-              onPress={() =>
-                navigation.navigate('BankAccounts', {
-                  screen: 'BankAccountsHome',
-                  params: {
-                    screen: 'Subscriptions',
-                  },
-                })
-              }
-            >
-              <NavIconCircle style={{ backgroundColor: '#F59E0B' }}>
-                <MaterialCommunityIcons
-                  name="calendar-sync"
-                  size={20}
-                  color="white"
-                />
-              </NavIconCircle>
-              <NavLabel>Renewals</NavLabel>
-            </NavIconButton>
+            {!userData.isGuest && (
+              <>
+                <NavIconButton
+                  onPress={() =>
+                    navigation.navigate('BankAccounts', {
+                      screen: 'BankAccountsHome',
+                      params: {
+                        screen: 'Subscriptions',
+                      },
+                    })
+                  }
+                >
+                  <NavIconCircle style={{ backgroundColor: '#F59E0B' }}>
+                    <MaterialCommunityIcons
+                      name="calendar-sync"
+                      size={20}
+                      color="white"
+                    />
+                  </NavIconCircle>
+                  <NavLabel>Renewals</NavLabel>
+                </NavIconButton>
 
-            <NavIconButton
-              onPress={() =>
-                navigation.navigate('BankAccounts', {
-                  screen: 'BankAccountsHome',
-                })
-              }
-            >
-              <NavIconCircle style={{ backgroundColor: '#3b82f6' }}>
-                <MaterialCommunityIcons name="bank" size={20} color="white" />
-              </NavIconCircle>
-              <NavLabel>Bank</NavLabel>
-            </NavIconButton>
+                <NavIconButton
+                  onPress={() =>
+                    navigation.navigate('BankAccounts', {
+                      screen: 'BankAccountsHome',
+                    })
+                  }
+                >
+                  <NavIconCircle style={{ backgroundColor: '#3b82f6' }}>
+                    <MaterialCommunityIcons
+                      name="bank"
+                      size={20}
+                      color="white"
+                    />
+                  </NavIconCircle>
+                  <NavLabel>Bank</NavLabel>
+                </NavIconButton>
 
-            <NavIconButton
-              onPress={() =>
-                navigation.navigate('Settings', { screen: 'Sync' })
-              }
-            >
-              <NavIconCircle style={{ backgroundColor: '#607D8B' }}>
-                <Ionicons
-                  name="cloud-offline-outline"
-                  size={20}
-                  color="white"
-                />
-              </NavIconCircle>
-              <NavLabel>Sync</NavLabel>
-            </NavIconButton>
+                <NavIconButton
+                  onPress={() =>
+                    navigation.navigate('Settings', { screen: 'Sync' })
+                  }
+                >
+                  <NavIconCircle style={{ backgroundColor: '#607D8B' }}>
+                    <Ionicons
+                      name="cloud-offline-outline"
+                      size={20}
+                      color="white"
+                    />
+                  </NavIconCircle>
+                  <NavLabel>Sync</NavLabel>
+                </NavIconButton>
 
-            <NavIconButton onPress={() => navigation.navigate('Settings')}>
-              <NavIconCircle style={{ backgroundColor: '#4682B4' }}>
-                <Ionicons name="cog-outline" size={18} color="white" />
-              </NavIconCircle>
-              <NavLabel>Settings</NavLabel>
-            </NavIconButton>
+                <NavIconButton onPress={() => navigation.navigate('Settings')}>
+                  <NavIconCircle style={{ backgroundColor: '#4682B4' }}>
+                    <Ionicons name="cog-outline" size={18} color="white" />
+                  </NavIconCircle>
+                  <NavLabel>Settings</NavLabel>
+                </NavIconButton>
 
-            <NavIconButton
-              onPress={() => {
-                navigation.navigate('ChatBot');
-              }}
-            >
-              <Animated.View style={navAuraAnimatedStyle}>
-                <NavIconCircle style={{ backgroundColor: '#ffffff' }}>
-                  <Image
-                    source={aiIcon}
-                    style={{ width: 25, height: 25, marginRight: 5 }}
-                    resizeMode="contain"
+                <NavIconButton
+                  onPress={() => {
+                    navigation.navigate('ChatBot');
+                  }}
+                >
+                  <Animated.View style={navAuraAnimatedStyle}>
+                    <NavIconCircle style={{ backgroundColor: '#ffffff' }}>
+                      <Image
+                        source={aiIcon}
+                        style={{ width: 25, height: 25, marginRight: 5 }}
+                        resizeMode="contain"
+                      />
+                    </NavIconCircle>
+                  </Animated.View>
+                  <NavLabel>Aura Chat </NavLabel>
+                </NavIconButton>
+              </>
+            )}
+            {userData.isGuest && (
+              <NavIconButton onPress={() => onLogout()}>
+                <NavIconCircle style={{ backgroundColor: '#3b82f6' }}>
+                  <MaterialCommunityIcons
+                    name="logout"
+                    size={20}
+                    color="white"
                   />
                 </NavIconCircle>
-              </Animated.View>
-              <NavLabel>Aura Chat </NavLabel>
-            </NavIconButton>
+                <NavLabel>Sign Out</NavLabel>
+              </NavIconButton>
+            )}
           </NavigationBar>
         </TopContainer>
         <Spacer size="medium" />
@@ -643,49 +665,51 @@ export const SheetsScreen = ({
             />
 
             {/* Perfect Modern Button */}
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                backgroundColor: 'rgba(255, 255, 255, 0.95)',
-                borderRadius: 50,
-                paddingVertical: 14,
-                paddingHorizontal: 18,
-                minWidth: 140,
-                borderWidth: 1,
-                borderColor: 'rgba(255, 255, 255, 0.3)',
-                shadowColor: '#667eea',
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.15,
-                shadowRadius: 20,
-                elevation: 12,
-              }}
-            >
-              {/* Minimal Mic Icon */}
+            {!userData.isGuest && (
               <View
                 style={{
-                  backgroundColor: '#667eea',
-                  borderRadius: 20,
-                  width: 32,
-                  height: 32,
-                  justifyContent: 'center',
+                  flexDirection: 'row',
                   alignItems: 'center',
-                  marginRight: 10,
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  borderRadius: 50,
+                  paddingVertical: 14,
+                  paddingHorizontal: 18,
+                  minWidth: 140,
+                  borderWidth: 1,
+                  borderColor: 'rgba(255, 255, 255, 0.3)',
+                  shadowColor: '#667eea',
+                  shadowOffset: { width: 0, height: 4 },
+                  shadowOpacity: 0.15,
+                  shadowRadius: 20,
+                  elevation: 12,
                 }}
               >
-                <Ionicons name="mic" size={16} color="white" />
-              </View>
+                {/* Minimal Mic Icon */}
+                <View
+                  style={{
+                    backgroundColor: '#667eea',
+                    borderRadius: 20,
+                    width: 32,
+                    height: 32,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    marginRight: 10,
+                  }}
+                >
+                  <Ionicons name="mic" size={16} color="white" />
+                </View>
 
-              {/* Clean Typography */}
-              <Text
-                fontsize="15px"
-                fontfamily="headingBold"
-                color="#1a1a1a"
-                style={{ letterSpacing: -0.3 }}
-              >
-                Talk to Aura
-              </Text>
-            </View>
+                {/* Clean Typography */}
+                <Text
+                  fontsize="15px"
+                  fontfamily="headingBold"
+                  color="#1a1a1a"
+                  style={{ letterSpacing: -0.3 }}
+                >
+                  Talk to Aura
+                </Text>
+              </View>
+            )}
           </Animated.View>
         </TouchableHighlight>
       </MainWrapper>

@@ -1,12 +1,14 @@
-import {BlurView} from '@react-native-community/blur';
 import React from 'react';
-import {Dimensions, StyleSheet, View} from 'react-native';
-import {Image} from 'react-native';
-import {Platform, StatusBar} from 'react-native';
-import {Text} from 'react-native-paper';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
-import {useSelector} from 'react-redux';
-import styled, {useTheme} from 'styled-components/native';
+import { Dimensions, StyleSheet, View } from 'react-native';
+import { Image } from 'react-native';
+import { Platform, StatusBar } from 'react-native';
+import { Text } from 'react-native-paper';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
+import { useSelector } from 'react-redux';
+import styled, { useTheme } from 'styled-components/native';
 
 export const SafeAreaStyled = styled(SafeAreaView)`
   flex: 1;
@@ -28,7 +30,7 @@ export const MainContainer = styled.View`
 
 export const RenderBlurView = () => {
   const appState = useSelector(state => state.service.appState);
-  const {width: viewportWidth, height: viewportHeight} =
+  const { width: viewportWidth, height: viewportHeight } =
     Dimensions.get('window');
   const theme = useTheme();
   const defaultStyleSheetProps = {
@@ -39,10 +41,16 @@ export const RenderBlurView = () => {
 
   return (
     (appState === 'inactive' || appState === 'background') && (
-      <BlurView
-        blurType="extraDark"
-        blurAmount={7}
-        style={styles(defaultStyleSheetProps).blurView}
+      <View
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: viewportWidth,
+          height: viewportHeight,
+          backgroundColor: 'rgba(0,0,0,0.5)', // mimic blur with semi-transparency
+          zIndex: 999,
+        }}
       />
     )
   );
@@ -50,7 +58,7 @@ export const RenderBlurView = () => {
 
 export const SafeArea = props => {
   const appState = useSelector(state => state.service.appState);
-  const {width: viewportWidth, height: viewportHeight} =
+  const { width: viewportWidth, height: viewportHeight } =
     Dimensions.get('window');
   const theme = useTheme();
   const defaultStyleSheetProps = {
@@ -73,13 +81,13 @@ export const SafeArea = props => {
           {props.children}
         </MainContainer>
       )}
-      {(appState === 'inactive' || appState === 'background') && (
+      {/* {(appState === 'inactive' || appState === 'background') && (
         <BlurView
           blurType="extraDark"
           blurAmount={7}
           style={styles(defaultStyleSheetProps).blurView}
         />
-      )}
+      )} */}
     </>
   );
 
@@ -105,7 +113,7 @@ export const SafeArea = props => {
   // );
 };
 
-const styles = ({theme, viewportWidth, viewportHeight}) =>
+const styles = ({ theme, viewportWidth, viewportHeight }) =>
   StyleSheet.create({
     backgroundContainer: {
       backgroundColor: theme.colors.brand.primary,
